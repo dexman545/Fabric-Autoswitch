@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "aswitch",
+  "version": "${version}",
+
+  "name": "AutoSwitch",
+  "description": "Automagical switching of tools to the best one for the job.",
+  "authors": [
+    "Deximus-Maximus"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/aswitch/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "autoswitch.AutoSwitch"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}
