@@ -1,32 +1,16 @@
 package autoswitch;
 
-import com.mojang.datafixers.types.templates.Tag;
 import net.fabricmc.fabric.api.tools.FabricToolTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
-import net.minecraft.client.Keyboard;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.input.Input;
-import net.minecraft.data.server.ItemTagsProvider;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.packet.PlayerInputC2SPacket;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.util.TagHelper;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
-import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class SwitchLogic {
@@ -108,7 +92,8 @@ public class SwitchLogic {
 
 
             //Check if item will work on the block, if it can check what tool it is and add it to it's list
-            //ineffective on logs for some reason if (item.isEffectiveOn(block)) {
+            //ineffective on logs for some reason if (item.isEffectiveOn(block)) { 1.15 broke this further
+                System.out.println("meh");
                 if (FabricToolTags.AXES.contains(item) || vanillaAxes.contains(item.asItem())) {
                     axes.add(i);
                     if (hotbar.get(i).getEnchantments().asString().contains("fortune")){
