@@ -1,30 +1,15 @@
 package autoswitch;
 
-import com.google.common.collect.Sets;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.api.tools.FabricToolTags;
-import net.minecraft.block.Material;
-import net.minecraft.client.Keyboard;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.item.*;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.tag.Tag;
-import net.minecraft.text.ClickEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
-
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 
 public class AutoSwitch implements ModInitializer {
@@ -49,7 +34,7 @@ public class AutoSwitch implements ModInitializer {
         KeyBindingRegistry.INSTANCE.register(keyBinding);
         ClientTickCallback.EVENT.register(e ->
         {
-            if(keyBinding.isPressed()) {doAS = !doAS;}
+            if(keyBinding.wasPressed()) {doAS = !doAS;}
         });
 
         //Block Swap
