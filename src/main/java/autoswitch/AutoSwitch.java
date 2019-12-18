@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -34,7 +35,16 @@ public class AutoSwitch implements ModInitializer {
         KeyBindingRegistry.INSTANCE.register(keyBinding);
         ClientTickCallback.EVENT.register(e ->
         {
-            if(keyBinding.wasPressed()) {doAS = !doAS;}
+            if(keyBinding.wasPressed()) {
+                //The toggle
+                doAS = !doAS;
+
+                //Toggle message
+                TranslatableText msg = new TranslatableText(doAS ? "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
+                //Display msg above hotbar, set false to display in text chat
+                e.player.addChatMessage(msg, true);
+            }
+
         });
 
         //Block Swap
@@ -42,7 +52,7 @@ public class AutoSwitch implements ModInitializer {
         {
             if (doAS) {
                 SwitchLogic logic = new SwitchLogic();
-                System.out.println(logic.changeTool(logic.toolBlockList(player, world.getBlockState(pos)), player.inventory.selectedSlot, player));
+                logic.changeTool(logic.toolBlockList(player, world.getBlockState(pos)), player.inventory.selectedSlot, player);
             }
             return ActionResult.PASS;
         });

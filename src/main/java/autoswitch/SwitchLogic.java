@@ -92,8 +92,9 @@ public class SwitchLogic {
 
 
             //Check if item will work on the block, if it can check what tool it is and add it to it's list
-            //ineffective on logs for some reason if (item.isEffectiveOn(block)) { 1.15 broke this further
-                System.out.println("meh");
+            //ineffective on logs for some reason
+            //if (item.isEffectiveOn(block)) { //1.15 broke this further
+                //System.out.println("meh");
                 if (FabricToolTags.AXES.contains(item) || vanillaAxes.contains(item.asItem())) {
                     axes.add(i);
                     if (hotbar.get(i).getEnchantments().asString().contains("fortune")){

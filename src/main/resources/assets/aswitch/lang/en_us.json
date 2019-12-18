@@ -1,4 +1,6 @@
 {
-  "key.minecraft.autoswitch": "AutoSwitch Toggle Key"
+  "key.minecraft.autoswitch": "AutoSwitch Toggle Key",
+  "msg.autoswitch.toggle_true": "AutoSwitch: Enabled",
+  "msg.autoswitch.toggle_false": "AutoSwitch: Disabled"
 
 }
