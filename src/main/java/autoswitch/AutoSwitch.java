@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.item.Item;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -26,12 +27,13 @@ public class AutoSwitch implements ModInitializer {
 
         //Keybindings
         keyBinding = FabricKeyBinding.Builder.create(
-                new Identifier("autoswitch"),
+                new Identifier("autoswitch", "toggle"),
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_R,
-                "Autoswitch"
+                "AutoSwitch"
         ).build();
 
+        KeyBindingRegistry.INSTANCE.addCategory("AutoSwitch");
         KeyBindingRegistry.INSTANCE.register(keyBinding);
         ClientTickCallback.EVENT.register(e ->
         {
