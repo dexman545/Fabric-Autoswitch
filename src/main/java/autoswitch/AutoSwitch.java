@@ -22,7 +22,7 @@ public class AutoSwitch implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        System.out.println("Autoswitch Loaded");
+        System.out.println("AutoSwitch Loaded");
 
         //Keybindings
         keyBinding = FabricKeyBinding.Builder.create(
