@@ -118,7 +118,6 @@ public class SwitchLogic {
                     if (hotbar.get(i).getEnchantments().asString().contains("silk")){
                         silkShovels.add(i);
                     }
-                    //System.out.println(hotbar.get(i).getEnchantments().asString().contains("silk"));
                 } else if (FabricToolTags.SWORDS.contains(item) || vanillaSwords.contains(item.asItem())) {
                     swords.add(i);
                 } else if (hotbar.get(i).getItem().equals(Items.SHEARS)) {
@@ -317,24 +316,14 @@ public class SwitchLogic {
             }
 
             //Simulate player pressing the hotbar button, potential fix for working on vanilla servers
-            //try {
-                //Robot robot = new Robot();
-                // Simulate a key press
-                //robot.keyPress(slots.get(0));
-                //robot.keyRelease(slots.get(0));
+            //Loop over it since scrollinhotbar only moves one pos
+            for (int i = Math.abs(currentSlot - slots.get(0)); i > 0; i--){
+                player.inventory.scrollInHotbar(currentSlot - slots.get(0));
+            }
 
-                //Loop over it since scrollinhotbar only moves one pos
-                for (int i = Math.abs(currentSlot - slots.get(0)); i > 0; i--){
-                    player.inventory.scrollInHotbar(currentSlot - slots.get(0));
-                }
+            //player.inventory.selectedSlot = potSlots.get(0);
+            return 1;
 
-                //player.inventory.selectedSlot = potSlots.get(0);
-                return 1;
-
-            //} catch (AWTException e) {
-                /*e.printStackTrace();
-                return -2;
-            } */
         }
     }
 
