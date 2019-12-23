@@ -229,8 +229,6 @@ public class SwitchLogic {
         List<ItemStack> hotbar = player.inventory.main.subList(0, 9);
         for (int i=0; i<9; i++) {
             Item item = hotbar.get(i).getItem();
-            //ItemStack item = hotbar.get(i);
-            //System.out.println(item.getEnchantments().contains(Enchantments.BANE_OF_ARTHROPODS));
 
             if (hotbar.get(i).getEnchantments().asString().contains("bane")){
                 banes.add(i);
@@ -254,7 +252,7 @@ public class SwitchLogic {
         ArrayList<String> baneMob = new ArrayList<String>(Arrays.asList("Spider", "Bee", "fish", "mite"));
         ArrayList<String> smiteMob = new ArrayList<String>(Arrays.asList("Skeleton", "Zombie", "Wither", "Phantom",
                 "Husk", "Stray", "Drowned"));
-        //ArrayList<String> sharpMob = new ArrayList<String>(Arrays.asList("spider", "bee", "fish", "mite"));
+        //ArrayList<String> sharpMob = new ArrayList<String>(Arrays.asList("spider", "bee", "fish", "mite")); Disabled as sharpness is useful on all mobs
         ArrayList<String> boatMob = new ArrayList<String>(Arrays.asList("Boat"));
 
         if (stringContainsItemFromList(entity.toString(), baneMob)) {

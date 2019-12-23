@@ -1,20 +1,19 @@
 package autoswitch;
 
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.item.Item;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 
-public class AutoSwitch implements ModInitializer {
+public class AutoSwitch implements ClientModInitializer {
 
     //Keybinding
     private static FabricKeyBinding keyBinding;
@@ -22,7 +21,7 @@ public class AutoSwitch implements ModInitializer {
     private boolean doAS = true;
 
     @Override
-    public void onInitialize() {
+    public void onInitializeClient() {
         System.out.println("Autoswitch Loaded");
 
         //Keybindings
