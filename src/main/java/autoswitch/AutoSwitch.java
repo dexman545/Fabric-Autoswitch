@@ -51,18 +51,18 @@ public class AutoSwitch implements ClientModInitializer {
         //Block Swap
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
         {
+
             if (doAS) {
                 SwitchLogic logic = new SwitchLogic();
                 logic.changeTool(logic.toolBlockList(player, world.getBlockState(pos)), player.inventory.selectedSlot, player);
             }
+
             return ActionResult.PASS;
         });
 
         //Entity Swap
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
         {
-            //Initial Hotbar Slot
-            int prevSlot = player.inventory.selectedSlot;
 
             if (doAS) {
                 SwitchLogic logic = new SwitchLogic();
