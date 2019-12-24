@@ -209,7 +209,7 @@ public class SwitchLogic {
                 potSlots.add(shovels.get(0));
             }
         } else {
-            System.out.println("Bare Hand Fine");
+            //System.out.println("Bare Hand Fine");
         }
 
         return potSlots;
@@ -311,7 +311,7 @@ public class SwitchLogic {
             return -1;
         } else {
             if (slots.get(0) == currentSlot) {
-                System.out.println("No need to change slot");
+                //System.out.println("No need to change slot");
                 return 0;
             }
 
