@@ -91,8 +91,6 @@ public class SwitchLogic {
         for (int i=0; i<9; i++) {
             Item item = hotbar.get(i).getItem();
 
-
-
             //Check if item will work on the block, if it can check what tool it is and add it to it's list
             //ineffective on logs for some reason
             //if (item.isEffectiveOn(block)) { //1.15 broke this further
