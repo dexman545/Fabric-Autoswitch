@@ -11,6 +11,7 @@ import net.minecraft.item.Items;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SwitchLogic {
@@ -129,42 +130,34 @@ public class SwitchLogic {
 
         //Check what materials the block needs and add those to the list of potential slots
         if (shear.contains(mat)) {
-            if (shears.isEmpty()) {
-
-            } else {
+            if (!shears.isEmpty()) {
                 potSlots.add(shears.get(0));
             }
         } else if (fortPick.contains(mat)) {
             if (fortPicks.isEmpty()) {
                 if (silkPick.contains(mat) && !silkPicks.isEmpty()) {
                     potSlots.add(silkPicks.get(0));
-                } else if (picks.isEmpty()) {
-
-                } else potSlots.add(picks.get(0));
+                } else if (!picks.isEmpty()) {
+                    potSlots.add(picks.get(0));
+                }
             } else {
                 potSlots.add(fortPicks.get(0));
             }
         } else if (silkPick.contains(mat)) {
             if (silkPicks.isEmpty()) {
-                if (picks.isEmpty()){
-
-                } else {
+                if (!picks.isEmpty()){
                     potSlots.add(picks.get(0));
                 }
             } else {
                 potSlots.add(silkPicks.get(0));
             }
         } else if (pick.contains(mat)) {
-            if (picks.isEmpty()) {
-
-            } else {
+            if (!picks.isEmpty()) {
                 potSlots.add(picks.get(0));
             }
         } else if (silkAxe.contains(mat)) {
             if (silkAxes.isEmpty()) {
-                if (axes.isEmpty()){
-
-                } else {
+                if (!axes.isEmpty()){
                     potSlots.add(axes.get(0));
                 }
             } else {
@@ -172,45 +165,35 @@ public class SwitchLogic {
             }
         } else if (fortAxe.contains(mat)) {
             if (fortAxes.isEmpty()) {
-                if (axes.isEmpty()){
-
-                } else {
+                if (!axes.isEmpty()){
                     potSlots.add(axes.get(0));
                 }
             } else {
                 potSlots.add(fortAxes.get(0));
             }
         } else if (axe.contains(mat)) {
-            if (axes.isEmpty()) {
-
-            } else {
+            if (!axes.isEmpty()) {
                 potSlots.add(axes.get(0));
             }
         } else if (sword.contains(mat)) {
-            if (swords.isEmpty()) {
-
-            } else {
+            if (!swords.isEmpty()) {
                 potSlots.add(swords.get(0));
             }
         } else if (silkShovel.contains(mat)) {
             if (silkShovels.isEmpty()) {
-                if (shovels.isEmpty()){
-
-                } else {
+                if (!shovels.isEmpty()){
                     potSlots.add(shovels.get(0));
                 }
             } else {
                 potSlots.add(silkShovels.get(0));
             }
         } else if (shovel.contains(mat)) {
-            if (shovels.isEmpty()) {
-
-            } else {
+            if (!shovels.isEmpty()) {
                 potSlots.add(shovels.get(0));
             }
-        } else {
-            //System.out.println("Bare Hand Fine");
-        }
+        } /*else {
+            System.out.println("Bare Hand Fine");
+        }*/
 
         return potSlots;
 
@@ -252,30 +235,24 @@ public class SwitchLogic {
         ArrayList<String> smiteMob = new ArrayList<String>(Arrays.asList("Skeleton", "Zombie", "Wither", "Phantom",
                 "Husk", "Stray", "Drowned"));
         //ArrayList<String> sharpMob = new ArrayList<String>(Arrays.asList("spider", "bee", "fish", "mite")); Disabled as sharpness is useful on all mobs
-        ArrayList<String> boatMob = new ArrayList<String>(Arrays.asList("Boat"));
+        ArrayList<String> boatMob = new ArrayList<String>(Collections.singletonList("Boat"));
 
         if (stringContainsItemFromList(entity.toString(), baneMob)) {
-            if (banes.isEmpty()) {
-
-            } else {
+            if (!banes.isEmpty()) {
                 potSlots.add(banes.get(0));
                 return potSlots;
             }
         }
 
         if ((stringContainsItemFromList(entity.toString(), smiteMob))) {
-            if (smites.isEmpty()){
-
-            } else {
+            if (!smites.isEmpty()){
                 potSlots.add(smites.get(0));
                 return potSlots;
             }
         }
 
         if (stringContainsItemFromList(entity.toString(), boatMob)) {
-            if (axes.isEmpty()) {
-
-            } else {
+            if (!axes.isEmpty()) {
                 potSlots.add(axes.get(0));
                 return potSlots;
             }
@@ -285,9 +262,7 @@ public class SwitchLogic {
         if (sharps.isEmpty()) {
             if (swords.isEmpty()) {
                 if (axes.isEmpty()) {
-                    if (tridents.isEmpty()) {
-
-                    } else {
+                    if (!tridents.isEmpty()) {
                         potSlots.add(tridents.get(0));
                     }
 
