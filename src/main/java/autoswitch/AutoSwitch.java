@@ -85,7 +85,7 @@ public class AutoSwitch implements ClientModInitializer {
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForBlocks() && !onMP) {
                     SwitchLogic logic = new SwitchLogic();
-                    logic.changeTool(logic.toolBlockList(player, world.getBlockState(pos)), player.inventory.selectedSlot, player);
+                    logic.changeTool(logic.toolBlockSlot(player, world.getBlockState(pos)), player.inventory.selectedSlot, player);
                 }
             }
 
@@ -99,7 +99,7 @@ public class AutoSwitch implements ClientModInitializer {
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForMobs() && !onMP) {
                     SwitchLogic logic = new SwitchLogic();
-                    logic.changeTool(logic.toolEntityList(player, entity), player.inventory.selectedSlot, player);
+                    logic.changeTool(logic.toolEntitySlot(player, entity), player.inventory.selectedSlot, player);
                 }
             }
             return ActionResult.PASS;

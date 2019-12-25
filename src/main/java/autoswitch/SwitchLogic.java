@@ -32,7 +32,7 @@ public class SwitchLogic {
     //list of potential slots
     private ArrayList<Integer> potSlots = new ArrayList<Integer>();
 
-    public ArrayList<Integer> toolBlockList(PlayerEntity player, BlockState block) {
+    public int toolBlockSlot(PlayerEntity player, BlockState block) {
 
 
         Material mat = block.getMaterial();
@@ -129,75 +129,75 @@ public class SwitchLogic {
         //Check what materials the block needs and add those to the list of potential slots
         if (shear.contains(mat)) {
             if (!shears.isEmpty()) {
-                potSlots.add(shears.get(0));
+                return shears.get(0);
             }
         } else if (fortPick.contains(mat)) {
             if (fortPicks.isEmpty()) {
                 if (silkPick.contains(mat) && !silkPicks.isEmpty()) {
-                    potSlots.add(silkPicks.get(0));
+                    return silkPicks.get(0);
                 } else if (!picks.isEmpty()) {
-                    potSlots.add(picks.get(0));
+                    return picks.get(0);
                 }
             } else {
-                potSlots.add(fortPicks.get(0));
+                return fortPicks.get(0);
             }
         } else if (silkPick.contains(mat)) {
             if (silkPicks.isEmpty()) {
                 if (!picks.isEmpty()){
-                    potSlots.add(picks.get(0));
+                    return picks.get(0);
                 }
             } else {
-                potSlots.add(silkPicks.get(0));
+                return silkPicks.get(0);
             }
         } else if (pick.contains(mat)) {
             if (!picks.isEmpty()) {
-                potSlots.add(picks.get(0));
+                return picks.get(0);
             }
         } else if (silkAxe.contains(mat)) {
             if (silkAxes.isEmpty()) {
                 if (!axes.isEmpty()){
-                    potSlots.add(axes.get(0));
+                    return axes.get(0);
                 }
             } else {
-                potSlots.add(silkAxes.get(0));
+                return silkAxes.get(0);
             }
         } else if (fortAxe.contains(mat)) {
             if (fortAxes.isEmpty()) {
                 if (!axes.isEmpty()){
-                    potSlots.add(axes.get(0));
+                    return axes.get(0);
                 }
             } else {
-                potSlots.add(fortAxes.get(0));
+                return fortAxes.get(0);
             }
         } else if (axe.contains(mat)) {
             if (!axes.isEmpty()) {
-                potSlots.add(axes.get(0));
+                return axes.get(0);
             }
         } else if (sword.contains(mat)) {
             if (!swords.isEmpty()) {
-                potSlots.add(swords.get(0));
+                return swords.get(0);
             }
         } else if (silkShovel.contains(mat)) {
             if (silkShovels.isEmpty()) {
                 if (!shovels.isEmpty()){
-                    potSlots.add(shovels.get(0));
+                    return shovels.get(0);
                 }
             } else {
-                potSlots.add(silkShovels.get(0));
+                return silkShovels.get(0);
             }
         } else if (shovel.contains(mat)) {
             if (!shovels.isEmpty()) {
-                potSlots.add(shovels.get(0));
+                return shovels.get(0);
             }
         } /*else {
             System.out.println("Bare Hand Fine");
         }*/
 
-        return potSlots;
+        return -1;
 
     }
 
-    public ArrayList<Integer> toolEntityList(PlayerEntity player, Entity entity) {
+    public int toolEntitySlot(PlayerEntity player, Entity entity) {
         ArrayList<Integer> axes = new ArrayList<Integer>();
         ArrayList<Integer> swords = new ArrayList<Integer>();
         ArrayList<Integer> banes = new ArrayList<Integer>();
@@ -237,22 +237,19 @@ public class SwitchLogic {
 
         if (stringContainsItemFromList(entity.toString(), baneMob)) {
             if (!banes.isEmpty()) {
-                potSlots.add(banes.get(0));
-                return potSlots;
+                return banes.get(0);
             }
         }
 
         if ((stringContainsItemFromList(entity.toString(), smiteMob))) {
             if (!smites.isEmpty()){
-                potSlots.add(smites.get(0));
-                return potSlots;
+                return smites.get(0);
             }
         }
 
         if (stringContainsItemFromList(entity.toString(), boatMob)) {
             if (!axes.isEmpty()) {
-                potSlots.add(axes.get(0));
-                return potSlots;
+                return axes.get(0);
             }
         }
 
@@ -261,43 +258,44 @@ public class SwitchLogic {
             if (swords.isEmpty()) {
                 if (axes.isEmpty()) {
                     if (!tridents.isEmpty()) {
-                        potSlots.add(tridents.get(0));
+                        return tridents.get(0);
                     }
 
                 } else {
-                    potSlots.add(axes.get(0));
+                    return axes.get(0);
                 }
 
             } else {
-                potSlots.add(swords.get(0));
+                return swords.get(0);
             }
         } else {
-            potSlots.add(sharps.get(0));
+            return sharps.get(0);
         }
 
 
-        return potSlots;
+        return -1;
     }
 
-    public int changeTool(ArrayList<Integer> slots, int currentSlot, PlayerEntity player) {
-        if (slots.isEmpty()) {
+    public int changeTool(int slot, int currentSlot, PlayerEntity player) {
+        if (slot == -1) {
+            //nothing to change to!
             return -1;
-        } else {
-            if (slots.get(0) == currentSlot) {
-                //System.out.println("No need to change slot");
-                return 0;
-            }
-
-            //Simulate player pressing the hotbar button, potential fix for working on vanilla servers
-            //Loop over it since scrollinhotbar only moves one pos
-            for (int i = Math.abs(currentSlot - slots.get(0)); i > 0; i--){
-                player.inventory.scrollInHotbar(currentSlot - slots.get(0));
-            }
-
-            //player.inventory.selectedSlot = potSlots.get(0);
-            return 1;
-
         }
+
+        if (slot == currentSlot) {
+            //System.out.println("No need to change slot");
+            return 0;
+        }
+
+        //Simulate player pressing the hotbar button, potential fix for working on vanilla servers
+        //Loop over it since scrollinhotbar only moves one pos
+        for (int i = Math.abs(currentSlot - slot); i > 0; i--){
+            player.inventory.scrollInHotbar(currentSlot - slot);
+        }
+
+        //player.inventory.selectedSlot = slot;
+        return 1;
+
     }
 
 }
