@@ -24,3 +24,5 @@ bin/
 
 run/
 /vanilla server/*
+/AutoSwitch.java
+/eula.txt
