@@ -29,7 +29,6 @@ public class AutoSwitch implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        System.out.println("AutoSwitch Loaded");
 
         //configuration
         String config = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitch.cfg";
@@ -77,6 +76,8 @@ public class AutoSwitch implements ClientModInitializer {
             }
 
         });
+
+        System.out.println("AutoSwitch Loaded");
 
         //Block Swap
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
