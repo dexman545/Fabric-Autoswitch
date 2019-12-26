@@ -53,6 +53,12 @@ public class AutoSwitch implements ClientModInitializer {
 
         KeyBindingRegistry.INSTANCE.addCategory("AutoSwitch");
         KeyBindingRegistry.INSTANCE.register(keyBinding);
+
+        //create object to store player state
+        SwitchDataStorage data = new SwitchDataStorage();
+
+        System.out.println("AutoSwitch Loaded");
+
         ClientTickCallback.EVENT.register(e ->
         {
             //check if client is on a server or not
@@ -75,7 +81,19 @@ public class AutoSwitch implements ClientModInitializer {
                 }
             }
 
+
+            //Checks for implementing switchback feature
+            if (e.player != null) {
+                if (data.getHasSwitched() && !e.player.isHandSwinging) {
+                    data.setHasSwitched(false);
+                    SwitchLogic logic = new SwitchLogic();
+                    logic.changeTool(data.getPrevSlot(), e.player);
+
+                }
+            }
+
         });
+
 
         System.out.println("AutoSwitch Loaded");
 
@@ -83,10 +101,16 @@ public class AutoSwitch implements ClientModInitializer {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
         {
 
+            int m;
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForBlocks() && !onMP) {
+                    if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
                     SwitchLogic logic = new SwitchLogic();
-                    logic.changeTool(logic.toolBlockSlot(player, world.getBlockState(pos)), player.inventory.selectedSlot, player);
+                    m = logic.changeTool(logic.toolBlockSlot(player, world.getBlockState(pos)), player);
+                    if (m == 1 && cfg.switchbackBlocks()){
+                        data.setHasSwitched(true);
+                    }
+
                 }
             }
 
@@ -97,12 +121,18 @@ public class AutoSwitch implements ClientModInitializer {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
         {
 
+            int m;
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForMobs() && !onMP) {
+                    if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
                     SwitchLogic logic = new SwitchLogic();
-                    logic.changeTool(logic.toolEntitySlot(player, entity), player.inventory.selectedSlot, player);
+                    m = logic.changeTool(logic.toolEntitySlot(player, entity), player);
+                    if (m == 1 && cfg.switchbackMobs()){
+                        data.setHasSwitched(true);
+                    }
                 }
             }
+
             return ActionResult.PASS;
         });
 

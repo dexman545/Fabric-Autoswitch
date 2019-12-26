@@ -276,7 +276,8 @@ public class SwitchLogic {
         return -1;
     }
 
-    public int changeTool(int slot, int currentSlot, PlayerEntity player) {
+    public int changeTool(int slot, PlayerEntity player) {
+        int currentSlot = player.inventory.selectedSlot;
         if (slot == -1) {
             //nothing to change to!
             return -1;
