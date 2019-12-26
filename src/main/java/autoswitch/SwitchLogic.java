@@ -217,13 +217,13 @@ public class SwitchLogic {
             } else if (hotbar.get(i).getEnchantments().asString().contains("sharp")){
                 sharps.add(i);
             }
-            if (FabricToolTags.AXES.contains(item)) {
+            if (FabricToolTags.AXES.contains(item) || vanillaAxes.contains(item.asItem())) {
                 axes.add(i);
             }
             if (hotbar.get(i).getItem().equals(Items.TRIDENT)) {
                 tridents.add(i);
             }
-            if (FabricToolTags.SWORDS.contains(item)) {
+            if (FabricToolTags.SWORDS.contains(item) || vanillaSwords.contains(item.asItem())) {
                 swords.add(i);
             }
         }
