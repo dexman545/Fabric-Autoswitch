@@ -28,7 +28,6 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     //AutoSwitch for PvE
     Boolean switchForMobs();
 
-
     @DefaultValue("true")
     //AutoSwitch when in multiplayer
     Boolean switchInMP();
