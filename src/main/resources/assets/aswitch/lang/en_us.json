@@ -1,6 +1,8 @@
 {
   "key.autoswitch.toggle": "AutoSwitch Toggle Key",
   "msg.autoswitch.toggle_true": "AutoSwitch: Enabled",
-  "msg.autoswitch.toggle_false": "AutoSwitch: Disabled"
+  "msg.autoswitch.toggle_false": "AutoSwitch: Disabled",
+  "msg.autoswitch.mow_true": "Mowing When Fighting: Enabled",
+  "msg.autoswitch.mow_false": "Mowing When Fighting: Disabled"
 
 }

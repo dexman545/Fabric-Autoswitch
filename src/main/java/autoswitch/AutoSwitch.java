@@ -11,6 +11,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.EntityHitResult;
 import org.aeonbits.owner.ConfigFactory;
 import org.lwjgl.glfw.GLFW;
 
@@ -21,11 +22,14 @@ import java.io.IOException;
 public class AutoSwitch implements ClientModInitializer {
 
     //Keybinding
-    private static FabricKeyBinding keyBinding;
+    private static FabricKeyBinding autoswitchToggleKeybinding;
+    private static FabricKeyBinding mowingWhenFightingToggleKeybinding;
 
     private boolean doAS = true;
 
     private boolean onMP = false;
+
+    private boolean mowing = true;
 
     @Override
     public void onInitializeClient() {
@@ -44,15 +48,23 @@ public class AutoSwitch implements ClientModInitializer {
         }
 
         //Keybindings
-        keyBinding = FabricKeyBinding.Builder.create(
+        autoswitchToggleKeybinding = FabricKeyBinding.Builder.create(
                 new Identifier("autoswitch", "toggle"),
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_R,
                 "AutoSwitch"
         ).build();
 
+        mowingWhenFightingToggleKeybinding = FabricKeyBinding.Builder.create(
+                new Identifier("autoswitch", "toggle_mowing"),
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_G,
+                "AutoSwitch"
+        ).build();
+
         KeyBindingRegistry.INSTANCE.addCategory("AutoSwitch");
-        KeyBindingRegistry.INSTANCE.register(keyBinding);
+        KeyBindingRegistry.INSTANCE.register(autoswitchToggleKeybinding);
+        KeyBindingRegistry.INSTANCE.register(mowingWhenFightingToggleKeybinding);
 
         //create object to store player state
         SwitchDataStorage data = new SwitchDataStorage();
@@ -69,7 +81,7 @@ public class AutoSwitch implements ClientModInitializer {
             }
 
             //keybinding implementation
-            if(keyBinding.wasPressed()) {
+            if(autoswitchToggleKeybinding.wasPressed()) {
                 //The toggle
                 doAS = !doAS;
 
@@ -81,6 +93,16 @@ public class AutoSwitch implements ClientModInitializer {
                 }
             }
 
+            if (mowingWhenFightingToggleKeybinding.wasPressed()) {
+                mowing = !mowing;
+
+                if (cfg.displayToggleMsg()) {
+                    //Toggle message
+                    TranslatableText msg = new TranslatableText(mowing || !cfg.controlMowingWhenFighting() ? "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
+                    //Display msg above hotbar, set false to display in text chat
+                    e.player.addChatMessage(msg, cfg.toggleMsgOverHotbar());
+                }
+            }
 
             //Checks for implementing switchback feature
             if (e.player != null) {
@@ -100,6 +122,11 @@ public class AutoSwitch implements ClientModInitializer {
         //Block Swap
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
         {
+
+            EntityHitResult entityResult = EmptyCollisionBoxAttack.rayTraceEntity(player, 1.0F, 4.5D);
+            if (entityResult != null && cfg.controlMowingWhenFighting() && !mowing) {
+                return ActionResult.FAIL;
+            }
 
             int m;
             if (!player.isCreative() || cfg.switchInCreative()) {
