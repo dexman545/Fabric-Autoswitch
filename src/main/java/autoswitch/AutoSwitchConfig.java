@@ -44,6 +44,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     //Let AutoSwitch control breaking a block with an empty collision box (ie. tall grass) when trying to attack a mob
     Boolean controlMowingWhenFighting();
 
+    @DefaultValue("true")
+    //Disable the swinging of the hand when trying to mow when fighting
+    Boolean disableHandSwingWhenMowing();
+
     /*
     @DefaultValue("true")
     //AutoSwitch when in singleplayer
