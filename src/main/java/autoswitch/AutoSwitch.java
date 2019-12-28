@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TranslatableText;
@@ -73,12 +74,6 @@ public class AutoSwitch implements ClientModInitializer {
 
         ClientTickCallback.EVENT.register(e ->
         {
-            //check if client is on a server or not
-            if (!cfg.switchInMP()) {
-                if (e.getGame().getCurrentSession() != null) {
-                    onMP = e.getGame().getCurrentSession().isRemoteServer();
-                }
-            }
 
             //keybinding implementation
             if(autoswitchToggleKeybinding.wasPressed()) {
@@ -115,6 +110,11 @@ public class AutoSwitch implements ClientModInitializer {
             }
 
         });
+
+        //Check if the client in on a multiplayer server
+        ServerStartCallback.EVENT.register((minecraftServer -> {
+            onMP = !minecraftServer.isSinglePlayer();
+        }));
 
 
         System.out.println("AutoSwitch Loaded");
