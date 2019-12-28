@@ -125,6 +125,7 @@ public class AutoSwitch implements ClientModInitializer {
 
             EntityHitResult entityResult = EmptyCollisionBoxAttack.rayTraceEntity(player, 1.0F, 4.5D);
             if (entityResult != null && cfg.controlMowingWhenFighting() && !mowing) {
+                player.isHandSwinging = !cfg.disableHandSwingWhenMowing();
                 return ActionResult.FAIL;
             }
 
