@@ -28,7 +28,7 @@ public class AutoSwitch implements ClientModInitializer {
 
     private boolean doAS = true;
 
-    private boolean onMP = false;
+    private boolean onMP = true;
 
     private boolean mowing = true;
 
@@ -115,9 +115,6 @@ public class AutoSwitch implements ClientModInitializer {
         ServerStartCallback.EVENT.register((minecraftServer -> {
             onMP = !minecraftServer.isSinglePlayer();
         }));
-
-
-        System.out.println("AutoSwitch Loaded");
 
         //Block Swap
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
