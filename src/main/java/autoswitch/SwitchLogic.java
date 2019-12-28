@@ -26,12 +26,7 @@ public class SwitchLogic {
             Items.GOLDEN_PICKAXE, Items.IRON_PICKAXE, Items.WOODEN_PICKAXE));
     private ArrayList<Item> vanillaShovels = new ArrayList<Item>(Arrays.asList(Items.STONE_SHOVEL, Items.DIAMOND_SHOVEL,
             Items.GOLDEN_SHOVEL, Items.IRON_SHOVEL, Items.WOODEN_SHOVEL));
-
-    //helper function
-    private static boolean stringContainsItemFromList(String inputStr, ArrayList<String> items) {
-        return items.parallelStream().anyMatch(inputStr::contains);
-    }
-
+    
 
     public int toolBlockSlot(PlayerEntity player, BlockState block) {
 
