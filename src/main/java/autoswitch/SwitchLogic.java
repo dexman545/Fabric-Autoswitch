@@ -4,7 +4,10 @@ import net.fabricmc.fabric.api.tools.FabricToolTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityGroup;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -29,8 +32,6 @@ public class SwitchLogic {
         return items.parallelStream().anyMatch(inputStr::contains);
     }
 
-    //list of potential slots
-    private ArrayList<Integer> potSlots = new ArrayList<Integer>();
 
     public int toolBlockSlot(PlayerEntity player, BlockState block) {
 
@@ -235,19 +236,21 @@ public class SwitchLogic {
         //ArrayList<String> sharpMob = new ArrayList<String>(Arrays.asList("spider", "bee", "fish", "mite")); Disabled as sharpness is useful on all mobs
         ArrayList<String> boatMob = new ArrayList<String>(Collections.singletonList("Boat"));
 
-        if (stringContainsItemFromList(entity.toString(), baneMob)) {
-            if (!banes.isEmpty()) {
-                return banes.get(0);
+        if (entity instanceof LivingEntity) {
+            if (((LivingEntity) entity).getGroup() == EntityGroup.ARTHROPOD) {
+                if (!banes.isEmpty()) {
+                    return banes.get(0);
+                }
+            }
+
+            if (((LivingEntity) entity).getGroup() == EntityGroup.UNDEAD) {
+                if (!smites.isEmpty()){
+                    return smites.get(0);
+                }
             }
         }
 
-        if ((stringContainsItemFromList(entity.toString(), smiteMob))) {
-            if (!smites.isEmpty()){
-                return smites.get(0);
-            }
-        }
-
-        if (stringContainsItemFromList(entity.toString(), boatMob)) {
+        if (entity instanceof BoatEntity) {
             if (!axes.isEmpty()) {
                 return axes.get(0);
             }
