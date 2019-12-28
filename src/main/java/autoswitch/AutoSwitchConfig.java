@@ -4,7 +4,7 @@ import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Reloadable;
 
-@Config.HotReload(type= Config.HotReloadType.ASYNC) //set value = X for interval of X seconds. Default: 5
+@Config.HotReload(type = Config.HotReloadType.ASYNC) //set value = X for interval of X seconds. Default: 5
 @Config.Sources({"file:${configDir}"})
 public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
 
@@ -39,6 +39,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     @DefaultValue("true")
     //Return to previous slot after attacking a mob
     Boolean switchbackMobs();
+
+    @DefaultValue("true")
+    //Let AutoSwitch control breaking a block with an empty collision box (ie. tall grass) when trying to attack a mob
+    Boolean controlMowingWhenFighting();
 
     /*
     @DefaultValue("true")
