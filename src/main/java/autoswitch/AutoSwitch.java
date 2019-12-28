@@ -112,6 +112,7 @@ public class AutoSwitch implements ClientModInitializer {
         });
 
         //Check if the client in on a multiplayer server
+        //This is only called when starting a SP world, not on server join
         ServerStartCallback.EVENT.register((minecraftServer -> {
             onMP = !minecraftServer.isSinglePlayer();
         }));
@@ -120,13 +121,16 @@ public class AutoSwitch implements ClientModInitializer {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
         {
 
+            //Mowing control
+            //disable block breaking iff mowing is disabled and there's an entity to hit
             EntityHitResult entityResult = EmptyCollisionBoxAttack.rayTraceEntity(player, 1.0F, 4.5D);
             if (entityResult != null && cfg.controlMowingWhenFighting() && !mowing) {
                 player.isHandSwinging = !cfg.disableHandSwingWhenMowing();
                 return ActionResult.FAIL;
             }
 
-            int m;
+            //AutoSwitch handling
+            int m; //Initialize variable used to track if a switch has been made
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForBlocks() && !onMP) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
@@ -146,7 +150,8 @@ public class AutoSwitch implements ClientModInitializer {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
         {
 
-            int m;
+            //AutoSwitch handling
+            int m; //Initialize variable used to track if a switch has been made
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForMobs() && !onMP) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
