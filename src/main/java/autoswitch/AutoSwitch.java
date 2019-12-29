@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TranslatableText;
@@ -28,7 +27,7 @@ public class AutoSwitch implements ClientModInitializer {
 
     private boolean doAS = true;
 
-    private boolean onMP = true;
+    private boolean onMP = false;
 
     private boolean mowing = true;
 
@@ -109,11 +108,18 @@ public class AutoSwitch implements ClientModInitializer {
                 }
             }
 
+            //check if client is on a server or not
+            if (!cfg.switchInMP()) {
+                if (e.getGame().getCurrentSession() != null) {
+                    onMP = e.getGame().getCurrentSession().isRemoteServer();
+                }
+            }
+
         });
 
         //Check if the client in on a multiplayer server
         //This is only called when starting a SP world, not on server join
-        ServerStartCallback.EVENT.register((minecraftServer -> onMP = !minecraftServer.isSinglePlayer()));
+        //ServerStartCallback.EVENT.register((minecraftServer -> onMP = !minecraftServer.isSinglePlayer()));
 
         //Block Swap
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
