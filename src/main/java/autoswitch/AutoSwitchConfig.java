@@ -48,6 +48,13 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     //Disable the swinging of the hand when trying to mow when fighting
     Boolean disableHandSwingWhenMowing();
 
+    @TokenizerClass(StringInputVerifier.class)
+    @DefaultValue("shears > swords > fortPicks > silkPicks > picks > silkAxes > fortAxes > axes > silkShovels > shovels > banes > smites > sharps > tridents > impalingTridents")
+    //Order for tool priorities. Shared between blocks and mobs. Also set in StringInputVerifier
+    //Some orders don't matter for entities, eg. impalingTridents will always be used if it can on the correct mob
+    //Ex. ThisIsBefore > ThisIsAfter > Etc.
+    String[] toolPriorityOrder();
+
     /*
     @DefaultValue("true")
     //AutoSwitch when in singleplayer

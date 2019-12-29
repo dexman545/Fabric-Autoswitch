@@ -86,6 +86,7 @@ public class AutoSwitch implements ClientModInitializer {
                     //Display msg above hotbar, set false to display in text chat
                     e.player.addChatMessage(msg, cfg.toggleMsgOverHotbar());
                 }
+
             }
 
             if (mowingWhenFightingToggleKeybinding.wasPressed()) {
@@ -103,8 +104,7 @@ public class AutoSwitch implements ClientModInitializer {
             if (e.player != null) {
                 if (data.getHasSwitched() && !e.player.isHandSwinging) {
                     data.setHasSwitched(false);
-                    SwitchLogic logic = new SwitchLogic();
-                    logic.changeTool(data.getPrevSlot(), e.player);
+                    StandardSelectedToolManipulation.change(data.getPrevSlot(), e.player);
 
                 }
             }
@@ -113,9 +113,7 @@ public class AutoSwitch implements ClientModInitializer {
 
         //Check if the client in on a multiplayer server
         //This is only called when starting a SP world, not on server join
-        ServerStartCallback.EVENT.register((minecraftServer -> {
-            onMP = !minecraftServer.isSinglePlayer();
-        }));
+        ServerStartCallback.EVENT.register((minecraftServer -> onMP = !minecraftServer.isSinglePlayer()));
 
         //Block Swap
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
@@ -134,8 +132,7 @@ public class AutoSwitch implements ClientModInitializer {
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForBlocks() && !onMP) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                    SwitchLogic logic = new SwitchLogic();
-                    m = logic.changeTool(logic.toolBlockSlot(player, world.getBlockState(pos)), player);
+                    m = BlockSelectedToolManipulation.change(world.getBlockState(pos), player).changeSuccessStatus;
                     if (m == 1 && cfg.switchbackBlocks()){
                         data.setHasSwitched(true);
                     }
@@ -155,11 +152,11 @@ public class AutoSwitch implements ClientModInitializer {
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForMobs() && !onMP) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                    SwitchLogic logic = new SwitchLogic();
-                    m = logic.changeTool(logic.toolEntitySlot(player, entity), player);
+                    m = EntitySelectedToolManipulation.change(entity, player).changeSuccessStatus;
                     if (m == 1 && cfg.switchbackMobs()){
                         data.setHasSwitched(true);
                     }
+
                 }
             }
 
