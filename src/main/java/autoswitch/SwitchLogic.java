@@ -3,29 +3,20 @@ package autoswitch;
 import net.fabricmc.fabric.api.tools.FabricToolTags;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class SwitchLogic {
-    private ArrayList<Item> vanillaSwords = new ArrayList<Item>(Arrays.asList(Items.STONE_SWORD, Items.DIAMOND_SWORD,
-            Items.GOLDEN_SWORD, Items.IRON_SWORD, Items.WOODEN_SWORD));
-    private ArrayList<Item> vanillaAxes = new ArrayList<Item>(Arrays.asList(Items.STONE_AXE, Items.DIAMOND_AXE,
-            Items.GOLDEN_AXE, Items.IRON_AXE, Items.WOODEN_AXE));
-    private ArrayList<Item> vanillaPicks = new ArrayList<Item>(Arrays.asList(Items.STONE_PICKAXE, Items.DIAMOND_PICKAXE,
-            Items.GOLDEN_PICKAXE, Items.IRON_PICKAXE, Items.WOODEN_PICKAXE));
-    private ArrayList<Item> vanillaShovels = new ArrayList<Item>(Arrays.asList(Items.STONE_SHOVEL, Items.DIAMOND_SHOVEL,
-            Items.GOLDEN_SHOVEL, Items.IRON_SHOVEL, Items.WOODEN_SHOVEL));
-
 
     public int toolBlockSlot(PlayerEntity player, BlockState block) {
 
@@ -90,31 +81,31 @@ public class SwitchLogic {
             //ineffective on logs for some reason
             //if (item.isEffectiveOn(block)) { //1.15 broke this further
                 //System.out.println("meh");
-                if (FabricToolTags.AXES.contains(item) || vanillaAxes.contains(item.asItem())) {
+                if (FabricToolTags.AXES.contains(item) || item instanceof AxeItem) {
                     axes.add(i);
-                    if (hotbar.get(i).getEnchantments().asString().contains("fortune")){
+                    if (EnchantmentHelper.getLevel(Enchantments.FORTUNE, hotbar.get(i)) > 0){
                         fortAxes.add(i);
                     }
-                    if (hotbar.get(i).getEnchantments().asString().contains("silk")){
+                    if (EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, hotbar.get(i)) > 0){
                         silkAxes.add(i);
                     }
-                } else if (FabricToolTags.PICKAXES.contains(item) || vanillaPicks.contains(item.asItem())) {
+                } else if (FabricToolTags.PICKAXES.contains(item) || item instanceof PickaxeItem) {
                     picks.add(i);
-                    if (hotbar.get(i).getEnchantments().asString().contains("fortune")){
+                    if (EnchantmentHelper.getLevel(Enchantments.FORTUNE, hotbar.get(i)) > 0){
                         fortPicks.add(i);
                     }
-                    if (hotbar.get(i).getEnchantments().asString().contains("silk")){
+                    if (EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, hotbar.get(i)) > 0){
                         silkPicks.add(i);
 
                     }
-                } else if (FabricToolTags.SHOVELS.contains(item) || vanillaShovels.contains(item.asItem())) {
+                } else if (FabricToolTags.SHOVELS.contains(item) || item instanceof ShovelItem) {
                     shovels.add(i);
-                    if (hotbar.get(i).getEnchantments().asString().contains("silk")){
+                    if (EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, hotbar.get(i)) > 0){
                         silkShovels.add(i);
                     }
-                } else if (FabricToolTags.SWORDS.contains(item) || vanillaSwords.contains(item.asItem())) {
+                } else if (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem) {
                     swords.add(i);
-                } else if (hotbar.get(i).getItem().equals(Items.SHEARS)) {
+                } else if (item instanceof ShearsItem) {
                     shears.add(i);
                 }
             //}
@@ -206,22 +197,22 @@ public class SwitchLogic {
         for (int i=0; i<9; i++) {
             Item item = hotbar.get(i).getItem();
 
-            if (hotbar.get(i).getEnchantments().asString().contains("bane")){
+            if (EnchantmentHelper.getLevel(Enchantments.BANE_OF_ARTHROPODS, hotbar.get(i)) > 0){
                 banes.add(i);
-            } else if (hotbar.get(i).getEnchantments().asString().contains("smite")){
+            } else if (EnchantmentHelper.getLevel(Enchantments.SMITE, hotbar.get(i)) > 0){
                 smites.add(i);
-            } else if (hotbar.get(i).getEnchantments().asString().contains("sharp")){
+            } else if (EnchantmentHelper.getLevel(Enchantments.SHARPNESS, hotbar.get(i)) > 0){
                 sharps.add(i);
-            } else if (hotbar.get(i).getEnchantments().asString().contains("impaling")){
+            } else if (EnchantmentHelper.getLevel(Enchantments.IMPALING, hotbar.get(i)) > 0){
                 impalingTridents.add(i);
             }
-            if (FabricToolTags.AXES.contains(item) || vanillaAxes.contains(item.asItem())) {
+            if (FabricToolTags.AXES.contains(item) || item instanceof AxeItem) {
                 axes.add(i);
             }
-            if (hotbar.get(i).getItem().equals(Items.TRIDENT)) {
+            if (item instanceof TridentItem) {
                 tridents.add(i);
             }
-            if (FabricToolTags.SWORDS.contains(item) || vanillaSwords.contains(item.asItem())) {
+            if (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem) {
                 swords.add(i);
             }
         }
