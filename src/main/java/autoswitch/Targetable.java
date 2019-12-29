@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 abstract class Targetable {
+
     HashMap<String, ArrayList<Object>> toolTargetLists = new AutoSwitchLists().getToolTargetLists();
     LinkedHashMap<String, ArrayList<Integer>> toolLists = new AutoSwitchLists().getToolLists();
     PlayerEntity player;
@@ -116,18 +117,17 @@ class TargetableEntity extends Targetable {
 
         }
 
-        for (Map.Entry<String, ArrayList<Integer>> toolList : toolLists.entrySet()){
-            if (!toolList.getValue().isEmpty()) {
-                return toolList.getValue().get(0);
-            }
-        }
-
         if (entity instanceof BoatEntity) {
             if (!toolLists.get("axes").isEmpty()) {
                 return toolLists.get("axes").get(0);
             }
         }
 
+        for (Map.Entry<String, ArrayList<Integer>> toolList : toolLists.entrySet()){
+            if (!toolList.getValue().isEmpty()) {
+                return toolList.getValue().get(0);
+            }
+        }
 
         return -1;
     }
