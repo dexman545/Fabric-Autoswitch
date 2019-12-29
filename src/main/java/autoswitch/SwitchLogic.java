@@ -25,52 +25,52 @@ public class SwitchLogic {
 
         //Lists for each tool/type of tool based on block Material
         //Order: shears, fortPick, silkPick, pick, sword, silkAxe, fortAxe, axe, silkShovel, shovel
-        ArrayList<Material> shear = new ArrayList<Material>(Arrays.asList(
+        ArrayList<Material> shear = new ArrayList<>(Arrays.asList(
                 Material.PLANT, Material.UNUSED_PLANT, Material.UNDERWATER_PLANT, Material.REPLACEABLE_PLANT,
                 Material.LEAVES, Material.COBWEB, Material.WOOL
         ));
-        ArrayList<Material> sword = new ArrayList<Material>(Arrays.asList(
+        ArrayList<Material> sword = new ArrayList<>(Arrays.asList(
                 Material.BAMBOO, Material.BAMBOO_SAPLING, Material.PUMPKIN, Material.COBWEB, Material.LEAVES
         ));
-        ArrayList<Material> axe = new ArrayList<Material>(Arrays.asList(
+        ArrayList<Material> axe = new ArrayList<>(Arrays.asList(
                 Material.WOOD, Material.PLANT, Material.REPLACEABLE_PLANT, Material.PUMPKIN
         ));
-        ArrayList<Material> pick = new ArrayList<Material>(Arrays.asList(
+        ArrayList<Material> pick = new ArrayList<>(Arrays.asList(
                 Material.ICE, Material.PACKED_ICE, Material.METAL, Material.ANVIL, Material.SHULKER_BOX,
                 Material.STONE, Material.REDSTONE_LAMP
         ));
-        ArrayList<Material> shovel = new ArrayList<Material>(Arrays.asList(
+        ArrayList<Material> shovel = new ArrayList<>(Arrays.asList(
                 Material.EARTH, Material.ORGANIC, Material.SNOW, Material.SNOW_BLOCK, Material.CLAY,
                 Material.SAND
         ));
-        ArrayList<Material> silkAxe = new ArrayList<Material>(Arrays.asList(
+        ArrayList<Material> silkAxe = new ArrayList<>(Arrays.asList(
                 Material.EGG, Material.GLASS, Material.ICE, Material.PACKED_ICE, Material.GLASS, Material.WOOD, Material.PUMPKIN
         ));
-        ArrayList<Material> silkPick = new ArrayList<Material>(Arrays.asList(
+        ArrayList<Material> silkPick = new ArrayList<>(Arrays.asList(
                 Material.EGG, Material.GLASS, Material.ICE, Material.PACKED_ICE, Material.STONE
         ));
-        ArrayList<Material> silkShovel = new ArrayList<Material>(Arrays.asList(
+        ArrayList<Material> silkShovel = new ArrayList<>(Arrays.asList(
                 Material.EGG, Material.GLASS, Material.ICE, Material.PACKED_ICE, Material.GLASS, Material.EARTH,
                 Material.ORGANIC, Material.SAND, Material.SNOW_BLOCK, Material.SNOW
         ));
-        ArrayList<Material> fortPick = new ArrayList<Material>(Arrays.asList(
+        ArrayList<Material> fortPick = new ArrayList<>(Arrays.asList(
                 Material.STONE, Material.GLASS, Material.METAL
         ));
-        ArrayList<Material> fortAxe = new ArrayList<Material>(Arrays.asList(
+        ArrayList<Material> fortAxe = new ArrayList<>(Arrays.asList(
                 Material.WOOD, Material.PLANT, Material.REPLACEABLE_PLANT, Material.PUMPKIN
         ));
 
         //Lists of tool slots
-        ArrayList<Integer> axes = new ArrayList<Integer>();
-        ArrayList<Integer> swords = new ArrayList<Integer>();
-        ArrayList<Integer> shears = new ArrayList<Integer>();
-        ArrayList<Integer> picks = new ArrayList<Integer>();
-        ArrayList<Integer> shovels = new ArrayList<Integer>();
-        ArrayList<Integer> silkShovels = new ArrayList<Integer>();
-        ArrayList<Integer> silkAxes = new ArrayList<Integer>();
-        ArrayList<Integer> silkPicks = new ArrayList<Integer>();
-        ArrayList<Integer> fortPicks = new ArrayList<Integer>();
-        ArrayList<Integer> fortAxes = new ArrayList<Integer>();
+        ArrayList<Integer> axes = new ArrayList<>();
+        ArrayList<Integer> swords = new ArrayList<>();
+        ArrayList<Integer> shears = new ArrayList<>();
+        ArrayList<Integer> picks = new ArrayList<>();
+        ArrayList<Integer> shovels = new ArrayList<>();
+        ArrayList<Integer> silkShovels = new ArrayList<>();
+        ArrayList<Integer> silkAxes = new ArrayList<>();
+        ArrayList<Integer> silkPicks = new ArrayList<>();
+        ArrayList<Integer> fortPicks = new ArrayList<>();
+        ArrayList<Integer> fortAxes = new ArrayList<>();
 
         //Get HotBar Slots of effective items
         List<ItemStack> hotbar = player.inventory.main.subList(0, 9);
@@ -80,7 +80,8 @@ public class SwitchLogic {
             //Check if item will work on the block, if it can check what tool it is and add it to it's list
             //ineffective on logs for some reason
             //if (item.isEffectiveOn(block)) { //1.15 broke this further
-                //System.out.println("meh");
+
+                //Generate lists of tools in inventory
                 if (FabricToolTags.AXES.contains(item) || item instanceof AxeItem) {
                     axes.add(i);
                     if (EnchantmentHelper.getLevel(Enchantments.FORTUNE, hotbar.get(i)) > 0){
@@ -96,7 +97,6 @@ public class SwitchLogic {
                     }
                     if (EnchantmentHelper.getLevel(Enchantments.SILK_TOUCH, hotbar.get(i)) > 0){
                         silkPicks.add(i);
-
                     }
                 } else if (FabricToolTags.SHOVELS.contains(item) || item instanceof ShovelItem) {
                     shovels.add(i);
@@ -184,13 +184,13 @@ public class SwitchLogic {
     }
 
     public int toolEntitySlot(PlayerEntity player, Entity entity) {
-        ArrayList<Integer> axes = new ArrayList<Integer>();
-        ArrayList<Integer> swords = new ArrayList<Integer>();
-        ArrayList<Integer> banes = new ArrayList<Integer>();
-        ArrayList<Integer> smites = new ArrayList<Integer>();
-        ArrayList<Integer> sharps = new ArrayList<Integer>();
-        ArrayList<Integer> tridents = new ArrayList<Integer>();
-        ArrayList<Integer> impalingTridents = new ArrayList<Integer>();
+        ArrayList<Integer> axes = new ArrayList<>();
+        ArrayList<Integer> swords = new ArrayList<>();
+        ArrayList<Integer> banes = new ArrayList<>();
+        ArrayList<Integer> smites = new ArrayList<>();
+        ArrayList<Integer> sharps = new ArrayList<>();
+        ArrayList<Integer> tridents = new ArrayList<>();
+        ArrayList<Integer> impalingTridents = new ArrayList<>();
 
         //Get HotBar Slots
         List<ItemStack> hotbar = player.inventory.main.subList(0, 9);
@@ -279,12 +279,11 @@ public class SwitchLogic {
             return 0;
         }
 
-        //Simulate player pressing the hotbar button, potential fix for working on vanilla servers
+        //Simulate player pressing the hotbar button, fix for setting selectedslot directly on vanilla servers
         //Loop over it since scrollinhotbar only moves one pos
         for (int i = Math.abs(currentSlot - slot); i > 0; i--){
             player.inventory.scrollInHotbar(currentSlot - slot);
         }
-
         //player.inventory.selectedSlot = slot;
         return 1;
 
