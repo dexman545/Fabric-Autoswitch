@@ -104,7 +104,7 @@ public class AutoSwitch implements ClientModInitializer {
             if (e.player != null) {
                 if (data.getHasSwitched() && !e.player.isHandSwinging) {
                     data.setHasSwitched(false);
-                    StandardSelectedToolManipulation.change(data.getPrevSlot(), e.player);
+                    SelectedToolManipulation.change(data.getPrevSlot(), e.player);
 
                 }
             }
@@ -132,7 +132,7 @@ public class AutoSwitch implements ClientModInitializer {
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForBlocks() && !onMP) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                    m = BlockSelectedToolManipulation.change(world.getBlockState(pos), player).changeSuccessStatus;
+                    m = SelectedToolManipulation.change(world.getBlockState(pos), player).changeSuccessStatus;
                     if (m == 1 && cfg.switchbackBlocks()){
                         data.setHasSwitched(true);
                     }
@@ -152,7 +152,7 @@ public class AutoSwitch implements ClientModInitializer {
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForMobs() && !onMP) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                    m = EntitySelectedToolManipulation.change(entity, player).changeSuccessStatus;
+                    m = SelectedToolManipulation.change(entity, player).changeSuccessStatus;
                     if (m == 1 && cfg.switchbackMobs()){
                         data.setHasSwitched(true);
                     }
