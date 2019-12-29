@@ -14,7 +14,6 @@ import net.minecraft.item.Items;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class SwitchLogic {
@@ -26,7 +25,7 @@ public class SwitchLogic {
             Items.GOLDEN_PICKAXE, Items.IRON_PICKAXE, Items.WOODEN_PICKAXE));
     private ArrayList<Item> vanillaShovels = new ArrayList<Item>(Arrays.asList(Items.STONE_SHOVEL, Items.DIAMOND_SHOVEL,
             Items.GOLDEN_SHOVEL, Items.IRON_SHOVEL, Items.WOODEN_SHOVEL));
-    
+
 
     public int toolBlockSlot(PlayerEntity player, BlockState block) {
 
@@ -200,6 +199,7 @@ public class SwitchLogic {
         ArrayList<Integer> smites = new ArrayList<Integer>();
         ArrayList<Integer> sharps = new ArrayList<Integer>();
         ArrayList<Integer> tridents = new ArrayList<Integer>();
+        ArrayList<Integer> impalingTridents = new ArrayList<Integer>();
 
         //Get HotBar Slots
         List<ItemStack> hotbar = player.inventory.main.subList(0, 9);
@@ -212,6 +212,8 @@ public class SwitchLogic {
                 smites.add(i);
             } else if (hotbar.get(i).getEnchantments().asString().contains("sharp")){
                 sharps.add(i);
+            } else if (hotbar.get(i).getEnchantments().asString().contains("impaling")){
+                impalingTridents.add(i);
             }
             if (FabricToolTags.AXES.contains(item) || vanillaAxes.contains(item.asItem())) {
                 axes.add(i);
@@ -223,13 +225,6 @@ public class SwitchLogic {
                 swords.add(i);
             }
         }
-
-        //types of mobs to prioritize
-        ArrayList<String> baneMob = new ArrayList<String>(Arrays.asList("Spider", "Bee", "fish", "mite"));
-        ArrayList<String> smiteMob = new ArrayList<String>(Arrays.asList("Skeleton", "Zombie", "Wither", "Phantom",
-                "Husk", "Stray", "Drowned"));
-        //ArrayList<String> sharpMob = new ArrayList<String>(Arrays.asList("spider", "bee", "fish", "mite")); Disabled as sharpness is useful on all mobs
-        ArrayList<String> boatMob = new ArrayList<String>(Collections.singletonList("Boat"));
 
         if (entity instanceof LivingEntity) {
             if (((LivingEntity) entity).getGroup() == EntityGroup.ARTHROPOD) {
@@ -243,6 +238,13 @@ public class SwitchLogic {
                     return smites.get(0);
                 }
             }
+
+            if (((LivingEntity) entity).getGroup() == EntityGroup.AQUATIC) {
+                if (!impalingTridents.isEmpty()){
+                    return impalingTridents.get(0);
+                }
+            }
+
         }
 
         if (entity instanceof BoatEntity) {
