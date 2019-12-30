@@ -149,10 +149,9 @@ public class AutoSwitch implements ClientModInitializer {
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForBlocks() && (!onMP || cfg.switchInMP())) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                    m = Targetable.of(world.getBlockState(pos), player, cfg, matCfg).changeTool();
-                    if (m == 1 && cfg.switchbackBlocks()){
-                        data.setHasSwitched(true);
-                    }
+                    Targetable.of(world.getBlockState(pos), player, cfg, matCfg).changeTool().ifPresent(b -> {
+                        if (b && cfg.switchbackBlocks()) {data.setHasSwitched(true);}
+                    });
 
                 }
             }
@@ -169,10 +168,9 @@ public class AutoSwitch implements ClientModInitializer {
             if (!player.isCreative() || cfg.switchInCreative()) {
                 if (doAS && cfg.switchForMobs() && (!onMP || cfg.switchInMP())) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                    m = Targetable.of(entity, player, cfg, matCfg).changeTool();
-                    if (m == 1 && cfg.switchbackMobs()){
-                        data.setHasSwitched(true);
-                    }
+                    Targetable.of(entity, player, cfg, matCfg).changeTool().ifPresent(b -> {
+                        if (b && cfg.switchbackMobs()) {data.setHasSwitched(true);}
+                    });
 
                 }
             }

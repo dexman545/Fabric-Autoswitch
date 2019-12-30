@@ -68,26 +68,25 @@ abstract class Targetable {
 
     }
 
-    public int changeTool() {
+    //Change the player's selected tool
+    public Optional<Boolean> changeTool() {
         int currentSlot = this.player.inventory.selectedSlot;
-        int slot = findSlot();
-        if (slot == -1) {
-            //Nothing to change to!
-            return -1;
+        Optional<Integer> slot = findSlot();
+        if (slot.isPresent()) {
+            int intSlot = slot.get();
+            if (intSlot == currentSlot) {
+                //No need to change slot!
+                return Optional.of(false);
+            }
+
+            //Loop over it since scrollinhotbar only moves one pos
+            for (int i = Math.abs(currentSlot - intSlot); i > 0; i--){
+                this.player.inventory.scrollInHotbar(currentSlot - intSlot);
+            }
+            return Optional.of(true); //Slot changed
         }
 
-        if (slot == currentSlot) {
-            //No need to change slot!
-            return 0;
-        }
-
-        //Simulate player pressing the hotbar button, fix for setting selectedslot directly on vanilla servers
-        //Loop over it since scrollinhotbar only moves one pos
-        for (int i = Math.abs(currentSlot - slot); i > 0; i--){
-            this.player.inventory.scrollInHotbar(currentSlot - slot);
-        }
-        //player.inventory.selectedSlot = slot;
-        return 1; //Slot changed
+        return Optional.empty();
 
     }
 
@@ -95,7 +94,7 @@ abstract class Targetable {
     //Overrides
     abstract void populateTargetTools(ItemStack stack, int i);
 
-    abstract int findSlot();
+    abstract Optional<Integer> findSlot();
 
 
 }
@@ -107,7 +106,7 @@ class TargetableNone extends Targetable {
 
     public TargetableNone(int prevSlot, PlayerEntity player) {
         super(player, null, null);
-        this.prevSlot = prevSlot;
+        this.prevSlot = (int) prevSlot;
     }
 
     @Override
@@ -116,8 +115,8 @@ class TargetableNone extends Targetable {
     }
 
     @Override
-    int findSlot() {
-        return this.prevSlot;
+    Optional<Integer> findSlot() {
+        return Optional.of(this.prevSlot);
     }
 }
 
@@ -152,23 +151,23 @@ class TargetableEntity extends Targetable {
     }
 
     @Override
-    int findSlot() {
+    Optional<Integer> findSlot() {
         if (entity instanceof LivingEntity) {
             if (((LivingEntity) entity).getGroup() == EntityGroup.ARTHROPOD) {
                 if (!toolLists.get("banes").isEmpty()) {
-                    return toolLists.get("banes").get(0);
+                    return Optional.of(toolLists.get("banes").get(0));
                 }
             }
 
             if (((LivingEntity) entity).getGroup() == EntityGroup.UNDEAD) {
                 if (!toolLists.get("smites").isEmpty()){
-                    return toolLists.get("smites").get(0);
+                    return Optional.of(toolLists.get("smites").get(0));
                 }
             }
 
             if (((LivingEntity) entity).getGroup() == EntityGroup.AQUATIC) {
                 if (!toolLists.get("impalingTridents").isEmpty()){
-                    return toolLists.get("impalingTridents").get(0);
+                    return Optional.of(toolLists.get("impalingTridents").get(0));
                 }
             }
 
@@ -176,17 +175,17 @@ class TargetableEntity extends Targetable {
 
         if (entity instanceof BoatEntity) {
             if (!toolLists.get("axes").isEmpty()) {
-                return toolLists.get("axes").get(0);
+                return Optional.of(toolLists.get("axes").get(0));
             }
         }
 
         for (Map.Entry<String, ArrayList<Integer>> toolList : toolLists.entrySet()){
             if (!toolList.getValue().isEmpty()) {
-                return toolList.getValue().get(0);
+                return Optional.of(toolList.getValue().get(0));
             }
         }
 
-        return -1;
+        return Optional.empty();
     }
 }
 
@@ -225,18 +224,18 @@ class TargetableMaterial extends Targetable {
     }
 
     @Override
-    int findSlot() {
+    Optional<Integer> findSlot() {
         for (Map.Entry<String, ArrayList<Integer>> toolList : toolLists.entrySet()){
             if (!toolList.getValue().isEmpty()) {
                 if (!toolTargetLists.get(StringUtils.chop(toolList.getKey())).isEmpty()) {
                     if (toolTargetLists.get(StringUtils.chop(toolList.getKey())).contains(target)) {
-                        return toolList.getValue().get(0);
+                        return Optional.of(toolList.getValue().get(0));
                     }
                 }
 
             }
         }
 
-        return -1;
+        return Optional.empty();
     }
 }
