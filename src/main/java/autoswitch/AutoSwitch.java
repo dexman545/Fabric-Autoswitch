@@ -31,6 +31,7 @@ public class AutoSwitch implements ClientModInitializer {
 
     private boolean mowing = true;
 
+    @SuppressWarnings("ConstantConditions") //removes warnings about chat message potentially have a null player
     @Override
     public void onInitializeClient() {
 
