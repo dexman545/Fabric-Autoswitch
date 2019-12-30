@@ -6,6 +6,18 @@ import net.minecraft.entity.player.PlayerEntity;
 
 abstract class SelectedToolManipulation {
     public int changeSuccessStatus;
+    AutoSwitchConfig cfg;
+    AutoSwitchMaterialConfig matCfg;
+    SwitchDataStorage data;
+
+    SelectedToolManipulation(AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg, SwitchDataStorage data) {
+        this.cfg = cfg;
+        this.matCfg = matCfg;
+        this.data = data;
+    }
+
+    protected SelectedToolManipulation() {
+    }
 
     static void change(int slot, PlayerEntity player) {
         new StandardSelectedToolManipulation(slot, player);
