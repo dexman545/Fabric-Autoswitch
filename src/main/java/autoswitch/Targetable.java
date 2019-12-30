@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
+@SuppressWarnings("WeakerAccess")
 abstract class Targetable {
     HashMap<String, ArrayList<Object>> toolTargetLists;
     LinkedHashMap<String, ArrayList<Integer>> toolLists;
@@ -83,7 +84,7 @@ abstract class Targetable {
         //Simulate player pressing the hotbar button, fix for setting selectedslot directly on vanilla servers
         //Loop over it since scrollinhotbar only moves one pos
         for (int i = Math.abs(currentSlot - slot); i > 0; i--){
-            player.inventory.scrollInHotbar(currentSlot - slot);
+            this.player.inventory.scrollInHotbar(currentSlot - slot);
         }
         //player.inventory.selectedSlot = slot;
         return 1; //Slot changed
@@ -99,6 +100,7 @@ abstract class Targetable {
 
 }
 
+@SuppressWarnings("WeakerAccess")
 class TargetableNone extends Targetable {
     int prevSlot;
 
@@ -119,6 +121,7 @@ class TargetableNone extends Targetable {
     }
 }
 
+@SuppressWarnings("WeakerAccess")
 class TargetableEntity extends Targetable {
     private final Entity entity;
 
@@ -187,6 +190,7 @@ class TargetableEntity extends Targetable {
     }
 }
 
+@SuppressWarnings("WeakerAccess")
 class TargetableMaterial extends Targetable {
     private final Material target;
 
