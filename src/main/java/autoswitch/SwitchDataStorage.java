@@ -1,6 +1,7 @@
 package autoswitch;
 
 //Class to store data for use of switchback feature
+@SuppressWarnings("WeakerAccess")
 public class SwitchDataStorage {
 
     private int prevSlot;

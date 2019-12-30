@@ -11,7 +11,7 @@ import net.minecraft.util.math.Vec3d;
 This method is adapted from https://github.com/Exidex/SwingThroughGrass, a mod licensed under MIT by Exidex for use with
 the Fabric modloader
  */
-
+@SuppressWarnings("WeakerAccess")
 public class EmptyCollisionBoxAttack {
 
     public static EntityHitResult rayTraceEntity(PlayerEntity player, float partialTicks, double blockReachDistance) {
