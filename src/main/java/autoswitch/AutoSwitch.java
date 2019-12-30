@@ -145,15 +145,12 @@ public class AutoSwitch implements ClientModInitializer {
             }
 
             //AutoSwitch handling
-            int m; //Initialize variable used to track if a switch has been made
-            if (!player.isCreative() || cfg.switchInCreative()) {
-                if (doAS && cfg.switchForBlocks() && (!onMP || cfg.switchInMP())) {
-                    if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                    Targetable.of(world.getBlockState(pos), player, cfg, matCfg).changeTool().ifPresent(b -> {
-                        if (b && cfg.switchbackBlocks()) {data.setHasSwitched(true);}
-                    });
+            if (doAS) {
+                if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
+                Targetable.of(world.getBlockState(pos), player, onMP, cfg, matCfg).changeTool().ifPresent(b -> {
+                    if (b && cfg.switchbackBlocks()) {data.setHasSwitched(true);}
+                });
 
-                }
             }
 
             return ActionResult.PASS;
@@ -164,15 +161,12 @@ public class AutoSwitch implements ClientModInitializer {
         {
 
             //AutoSwitch handling
-            int m; //Initialize variable used to track if a switch has been made
-            if (!player.isCreative() || cfg.switchInCreative()) {
-                if (doAS && cfg.switchForMobs() && (!onMP || cfg.switchInMP())) {
-                    if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                    Targetable.of(entity, player, cfg, matCfg).changeTool().ifPresent(b -> {
-                        if (b && cfg.switchbackMobs()) {data.setHasSwitched(true);}
-                    });
+            if (doAS) {
+                if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
+                Targetable.of(entity, player, onMP, cfg, matCfg).changeTool().ifPresent(b -> {
+                    if (b && cfg.switchbackMobs()) {data.setHasSwitched(true);}
+                });
 
-                }
             }
 
             return ActionResult.PASS;

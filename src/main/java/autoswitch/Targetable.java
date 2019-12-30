@@ -20,19 +20,23 @@ abstract class Targetable {
     HashMap<String, ArrayList<Object>> toolTargetLists;
     LinkedHashMap<String, ArrayList<Integer>> toolLists;
     PlayerEntity player;
+    AutoSwitchConfig cfg;
+    Boolean onMP;
 
-    public Targetable(PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+    public Targetable(PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg, Boolean onMP) {
         toolTargetLists = new AutoSwitchLists(cfg, matCfg).getToolTargetLists();
         toolLists = new AutoSwitchLists(cfg, matCfg).getToolLists();
+        this.cfg = cfg;
+        this.onMP = (onMP != null ? onMP : false); //if it's null assume autoswitch is allowed
         this.player = player;
     }
 
-    static Targetable of(Entity target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
-        return new TargetableEntity(target, player, cfg, matCfg);
+    static Targetable of(Entity target, PlayerEntity player, Boolean onMP, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        return new TargetableEntity(target, player, cfg, matCfg, onMP);
     }
 
-    static Targetable of(BlockState target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
-        return new TargetableMaterial(target, player, cfg, matCfg);
+    static Targetable of(BlockState target, PlayerEntity player, Boolean onMP, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        return new TargetableMaterial(target, player, cfg, matCfg, onMP);
     }
 
     static Targetable of(int prevSlot, PlayerEntity player) {
@@ -90,11 +94,17 @@ abstract class Targetable {
 
     }
 
+    protected Boolean switchAllowed() {
+        return ((!this.player.isCreative() || this.cfg.switchInCreative()) &&
+            (switchTypeAllowed() && (!onMP || this.cfg.switchInMP())));
+    }
 
     //Overrides
     abstract void populateTargetTools(ItemStack stack, int i);
 
     abstract Optional<Integer> findSlot();
+
+    abstract Boolean switchTypeAllowed();
 
 
 }
@@ -105,8 +115,8 @@ class TargetableNone extends Targetable {
 
 
     public TargetableNone(int prevSlot, PlayerEntity player) {
-        super(player, null, null);
-        this.prevSlot = (int) prevSlot;
+        super(player, null, null, null);
+        this.prevSlot = prevSlot;
     }
 
     @Override
@@ -118,14 +128,19 @@ class TargetableNone extends Targetable {
     Optional<Integer> findSlot() {
         return Optional.of(this.prevSlot);
     }
+
+    @Override
+    Boolean switchTypeAllowed() {
+        return true;
+    }
 }
 
 @SuppressWarnings("WeakerAccess")
 class TargetableEntity extends Targetable {
     private final Entity entity;
 
-    public TargetableEntity(Entity target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
-        super(player, cfg, matCfg);
+    public TargetableEntity(Entity target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg, Boolean onMP) {
+        super(player, cfg, matCfg, onMP);
         populateToolLists(player);
         this.entity = target;
         this.player = player;
@@ -152,6 +167,7 @@ class TargetableEntity extends Targetable {
 
     @Override
     Optional<Integer> findSlot() {
+        if (!switchAllowed()) {return Optional.empty();}
         if (entity instanceof LivingEntity) {
             if (((LivingEntity) entity).getGroup() == EntityGroup.ARTHROPOD) {
                 if (!toolLists.get("banes").isEmpty()) {
@@ -187,14 +203,19 @@ class TargetableEntity extends Targetable {
 
         return Optional.empty();
     }
+
+    @Override
+    Boolean switchTypeAllowed() {
+        return this.cfg.switchForMobs();
+    }
 }
 
 @SuppressWarnings("WeakerAccess")
 class TargetableMaterial extends Targetable {
     private final Material target;
 
-    public TargetableMaterial(BlockState target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
-        super(player, cfg, matCfg);
+    public TargetableMaterial(BlockState target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg, Boolean onMP) {
+        super(player, cfg, matCfg, onMP);
         populateToolLists(player);
         this.player = player;
         this.target = target.getMaterial();
@@ -225,6 +246,7 @@ class TargetableMaterial extends Targetable {
 
     @Override
     Optional<Integer> findSlot() {
+        if (!switchAllowed()) {return Optional.empty();}
         for (Map.Entry<String, ArrayList<Integer>> toolList : toolLists.entrySet()){
             if (!toolList.getValue().isEmpty()) {
                 if (!toolTargetLists.get(StringUtils.chop(toolList.getKey())).isEmpty()) {
@@ -237,5 +259,10 @@ class TargetableMaterial extends Targetable {
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    Boolean switchTypeAllowed() {
+        return this.cfg.switchForBlocks();
     }
 }
