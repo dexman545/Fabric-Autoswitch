@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.server.ServerStartCallback;
+import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TranslatableText;
@@ -27,7 +29,7 @@ public class AutoSwitch implements ClientModInitializer {
 
     private boolean doAS = true;
 
-    private boolean onMP = false;
+    private boolean onMP = true;
 
     private boolean mowing = true;
 
@@ -73,7 +75,7 @@ public class AutoSwitch implements ClientModInitializer {
         KeyBindingRegistry.INSTANCE.register(autoswitchToggleKeybinding);
         KeyBindingRegistry.INSTANCE.register(mowingWhenFightingToggleKeybinding);
 
-        //create object to store player state
+        //create object to store player switch state
         SwitchDataStorage data = new SwitchDataStorage();
 
         System.out.println("AutoSwitch Loaded");
@@ -126,7 +128,9 @@ public class AutoSwitch implements ClientModInitializer {
 
         //Check if the client in on a multiplayer server
         //This is only called when starting a SP world, not on server join
-        //ServerStartCallback.EVENT.register((minecraftServer -> onMP = !minecraftServer.isSinglePlayer()));
+        ServerStartCallback.EVENT.register((minecraftServer -> onMP = false));
+        //Disable onMP when leaving SP
+        ServerStopCallback.EVENT.register((minecraftServer -> onMP = true));
 
         //Block Swap
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
@@ -143,7 +147,7 @@ public class AutoSwitch implements ClientModInitializer {
             //AutoSwitch handling
             int m; //Initialize variable used to track if a switch has been made
             if (!player.isCreative() || cfg.switchInCreative()) {
-                if (doAS && cfg.switchForBlocks() && !onMP) {
+                if (doAS && cfg.switchForBlocks() && (!onMP || cfg.switchInMP())) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
                     m = Targetable.of(world.getBlockState(pos), player, cfg, matCfg).changeTool();
                     if (m == 1 && cfg.switchbackBlocks()){
@@ -163,7 +167,7 @@ public class AutoSwitch implements ClientModInitializer {
             //AutoSwitch handling
             int m; //Initialize variable used to track if a switch has been made
             if (!player.isCreative() || cfg.switchInCreative()) {
-                if (doAS && cfg.switchForMobs() && !onMP) {
+                if (doAS && cfg.switchForMobs() && (!onMP || cfg.switchInMP())) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
                     m = Targetable.of(entity, player, cfg, matCfg).changeTool();
                     if (m == 1 && cfg.switchbackMobs()){
