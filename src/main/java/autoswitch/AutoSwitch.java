@@ -48,9 +48,8 @@ public class AutoSwitch implements ClientModInitializer {
             cfg.store(new FileOutputStream(config), "AutoSwitch Configuration File" +
                     "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details");
             matCfg.store(new FileOutputStream(configMats), "AutoSwitch Material Configuration File" +
-                    "\nControls which block material the tool will target" +
-                    "\nSee https://minecraft.gamepedia.com/Materials for material list. " +
-                    "\nNote: not all material names are the same");
+                    "\nControls which block material the tool will target" + "" +
+                    "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Materials-Configuration for details");
         } catch (IOException e) {
             e.printStackTrace();
         }
