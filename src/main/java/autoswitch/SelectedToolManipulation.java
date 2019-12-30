@@ -6,29 +6,17 @@ import net.minecraft.entity.player.PlayerEntity;
 
 abstract class SelectedToolManipulation {
     public int changeSuccessStatus;
-    AutoSwitchConfig cfg;
-    AutoSwitchMaterialConfig matCfg;
-    SwitchDataStorage data;
-
-    SelectedToolManipulation(AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg, SwitchDataStorage data) {
-        this.cfg = cfg;
-        this.matCfg = matCfg;
-        this.data = data;
-    }
-
-    protected SelectedToolManipulation() {
-    }
 
     static void change(int slot, PlayerEntity player) {
         new StandardSelectedToolManipulation(slot, player);
     }
 
-    static BlockSelectedToolManipulation change(BlockState block, PlayerEntity player) {
-        return new BlockSelectedToolManipulation(block, player);
+    static BlockSelectedToolManipulation change(BlockState block, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        return new BlockSelectedToolManipulation(block, player, cfg, matCfg);
     }
 
-    static EntitySelectedToolManipulation change(Entity entity, PlayerEntity player) {
-        return new EntitySelectedToolManipulation(entity, player);
+    static EntitySelectedToolManipulation change(Entity entity, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        return new EntitySelectedToolManipulation(entity, player, cfg, matCfg);
     }
 
     public int changeTool(int slot, PlayerEntity player) {
@@ -64,14 +52,14 @@ class StandardSelectedToolManipulation extends SelectedToolManipulation {
 
 class BlockSelectedToolManipulation extends SelectedToolManipulation {
 
-    public BlockSelectedToolManipulation(BlockState block, PlayerEntity player) {
-        this.changeSuccessStatus = changeTool(Targetable.of(block, player).findSlot(), player);
+    public BlockSelectedToolManipulation(BlockState block, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        this.changeSuccessStatus = changeTool(Targetable.of(block, player, cfg, matCfg).findSlot(), player);
     }
 }
 
 class EntitySelectedToolManipulation extends SelectedToolManipulation {
 
-    public EntitySelectedToolManipulation(Entity entity, PlayerEntity player) {
-        this.changeSuccessStatus = changeTool(Targetable.of(entity, player).findSlot(), player);
+    public EntitySelectedToolManipulation(Entity entity, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        this.changeSuccessStatus = changeTool(Targetable.of(entity, player, cfg, matCfg).findSlot(), player);
     }
 }

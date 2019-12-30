@@ -16,17 +16,21 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 abstract class Targetable {
-
-    HashMap<String, ArrayList<Object>> toolTargetLists = new AutoSwitchLists().getToolTargetLists();
-    LinkedHashMap<String, ArrayList<Integer>> toolLists = new AutoSwitchLists().getToolLists();
+    HashMap<String, ArrayList<Object>> toolTargetLists;
+    LinkedHashMap<String, ArrayList<Integer>> toolLists;
     PlayerEntity player;
 
-    static Targetable of(Entity target, PlayerEntity player) {
-        return new TargetableEntity(target, player);
+    public Targetable(AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        toolTargetLists = new AutoSwitchLists(cfg, matCfg).getToolTargetLists();
+        toolLists = new AutoSwitchLists(cfg, matCfg).getToolLists();
     }
 
-    static Targetable of(BlockState target, PlayerEntity player) {
-        return new TargetableMaterial(target, player);
+    static Targetable of(Entity target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        return new TargetableEntity(target, player, cfg, matCfg);
+    }
+
+    static Targetable of(BlockState target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        return new TargetableMaterial(target, player, cfg, matCfg);
     }
 
     //populate all of the tool lists
@@ -69,7 +73,8 @@ abstract class Targetable {
 class TargetableEntity extends Targetable {
     private final Entity entity;
 
-    public TargetableEntity(Entity target, PlayerEntity player) {
+    public TargetableEntity(Entity target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        super(cfg, matCfg);
         populateToolLists(player);
         this.entity = target;
         this.player = player;
@@ -136,7 +141,8 @@ class TargetableEntity extends Targetable {
 class TargetableMaterial extends Targetable {
     private final Material target;
 
-    public TargetableMaterial(BlockState target, PlayerEntity player) {
+    public TargetableMaterial(BlockState target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        super(cfg, matCfg);
         populateToolLists(player);
         this.player = player;
         this.target = target.getMaterial();
