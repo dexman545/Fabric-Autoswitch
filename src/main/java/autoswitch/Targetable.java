@@ -20,9 +20,10 @@ abstract class Targetable {
     LinkedHashMap<String, ArrayList<Integer>> toolLists;
     PlayerEntity player;
 
-    public Targetable(AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+    public Targetable(PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
         toolTargetLists = new AutoSwitchLists(cfg, matCfg).getToolTargetLists();
         toolLists = new AutoSwitchLists(cfg, matCfg).getToolLists();
+        this.player = player;
     }
 
     static Targetable of(Entity target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
@@ -31,6 +32,10 @@ abstract class Targetable {
 
     static Targetable of(BlockState target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
         return new TargetableMaterial(target, player, cfg, matCfg);
+    }
+
+    static Targetable of(int prevSlot, PlayerEntity player) {
+        return new TargetableNone(prevSlot, player);
     }
 
     //populate all of the tool lists
@@ -62,19 +67,63 @@ abstract class Targetable {
 
     }
 
+    public int changeTool() {
+        int currentSlot = this.player.inventory.selectedSlot;
+        int slot = findSlot();
+        if (slot == -1) {
+            //Nothing to change to!
+            return -1;
+        }
+
+        if (slot == currentSlot) {
+            //No need to change slot!
+            return 0;
+        }
+
+        //Simulate player pressing the hotbar button, fix for setting selectedslot directly on vanilla servers
+        //Loop over it since scrollinhotbar only moves one pos
+        for (int i = Math.abs(currentSlot - slot); i > 0; i--){
+            player.inventory.scrollInHotbar(currentSlot - slot);
+        }
+        //player.inventory.selectedSlot = slot;
+        return 1; //Slot changed
+
+    }
+
 
     //Overrides
     abstract void populateTargetTools(ItemStack stack, int i);
 
     abstract int findSlot();
 
+
+}
+
+class TargetableNone extends Targetable {
+    int prevSlot;
+
+
+    public TargetableNone(int prevSlot, PlayerEntity player) {
+        super(player, null, null);
+        this.prevSlot = prevSlot;
+    }
+
+    @Override
+    void populateTargetTools(ItemStack stack, int i) {
+
+    }
+
+    @Override
+    int findSlot() {
+        return this.prevSlot;
+    }
 }
 
 class TargetableEntity extends Targetable {
     private final Entity entity;
 
     public TargetableEntity(Entity target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
-        super(cfg, matCfg);
+        super(player, cfg, matCfg);
         populateToolLists(player);
         this.entity = target;
         this.player = player;
@@ -142,7 +191,7 @@ class TargetableMaterial extends Targetable {
     private final Material target;
 
     public TargetableMaterial(BlockState target, PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
-        super(cfg, matCfg);
+        super(player, cfg, matCfg);
         populateToolLists(player);
         this.player = player;
         this.target = target.getMaterial();
