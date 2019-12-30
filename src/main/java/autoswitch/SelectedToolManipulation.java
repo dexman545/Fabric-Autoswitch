@@ -7,8 +7,8 @@ import net.minecraft.entity.player.PlayerEntity;
 abstract class SelectedToolManipulation {
     public int changeSuccessStatus;
 
-    static StandardSelectedToolManipulation change(int slot, PlayerEntity player) {
-        return new StandardSelectedToolManipulation(slot, player);
+    static void change(int slot, PlayerEntity player) {
+        new StandardSelectedToolManipulation(slot, player);
     }
 
     static BlockSelectedToolManipulation change(BlockState block, PlayerEntity player) {

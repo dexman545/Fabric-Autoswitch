@@ -41,7 +41,7 @@ abstract class Targetable {
     }
 
     //Populate Common Tool Lists
-    protected void populateCommonToolList(ItemStack stack, int i) {
+    private void populateCommonToolList(ItemStack stack, int i) {
         Item item = stack.getItem();
         if (FabricToolTags.AXES.contains(item) || item instanceof AxeItem) {
             this.toolLists.get("axes").add(i);
@@ -169,8 +169,10 @@ class TargetableMaterial extends Targetable {
     int findSlot() {
         for (Map.Entry<String, ArrayList<Integer>> toolList : toolLists.entrySet()){
             if (!toolList.getValue().isEmpty()) {
-                if (toolTargetLists.get(StringUtils.chop(toolList.getKey())).contains(target)) {
-                    return toolList.getValue().get(0);
+                if (!toolTargetLists.get(StringUtils.chop(toolList.getKey())).isEmpty()) {
+                    if (toolTargetLists.get(StringUtils.chop(toolList.getKey())).contains(target)) {
+                        return toolList.getValue().get(0);
+                    }
                 }
 
             }

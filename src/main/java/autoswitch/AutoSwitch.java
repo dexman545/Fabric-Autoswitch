@@ -36,13 +36,20 @@ public class AutoSwitch implements ClientModInitializer {
 
         //configuration
         String config = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitch.cfg";
+        String configMats = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitchMaterials.cfg";
         ConfigFactory.setProperty("configDir", config);
+        ConfigFactory.setProperty("configDirMats", configMats);
         AutoSwitchConfig cfg = ConfigFactory.create(AutoSwitchConfig.class);
+        AutoSwitchMaterialConfig matCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
 
         //generate config file; removes incorrect values from existing one as well
         try {
             cfg.store(new FileOutputStream(config), "AutoSwitch Configuration File" +
                     "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details");
+            matCfg.store(new FileOutputStream(configMats), "AutoSwitch Material Configuration File" +
+                    "\nControls which block material the tool will target" +
+                    "\nSee https://minecraft.gamepedia.com/Materials for material list. " +
+                    "\nNote: not all material names are the same");
         } catch (IOException e) {
             e.printStackTrace();
         }
