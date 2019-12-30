@@ -1,8 +1,5 @@
 package autoswitch;
 
-import net.fabricmc.loader.api.FabricLoader;
-import org.aeonbits.owner.ConfigFactory;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -12,13 +9,9 @@ public class AutoSwitchLists {
     private AutoSwitchMaterialConfig matCfg;
 
     //configuration
-    public AutoSwitchLists() {
-        String config = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitch.cfg";
-        String configMats = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitchMaterials.cfg";
-        ConfigFactory.setProperty("configDir", config);
-        ConfigFactory.setProperty("configDirMats", configMats);
-        this.cfg = ConfigFactory.create(AutoSwitchConfig.class);
-        this.matCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
+    public AutoSwitchLists(AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        this.cfg = cfg;
+        this.matCfg = matCfg;
     }
 
     //Lists of Material/Entity the tool targets
@@ -40,43 +33,43 @@ public class AutoSwitchLists {
         toolTargetLists.put("fortPick", new ArrayList<>());
         toolTargetLists.put("fortAxe", new ArrayList<>());
 
-        for (MaterialHandler m : matCfg.axeTargetMaterials()) {
+        for (MaterialHandler m : this.matCfg.axeTargetMaterials()) {
             toolTargetLists.get("axe").add(m.getMat());
         }
 
-        for (MaterialHandler m : matCfg.axeSilkTargetMaterials()) {
+        for (MaterialHandler m : this.matCfg.axeSilkTargetMaterials()) {
             toolTargetLists.get("silkAxe").add(m.getMat());
         }
 
-        for (MaterialHandler m : matCfg.axeFortuneTargetMaterials()) {
+        for (MaterialHandler m : this.matCfg.axeFortuneTargetMaterials()) {
             toolTargetLists.get("fortAxe").add(m.getMat());
         }
 
-        for (MaterialHandler m : matCfg.pickTargetMaterials()) {
+        for (MaterialHandler m : this.matCfg.pickTargetMaterials()) {
             toolTargetLists.get("pick").add(m.getMat());
         }
 
-        for (MaterialHandler m : matCfg.pickSilkTargetMaterials()) {
+        for (MaterialHandler m : this.matCfg.pickSilkTargetMaterials()) {
             toolTargetLists.get("silkPick").add(m.getMat());
         }
 
-        for (MaterialHandler m : matCfg.pickFortuneTargetMaterials()) {
+        for (MaterialHandler m : this.matCfg.pickFortuneTargetMaterials()) {
             toolTargetLists.get("fortPick").add(m.getMat());
         }
 
-        for (MaterialHandler m : matCfg.shearTargetMaterials()) {
+        for (MaterialHandler m : this.matCfg.shearTargetMaterials()) {
             toolTargetLists.get("shear").add(m.getMat());
         }
 
-        for (MaterialHandler m : matCfg.swordTargetMaterials()) {
+        for (MaterialHandler m : this.matCfg.swordTargetMaterials()) {
             toolTargetLists.get("sword").add(m.getMat());
         }
 
-        for (MaterialHandler m : matCfg.shovelTargetMaterials()) {
+        for (MaterialHandler m : this.matCfg.shovelTargetMaterials()) {
             toolTargetLists.get("shovel").add(m.getMat());
         }
 
-        for (MaterialHandler m : matCfg.shovelSilkTargetMaterials()) {
+        for (MaterialHandler m : this.matCfg.shovelSilkTargetMaterials()) {
             toolTargetLists.get("silkShovel").add(m.getMat());
         }
 
