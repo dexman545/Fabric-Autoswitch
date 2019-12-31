@@ -83,7 +83,7 @@ public class AutoSwitch implements ClientModInitializer {
         ClientTickCallback.EVENT.register(e ->
         {
 
-            //keybinding implementation
+            //keybindings implementation
             if(autoswitchToggleKeybinding.wasPressed()) {
                 //The toggle
                 doAS = !doAS;
@@ -111,8 +111,11 @@ public class AutoSwitch implements ClientModInitializer {
             //Checks for implementing switchback feature
             if (e.player != null) {
                 if (data.getHasSwitched() && !e.player.isHandSwinging) {
-                    data.setHasSwitched(false);
-                    Targetable.of(data.getPrevSlot(), e.player).changeTool();
+                    if ((!data.isAttackedEntity() || !cfg.switchbackWaits()) || (e.player.getAttackCooldownProgress(0.0f) == 1.0f && data.isAttackedEntity())) {
+                        data.setHasSwitched(false);
+                        data.setAttackedEntity(false);
+                        Targetable.of(data.getPrevSlot(), e.player).changeTool();
+                    }
 
                 }
             }
@@ -164,7 +167,7 @@ public class AutoSwitch implements ClientModInitializer {
             if (doAS) {
                 if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
                 Targetable.of(entity, player, onMP, cfg, matCfg).changeTool().ifPresent(b -> {
-                    if (b && cfg.switchbackMobs()) {data.setHasSwitched(true);}
+                    if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
                 });
 
             }

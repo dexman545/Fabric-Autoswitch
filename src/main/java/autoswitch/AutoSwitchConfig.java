@@ -55,6 +55,11 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     //Ex. ThisIsBefore > ThisIsAfter > Etc.
     String[] toolPriorityOrder();
 
+    @DefaultValue("true")
+    @Key("switchbackWaitsForCooldownWhenAttackingMobs")
+    //before switching back when fighting a mob, wait for the attack cooldown to finish. Fixes attacks not doing a lot of damage
+    Boolean switchbackWaits();
+
     /*
     @DefaultValue("true")
     //AutoSwitch when in singleplayer
