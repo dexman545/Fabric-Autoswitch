@@ -16,7 +16,7 @@ public class EmptyCollisionBoxAttack {
      * @link https://github.com/Exidex/SwingThroughGrass
      * @author Exidex, modified by Deximus-Maximus for Fabric mod loader
      * @param player player that is being evaluated against
-     * @param partialTicks
+     * @param partialTicks should use 1.0f for this
      * @param blockReachDistance how far the player can reach
      * @return EntityResult
      */
