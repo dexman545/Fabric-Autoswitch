@@ -23,6 +23,7 @@ abstract class Targetable {
     AutoSwitchConfig cfg;
     Boolean onMP;
 
+    //Base constructor; creates the lists, cfg, booleans, and player data
     public Targetable(PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg, Boolean onMP) {
         toolTargetLists = new AutoSwitchLists(cfg, matCfg).getToolTargetLists();
         toolLists = new AutoSwitchLists(cfg, matCfg).getToolLists();
@@ -31,6 +32,7 @@ abstract class Targetable {
         this.player = player;
     }
 
+    //Overridden functions - send target to proper function
     static Targetable of(Entity target, PlayerEntity player, Boolean onMP, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
         return new TargetableEntity(target, player, cfg, matCfg, onMP);
     }
@@ -59,7 +61,7 @@ abstract class Targetable {
         Item item = stack.getItem();
         if (FabricToolTags.AXES.contains(item) || item instanceof AxeItem) {
             this.toolLists.get("axes").add(i);
-            //Genning these in common as there's no good way to do it separately without repeating the axe check
+            //Genning enchanted axes in common as there's no good way to do it separately without repeating the axe check
             if (EnchantmentHelper.getLevel(Enchantments.FORTUNE, stack) > 0){
                 this.toolLists.get("fortAxes").add(i);
             }
@@ -77,15 +79,14 @@ abstract class Targetable {
         int currentSlot = this.player.inventory.selectedSlot;
         Optional<Integer> slot = findSlot();
         if (slot.isPresent()) {
-            int intSlot = slot.get();
-            if (intSlot == currentSlot) {
+            if (slot.get() == currentSlot) {
                 //No need to change slot!
                 return Optional.of(false);
             }
 
             //Loop over it since scrollinhotbar only moves one pos
-            for (int i = Math.abs(currentSlot - intSlot); i > 0; i--){
-                this.player.inventory.scrollInHotbar(currentSlot - intSlot);
+            for (int i = Math.abs(currentSlot - slot.get()); i > 0; i--){
+                this.player.inventory.scrollInHotbar(currentSlot - slot.get());
             }
             return Optional.of(true); //Slot changed
         }
@@ -94,22 +95,28 @@ abstract class Targetable {
 
     }
 
+    //Check if the config allows for switching tools
     protected Boolean switchAllowed() {
         return ((!this.player.isCreative() || this.cfg.switchInCreative()) &&
             (switchTypeAllowed() && (!onMP || this.cfg.switchInMP())));
     }
 
     //Overrides
+
+    //populate the tool map with the right tools for that type
     abstract void populateTargetTools(ItemStack stack, int i);
 
+    //find the optimal tool slot. Return none if there isn't one
     abstract Optional<Integer> findSlot();
 
+    //determine config value for switching for mobs/blocks
     abstract Boolean switchTypeAllowed();
 
 
 }
 
 @SuppressWarnings("WeakerAccess")
+//No target, just want to change the selected slot
 class TargetableNone extends Targetable {
     int prevSlot;
 
@@ -136,6 +143,7 @@ class TargetableNone extends Targetable {
 }
 
 @SuppressWarnings("WeakerAccess")
+//Targeting an entity
 class TargetableEntity extends Targetable {
     private final Entity entity;
 
@@ -211,6 +219,7 @@ class TargetableEntity extends Targetable {
 }
 
 @SuppressWarnings("WeakerAccess")
+//Targeting a block
 class TargetableMaterial extends Targetable {
     private final Material target;
 
