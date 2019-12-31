@@ -106,7 +106,8 @@ abstract class Targetable {
 
     /**
      * Change the players selected slot based on the results of findSlot().
-     * Checks if there isa slot to change to first.
+     * Checks if there is a slot to change to first.
+     * @see autoswitch.Targetable#findSlot()
      * @return If no slot to change to, returns empty Otherwise returns true if the slot changed, false if it didn't
      */
     public Optional<Boolean> changeTool() {
@@ -297,7 +298,7 @@ class TargetableMaterial extends Targetable {
     /**
      * Checks against itemclass and enchantments on the stack
      * @param stack itemstack to be checked if it is valid
-     * @param i     slot of stack, to be inserted into map if it is valid
+     * @param i slot of stack, to be inserted into map if it is valid
      */
     @Override
     void populateTargetTools(ItemStack stack, int i) {
