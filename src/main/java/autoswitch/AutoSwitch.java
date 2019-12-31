@@ -111,19 +111,12 @@ public class AutoSwitch implements ClientModInitializer {
             //Checks for implementing switchback feature
             if (e.player != null) {
                 if (data.getHasSwitched() && !e.player.isHandSwinging) {
-                    if ((!data.isAttackedEntity() || !cfg.switchbackWaits()) || (e.player.getAttackCooldownProgress(0.0f) == 1.0f && data.isAttackedEntity())) {
+                    if ((!data.isAttackedEntity() || !cfg.switchbackWaits()) || (e.player.getAttackCooldownProgress(-20.0f) == 1.0f && data.isAttackedEntity())) { //uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
                         data.setHasSwitched(false);
                         data.setAttackedEntity(false);
                         Targetable.of(data.getPrevSlot(), e.player).changeTool();
                     }
 
-                }
-            }
-
-            //check if client is on a server or not
-            if (!cfg.switchInMP()) {
-                if (e.getGame().getCurrentSession() != null) {
-                    onMP = e.getGame().getCurrentSession().isRemoteServer();
                 }
             }
 

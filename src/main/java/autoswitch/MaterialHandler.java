@@ -2,6 +2,10 @@ package autoswitch;
 
 import net.minecraft.block.Material;
 
+/**
+ * Custom type for use of parsing the materials config into something meaningful for AutoSwitch
+ * matches strings to materials
+ */
 public class MaterialHandler {
     private final Material mat;
 

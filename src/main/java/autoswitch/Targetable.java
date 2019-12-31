@@ -15,6 +15,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
+/**
+ * Parent class for Targetable type. Used to establish shared functions and parameters
+ * that are used for manipulating the player's selected slot
+ *
+ */
 @SuppressWarnings("WeakerAccess")
 abstract class Targetable {
     HashMap<String, ArrayList<Object>> toolTargetLists;
@@ -23,16 +28,29 @@ abstract class Targetable {
     AutoSwitchConfig cfg;
     Boolean onMP;
 
-    //Base constructor; creates the lists, cfg, booleans, and player data
+
+    /**
+     * Base constructor for Targetable, initializes the class parameters and
+     * fetches the target map and initial tool map based on configs passed to ti
+     *
+     * @param player player this will effect
+     * @param cfg cfg controlling AutoSwitch functionality
+     * @param matCfg material config controlling what tools target
+     * @param onMP whether the player is on a remote server. If given nul, will assume that AutoSwitch is allowed
+     */
     public Targetable(PlayerEntity player, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg, Boolean onMP) {
         toolTargetLists = new AutoSwitchLists(cfg, matCfg).getToolTargetLists();
         toolLists = new AutoSwitchLists(cfg, matCfg).getToolLists();
         this.cfg = cfg;
-        this.onMP = (onMP != null ? onMP : false); //if it's null assume autoswitch is allowed
+        this.onMP = (onMP != null ? onMP : false);
         this.player = player;
     }
 
-    //Overridden functions - send target to proper function
+
+    /**
+     * the of methods send the target to the correct function to handle it
+     * @return returns the correct Targetable subclass to handle the operation
+     */
     static Targetable of(Entity target, PlayerEntity player, Boolean onMP, AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
         return new TargetableEntity(target, player, cfg, matCfg, onMP);
     }
@@ -45,7 +63,12 @@ abstract class Targetable {
         return new TargetableNone(prevSlot, player);
     }
 
-    //populate all of the tool lists
+
+    /**
+     * Pulls the list of itemstacks from the player's hotbar and send the stack and slot number
+     * to populate the tool map. Sends an air item if th slow is empty.
+     * @param player player whose inventory will be checked
+     */
     public void populateToolLists(PlayerEntity player) {
         List<ItemStack> hotbar = player.inventory.main.subList(0, 9);
         for (int i=0; i<9; i++) {
@@ -56,7 +79,13 @@ abstract class Targetable {
 
     }
 
-    //Populate Common Tool Lists
+
+    /**
+     * Populates the tool map for tools shared between entities and blocks.
+     * Also populates fortAxes and silkAxes here as to avoid repeating the isAxe check elsewhere
+     * @param stack itemstack
+     * @param i slot the itemstack was in
+     */
     private void populateCommonToolList(ItemStack stack, int i) {
         Item item = stack.getItem();
         if (FabricToolTags.AXES.contains(item) || item instanceof AxeItem) {
@@ -74,28 +103,34 @@ abstract class Targetable {
 
     }
 
-    //Change the player's selected tool
+
+    /**
+     * Change the players selected slot based on the results of findSlot().
+     * Checks if there isa slot to change to first.
+     * @return If no slot to change to, returns empty Otherwise returns true if the slot changed, false if it didn't
+     */
     public Optional<Boolean> changeTool() {
-        int currentSlot = this.player.inventory.selectedSlot;
-        Optional<Integer> slot = findSlot();
-        if (slot.isPresent()) {
-            if (slot.get() == currentSlot) {
+        return findSlot().map(slot -> {
+            int currentSlot = this.player.inventory.selectedSlot;
+            if (slot == currentSlot) {
                 //No need to change slot!
                 return Optional.of(false);
             }
 
             //Loop over it since scrollinhotbar only moves one pos
-            for (int i = Math.abs(currentSlot - slot.get()); i > 0; i--){
-                this.player.inventory.scrollInHotbar(currentSlot - slot.get());
+            for (int i = Math.abs(currentSlot - slot); i > 0; i--){
+                this.player.inventory.scrollInHotbar(currentSlot - slot);
             }
             return Optional.of(true); //Slot changed
-        }
-
-        return Optional.empty();
+        }).orElseGet(Optional::empty); //if nothing to change to, return empty
 
     }
 
-    //Check if the config allows for switching tools
+
+    /**
+     * @return returns true if the config allows autoswitch to happen; false otherwise.
+     * Does not take into account toggle (doAS)
+     */
     protected Boolean switchAllowed() {
         return ((!this.player.isCreative() || this.cfg.switchInCreative()) &&
             (switchTypeAllowed() && (!onMP || this.cfg.switchInMP())));
@@ -103,20 +138,33 @@ abstract class Targetable {
 
     //Overrides
 
-    //populate the tool map with the right tools for that type
+    /**
+     * Populate the tool map with the right tools for that type based on subclass
+     * @param stack itemstack to be checked if it is valid
+     * @param i slot of stack, to be inserted into map if it is valid
+     */
     abstract void populateTargetTools(ItemStack stack, int i);
 
-    //find the optimal tool slot. Return none if there isn't one
+    /**
+     * Find the optimal tool slot. Return empty if there isn't one
+     * @return Returns empty if autoswitch is not allowed or there is no slot to change to
+     */
     abstract Optional<Integer> findSlot();
 
-    //determine config value for switching for mobs/blocks
+
+    /**
+     * Determine config value for switching for mobs/blocks
+     * @return true if that type of switch is allowed in the config
+     */
     abstract Boolean switchTypeAllowed();
 
 
 }
 
+/**
+ * Implementation of changeSlot when there is no target. Intended for switchback feature
+ */
 @SuppressWarnings("WeakerAccess")
-//No target, just want to change the selected slot
 class TargetableNone extends Targetable {
     int prevSlot;
 
@@ -142,8 +190,10 @@ class TargetableNone extends Targetable {
     }
 }
 
+/**
+ * Used when targeting an entity
+ */
 @SuppressWarnings("WeakerAccess")
-//Targeting an entity
 class TargetableEntity extends Targetable {
     private final Entity entity;
 
@@ -155,6 +205,11 @@ class TargetableEntity extends Targetable {
     }
 
 
+    /**
+     * Checks against enchants on the stack and TridentItem class
+     * @param stack itemstack to be checked if it is valid
+     * @param i     slot of stack, to be inserted into map if it is valid
+     */
     @Override
     void populateTargetTools(ItemStack stack, int i) {
         Item item = stack.getItem();
@@ -173,6 +228,12 @@ class TargetableEntity extends Targetable {
 
     }
 
+    /**
+     * Find the optimal tool slot. Return empty if there isn't one.
+     * Checks against EntityGroups with special case for BoatEntity
+     * Ignores non-weapon tools
+     * @return Returns empty if autoswitch is not allowed or there is no slot to change to
+     */
     @Override
     Optional<Integer> findSlot() {
         if (!switchAllowed()) {return Optional.empty();}
@@ -218,8 +279,10 @@ class TargetableEntity extends Targetable {
     }
 }
 
+/**
+ * Targetable instance for targeting a block
+ */
 @SuppressWarnings("WeakerAccess")
-//Targeting a block
 class TargetableMaterial extends Targetable {
     private final Material target;
 
@@ -231,6 +294,11 @@ class TargetableMaterial extends Targetable {
     }
 
 
+    /**
+     * Checks against itemclass and enchantments on the stack
+     * @param stack itemstack to be checked if it is valid
+     * @param i     slot of stack, to be inserted into map if it is valid
+     */
     @Override
     void populateTargetTools(ItemStack stack, int i) {
         Item item = stack.getItem();
@@ -253,6 +321,9 @@ class TargetableMaterial extends Targetable {
 
     }
 
+    /**
+     * Checks block material against the target lists
+     */
     @Override
     Optional<Integer> findSlot() {
         if (!switchAllowed()) {return Optional.empty();}
