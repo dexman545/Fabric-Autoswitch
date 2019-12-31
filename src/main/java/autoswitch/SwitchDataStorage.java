@@ -1,6 +1,8 @@
 package autoswitch;
 
-//Class to store data for use of switchback feature
+/**
+ * Store the switch state of the player in a safe place for use with the switchback feature
+ */
 @SuppressWarnings("WeakerAccess")
 public class SwitchDataStorage {
 

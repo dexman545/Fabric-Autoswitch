@@ -12,6 +12,7 @@ public class AutoSwitchLists {
 
     //configuration
     public AutoSwitchLists(AutoSwitchConfig cfg, AutoSwitchMaterialConfig matCfg) {
+        //check if the configs were null and don't try to do anything with them
         if (cfg != null && matCfg != null) {
             this.cfg = cfg;
             this.matCfg = matCfg;

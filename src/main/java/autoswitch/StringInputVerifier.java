@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Custom serializer for input verification of config options.
+ * Used for verifying and correcting input of tool order, as all values must be populated to function correctly
+ *
+ */
 public class StringInputVerifier implements Tokenizer {
 
     @Override

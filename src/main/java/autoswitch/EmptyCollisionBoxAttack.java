@@ -7,13 +7,19 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
-/*
-This method is adapted from https://github.com/Exidex/SwingThroughGrass, a mod licensed under MIT by Exidex for use with
-the Fabric modloader
- */
 @SuppressWarnings("WeakerAccess")
 public class EmptyCollisionBoxAttack {
 
+    /**
+     * Raytrace to find if the player can hit an entity
+     * Adapted from SwingThroughGrass mod licensed under MIT. Changes made to make it work with Fabric
+     * @link https://github.com/Exidex/SwingThroughGrass
+     * @author Exidex, modified by Deximus-Maximus for Fabric mod loader
+     * @param player player that is being evaluated against
+     * @param partialTicks
+     * @param blockReachDistance how far the player can reach
+     * @return EntityResult
+     */
     public static EntityHitResult rayTraceEntity(PlayerEntity player, float partialTicks, double blockReachDistance) {
         Vec3d from = player.getCameraPosVec(partialTicks);
         Vec3d look = player.getRotationVec(partialTicks);
