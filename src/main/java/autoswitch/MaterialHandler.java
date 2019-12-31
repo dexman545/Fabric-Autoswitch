@@ -6,6 +6,7 @@ import net.minecraft.block.Material;
  * Custom type for use of parsing the materials config into something meaningful for AutoSwitch
  * matches strings to materials
  */
+@SuppressWarnings("WeakerAccess")
 public class MaterialHandler {
     private final Material mat;
 
