@@ -49,7 +49,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean disableHandSwingWhenMowing();
 
     @TokenizerClass(StringInputVerifier.class)
-    @DefaultValue("shears > swords > fortPicks > silkPicks > picks > silkAxes > fortAxes > axes > silkShovels > shovels > banes > smites > sharps > tridents > impalingTridents")
+    @DefaultValue("shears > swords > silkPicks > fortPicks > picks > silkAxes > fortAxes > axes > silkShovels > shovels > banes > smites > sharps > tridents > impalingTridents")
     //Order for tool priorities. Shared between blocks and mobs. Also set in StringInputVerifier
     //Some orders don't matter for entities, eg. impalingTridents will always be used if it can on the correct mob
     //Ex. ThisIsBefore > ThisIsAfter > Etc.
@@ -59,6 +59,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     @Key("switchbackWaitsForCooldownWhenAttackingMobs")
     //before switching back when fighting a mob, wait for the attack cooldown to finish. Fixes attacks not doing a lot of damage
     Boolean switchbackWaits();
+
+    @DefaultValue("true")
+    //Will ignore tools that are about to break when considering which tool to switch to
+    Boolean tryPreserveDamagedTools();
 
     /*
     @DefaultValue("true")

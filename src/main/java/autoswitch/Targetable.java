@@ -66,12 +66,15 @@ abstract class Targetable {
 
     /**
      * Pulls the list of itemstacks from the player's hotbar and send the stack and slot number
-     * to populate the tool map. Sends an air item if th slow is empty.
+     * to populate the tool map. Sends an air item if the slot is empty.
      * @param player player whose inventory will be checked
      */
     public void populateToolLists(PlayerEntity player) {
         List<ItemStack> hotbar = player.inventory.main.subList(0, 9);
         for (int i=0; i<9; i++) {
+            if ((hotbar.get(i).getMaxDamage() - hotbar.get(i).getDamage() < 3) && this.cfg.tryPreserveDamagedTools()) {
+                continue;
+            }
             populateCommonToolList(hotbar.get(i), i);
             populateTargetTools(hotbar.get(i), i);
 
