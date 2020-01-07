@@ -90,7 +90,7 @@ public class AutoSwitch implements ClientModInitializer {
 
                 if (cfg.displayToggleMsg()) {
                     //Toggle message
-                    TranslatableText msg = new TranslatableText(doAS && !onMP ? "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
+                    TranslatableText msg = new TranslatableText(doAS && (!onMP || cfg.switchInMP()) ? "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
                     //Display msg above hotbar, set false to display in text chat
                     e.player.addChatMessage(msg, cfg.toggleMsgOverHotbar());
                 }
