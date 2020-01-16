@@ -49,7 +49,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean disableHandSwingWhenMowing();
 
     @TokenizerClass(StringInputVerifier.class)
-    @DefaultValue("shears > swords > silkPicks > fortPicks > picks > silkAxes > fortAxes > axes > silkShovels > shovels > banes > smites > sharps > tridents > impalingTridents")
+    @DefaultValue("shears > silkPicks > fortPicks > picks > silkAxes > fortAxes > axes > swords > silkShovels > shovels > banes > smites > sharps > tridents > impalingTridents")
     //Order for tool priorities. Shared between blocks and mobs. Also set in StringInputVerifier
     //Some orders don't matter for entities, eg. impalingTridents will always be used if it can on the correct mob
     //Ex. ThisIsBefore > ThisIsAfter > Etc.
