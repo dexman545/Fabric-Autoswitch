@@ -15,6 +15,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.EntityHitResult;
 import org.aeonbits.owner.ConfigFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import java.io.FileOutputStream;
@@ -22,6 +24,15 @@ import java.io.IOException;
 
 
 public class AutoSwitch implements ClientModInitializer {
+
+    public static final Logger logger = LogManager.getLogger("autoswitch");
+
+    //create object to store player switch state
+    public static SwitchDataStorage data = new SwitchDataStorage();
+
+    //init config
+    public static AutoSwitchConfig cfg;
+    public static AutoSwitchMaterialConfig matCfg;
 
     //Keybinding
     private static FabricKeyBinding autoswitchToggleKeybinding;
@@ -42,19 +53,37 @@ public class AutoSwitch implements ClientModInitializer {
         String configMats = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitchMaterials.cfg";
         ConfigFactory.setProperty("configDir", config);
         ConfigFactory.setProperty("configDirMats", configMats);
-        AutoSwitchConfig cfg = ConfigFactory.create(AutoSwitchConfig.class);
-        AutoSwitchMaterialConfig matCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
+        cfg = ConfigFactory.create(AutoSwitchConfig.class);
+        matCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
 
         //generate config file; removes incorrect values from existing one as well
         try {
             cfg.store(new FileOutputStream(config), "AutoSwitch Configuration File" +
-                    "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details");
+                    "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details" +
+                    "\n tool priority order values must match exactly with what is in the material config, both tool and enchantment");
             matCfg.store(new FileOutputStream(configMats), "AutoSwitch Material Configuration File" +
-                    "\nControls which block material the tool will target" + "" +
-                    "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Materials-Configuration for details");
+                    "\nformat is a comma seperated list of 'toolname[;enchantmend id]', where toolname is any:" +
+                    "\n\t any, pickaxe, shears, axe, shovel, hoe, trident, sword" +
+                    "\nEnchant id is optional. If present, it must be separated from the tool by a semicolon (';')" +
+                    "\nEnchant id uses '-' instead of colons. A colon can be used, but must be preceded by a backslash" +
+                    "\nList is ordered and will effect tool selection");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
+
+        matCfg.addReloadListener(event -> {
+            data.toolTargetLists.clear();
+            data.enchantToolMap.clear();
+            data.toolTargetLists = new AutoSwitchLists().getToolTargetLists();
+        });
+
+        cfg.addReloadListener(event -> {
+            data.toolLists.clear();
+            data.toolLists = new AutoSwitchLists().getToolLists();
+        });
+
+        data.toolTargetLists = new AutoSwitchLists().getToolTargetLists();
+        data.toolLists = new AutoSwitchLists().getToolLists();
 
         //Keybindings
         autoswitchToggleKeybinding = FabricKeyBinding.Builder.create(
@@ -75,10 +104,7 @@ public class AutoSwitch implements ClientModInitializer {
         KeyBindingRegistry.INSTANCE.register(autoswitchToggleKeybinding);
         KeyBindingRegistry.INSTANCE.register(mowingWhenFightingToggleKeybinding);
 
-        //create object to store player switch state
-        SwitchDataStorage data = new SwitchDataStorage();
-
-        System.out.println("AutoSwitch Loaded");
+        logger.info("AutoSwitch Loaded");
 
         ClientTickCallback.EVENT.register(e ->
         {
@@ -92,7 +118,7 @@ public class AutoSwitch implements ClientModInitializer {
                     //Toggle message
                     TranslatableText msg = new TranslatableText(doAS && (!onMP || cfg.switchInMP()) ? "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
                     //Display msg above hotbar, set false to display in text chat
-                    e.player.addChatMessage(msg, cfg.toggleMsgOverHotbar());
+                    e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
                 }
 
             }
@@ -104,7 +130,7 @@ public class AutoSwitch implements ClientModInitializer {
                     //Toggle message
                     TranslatableText msg = new TranslatableText(mowing || !cfg.controlMowingWhenFighting() ? "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
                     //Display msg above hotbar, set false to display in text chat
-                    e.player.addChatMessage(msg, cfg.toggleMsgOverHotbar());
+                    e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
                 }
             }
 
@@ -143,7 +169,7 @@ public class AutoSwitch implements ClientModInitializer {
             //AutoSwitch handling
             if (doAS) {
                 if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                Targetable.of(world.getBlockState(pos), player, onMP, cfg, matCfg).changeTool().ifPresent(b -> {
+                Targetable.of(world.getBlockState(pos), player, onMP).changeTool().ifPresent(b -> {
                     if (b && cfg.switchbackBlocks()) {data.setHasSwitched(true);}
                 });
 
@@ -159,7 +185,7 @@ public class AutoSwitch implements ClientModInitializer {
             //AutoSwitch handling
             if (doAS) {
                 if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                Targetable.of(entity, player, onMP, cfg, matCfg).changeTool().ifPresent(b -> {
+                Targetable.of(entity, player, onMP).changeTool().ifPresent(b -> {
                     if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
                 });
 

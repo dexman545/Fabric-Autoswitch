@@ -1,5 +1,10 @@
 package autoswitch;
 
+import net.minecraft.enchantment.Enchantment;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.*;
+
 /**
  * Store the switch state of the player in a safe place for use with the switchback feature
  */
@@ -9,6 +14,11 @@ public class SwitchDataStorage {
     private int prevSlot;
     private boolean hasSwitched;
     private boolean attackedEntity;
+
+    public Map<UUID, Pair<String , Enchantment>> enchantToolMap = new HashMap<>();
+
+    public HashMap<Object, ArrayList<UUID>> toolTargetLists;
+    public LinkedHashMap<UUID, ArrayList<Integer>> toolLists;
 
     public SwitchDataStorage() {
         prevSlot = -1;
