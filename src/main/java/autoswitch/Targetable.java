@@ -1,5 +1,8 @@
 package autoswitch;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -20,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  */
 @SuppressWarnings("WeakerAccess")
+@Environment(EnvType.CLIENT)
 abstract class Targetable {
     HashMap<Object, ArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
     LinkedHashMap<UUID, ArrayList<Integer>> toolLists = AutoSwitch.data.toolLists;
@@ -143,7 +147,7 @@ abstract class Targetable {
         Item item = stack.getItem();
 
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
-        Object meh = tar instanceof BlockState ? ((BlockState) tar).getMaterial() : (tar instanceof LivingEntity ? ((LivingEntity) tar).getGroup() : ((Entity) tar).getType());
+        Object meh = tar instanceof AbstractBlock.AbstractBlockState ? ((AbstractBlock.AbstractBlockState) tar).getMaterial() : (tar instanceof LivingEntity ? ((LivingEntity) tar).getGroup() : ((Entity) tar).getType());
         if (this.toolTargetLists.get(meh) == null) {return;}
         this.toolTargetLists.get(meh).forEach(uuid -> {
             if (uuid == null) {return;}
@@ -164,7 +168,7 @@ abstract class Targetable {
                     this.toolLists.putIfAbsent(uuid, new ArrayList<>());
                     this.toolLists.get(uuid).add(i);
                 }
-                rating += (tar instanceof BlockState ? stack.getMiningSpeed((BlockState) tar) : 0) + (level) + counter.get();
+                rating += (tar instanceof BlockState ? stack.getMiningSpeedMultiplier((BlockState) tar) : 0) + (level) + counter.get();
                 double finalRating = rating;
                 this.toolRating.computeIfPresent(i, (integer, aDouble) -> Math.max(aDouble, finalRating));
                 this.toolRating.putIfAbsent(i, rating);

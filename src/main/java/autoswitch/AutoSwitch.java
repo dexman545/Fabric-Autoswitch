@@ -1,6 +1,8 @@
 package autoswitch;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
@@ -22,7 +24,7 @@ import org.lwjgl.glfw.GLFW;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-
+@Environment(EnvType.CLIENT)
 public class AutoSwitch implements ClientModInitializer {
 
     public static final Logger logger = LogManager.getLogger("autoswitch");
@@ -44,7 +46,6 @@ public class AutoSwitch implements ClientModInitializer {
 
     private boolean mowing = true;
 
-    @SuppressWarnings("ConstantConditions") //removes warnings about chat message potentially have a null player
     @Override
     public void onInitializeClient() {
 
@@ -118,6 +119,7 @@ public class AutoSwitch implements ClientModInitializer {
                     //Toggle message
                     TranslatableText msg = new TranslatableText(doAS && (!onMP || cfg.switchInMP()) ? "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
                     //Display msg above hotbar, set false to display in text chat
+                    assert e.player != null;
                     e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
                 }
 
@@ -130,6 +132,7 @@ public class AutoSwitch implements ClientModInitializer {
                     //Toggle message
                     TranslatableText msg = new TranslatableText(mowing || !cfg.controlMowingWhenFighting() ? "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
                     //Display msg above hotbar, set false to display in text chat
+                    assert e.player != null;
                     e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
                 }
             }

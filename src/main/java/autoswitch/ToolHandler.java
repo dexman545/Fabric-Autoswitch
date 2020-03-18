@@ -1,5 +1,7 @@
 package autoswitch;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tools.FabricToolTags;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.*;
@@ -9,6 +11,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.UUID;
 
+@Environment(EnvType.CLIENT)
 public class ToolHandler {
     private UUID id = null;
 

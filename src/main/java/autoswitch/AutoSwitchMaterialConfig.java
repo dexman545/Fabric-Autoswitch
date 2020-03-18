@@ -92,7 +92,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] sand();
 
     @Separator(",")
-    @DefaultValue("")
+    @DefaultValue("hoe")
     ToolHandler[] sponge();
 
     @Separator(",")
