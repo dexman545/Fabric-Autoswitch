@@ -64,5 +64,11 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     //Will ignore tools that are about to break when considering which tool to switch to
     Boolean tryPreserveDamagedTools();
 
+    @DefaultValue("true")
+    Boolean putAnimalDriverInOffhand();
+
+    @DefaultValue("true")
+    Boolean switchToControlMobs();
+
 }
 

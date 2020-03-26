@@ -4,14 +4,17 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.class_4985;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -57,6 +60,10 @@ abstract class Targetable {
 
     static Targetable of(BlockState target, PlayerEntity player, Boolean onMP) {
         return new TargetableMaterial(target, player, onMP);
+    }
+
+    static Targetable use(Entity entity, PlayerEntity player, Boolean onMP) {
+        return new TargetableRidable(player, onMP, entity);
     }
 
     static Targetable of(int prevSlot, PlayerEntity player) {
@@ -185,6 +192,54 @@ abstract class Targetable {
     abstract Boolean switchTypeAllowed();
 
 
+}
+
+class TargetableRidable extends Targetable {
+    Entity entity;
+    int slot = -90;
+
+    /**
+     * Base constructor for Targetable, initializes the class parameters and
+     * fetches the target map and initial tool map based on configs passed to ti
+     *
+     * @param player player this will effect
+     * @param onMP   whether the player is on a remote server. If given nul, will assume that AutoSwitch is allowed
+     */
+    public TargetableRidable(PlayerEntity player, Boolean onMP, Entity entity) {
+        super(player, onMP);
+        this.entity = entity;
+        populateToolLists(player);
+    }
+
+    @Override
+    void populateTargetTools(ItemStack stack, int i) {
+        if (this.entity instanceof PigEntity) {
+            if (stack.getItem() == Items.CARROT_ON_A_STICK) {
+                this.slot = i;
+            }
+        }
+
+        if (this.entity instanceof class_4985) {
+            if (stack.getItem() == Items.WARPED_FUNGUS_ON_A_STICK) {
+                this.slot = i;
+            }
+        }
+    }
+
+    @Override
+    Boolean switchTypeAllowed() {
+        return this.cfg.switchToControlMobs();
+    }
+
+    @Override
+    Optional<Integer> findSlot() {
+        if (!switchAllowed()) {return Optional.empty();}
+        if (this.slot != -90) {
+            return Optional.of(this.slot);
+        }
+
+        return Optional.empty();
+    }
 }
 
 /**

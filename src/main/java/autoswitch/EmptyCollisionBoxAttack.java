@@ -1,7 +1,7 @@
 package autoswitch;
 
-import net.minecraft.entity.ProjectileUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
