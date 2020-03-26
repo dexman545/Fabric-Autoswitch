@@ -1,21 +1,25 @@
 package autoswitch;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.class_4981;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +27,8 @@ import org.lwjgl.glfw.GLFW;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
-@Environment(EnvType.CLIENT)
 public class AutoSwitch implements ClientModInitializer {
 
     public static final Logger logger = LogManager.getLogger("autoswitch");
@@ -63,7 +67,7 @@ public class AutoSwitch implements ClientModInitializer {
                     "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details" +
                     "\n tool priority order values must match exactly with what is in the material config, both tool and enchantment");
             matCfg.store(new FileOutputStream(configMats), "AutoSwitch Material Configuration File" +
-                    "\nformat is a comma seperated list of 'toolname[;enchantmend id]', where toolname is any:" +
+                    "\nformat is a comma separated list of 'toolname[;enchantmend id]', where toolname is any:" +
                     "\n\t any, pickaxe, shears, axe, shovel, hoe, trident, sword" +
                     "\nEnchant id is optional. If present, it must be separated from the tool by a semicolon (';')" +
                     "\nEnchant id uses '-' instead of colons. A colon can be used, but must be preceded by a backslash" +
@@ -109,7 +113,6 @@ public class AutoSwitch implements ClientModInitializer {
 
         ClientTickCallback.EVENT.register(e ->
         {
-
             //keybindings implementation
             if(autoswitchToggleKeybinding.wasPressed()) {
                 //The toggle
@@ -191,6 +194,25 @@ public class AutoSwitch implements ClientModInitializer {
                 Targetable.of(entity, player, onMP).changeTool().ifPresent(b -> {
                     if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
                 });
+
+            }
+
+            return ActionResult.PASS;
+        });
+
+        UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
+            if (doAS) {
+                if (entity instanceof class_4981 && ((class_4981) entity).isSaddled()) {
+                    if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
+                    Targetable.use(entity, player, onMP).changeTool().ifPresent(b -> {
+                        if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
+
+                        if (b && cfg.putAnimalDriverInOffhand()) {
+                            Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS, BlockPos.ORIGIN, Direction.DOWN));
+                        }
+                    });
+
+                }
 
             }
 

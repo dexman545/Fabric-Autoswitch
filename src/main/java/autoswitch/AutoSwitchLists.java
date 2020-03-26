@@ -7,8 +7,6 @@ import java.util.UUID;
 
 @SuppressWarnings("WeakerAccess")
 public class AutoSwitchLists {
-    private AutoSwitchConfig cfg = AutoSwitch.cfg;
-    private AutoSwitchMaterialConfig matCfg = AutoSwitch.matCfg;
     private Boolean doPopulateLists = true;
 
     //Lists of Material/Entity the tool targets
@@ -24,8 +22,8 @@ public class AutoSwitchLists {
             return this.materialTargetLists;
         }
 
-        for (String key : this.matCfg.propertyNames()) {
-            String raw = this.matCfg.getProperty(key);
+        for (String key : AutoSwitch.matCfg.propertyNames()) {
+            String raw = AutoSwitch.matCfg.getProperty(key);
             String[] split = raw.split(",");
             ArrayList<UUID> list = new ArrayList<>();
             for (String input : split) {
@@ -50,7 +48,11 @@ public class AutoSwitchLists {
             return toolLists;
         }
 
-        for (String type : this.cfg.toolPriorityOrder()) {
+        if (AutoSwitch.cfg.toolPriorityOrder() == null) {
+            return toolLists;
+        }
+
+        for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
             toolLists.put((new ToolHandler(type).getId()), new ArrayList<>());
         }
 
