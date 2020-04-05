@@ -4,12 +4,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.class_4985;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.entity.passive.StriderEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -219,7 +219,7 @@ class TargetableRidable extends Targetable {
             }
         }
 
-        if (this.entity instanceof class_4985) {
+        if (this.entity instanceof StriderEntity) {
             if (stack.getItem() == Items.WARPED_FUNGUS_ON_A_STICK) {
                 this.slot = i;
             }

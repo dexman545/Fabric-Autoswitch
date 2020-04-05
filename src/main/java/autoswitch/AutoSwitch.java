@@ -10,9 +10,9 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.class_4981;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.ItemSteerable;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -202,7 +202,7 @@ public class AutoSwitch implements ClientModInitializer {
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
             if (doAS) {
-                if (entity instanceof class_4981 && ((class_4981) entity).isSaddled()) {
+                if (entity instanceof ItemSteerable && ((ItemSteerable) entity).isSaddled()) {
                     if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
                     Targetable.use(entity, player, onMP).changeTool().ifPresent(b -> {
                         if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
