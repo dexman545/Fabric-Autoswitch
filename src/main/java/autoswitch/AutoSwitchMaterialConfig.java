@@ -124,7 +124,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] tnt();
 
     @Separator(",")
-    @DefaultValue("shears, sword")
+    @DefaultValue("shears, hoe, sword")
     ToolHandler[] leaves();
 
     @Separator(",")
