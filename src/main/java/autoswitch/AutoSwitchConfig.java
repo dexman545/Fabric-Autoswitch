@@ -65,10 +65,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean tryPreserveDamagedTools();
 
     @DefaultValue("true")
-    Boolean putAnimalDriverInOffhand();
+    Boolean putUseActionToolInOffHand();
 
     @DefaultValue("true")
-    Boolean switchToControlMobs();
+    Boolean switchUseActions();
 
 }
 

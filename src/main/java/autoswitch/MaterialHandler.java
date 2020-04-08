@@ -3,6 +3,8 @@ package autoswitch;
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 /**
  * Custom type for use of parsing the materials config into something meaningful for AutoSwitch
@@ -164,8 +166,19 @@ public class MaterialHandler {
                 break;
 
             default:
+                if (Identifier.tryParse(str.toLowerCase()) != null) { //handle use event
+                    if (Registry.ENTITY_TYPE.containsId(Identifier.tryParse(str.toLowerCase()))) {
+                        this.mat = Registry.ENTITY_TYPE.get(Identifier.tryParse(str.toLowerCase()));
+                        break;
+                    }
+                    if (Registry.BLOCK.containsId(Identifier.tryParse(str.toLowerCase()))) {
+                        this.mat = Registry.BLOCK.get(Identifier.tryParse(str.toLowerCase()));
+                        break;
+                    }
+                }
+
                 this.mat = null;
-                AutoSwitch.logger.warn("AutoSwitch could not find a material by that name: " + str + "\nignoring it");
+                AutoSwitch.logger.warn("AutoSwitch could not find a material by that name: " + str + "-> ignoring it");
         }
 
     }

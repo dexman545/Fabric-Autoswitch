@@ -3,18 +3,16 @@ package autoswitch;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.entity.passive.StriderEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -63,7 +61,11 @@ abstract class Targetable {
     }
 
     static Targetable use(Entity entity, PlayerEntity player, Boolean onMP) {
-        return new TargetableRidable(player, onMP, entity);
+        return new TargetableUsable(player, onMP, entity);
+    }
+
+    static Targetable use(Block block, PlayerEntity player, Boolean onMP) {
+        return new TargetableUsable(player, onMP, block);
     }
 
     static Targetable of(int prevSlot, PlayerEntity player) {
@@ -194,8 +196,8 @@ abstract class Targetable {
 
 }
 
-class TargetableRidable extends Targetable {
-    Entity entity;
+class TargetableUsable extends Targetable {
+    Object target;
     int slot = -90;
 
     /**
@@ -205,30 +207,28 @@ class TargetableRidable extends Targetable {
      * @param player player this will effect
      * @param onMP   whether the player is on a remote server. If given nul, will assume that AutoSwitch is allowed
      */
-    public TargetableRidable(PlayerEntity player, Boolean onMP, Entity entity) {
+    public TargetableUsable(PlayerEntity player, Boolean onMP, Object target) {
         super(player, onMP);
-        this.entity = entity;
+        this.target = target;
         populateToolLists(player);
     }
 
     @Override
     void populateTargetTools(ItemStack stack, int i) {
-        if (this.entity instanceof PigEntity) {
-            if (stack.getItem() == Items.CARROT_ON_A_STICK) {
+        //Registry.ENTITY_TYPE.getId(this.entity.getType()).toString().equals(entityID);
+        AutoSwitch.data.useMap.computeIfPresent(this.target instanceof Entity ? ((Entity)this.target).getType()
+                : ((Block)this.target), (o, s) -> {
+            if (ToolHandler.correctType(s, stack.getItem())) {
+                AutoSwitch.logger.error(i);
                 this.slot = i;
             }
-        }
-
-        if (this.entity instanceof StriderEntity) {
-            if (stack.getItem() == Items.WARPED_FUNGUS_ON_A_STICK) {
-                this.slot = i;
-            }
-        }
+            return s;
+        });
     }
 
     @Override
     Boolean switchTypeAllowed() {
-        return this.cfg.switchToControlMobs();
+        return this.cfg.switchUseActions();
     }
 
     @Override

@@ -15,17 +15,34 @@ import java.util.UUID;
 public class ToolHandler {
     private UUID id = null;
 
-    public ToolHandler(String input) {
+    public String getTag() {
+        return tag;
+    }
+
+    private String tag = null;
+
+    public String getEnchTag() {
+        return enchTag;
+    }
+
+    private String enchTag = null;
+
+    public ToolHandler(String input, int n) {
         String[] cleanedInput = input.split(";");
-        String tagStr = cleanedInput[0].toLowerCase().trim();
-        String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase().trim().replace("-", ":") : "";
+        String tagStr = cleanedInput[0].toLowerCase().trim().replace("-", ":");
+        String enchantStr = cleanedInput.length > n + 1 ? cleanedInput[n+1].toLowerCase().trim().replace("-", ":") : "";
         Enchantment enchant = null;
         Identifier enchantID = Identifier.tryParse(enchantStr);
 
         if (getTool(tagStr).equals("")) {
-            if (!tagStr.equals("")) {AutoSwitch.logger.warn("Tool not known: " + tagStr);}
+            AutoSwitch.logger.debug("Empty Tool Entry tried to parse");
         } else {
             this.id = UUID.nameUUIDFromBytes(input.getBytes());
+            this.tag = tagStr;
+            if (n == 1) {
+                this.enchTag = cleanedInput[1].toLowerCase().trim().replace("-", ":");
+            }
+
 
             if ((!Registry.ENCHANTMENT.containsId(enchantID))) {
                 if (!enchantStr.equals("")) {AutoSwitch.logger.warn("Enchantment not found in registry: " + enchantStr);}
@@ -39,6 +56,10 @@ public class ToolHandler {
 
     }
 
+    public ToolHandler(String input) {
+        new ToolHandler(input, 0);
+    }
+
     private String getTool(String t) {
         switch (t){
             case "axe":
@@ -49,9 +70,8 @@ public class ToolHandler {
             case "shears":
             case "hoe":
             case "any":
-                return t.toLowerCase();
             default:
-                return "";
+                return Identifier.tryParse(t) != null ? t : "";
         }
 
     }
@@ -73,7 +93,9 @@ public class ToolHandler {
             return true;
         } else if ((tool.equals("axe") || tool.equals("any")) && (FabricToolTags.AXES.contains(item) || item instanceof AxeItem)) {
             return true;
-        } else return (tool.equals("sword") || tool.equals("any")) && (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem);
+        } else if ((tool.equals("sword") || tool.equals("any")) && (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem)) {
+            return true;
+        } else return (Identifier.tryParse(tool) != null && Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
 
     }
 }
