@@ -16,6 +16,7 @@ public class SwitchDataStorage {
     private boolean attackedEntity;
 
     public Map<UUID, Pair<String , Enchantment>> enchantToolMap = new HashMap<>();
+    public Map<Object, String> useMap = new HashMap<>();
 
     public HashMap<Object, ArrayList<UUID>> toolTargetLists;
     public LinkedHashMap<UUID, ArrayList<Integer>> toolLists;

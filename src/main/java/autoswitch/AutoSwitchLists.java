@@ -25,8 +25,18 @@ public class AutoSwitchLists {
         for (String key : AutoSwitch.matCfg.propertyNames()) {
             String raw = AutoSwitch.matCfg.getProperty(key);
             String[] split = raw.split(",");
+
             ArrayList<UUID> list = new ArrayList<>();
             for (String input : split) {
+
+                if (key.equals("useTool")) {
+                    ToolHandler v = (new ToolHandler(input, 1));
+                    MaterialHandler c = (new MaterialHandler(v.getTag()));
+                    AutoSwitch.data.useMap.put(c.getMat(), v.getEnchTag());
+
+                    continue;
+                }
+
                 UUID x = (new ToolHandler(input)).getId();
                 if (x != null) {
                     list.add(x);

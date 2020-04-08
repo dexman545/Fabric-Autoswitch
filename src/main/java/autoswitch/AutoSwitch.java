@@ -6,13 +6,13 @@ import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.ItemSteerable;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -68,10 +68,11 @@ public class AutoSwitch implements ClientModInitializer {
                     "\n tool priority order values must match exactly with what is in the material config, both tool and enchantment");
             matCfg.store(new FileOutputStream(configMats), "AutoSwitch Material Configuration File" +
                     "\nformat is a comma separated list of 'toolname[;enchantmend id]', where toolname is any:" +
-                    "\n\t any, pickaxe, shears, axe, shovel, hoe, trident, sword" +
+                    "\n\t any, pickaxe, shears, axe, shovel, hoe, trident, sword, or a specific item id, with same formatting rules as enchantments" +
                     "\nEnchant id is optional. If present, it must be separated from the tool by a semicolon (';')" +
                     "\nEnchant id uses '-' instead of colons. A colon can be used, but must be preceded by a backslash" +
-                    "\nList is ordered and will effect tool selection");
+                    "\nList is ordered and will effect tool selection" +
+                    "\n'useTool' is for the right-click action of the player. Format: 'id;toolname' no support for enchantments. No repeats.");
         } catch (IOException e) {
             logger.error(e);
         }
@@ -79,6 +80,7 @@ public class AutoSwitch implements ClientModInitializer {
         matCfg.addReloadListener(event -> {
             data.toolTargetLists.clear();
             data.enchantToolMap.clear();
+            data.useMap.clear();
             data.toolTargetLists = new AutoSwitchLists().getToolTargetLists();
         });
 
@@ -202,17 +204,30 @@ public class AutoSwitch implements ClientModInitializer {
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
             if (doAS) {
-                if (entity instanceof ItemSteerable && ((ItemSteerable) entity).isSaddled()) {
-                    if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                    Targetable.use(entity, player, onMP).changeTool().ifPresent(b -> {
-                        if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
+                if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
+                Targetable.use(entity, player, onMP).changeTool().ifPresent(b -> {
+                    if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
 
-                        if (b && cfg.putAnimalDriverInOffhand()) {
-                            Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS, BlockPos.ORIGIN, Direction.DOWN));
-                        }
-                    });
+                    if (b && cfg.putUseActionToolInOffHand()) {
+                        Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS, BlockPos.ORIGIN, Direction.DOWN));
+                    }
+                });
 
-                }
+            }
+
+            return ActionResult.PASS;
+        });
+
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            if (doAS) {
+                if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
+                Targetable.use(world.getBlockState(hitResult.getBlockPos()).getBlock(), player, onMP).changeTool().ifPresent(b -> {
+                    if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
+
+                    if (b && cfg.putUseActionToolInOffHand()) {
+                        Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS, BlockPos.ORIGIN, Direction.DOWN));
+                    }
+                });
 
             }
 
