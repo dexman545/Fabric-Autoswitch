@@ -36,7 +36,7 @@ abstract class Targetable {
 
     /**
      * Base constructor for Targetable, initializes the class parameters and
-     * fetches the target map and initial tool map based on configs passed to ti
+     * fetches the target map and initial tool map based on configs passed to it
      *
      * @param player player this will effect
      * @param onMP whether the player is on a remote server. If given nul, will assume that AutoSwitch is allowed
@@ -152,15 +152,15 @@ abstract class Targetable {
         return Optional.empty();
     }
 
-    void populateTargetToolsBase(Object tar, ItemStack stack, int i) {
+    void populateTargetToolsBase(Object protoTarget, ItemStack stack, int i) {
         Item item = stack.getItem();
 
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
-        Object meh = tar instanceof AbstractBlock.AbstractBlockState ? ((AbstractBlock.AbstractBlockState) tar).getMaterial() : (tar instanceof LivingEntity ? ((LivingEntity) tar).getGroup() : ((Entity) tar).getType());
-        if (this.toolTargetLists.get(meh) == null) {return;}
-        this.toolTargetLists.get(meh).forEach(uuid -> {
+        Object target = protoTarget instanceof AbstractBlock.AbstractBlockState ? ((AbstractBlock.AbstractBlockState) protoTarget).getMaterial() : (protoTarget instanceof LivingEntity ? ((LivingEntity) protoTarget).getGroup() : ((Entity) protoTarget).getType());
+        if (this.toolTargetLists.get(target) == null) {return;}
+        this.toolTargetLists.get(target).forEach(uuid -> {
             if (uuid == null) {return;}
-            counter.updateAndGet(v -> (float) (v - 0.25));
+            counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the hotbar are not preferred
             Pair<String, Enchantment> pair = AutoSwitch.data.enchantToolMap.get(uuid);
             String tool = pair.getLeft();
             Enchantment enchant = pair.getRight();
@@ -177,7 +177,7 @@ abstract class Targetable {
                     this.toolLists.putIfAbsent(uuid, new ArrayList<>());
                     this.toolLists.get(uuid).add(i);
                 }
-                rating += (tar instanceof BlockState ? stack.getMiningSpeedMultiplier((BlockState) tar) : 0) + (level) + counter.get();
+                rating += (protoTarget instanceof BlockState ? stack.getMiningSpeedMultiplier((BlockState) protoTarget) : 0) + level + counter.get();
                 double finalRating = rating;
                 this.toolRating.computeIfPresent(i, (integer, aDouble) -> Math.max(aDouble, finalRating));
                 this.toolRating.putIfAbsent(i, rating);
@@ -202,7 +202,7 @@ class TargetableUsable extends Targetable {
 
     /**
      * Base constructor for Targetable, initializes the class parameters and
-     * fetches the target map and initial tool map based on configs passed to ti
+     * fetches the target map and initial tool map based on configs passed to it
      *
      * @param player player this will effect
      * @param onMP   whether the player is on a remote server. If given nul, will assume that AutoSwitch is allowed
@@ -215,11 +215,9 @@ class TargetableUsable extends Targetable {
 
     @Override
     void populateTargetTools(ItemStack stack, int i) {
-        //Registry.ENTITY_TYPE.getId(this.entity.getType()).toString().equals(entityID);
         AutoSwitch.data.useMap.computeIfPresent(this.target instanceof Entity ? ((Entity)this.target).getType()
                 : ((Block)this.target), (o, s) -> {
             if (ToolHandler.correctType(s, stack.getItem())) {
-                AutoSwitch.logger.error(i);
                 this.slot = i;
             }
             return s;
