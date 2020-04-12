@@ -27,16 +27,16 @@ import org.lwjgl.glfw.GLFW;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Objects;
+import java.util.function.Consumer;
 
 public class AutoSwitch implements ClientModInitializer {
 
-    public static final Logger logger = LogManager.getLogger("autoswitch");
+    public static final Logger logger = LogManager.getLogger("AutoSwitch");
 
-    //create object to store player switch state
+    //Create object to store player switch state
     public static SwitchDataStorage data = new SwitchDataStorage();
 
-    //init config
+    //Init config
     public static AutoSwitchConfig cfg;
     public static AutoSwitchMaterialConfig matCfg;
 
@@ -53,7 +53,7 @@ public class AutoSwitch implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
-        //configuration
+        //Configuration BEGIN ---
         String config = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitch.cfg";
         String configMats = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitchMaterials.cfg";
         ConfigFactory.setProperty("configDir", config);
@@ -77,6 +77,7 @@ public class AutoSwitch implements ClientModInitializer {
             logger.error(e);
         }
 
+        //Clear data and recreate it based on new config
         matCfg.addReloadListener(event -> {
             data.toolTargetLists.clear();
             data.enchantToolMap.clear();
@@ -89,6 +90,9 @@ public class AutoSwitch implements ClientModInitializer {
             data.toolLists = new AutoSwitchLists().getToolLists();
         });
 
+        //Configuration END ---
+
+        //Populate data on startup
         data.toolTargetLists = new AutoSwitchLists().getToolTargetLists();
         data.toolLists = new AutoSwitchLists().getToolLists();
 
@@ -111,11 +115,9 @@ public class AutoSwitch implements ClientModInitializer {
         KeyBindingRegistry.INSTANCE.register(autoswitchToggleKeybinding);
         KeyBindingRegistry.INSTANCE.register(mowingWhenFightingToggleKeybinding);
 
-        logger.info("AutoSwitch Loaded");
-
         ClientTickCallback.EVENT.register(e ->
         {
-            //keybindings implementation
+            //Keybindings implementation BEGIN ---
             if(autoswitchToggleKeybinding.wasPressed()) {
                 //The toggle
                 doAS = !doAS;
@@ -124,7 +126,7 @@ public class AutoSwitch implements ClientModInitializer {
                     //Toggle message
                     TranslatableText msg = new TranslatableText(doAS && (!onMP || cfg.switchInMP()) ? "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
                     //Display msg above hotbar, set false to display in text chat
-                    assert e.player != null;
+                    assert e.player != null : "Player was unexpectedly null";
                     e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
                 }
 
@@ -137,15 +139,16 @@ public class AutoSwitch implements ClientModInitializer {
                     //Toggle message
                     TranslatableText msg = new TranslatableText(mowing || !cfg.controlMowingWhenFighting() ? "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
                     //Display msg above hotbar, set false to display in text chat
-                    assert e.player != null;
+                    assert e.player != null : "Player was unexpectedly null";
                     e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
                 }
             }
+            //Keybindings implementation END ---
 
             //Checks for implementing switchback feature
             if (e.player != null) {
                 if (data.getHasSwitched() && !e.player.isHandSwinging) {
-                    if ((!data.isAttackedEntity() || !cfg.switchbackWaits()) || (e.player.getAttackCooldownProgress(-20.0f) == 1.0f && data.isAttackedEntity())) { //uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
+                    if ((!data.hasAttackedEntity() || !cfg.switchbackWaits()) || (e.player.getAttackCooldownProgress(-20.0f) == 1.0f && data.hasAttackedEntity())) { //uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
                         data.setHasSwitched(false);
                         data.setAttackedEntity(false);
                         Targetable.of(data.getPrevSlot(), e.player).changeTool();
@@ -156,7 +159,7 @@ public class AutoSwitch implements ClientModInitializer {
 
         });
 
-        //Check if the client in on a multiplayer server
+        //Check if the client is on a multiplayer server
         //This is only called when starting a SP world, not on server join
         ServerStartCallback.EVENT.register((minecraftServer -> onMP = false));
         //Disable onMP when leaving SP
@@ -167,18 +170,21 @@ public class AutoSwitch implements ClientModInitializer {
         {
 
             //Mowing control
-            //disable block breaking iff mowing is disabled and there's an entity to hit
+            //Disable block breaking iff mowing is disabled and there's an entity to hit
             EntityHitResult entityResult = EmptyCollisionBoxAttack.rayTraceEntity(player, 1.0F, 4.5D);
             if (entityResult != null && cfg.controlMowingWhenFighting() && !mowing) {
                 player.isHandSwinging = !cfg.disableHandSwingWhenMowing();
                 return ActionResult.FAIL;
             }
 
+
             //AutoSwitch handling
             if (doAS) {
                 if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
                 Targetable.of(world.getBlockState(pos), player, onMP).changeTool().ifPresent(b -> {
+                    //Handles whether or not switchback is desired as well
                     if (b && cfg.switchbackBlocks()) {data.setHasSwitched(true);}
+
                 });
 
             }
@@ -194,6 +200,7 @@ public class AutoSwitch implements ClientModInitializer {
             if (doAS) {
                 if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
                 Targetable.of(entity, player, onMP).changeTool().ifPresent(b -> {
+                    //Handles whether or not switchback is desired as well
                     if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
                 });
 
@@ -205,13 +212,7 @@ public class AutoSwitch implements ClientModInitializer {
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
             if (doAS) {
                 if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                Targetable.use(entity, player, onMP).changeTool().ifPresent(b -> {
-                    if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
-
-                    if (b && cfg.putUseActionToolInOffHand()) {
-                        Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS, BlockPos.ORIGIN, Direction.DOWN));
-                    }
-                });
+                Targetable.use(entity, player, onMP).changeTool().ifPresent(handleUseSwitchConsumer());
 
             }
 
@@ -221,20 +222,34 @@ public class AutoSwitch implements ClientModInitializer {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             if (doAS) {
                 if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
-                Targetable.use(world.getBlockState(hitResult.getBlockPos()).getBlock(), player, onMP).changeTool().ifPresent(b -> {
-                    if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
-
-                    if (b && cfg.putUseActionToolInOffHand()) {
-                        Objects.requireNonNull(MinecraftClient.getInstance().getNetworkHandler()).sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS, BlockPos.ORIGIN, Direction.DOWN));
-                    }
-                });
+                Targetable.use(world.getBlockState(hitResult.getBlockPos()).getBlock(), player, onMP)
+                        .changeTool().ifPresent(handleUseSwitchConsumer());
 
             }
 
             return ActionResult.PASS;
         });
 
+        //Notify when AS Loaded
+        logger.info("AutoSwitch Loaded");
 
+    }
+
+    /**
+     * @return Consumer to handle mob switchback and moving of stack to offhand
+     */
+    Consumer<Boolean> handleUseSwitchConsumer() {
+        return b -> {
+            if (b && cfg.switchbackMobs()) {
+                data.setHasSwitched(true);
+                data.setAttackedEntity(true);
+            }
+
+            if (b && cfg.putUseActionToolInOffHand()) {
+                assert  MinecraftClient.getInstance().getNetworkHandler() != null : "Minecraft client was null when AutoSwitch wanted to sent a packet!";
+                MinecraftClient.getInstance().getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS, BlockPos.ORIGIN, Direction.DOWN));
+            }
+        };
     }
 }
 

@@ -56,10 +56,6 @@ public class ToolHandler {
 
     }
 
-    public ToolHandler(String input) {
-        new ToolHandler(input, 0);
-    }
-
     private String getTool(String t) {
         switch (t){
             case "axe":

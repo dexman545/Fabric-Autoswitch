@@ -6,7 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 
 /**
- * Store the switch state of the player in a safe place for use with the switchback feature
+ * Store the switch state of the player and relevant maps
  */
 @SuppressWarnings("WeakerAccess")
 public class SwitchDataStorage {
@@ -16,6 +16,10 @@ public class SwitchDataStorage {
     private boolean attackedEntity;
 
     public Map<UUID, Pair<String , Enchantment>> enchantToolMap = new HashMap<>();
+
+    /**
+     * Maps targets of use-action -> desired tool
+     */
     public Map<Object, String> useMap = new HashMap<>();
 
     public HashMap<Object, ArrayList<UUID>> toolTargetLists;
@@ -43,7 +47,12 @@ public class SwitchDataStorage {
         this.prevSlot = prevSlot;
     }
 
-    public boolean isAttackedEntity() {
+    /**
+     * Used for check if switchback is desired for mobs, short-circuits if false to perform switchback
+     *
+     * @return if the player attacked an entity
+     */
+    public boolean hasAttackedEntity() {
         return attackedEntity;
     }
 
