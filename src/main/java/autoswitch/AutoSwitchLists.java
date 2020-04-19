@@ -1,18 +1,21 @@
 package autoswitch;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
-@SuppressWarnings("WeakerAccess")
+@Environment(EnvType.CLIENT)
 public class AutoSwitchLists {
 
     //Lists of Material/Entity the tool targets
-    private HashMap<Object, ArrayList<UUID>> materialTargetLists = new HashMap<>();
+    private final HashMap<Object, ArrayList<UUID>> materialTargetLists = new HashMap<>();
 
     //Lists of tool slots
-    private LinkedHashMap<UUID, ArrayList<Integer>> toolLists = new LinkedHashMap<>();
+    private final LinkedHashMap<UUID, ArrayList<Integer>> toolLists = new LinkedHashMap<>();
 
     public HashMap<Object, ArrayList<UUID>> getToolTargetLists() {
 

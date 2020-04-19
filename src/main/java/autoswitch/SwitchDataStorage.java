@@ -8,7 +8,6 @@ import java.util.*;
 /**
  * Store the switch state of the player and relevant maps
  */
-@SuppressWarnings("WeakerAccess")
 public class SwitchDataStorage {
 
     private int prevSlot;

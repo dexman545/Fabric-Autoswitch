@@ -1,6 +1,8 @@
 package autoswitch;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
@@ -34,13 +36,13 @@ public class AutoSwitch implements ClientModInitializer {
     public static final Logger logger = LogManager.getLogger("AutoSwitch");
 
     //Create object to store player switch state
-    public static SwitchDataStorage data = new SwitchDataStorage();
+    public static final SwitchDataStorage data = new SwitchDataStorage();
 
     //Init config
     public static AutoSwitchConfig cfg;
     public static AutoSwitchMaterialConfig matCfg;
 
-    //Keybinding
+    //Keybindings
     private static FabricKeyBinding autoswitchToggleKeybinding;
     private static FabricKeyBinding mowingWhenFightingToggleKeybinding;
 
@@ -51,6 +53,7 @@ public class AutoSwitch implements ClientModInitializer {
     private boolean mowing = true;
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
 
         //Configuration BEGIN ---
@@ -67,7 +70,7 @@ public class AutoSwitch implements ClientModInitializer {
                     "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details" +
                     "\n tool priority order values must match exactly with what is in the material config, both tool and enchantment");
             matCfg.store(new FileOutputStream(configMats), "AutoSwitch Material Configuration File" +
-                    "\nformat is a comma separated list of 'toolname[;enchantmend id]', where toolname is any:" +
+                    "\nformat is a comma separated list of 'toolname[;enchantment id]', where toolname is any:" +
                     "\n\t any, pickaxe, shears, axe, shovel, hoe, trident, sword, or a specific item id, with same formatting rules as enchantments" +
                     "\nEnchant id is optional. If present, it must be separated from the tool by a semicolon (';')" +
                     "\nEnchant id uses '-' instead of colons. A colon can be used, but must be preceded by a backslash" +
@@ -115,8 +118,7 @@ public class AutoSwitch implements ClientModInitializer {
         KeyBindingRegistry.INSTANCE.register(autoswitchToggleKeybinding);
         KeyBindingRegistry.INSTANCE.register(mowingWhenFightingToggleKeybinding);
 
-        ClientTickCallback.EVENT.register(e ->
-        {
+        ClientTickCallback.EVENT.register(e -> {
             //Keybindings implementation BEGIN ---
             if(autoswitchToggleKeybinding.wasPressed()) {
                 //The toggle
@@ -124,7 +126,8 @@ public class AutoSwitch implements ClientModInitializer {
 
                 if (cfg.displayToggleMsg()) {
                     //Toggle message
-                    TranslatableText msg = new TranslatableText(doAS && (!onMP || cfg.switchInMP()) ? "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
+                    TranslatableText msg = new TranslatableText(doAS && (!onMP || cfg.switchInMP()) ?
+                            "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
                     //Display msg above hotbar, set false to display in text chat
                     assert e.player != null : "Player was unexpectedly null";
                     e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
@@ -137,7 +140,8 @@ public class AutoSwitch implements ClientModInitializer {
 
                 if (cfg.displayToggleMsg()) {
                     //Toggle message
-                    TranslatableText msg = new TranslatableText(mowing || !cfg.controlMowingWhenFighting() ? "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
+                    TranslatableText msg = new TranslatableText(mowing || !cfg.controlMowingWhenFighting() ?
+                            "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
                     //Display msg above hotbar, set false to display in text chat
                     assert e.player != null : "Player was unexpectedly null";
                     e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
@@ -148,7 +152,9 @@ public class AutoSwitch implements ClientModInitializer {
             //Checks for implementing switchback feature
             if (e.player != null) {
                 if (data.getHasSwitched() && !e.player.isHandSwinging) {
-                    if ((!data.hasAttackedEntity() || !cfg.switchbackWaits()) || (e.player.getAttackCooldownProgress(-20.0f) == 1.0f && data.hasAttackedEntity())) { //uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
+                    //uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
+                    if ((!data.hasAttackedEntity() || !cfg.switchbackWaits()) ||
+                            (e.player.getAttackCooldownProgress(-20.0f) == 1.0f && data.hasAttackedEntity())) {
                         data.setHasSwitched(false);
                         data.setAttackedEntity(false);
                         Targetable.of(data.getPrevSlot(), e.player).changeTool();
@@ -166,8 +172,7 @@ public class AutoSwitch implements ClientModInitializer {
         ServerStopCallback.EVENT.register((minecraftServer -> onMP = true));
 
         //Block Swap
-        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
-        {
+        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
 
             //Mowing control
             //Disable block breaking iff mowing is disabled and there's an entity to hit
@@ -193,8 +198,7 @@ public class AutoSwitch implements ClientModInitializer {
         });
 
         //Entity Swap
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
-        {
+        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
 
             //AutoSwitch handling
             if (doAS) {
@@ -210,6 +214,7 @@ public class AutoSwitch implements ClientModInitializer {
         });
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
+
             if (doAS) {
                 if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
                 Targetable.use(entity, player, onMP).changeTool().ifPresent(handleUseSwitchConsumer());
@@ -220,6 +225,7 @@ public class AutoSwitch implements ClientModInitializer {
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+
             if (doAS) {
                 if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
                 Targetable.use(world.getBlockState(hitResult.getBlockPos()).getBlock(), player, onMP)
@@ -238,6 +244,7 @@ public class AutoSwitch implements ClientModInitializer {
     /**
      * @return Consumer to handle mob switchback and moving of stack to offhand
      */
+    @Environment(EnvType.CLIENT)
     Consumer<Boolean> handleUseSwitchConsumer() {
         return b -> {
             if (b && cfg.switchbackMobs()) {
@@ -246,8 +253,11 @@ public class AutoSwitch implements ClientModInitializer {
             }
 
             if (b && cfg.putUseActionToolInOffHand()) {
-                assert  MinecraftClient.getInstance().getNetworkHandler() != null : "Minecraft client was null when AutoSwitch wanted to sent a packet!";
-                MinecraftClient.getInstance().getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS, BlockPos.ORIGIN, Direction.DOWN));
+                assert  MinecraftClient.getInstance().getNetworkHandler() != null :
+                        "Minecraft client was null when AutoSwitch wanted to sent a packet!";
+                MinecraftClient.getInstance().getNetworkHandler().sendPacket(
+                        new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS,
+                                BlockPos.ORIGIN, Direction.DOWN));
             }
         };
     }

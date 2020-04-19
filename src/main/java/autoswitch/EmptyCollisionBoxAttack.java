@@ -7,11 +7,10 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
-@SuppressWarnings("WeakerAccess")
 public class EmptyCollisionBoxAttack {
 
     /**
-     * Raytrace to find if the player can hit an entity
+     * Ray-trace to find if the player can hit an entity
      * Adapted from SwingThroughGrass mod licensed under MIT. Changes made to make it work with Fabric
      * @link https://github.com/Exidex/SwingThroughGrass
      * @author Exidex, modified by Deximus-Maximus for Fabric mod loader

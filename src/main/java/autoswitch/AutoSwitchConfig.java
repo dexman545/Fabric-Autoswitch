@@ -51,7 +51,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     //@TokenizerClass(StringInputVerifier.class)
     @Separator(">")
     //Order for tool priorities. Shared between blocks and mobs.
-    //Values must match their appearance in the mterial config
+    //Values must match their appearance in the material config
     //Ex. ThisIsBefore > ThisIsAfter > Etc.
     String[] toolPriorityOrder();
 
@@ -65,10 +65,21 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean tryPreserveDamagedTools();
 
     @DefaultValue("true")
+    //Switch used tool to offhand
     Boolean putUseActionToolInOffHand();
 
     @DefaultValue("true")
+    //Switch for use-action of a tool
     Boolean switchUseActions();
+
+    @DefaultValue("true")
+    //Prefer tool with minimum mining level
+    //TODO implement
+    Boolean preferMinimumViableTool();
+
+    @DefaultValue("true")
+    //Checks if a saddlable entity has a saddle for use action to switch. Does not allow switching to a saddle on hotbar.
+    Boolean checkSaddlableEntitiesForSaddle();
 
 }
 
