@@ -1,30 +1,30 @@
 {
-  "schemaVersion": 1,
-  "id": "aswitch",
-  "version": "${version}",
+    "schemaVersion":1,
+    "id":"aswitch",
+    "version":"${version}",
 
-  "name": "AutoSwitch",
-  "description": "Automagical switching of tools to the best one for the job.",
-  "authors": [
-    "Deximus-Maximus"
-  ],
-  "contact": {
-    "discord": "Deximus-Maximus#0682"
-  },
+    "name":"AutoSwitch",
+    "description":"Automagical switching of tools to the best one for the job.",
+    "authors":[
+        "Deximus-Maximus"
+    ],
+    "contact":{
+        "discord":"Deximus-Maximus#0682"
+    },
 
-  "license": "LGPL-3.0",
-  "icon": "assets/aswitch/icon.png",
+    "license":"LGPL-3.0",
+    "icon":"assets/aswitch/icon.png",
 
-  "environment": "client",
-  "entrypoints": {
-    "client": [
-      "autoswitch.AutoSwitch"
-    ]
-  },
+    "environment":"client",
+    "entrypoints":{
+        "client":[
+            "autoswitch.AutoSwitch"
+        ]
+    },
 
-  "depends": {
-    "fabricloader": ">=0.4.0",
-    "fabric": "*",
-    "minecraft":">=1.16-alpha.20.13.a"
-  }
+    "depends":{
+        "fabricloader":">=0.4.0",
+        "fabric":"*",
+        "minecraft":">=1.16-alpha.20.13.a"
+    }
 }

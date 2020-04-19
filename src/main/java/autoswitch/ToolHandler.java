@@ -76,6 +76,13 @@ public class ToolHandler {
         return id;
     }
 
+    /**
+     * Checks if the tool is of the correct type or not
+     *
+     * @param tool tool name from config
+     * @param item item from hotbar
+     * @return true if tool name and item match
+     */
     public static boolean correctType(String tool, Item item) {
         if ((tool.equals("pickaxe") || tool.equals("any")) && (FabricToolTags.PICKAXES.contains(item) || item instanceof PickaxeItem)) {
             return true;
@@ -91,7 +98,7 @@ public class ToolHandler {
             return true;
         } else if ((tool.equals("sword") || tool.equals("any")) && (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem)) {
             return true;
-        } else return (Identifier.tryParse(tool) != null && Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
+        } else return (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
 
     }
 }

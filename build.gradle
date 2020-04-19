@@ -26,9 +26,6 @@ dependencies {
 	modImplementation "org.aeonbits.owner:owner:1.0.10"
 	include "org.aeonbits.owner:owner:1.0.10"
 
-
-	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-	// You may need to force-disable transitiveness on them.
 }
 
 processResources {

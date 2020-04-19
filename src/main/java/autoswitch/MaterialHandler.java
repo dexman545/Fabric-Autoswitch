@@ -1,5 +1,7 @@
 package autoswitch;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
@@ -10,7 +12,7 @@ import net.minecraft.util.registry.Registry;
  * Custom type for use of parsing the materials config into something meaningful for AutoSwitch
  * matches strings to materials or entity type or group
  */
-@SuppressWarnings("WeakerAccess")
+@Environment(EnvType.CLIENT)
 public class MaterialHandler {
     private final Object mat;
 
