@@ -2,7 +2,7 @@ package autoswitch;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.tools.FabricToolTags;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
@@ -90,7 +90,7 @@ public class ToolHandler {
             return true;
         } else if ((tool.equals("hoe") || tool.equals("any")) && (FabricToolTags.HOES.contains(item) || item instanceof HoeItem)) {
             return true;
-        } else if ((tool.equals("shears") || tool.equals("any")) && (item instanceof ShearsItem)) {
+        } else if ((tool.equals("shears") || tool.equals("any")) && (FabricToolTags.SHEARS.contains(item) || item instanceof ShearsItem)) {
             return true;
         } else if ((tool.equals("trident") || tool.equals("any")) && (item instanceof TridentItem)) {
             return true;

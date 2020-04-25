@@ -130,7 +130,7 @@ public class AutoSwitch implements ClientModInitializer {
                             "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
                     //Display msg above hotbar, set false to display in text chat
                     assert e.player != null : "Player was unexpectedly null";
-                    e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
+                    e.player.sendMessage(msg, cfg.toggleMsgOverHotbar());
                 }
 
             }
@@ -144,14 +144,14 @@ public class AutoSwitch implements ClientModInitializer {
                             "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
                     //Display msg above hotbar, set false to display in text chat
                     assert e.player != null : "Player was unexpectedly null";
-                    e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
+                    e.player.sendMessage(msg, cfg.toggleMsgOverHotbar());
                 }
             }
             //Keybindings implementation END ---
 
             //Checks for implementing switchback feature
             if (e.player != null) {
-                if (data.getHasSwitched() && !e.player.isHandSwinging) {
+                if (data.getHasSwitched() && !e.player.handSwinging) {
                     //uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
                     if ((!data.hasAttackedEntity() || !cfg.switchbackWaits()) ||
                             (e.player.getAttackCooldownProgress(-20.0f) == 1.0f && data.hasAttackedEntity())) {
@@ -178,7 +178,7 @@ public class AutoSwitch implements ClientModInitializer {
             //Disable block breaking iff mowing is disabled and there's an entity to hit
             EntityHitResult entityResult = EmptyCollisionBoxAttack.rayTraceEntity(player, 1.0F, 4.5D);
             if (entityResult != null && cfg.controlMowingWhenFighting() && !mowing) {
-                player.isHandSwinging = !cfg.disableHandSwingWhenMowing();
+                player.handSwinging = !cfg.disableHandSwingWhenMowing();
                 return ActionResult.FAIL;
             }
 
