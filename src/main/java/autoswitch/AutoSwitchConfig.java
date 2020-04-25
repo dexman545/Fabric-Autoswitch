@@ -48,8 +48,8 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     //Disable the swinging of the hand when trying to mow when fighting
     Boolean disableHandSwingWhenMowing();
 
-    //@TokenizerClass(StringInputVerifier.class)
     @Separator(">")
+    @DefaultValue("sword > axe")
     //Order for tool priorities. Shared between blocks and mobs.
     //Values must match their appearance in the material config
     //Ex. ThisIsBefore > ThisIsAfter > Etc.
@@ -80,6 +80,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     @DefaultValue("true")
     //Checks if a saddlable entity has a saddle for use action to switch. Does not allow switching to a saddle on hotbar.
     Boolean checkSaddlableEntitiesForSaddle();
+
+    @DefaultValue("true")
+    //Enable dumb check for tool harvestablity
+    Boolean dumbMiningLevelCheck();
 
 }
 

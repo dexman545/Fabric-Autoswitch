@@ -167,7 +167,7 @@ abstract class Targetable {
             String tool = pair.getLeft();
             Enchantment enchant = pair.getRight();
 
-            if (ToolHandler.correctType(tool, item)) {
+            if (ToolHandler.correctType(tool, item) && Util.isRightTool(stack, protoTarget)) {
                 double rating = 0;
                 if (enchant == null) {
                     rating += 1; //promote tool in ranking as it is the correct one
@@ -176,6 +176,7 @@ abstract class Targetable {
                 }
                 this.toolLists.putIfAbsent(uuid, new ArrayList<>());
                 this.toolLists.get(uuid).add(i);
+                if (this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating);
                 rating += Util.getTargetRating(protoTarget, stack) + counter.get();
                 double finalRating = rating;
                 this.toolRating.computeIfPresent(i, (integer, aDouble) -> Math.max(aDouble, finalRating));
