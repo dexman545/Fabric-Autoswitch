@@ -82,7 +82,6 @@ publishing {
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
-			artifact javadocsJar
 		}
 	}
 }
