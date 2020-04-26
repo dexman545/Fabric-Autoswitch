@@ -21,6 +21,10 @@ jobs:
           minecraftVersion:
             - latest
       steps:
+        - name: Allow Permissions
+          run: chmod +x ./gradlew
+        - name: Minecraft Tests
+          uses: Geometrically/fabric-test-runner@v1
         - uses: actions/checkout@v2
           with:
             lfs: true
