@@ -4,7 +4,7 @@
     "version":"${version}",
 
     "name":"AutoSwitch",
-    "description":"Automatic switching of tools to the best one for the job.",
+    "description":"Automatic switching of tools on the hotbar to the best one for the job.",
     "authors":[
         "Deximus-Maximus"
     ],
