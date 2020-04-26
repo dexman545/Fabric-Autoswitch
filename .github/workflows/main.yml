@@ -33,7 +33,7 @@ jobs:
           with:
             minecraftVersion: ${{ matrix.minecraftVersion }}
             runServerTest: false
-        - uses: actions/upload-artifact@v1.1
+        - uses: actions/upload-artifact@v1
           with:
             name: Builds
             path: build/libs
