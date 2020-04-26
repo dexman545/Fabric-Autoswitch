@@ -4,6 +4,7 @@ on:
   push:
     branches: [ master ]
     paths: 
+      - '**.json'
       - '**.properties'
       - '**.gradle'
       - '**.java'
