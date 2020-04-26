@@ -1,0 +1,34 @@
+name: Fabric CI
+
+on:
+  push:
+    branches: [ master ]
+    paths: 
+      - '**.properties'
+      - '**.gradle'
+      - '**.java'
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  buildAndRunForSomeVersions:
+      name: Run tests for ${{ matrix.minecraftVersion }}
+      runs-on: ubuntu-latest
+      strategy:
+        fail-fast: false
+        matrix:
+          minecraftVersion:
+            - latest
+      steps:
+        - uses: actions/checkout@v2
+          with:
+            lfs: true
+        - uses: Geometrically/fabric-test-runner@v1
+          id: testRunner
+          with:
+            minecraftVersion: ${{ matrix.minecraftVersion }}
+            runServerTest: false
+        - uses: actions/upload-artifact@v1.1
+          with:
+            name: Builds
+            path: build/libs
