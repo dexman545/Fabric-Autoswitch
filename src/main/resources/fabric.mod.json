@@ -9,7 +9,10 @@
         "Deximus-Maximus"
     ],
     "contact":{
-        "discord":"Deximus-Maximus#0682"
+        "discord":"Deximus-Maximus#0682",
+        "homepage": "https://github.com/dexman545/Fabric-Autoswitch",
+        "sources": "https://github.com/dexman545/Fabric-Autoswitch",
+        "issues": "https://github.com/dexman545/Fabric-Autoswitch/issues"
     },
 
     "license":"LGPL-3.0",
