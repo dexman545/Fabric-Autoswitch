@@ -1,6 +1,6 @@
 {
     "schemaVersion":1,
-    "id":"aswitch",
+    "id":"autoswitch",
     "version":"${version}",
 
     "name":"AutoSwitch",
