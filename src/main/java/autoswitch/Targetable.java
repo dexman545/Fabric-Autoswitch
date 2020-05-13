@@ -173,7 +173,7 @@ abstract class Targetable {
                     rating += 1; //promote tool in ranking as it is the correct one
                 } else if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
                     rating += EnchantmentHelper.getLevel(enchant, stack);
-                }
+                } else return; // Don't further consider this tool as it does not have the enchantment needed
                 this.toolLists.putIfAbsent(uuid, new ArrayList<>());
                 this.toolLists.get(uuid).add(i);
                 if (this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating);

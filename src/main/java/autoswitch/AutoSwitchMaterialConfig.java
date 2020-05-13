@@ -188,7 +188,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] arthropod();
 
     @Separator(",")
-    @DefaultValue("any;minecraft-sharpness,sword,axe,any")
+    @DefaultValue("any;minecraft-sharpness,sword,axe")
     ToolHandler[] defaultEntity();
 
     @Separator(",")

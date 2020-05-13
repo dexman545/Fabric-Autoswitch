@@ -40,7 +40,7 @@ public class Util {
             return ((Entity) protoTarget).getType();
         }
 
-        AutoSwitch.logger.error("AutoSwitch tried to parse something that wasn't a Block or Entity for use action!");
+        AutoSwitch.logger.error("AutoSwitch tried to parse something that wasn't a Block or Entity for a use action!");
         return null;
     }
 
