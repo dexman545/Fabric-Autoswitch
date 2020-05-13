@@ -49,7 +49,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean disableHandSwingWhenMowing();
 
     @Separator(">")
-    @DefaultValue("sword > axe")
+    @DefaultValue("sword > axe > pickaxe")
     //Order for tool priorities. Shared between blocks and mobs.
     //Values must match their appearance in the material config
     //Ex. ThisIsBefore > ThisIsAfter > Etc.
