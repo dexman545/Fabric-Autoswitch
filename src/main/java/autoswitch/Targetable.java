@@ -157,26 +157,34 @@ abstract class Targetable {
     void populateTargetToolsAttack(Object protoTarget, ItemStack stack, int i) {
         Item item = stack.getItem();
 
+        // Establish base value to add to the tool rating, promoting higher priority tools from the config in the selection
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
+
         Object target = Util.getTarget(protoTarget);
-        if (this.toolTargetLists.get(target) == null) {return;}
+
+        // Evaluate target find tools
+        if (this.toolTargetLists.get(target) == null) return;
         this.toolTargetLists.get(target).forEach(uuid -> {
             if (uuid == null) {return;}
-            counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the hotbar are not preferred
+            counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
             Pair<String, Enchantment> pair = AutoSwitch.data.enchantToolMap.get(uuid);
             String tool = pair.getLeft();
             Enchantment enchant = pair.getRight();
 
             if (ToolHandler.correctType(tool, item) && Util.isRightTool(stack, protoTarget)) {
                 double rating = 0;
+
+                // Evaluate enchantment
                 if (enchant == null) {
                     rating += 1; //promote tool in ranking as it is the correct one
                 } else if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
                     rating += EnchantmentHelper.getLevel(enchant, stack);
                 } else return; // Don't further consider this tool as it does not have the enchantment needed
+
+                // Add tool to selection
                 this.toolLists.putIfAbsent(uuid, new ArrayList<>());
                 this.toolLists.get(uuid).add(i);
-                if (this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating);
+                if (this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
                 rating += Util.getTargetRating(protoTarget, stack) + counter.get();
                 double finalRating = rating;
                 this.toolRating.computeIfPresent(i, (integer, aDouble) -> Math.max(aDouble, finalRating));

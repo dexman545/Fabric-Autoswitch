@@ -37,7 +37,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("shears")
-    ToolHandler[] seagrass();
+    ToolHandler[] replaceable_underwater_plant();
 
     @Separator(",")
     @DefaultValue("")
@@ -53,7 +53,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("shovel;minecraft-silk_touch,shovel")
-    ToolHandler[] snow();
+    ToolHandler[] snow_layer();
 
     @Separator(",")
     @DefaultValue("")
@@ -61,7 +61,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("")
-    ToolHandler[] part();
+    ToolHandler[] supported();
 
     @Separator(",")
     @DefaultValue("shears, sword")
@@ -73,23 +73,23 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("shovel;minecraft-silk_touch,shovel")
-    ToolHandler[] clay();
+    ToolHandler[] organic_product();
 
     @Separator(",")
     @DefaultValue("shovel;minecraft-silk_touch,shovel")
-    ToolHandler[] earth();
+    ToolHandler[] soil();
 
     @Separator(",")
     @DefaultValue("shovel;minecraft-silk_touch,shovel,hoe")
-    ToolHandler[] organic();
+    ToolHandler[] solid_organic();
 
     @Separator(",")
     @DefaultValue("pickaxe;minecraft-silk_touch,any;minecraft-silk_touch,pickaxe")
-    ToolHandler[] packed_ice();
+    ToolHandler[] dense_ice();
 
     @Separator(",")
     @DefaultValue("shovel")
-    ToolHandler[] sand();
+    ToolHandler[] aggregate();
 
     @Separator(",")
     @DefaultValue("hoe")
@@ -153,7 +153,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("pickaxe")
-    ToolHandler[] anvil();
+    ToolHandler[] repair_station();
 
     @Separator(",")
     @DefaultValue("")
@@ -169,7 +169,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("axe, sword")
-    ToolHandler[] pumpkin();
+    ToolHandler[] gourd();
 
     @Separator(",")
     @DefaultValue("any;minecraft-silk_touch")

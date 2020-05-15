@@ -18,10 +18,10 @@ public class MaterialHandler {
 
     public MaterialHandler(String str) {
         switch (str.toLowerCase()){
-            case "organic":
+            case "solid_organic":
                 this.mat = Material.ORGANIC;
                 break;
-            case "anvil":
+            case "repair_station":
                 this.mat = Material.ANVIL;
                 break;
             case "bamboo":
@@ -39,13 +39,13 @@ public class MaterialHandler {
             case "carpet":
                 this.mat = Material.CARPET;
                 break;
-            case "clay":
+            case "organic_product":
                 this.mat = Material.CLAY;
                 break;
             case "cobweb":
                 this.mat = Material.COBWEB;
                 break;
-            case "earth":
+            case "soil":
                 this.mat = Material.EARTH;
                 break;
             case "egg":
@@ -63,10 +63,10 @@ public class MaterialHandler {
             case "metal":
                 this.mat = Material.METAL;
                 break;
-            case "packed_ice":
+            case "dense_ice":
                 this.mat = Material.PACKED_ICE;
                 break;
-            case "part":
+            case "supported":
                 this.mat = Material.PART;
                 break;
             case "piston":
@@ -75,7 +75,7 @@ public class MaterialHandler {
             case "plant":
                 this.mat = Material.PLANT;
                 break;
-            case "pumpkin":
+            case "gourd":
                 this.mat = Material.PUMPKIN;
                 break;
             case "redstone_lamp":
@@ -84,16 +84,16 @@ public class MaterialHandler {
             case "replaceable_plant":
                 this.mat = Material.REPLACEABLE_PLANT;
                 break;
-            case "sand":
+            case "aggregate":
                 this.mat = Material.SAND;
                 break;
-            case "seagrass":
+            case "replaceable_underwater_plant":
                 this.mat = Material.SEAGRASS;
                 break;
             case "shulker_box":
                 this.mat = Material.SHULKER_BOX;
                 break;
-            case "snow":
+            case "snow_layer":
                 this.mat = Material.SNOW;
                 break;
             case "snow_block":
