@@ -184,7 +184,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] aquaticEntity();
 
     @Separator(",")
-    @DefaultValue("any;minecraft:bane_of_arthropods")
+    @DefaultValue("any;minecraft:bane_of_arthropods,any;minecraft-sharpness,sword,axe")
     ToolHandler[] arthropod();
 
     @Separator(",")
