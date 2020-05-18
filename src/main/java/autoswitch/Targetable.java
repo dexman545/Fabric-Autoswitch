@@ -165,7 +165,7 @@ abstract class Targetable {
         Object target = Util.getTarget(protoTarget);
 
         // Evaluate target find tools
-        if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() || this.toolTargetLists.get(target) == null) return;
+        if (!AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && this.toolTargetLists.get(target) == null) return;
         this.toolTargetLists.get(target).forEach(uuid -> {
             if (uuid == null) {return;}
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
