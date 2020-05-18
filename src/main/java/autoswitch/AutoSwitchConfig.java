@@ -85,5 +85,9 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     //Enable dumb check for tool harvestablity
     Boolean dumbMiningLevelCheck();
 
+    @DefaultValue("true")
+    //Enable switching to items with no durability when no tool is found
+    Boolean useNoDurablityItemsWhenUnspecified();
+
 }
 

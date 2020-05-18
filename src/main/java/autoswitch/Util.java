@@ -54,6 +54,8 @@ public class Util {
     public static boolean isRightTool(ItemStack stack, Object target) {
         if (!AutoSwitch.cfg.dumbMiningLevelCheck()) return true;
 
+        if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
+
         if (target instanceof BlockState) { //TODO add mining level check here
             return ((BlockState) target).getMaterial().canBreakByHand() || stack.isEffectiveOn((BlockState) target);
         }

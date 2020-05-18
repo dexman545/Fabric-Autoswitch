@@ -84,6 +84,7 @@ public class ToolHandler {
      * @return true if tool name and item match
      */
     public static boolean correctType(String tool, Item item) {
+        if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) return true;
         if ((tool.equals("pickaxe") || tool.equals("any")) && (FabricToolTags.PICKAXES.contains(item) || item instanceof PickaxeItem)) {
             return true;
         } else if ((tool.equals("shovel") || tool.equals("any")) && (FabricToolTags.SHOVELS.contains(item) || item instanceof ShovelItem)) {
