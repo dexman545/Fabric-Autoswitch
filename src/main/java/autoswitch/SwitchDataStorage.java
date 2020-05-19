@@ -24,10 +24,17 @@ public class SwitchDataStorage {
     public HashMap<Object, ArrayList<UUID>> toolTargetLists;
     public LinkedHashMap<UUID, ArrayList<Integer>> toolLists;
 
+    /**
+     * Used to process hotbar even when no target is selected.
+     * For cases where users want to use nondamageable items.
+     */
+    public static ArrayList<UUID> blank = new ArrayList<>();
+
     public SwitchDataStorage() {
         prevSlot = -1;
         hasSwitched = false;
         attackedEntity = false;
+        blank.add(UUID.randomUUID());
     }
 
     public boolean getHasSwitched() {
@@ -58,4 +65,6 @@ public class SwitchDataStorage {
     public void setAttackedEntity(boolean attackedEntity) {
         this.attackedEntity = attackedEntity;
     }
+
+
 }

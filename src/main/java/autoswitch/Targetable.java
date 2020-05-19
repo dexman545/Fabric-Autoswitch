@@ -165,13 +165,23 @@ abstract class Targetable {
         Object target = Util.getTarget(protoTarget);
 
         // Evaluate target find tools
+
+        // Short circuit as no target and no non-damageable fallback desired
         if (!AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && this.toolTargetLists.get(target) == null) return;
-        this.toolTargetLists.get(target).forEach(uuid -> {
+
+        this.toolTargetLists.getOrDefault(target, SwitchDataStorage.blank).forEach(uuid -> {
             if (uuid == null) {return;}
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
-            Pair<String, Enchantment> pair = AutoSwitch.data.enchantToolMap.get(uuid);
-            String tool = pair.getLeft();
-            Enchantment enchant = pair.getRight();
+            String tool;
+            Enchantment enchant;
+            if (uuid != SwitchDataStorage.blank.get(0)) {
+                Pair<String, Enchantment> pair = AutoSwitch.data.enchantToolMap.get(uuid);
+                tool = pair.getLeft();
+                enchant = pair.getRight();
+            } else { // Handle case of no target but user desires fallback to items
+                tool = "blank";
+                enchant = null;
+            }
 
             if (ToolHandler.correctType(tool, item) && Util.isRightTool(stack, protoTarget)) {
                 double rating = 0;
