@@ -75,7 +75,7 @@ public class AutoSwitch implements ClientModInitializer {
                     "\nEnchant id is optional. If present, it must be separated from the tool by a semicolon (';')" +
                     "\nEnchant id uses '-' instead of colons. A colon can be used, but must be preceded by a backslash" +
                     "\nList is ordered and will effect tool selection" +
-                    "\n'useTool' is for the right-click action of the player. Format: 'id;toolname' no support for enchantments. No repeats.");
+                    "\n'useTool' is for the right-click action of the player. Format: 'targetID;toolname' no support for enchantments. No repeats.");
         } catch (IOException e) {
             logger.error(e);
         }
