@@ -1,0 +1,8 @@
+{
+	"key.autoswitch.toggle": "Touche de basculement AutoSwitch",
+	"key.autoswitch.toggle_mowing": "Clé à bascule de protection de tonte",
+	"msg.autoswitch.mow_false": "Tondre en combat: désactivé",
+	"msg.autoswitch.mow_true": "Tondre en combat: activé",
+	"msg.autoswitch.toggle_false": "AutoSwitch: désactivé",
+	"msg.autoswitch.toggle_true": "AutoSwitch: activé"
+}
