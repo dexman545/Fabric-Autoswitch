@@ -164,7 +164,7 @@ abstract class Targetable {
 
         Object target = Util.getTarget(protoTarget);
 
-        // Evaluate target find tools
+        // Evaluate target and find tools
 
         // Short circuit as no target and no non-damageable fallback desired
         if (!AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && this.toolTargetLists.get(target) == null) return;

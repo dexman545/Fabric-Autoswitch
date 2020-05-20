@@ -180,7 +180,7 @@ public class MaterialHandler {
                 }
 
                 this.mat = null;
-                AutoSwitch.logger.warn("AutoSwitch could not find a material by that name: " + str + "-> ignoring it");
+                AutoSwitch.logger.warn("AutoSwitch could not find a material by that name: " + str + " -> ignoring it");
         }
 
     }
