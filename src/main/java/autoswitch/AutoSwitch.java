@@ -77,6 +77,7 @@ public class AutoSwitch implements ClientModInitializer {
                     "\nList is ordered and will effect tool selection" +
                     "\n'useTool' is for the right-click action of the player. Format: 'targetID;toolname' no support for enchantments. No repeats.");
         } catch (IOException e) {
+            logger.error("AutoSwitch failed to obtain the configs during writing!");
             logger.error(e);
         }
 
