@@ -13,13 +13,6 @@ group = project.maven_group
 minecraft {
 }
 
-repositories {
-	maven {
-		name = "JitPack"
-		url "https://jitpack.io"
-	}
-}
-
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -30,8 +23,8 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	//OWNER library
-	modImplementation "com.github.dexman545:owner:sortedOutput-SNAPSHOT"
-	include "com.github.dexman545:owner:sortedOutput-SNAPSHOT"
+	modImplementation "org.aeonbits.owner:owner:1.0.10"
+	include "org.aeonbits.owner:owner:1.0.10"
 
 }
 
