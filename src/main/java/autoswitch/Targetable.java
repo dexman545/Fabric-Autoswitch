@@ -75,9 +75,7 @@ abstract class Targetable {
     public void populateToolLists(PlayerEntity player) {
         List<ItemStack> hotbar = player.inventory.main.subList(0, PlayerInventory.getHotbarSize());
         for (int i=0; i<PlayerInventory.getHotbarSize(); i++) {
-            if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && hotbar.get(i).getMaxDamage() == 0) {
-
-            } else if ((hotbar.get(i).getMaxDamage() - hotbar.get(i).getDamage() < 3) && this.cfg.tryPreserveDamagedTools()) {
+            if (!(AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && hotbar.get(i).getMaxDamage() == 0) && (hotbar.get(i).getMaxDamage() - hotbar.get(i).getDamage() < 3) && this.cfg.tryPreserveDamagedTools()) {
                 continue;
             }
             populateTargetTools(hotbar.get(i), i);
