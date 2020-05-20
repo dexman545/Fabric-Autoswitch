@@ -1,10 +1,10 @@
 {
     "schemaVersion":1,
-    "id":"aswitch",
+    "id":"autoswitch",
     "version":"${version}",
 
     "name":"AutoSwitch",
-    "description":"Automagical switching of tools to the best one for the job.",
+    "description":"Automatic switching of tools on the hotbar to the best one for the job.",
     "authors":[
         "Deximus-Maximus"
     ],
@@ -32,7 +32,9 @@
 
     "depends":{
         "fabricloader":">=0.4.0",
-        "fabric":"*",
-        "minecraft":">=1.16-alpha.20.13.a"
+        "fabric-keybindings-v0":">=0.1.1",
+        "fabric-tool-attribute-api-v1":"^1.0.2",
+        "fabric-events-interaction-v0":">=0.3.0",
+        "minecraft":">=1.16-alpha.20.17.a"
     }
 }

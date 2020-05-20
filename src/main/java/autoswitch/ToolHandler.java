@@ -2,7 +2,7 @@ package autoswitch;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.tools.FabricToolTags;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
@@ -84,13 +84,14 @@ public class ToolHandler {
      * @return true if tool name and item match
      */
     public static boolean correctType(String tool, Item item) {
+        if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) return true;
         if ((tool.equals("pickaxe") || tool.equals("any")) && (FabricToolTags.PICKAXES.contains(item) || item instanceof PickaxeItem)) {
             return true;
         } else if ((tool.equals("shovel") || tool.equals("any")) && (FabricToolTags.SHOVELS.contains(item) || item instanceof ShovelItem)) {
             return true;
         } else if ((tool.equals("hoe") || tool.equals("any")) && (FabricToolTags.HOES.contains(item) || item instanceof HoeItem)) {
             return true;
-        } else if ((tool.equals("shears") || tool.equals("any")) && (item instanceof ShearsItem)) {
+        } else if ((tool.equals("shears") || tool.equals("any")) && (FabricToolTags.SHEARS.contains(item) || item instanceof ShearsItem)) {
             return true;
         } else if ((tool.equals("trident") || tool.equals("any")) && (item instanceof TridentItem)) {
             return true;

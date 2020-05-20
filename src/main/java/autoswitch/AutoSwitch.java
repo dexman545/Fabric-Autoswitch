@@ -66,16 +66,16 @@ public class AutoSwitch implements ClientModInitializer {
 
         //generate config file; removes incorrect values from existing one as well
         try {
-            cfg.store(new FileOutputStream(config), "AutoSwitch Configuration File" +
+            cfg.sortedStore(new FileOutputStream(config), "AutoSwitch Configuration File" +
                     "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details" +
-                    "\n tool priority order values must match exactly with what is in the material config, both tool and enchantment");
-            matCfg.store(new FileOutputStream(configMats), "AutoSwitch Material Configuration File" +
+                    "\nTool priority order values must match exactly with what is in the material config, both tool and enchantment");
+            matCfg.sortedStore(new FileOutputStream(configMats), "AutoSwitch Material Configuration File" +
                     "\nformat is a comma separated list of 'toolname[;enchantment id]', where toolname is any:" +
                     "\n\t any, pickaxe, shears, axe, shovel, hoe, trident, sword, or a specific item id, with same formatting rules as enchantments" +
                     "\nEnchant id is optional. If present, it must be separated from the tool by a semicolon (';')" +
                     "\nEnchant id uses '-' instead of colons. A colon can be used, but must be preceded by a backslash" +
                     "\nList is ordered and will effect tool selection" +
-                    "\n'useTool' is for the right-click action of the player. Format: 'id;toolname' no support for enchantments. No repeats.");
+                    "\n'useTool' is for the right-click action of the player. Format: 'targetID;toolname' no support for enchantments. No repeats.");
         } catch (IOException e) {
             logger.error(e);
         }
@@ -130,7 +130,7 @@ public class AutoSwitch implements ClientModInitializer {
                             "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
                     //Display msg above hotbar, set false to display in text chat
                     assert e.player != null : "Player was unexpectedly null";
-                    e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
+                    e.player.sendMessage(msg, cfg.toggleMsgOverHotbar());
                 }
 
             }
@@ -144,14 +144,14 @@ public class AutoSwitch implements ClientModInitializer {
                             "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
                     //Display msg above hotbar, set false to display in text chat
                     assert e.player != null : "Player was unexpectedly null";
-                    e.player.addMessage(msg, cfg.toggleMsgOverHotbar());
+                    e.player.sendMessage(msg, cfg.toggleMsgOverHotbar());
                 }
             }
             //Keybindings implementation END ---
 
             //Checks for implementing switchback feature
             if (e.player != null) {
-                if (data.getHasSwitched() && !e.player.isHandSwinging) {
+                if (data.getHasSwitched() && !e.player.handSwinging) {
                     //uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
                     if ((!data.hasAttackedEntity() || !cfg.switchbackWaits()) ||
                             (e.player.getAttackCooldownProgress(-20.0f) == 1.0f && data.hasAttackedEntity())) {
@@ -178,7 +178,7 @@ public class AutoSwitch implements ClientModInitializer {
             //Disable block breaking iff mowing is disabled and there's an entity to hit
             EntityHitResult entityResult = EmptyCollisionBoxAttack.rayTraceEntity(player, 1.0F, 4.5D);
             if (entityResult != null && cfg.controlMowingWhenFighting() && !mowing) {
-                player.isHandSwinging = !cfg.disableHandSwingWhenMowing();
+                player.handSwinging = !cfg.disableHandSwingWhenMowing();
                 return ActionResult.FAIL;
             }
 

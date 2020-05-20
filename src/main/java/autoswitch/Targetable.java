@@ -75,7 +75,7 @@ abstract class Targetable {
     public void populateToolLists(PlayerEntity player) {
         List<ItemStack> hotbar = player.inventory.main.subList(0, PlayerInventory.getHotbarSize());
         for (int i=0; i<PlayerInventory.getHotbarSize(); i++) {
-            if ((hotbar.get(i).getMaxDamage() - hotbar.get(i).getDamage() < 3) && this.cfg.tryPreserveDamagedTools()) {
+            if (!(AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && hotbar.get(i).getMaxDamage() == 0) && (hotbar.get(i).getMaxDamage() - hotbar.get(i).getDamage() < 3) && this.cfg.tryPreserveDamagedTools()) {
                 continue;
             }
             populateTargetTools(hotbar.get(i), i);
@@ -157,25 +157,44 @@ abstract class Targetable {
     void populateTargetToolsAttack(Object protoTarget, ItemStack stack, int i) {
         Item item = stack.getItem();
 
+        // Establish base value to add to the tool rating, promoting higher priority tools from the config in the selection
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
-        Object target = Util.getTarget(protoTarget);
-        if (this.toolTargetLists.get(target) == null) {return;}
-        this.toolTargetLists.get(target).forEach(uuid -> {
-            if (uuid == null) {return;}
-            counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the hotbar are not preferred
-            Pair<String, Enchantment> pair = AutoSwitch.data.enchantToolMap.get(uuid);
-            String tool = pair.getLeft();
-            Enchantment enchant = pair.getRight();
 
-            if (ToolHandler.correctType(tool, item)) {
+        Object target = Util.getTarget(protoTarget);
+
+        // Evaluate target and find tools
+
+        // Short circuit as no target and no non-damageable fallback desired
+        if (!AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && this.toolTargetLists.get(target) == null) return;
+
+        this.toolTargetLists.getOrDefault(target, SwitchDataStorage.blank).forEach(uuid -> {
+            if (uuid == null) {return;}
+            counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
+            String tool;
+            Enchantment enchant;
+            if (uuid != SwitchDataStorage.blank.get(0)) {
+                Pair<String, Enchantment> pair = AutoSwitch.data.enchantToolMap.get(uuid);
+                tool = pair.getLeft();
+                enchant = pair.getRight();
+            } else { // Handle case of no target but user desires fallback to items
+                tool = "blank";
+                enchant = null;
+            }
+
+            if (ToolHandler.correctType(tool, item) && Util.isRightTool(stack, protoTarget)) {
                 double rating = 0;
+
+                // Evaluate enchantment
                 if (enchant == null) {
                     rating += 1; //promote tool in ranking as it is the correct one
                 } else if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
                     rating += EnchantmentHelper.getLevel(enchant, stack);
-                }
+                } else return; // Don't further consider this tool as it does not have the enchantment needed
+
+                // Add tool to selection
                 this.toolLists.putIfAbsent(uuid, new ArrayList<>());
                 this.toolLists.get(uuid).add(i);
+                if (this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
                 rating += Util.getTargetRating(protoTarget, stack) + counter.get();
                 double finalRating = rating;
                 this.toolRating.computeIfPresent(i, (integer, aDouble) -> Math.max(aDouble, finalRating));

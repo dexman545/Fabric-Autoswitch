@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.2.7-SNAPSHOT'
+	id 'fabric-loom' version '0.4-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -13,18 +13,25 @@ group = project.maven_group
 minecraft {
 }
 
+repositories {
+	maven {
+		name = "JitPack"
+		url "https://jitpack.io"
+	}
+}
+
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	//OWNER library
-	modImplementation "org.aeonbits.owner:owner:1.0.10"
-	include "org.aeonbits.owner:owner:1.0.10"
+	modImplementation "com.github.dexman545:owner:sortedOutput-SNAPSHOT"
+	include "com.github.dexman545:owner:sortedOutput-SNAPSHOT"
 
 	//ModMenu
 	modCompileOnly("io.github.prospector:modmenu:${project.modmenu_version}") {
@@ -70,6 +77,17 @@ jar {
 
 // configure the maven publication
 publishing {
+	repositories {
+		maven {
+			name = "GitHubPackages"
+			url = uri("https://maven.pkg.github.com/" + "dexman545/Fabric-Autoswitch")
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
+			}
+		}
+
+	}
 	publications {
 		mavenJava(MavenPublication) {
 			// add all the jars that should be included when publishing to maven
@@ -80,11 +98,5 @@ publishing {
 				builtBy remapSourcesJar
 			}
 		}
-	}
-
-	// select the repositories you want to publish to
-	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
 	}
 }

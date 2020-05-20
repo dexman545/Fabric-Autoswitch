@@ -18,11 +18,11 @@ public class MaterialHandler {
 
     public MaterialHandler(String str) {
         switch (str.toLowerCase()){
-            case "organic":
-                this.mat = Material.ORGANIC;
+            case "solid_organic":
+                this.mat = Material.SOLID_ORGANIC;
                 break;
-            case "anvil":
-                this.mat = Material.ANVIL;
+            case "repair_station":
+                this.mat = Material.REPAIR_STATION;
                 break;
             case "bamboo":
                 this.mat = Material.BAMBOO;
@@ -39,14 +39,14 @@ public class MaterialHandler {
             case "carpet":
                 this.mat = Material.CARPET;
                 break;
-            case "clay":
-                this.mat = Material.CLAY;
+            case "organic_product":
+                this.mat = Material.ORGANIC_PRODUCT;
                 break;
             case "cobweb":
                 this.mat = Material.COBWEB;
                 break;
-            case "earth":
-                this.mat = Material.EARTH;
+            case "soil":
+                this.mat = Material.SOIL;
                 break;
             case "egg":
                 this.mat = Material.EGG;
@@ -63,11 +63,11 @@ public class MaterialHandler {
             case "metal":
                 this.mat = Material.METAL;
                 break;
-            case "packed_ice":
-                this.mat = Material.PACKED_ICE;
+            case "dense_ice":
+                this.mat = Material.DENSE_ICE;
                 break;
-            case "part":
-                this.mat = Material.PART;
+            case "supported":
+                this.mat = Material.SUPPORTED;
                 break;
             case "piston":
                 this.mat = Material.PISTON;
@@ -75,8 +75,8 @@ public class MaterialHandler {
             case "plant":
                 this.mat = Material.PLANT;
                 break;
-            case "pumpkin":
-                this.mat = Material.PUMPKIN;
+            case "gourd":
+                this.mat = Material.GOURD;
                 break;
             case "redstone_lamp":
                 this.mat = Material.REDSTONE_LAMP;
@@ -84,17 +84,17 @@ public class MaterialHandler {
             case "replaceable_plant":
                 this.mat = Material.REPLACEABLE_PLANT;
                 break;
-            case "sand":
-                this.mat = Material.SAND;
+            case "aggregate":
+                this.mat = Material.AGGREGATE;
                 break;
-            case "seagrass":
-                this.mat = Material.SEAGRASS;
+            case "replaceable_underwater_plant":
+                this.mat = Material.REPLACEABLE_UNDERWATER_PLANT;
                 break;
             case "shulker_box":
                 this.mat = Material.SHULKER_BOX;
                 break;
-            case "snow":
-                this.mat = Material.SNOW;
+            case "snow_layer":
+                this.mat = Material.SNOW_LAYER;
                 break;
             case "snow_block":
                 this.mat = Material.SNOW_BLOCK;
@@ -180,7 +180,7 @@ public class MaterialHandler {
                 }
 
                 this.mat = null;
-                AutoSwitch.logger.warn("AutoSwitch could not find a material by that name: " + str + "-> ignoring it");
+                AutoSwitch.logger.warn("AutoSwitch could not find a material by that name: " + str + " -> ignoring it");
         }
 
     }

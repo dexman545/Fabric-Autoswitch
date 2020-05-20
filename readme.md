@@ -1,4 +1,4 @@
-# AutoSwitch
+# AutoSwitch ![Fabric CI](https://github.com/dexman545/Fabric-Autoswitch/workflows/Fabric%20CI/badge.svg)
 AutoSwitch is a mod for Minecraft using the Fabric mod loader. It is designed to automatically change the player's tool 
 to the correct one when it is being used.
 
