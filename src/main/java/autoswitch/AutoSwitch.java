@@ -68,7 +68,7 @@ public class AutoSwitch implements ClientModInitializer {
         try {
             cfg.sortedStore(new FileOutputStream(config), "AutoSwitch Configuration File" +
                     "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details" +
-                    "\n tool priority order values must match exactly with what is in the material config, both tool and enchantment");
+                    "\nTool priority order values must match exactly with what is in the material config, both tool and enchantment");
             matCfg.sortedStore(new FileOutputStream(configMats), "AutoSwitch Material Configuration File" +
                     "\nformat is a comma separated list of 'toolname[;enchantment id]', where toolname is any:" +
                     "\n\t any, pickaxe, shears, axe, shovel, hoe, trident, sword, or a specific item id, with same formatting rules as enchantments" +
