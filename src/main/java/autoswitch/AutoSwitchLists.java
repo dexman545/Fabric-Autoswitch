@@ -1,40 +1,48 @@
 package autoswitch;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
-@SuppressWarnings("WeakerAccess")
+@Environment(EnvType.CLIENT)
 public class AutoSwitchLists {
-    private AutoSwitchConfig cfg = AutoSwitch.cfg;
-    private AutoSwitchMaterialConfig matCfg = AutoSwitch.matCfg;
-    private Boolean doPopulateLists = true;
 
     //Lists of Material/Entity the tool targets
-    private HashMap<String, ArrayList<Object>> toolTargetLists = new HashMap<>();
-
-    private HashMap<Object, ArrayList<UUID>> materialTargetLists = new HashMap<>();
+    private final HashMap<Object, ArrayList<UUID>> materialTargetLists = new HashMap<>();
 
     //Lists of tool slots
-    private LinkedHashMap<UUID, ArrayList<Integer>> toolLists = new LinkedHashMap<>();
+    private final LinkedHashMap<UUID, ArrayList<Integer>> toolLists = new LinkedHashMap<>();
 
     public HashMap<Object, ArrayList<UUID>> getToolTargetLists() {
-        if (!doPopulateLists) {
-            return this.materialTargetLists;
-        }
 
-        for (String key : this.matCfg.propertyNames()) {
-            String raw = this.matCfg.getProperty(key);
+        for (String key : AutoSwitch.matCfg.propertyNames()) {
+            String raw = AutoSwitch.matCfg.getProperty(key);
             String[] split = raw.split(",");
+
             ArrayList<UUID> list = new ArrayList<>();
             for (String input : split) {
-                UUID x = (new ToolHandler(input)).getId();
+
+                //Handle special case of useTool that takes in targets and tool to use
+                if (key.equals("useTool")) {
+                    ToolHandler v = (new ToolHandler(input, 1));
+                    MaterialHandler c = (new MaterialHandler(v.getTag()));
+                    AutoSwitch.data.useMap.put(c.getMat(), v.getEnchTag());
+
+                    continue;
+                }
+
+                //Handle normal operation where input is tool and enchantment
+                UUID x = (new ToolHandler(input, 0)).getId();
                 if (x != null) {
                     list.add(x);
                 }
             }
 
+            //Populate target map with the list
             if (!list.isEmpty()) {
                 this.materialTargetLists.put((new MaterialHandler(key)).getMat(), list);
             }
@@ -46,12 +54,13 @@ public class AutoSwitchLists {
     }
 
     public LinkedHashMap<UUID, ArrayList<Integer>> getToolLists() {
-        if (!doPopulateLists) {
+
+        if (AutoSwitch.cfg.toolPriorityOrder() == null) {
             return toolLists;
         }
 
-        for (String type : this.cfg.toolPriorityOrder()) {
-            toolLists.put((new ToolHandler(type).getId()), new ArrayList<>());
+        for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
+            toolLists.put((new ToolHandler(type, 0).getId()), new ArrayList<>());
         }
 
         return toolLists;

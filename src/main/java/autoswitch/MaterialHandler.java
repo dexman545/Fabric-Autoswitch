@@ -1,23 +1,27 @@
 package autoswitch;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 /**
  * Custom type for use of parsing the materials config into something meaningful for AutoSwitch
  * matches strings to materials or entity type or group
  */
-@SuppressWarnings("WeakerAccess")
+@Environment(EnvType.CLIENT)
 public class MaterialHandler {
     private final Object mat;
 
     public MaterialHandler(String str) {
         switch (str.toLowerCase()){
-            case "organic":
+            case "solid_organic":
                 this.mat = Material.ORGANIC;
                 break;
-            case "anvil":
+            case "repair_station":
                 this.mat = Material.ANVIL;
                 break;
             case "bamboo":
@@ -35,13 +39,13 @@ public class MaterialHandler {
             case "carpet":
                 this.mat = Material.CARPET;
                 break;
-            case "clay":
+            case "organic_product":
                 this.mat = Material.CLAY;
                 break;
             case "cobweb":
                 this.mat = Material.COBWEB;
                 break;
-            case "earth":
+            case "soil":
                 this.mat = Material.EARTH;
                 break;
             case "egg":
@@ -59,10 +63,10 @@ public class MaterialHandler {
             case "metal":
                 this.mat = Material.METAL;
                 break;
-            case "packed_ice":
+            case "dense_ice":
                 this.mat = Material.PACKED_ICE;
                 break;
-            case "part":
+            case "supported":
                 this.mat = Material.PART;
                 break;
             case "piston":
@@ -71,7 +75,7 @@ public class MaterialHandler {
             case "plant":
                 this.mat = Material.PLANT;
                 break;
-            case "pumpkin":
+            case "gourd":
                 this.mat = Material.PUMPKIN;
                 break;
             case "redstone_lamp":
@@ -80,16 +84,16 @@ public class MaterialHandler {
             case "replaceable_plant":
                 this.mat = Material.REPLACEABLE_PLANT;
                 break;
-            case "sand":
+            case "aggregate":
                 this.mat = Material.SAND;
                 break;
-            case "seagrass":
+            case "replaceable_underwater_plant":
                 this.mat = Material.SEAGRASS;
                 break;
             case "shulker_box":
                 this.mat = Material.SHULKER_BOX;
                 break;
-            case "snow":
+            case "snow_layer":
                 this.mat = Material.SNOW;
                 break;
             case "snow_block":
@@ -164,8 +168,19 @@ public class MaterialHandler {
                 break;
 
             default:
+                if (Identifier.tryParse(str.toLowerCase()) != null) { //handle use event
+                    if (Registry.ENTITY_TYPE.containsId(Identifier.tryParse(str.toLowerCase()))) {
+                        this.mat = Registry.ENTITY_TYPE.get(Identifier.tryParse(str.toLowerCase()));
+                        break;
+                    }
+                    if (Registry.BLOCK.containsId(Identifier.tryParse(str.toLowerCase()))) {
+                        this.mat = Registry.BLOCK.get(Identifier.tryParse(str.toLowerCase()));
+                        break;
+                    }
+                }
+
                 this.mat = null;
-                AutoSwitch.logger.warn("AutoSwitch could not find a material by that name: " + str + "\nignoring it");
+                AutoSwitch.logger.warn("AutoSwitch could not find a material by that name: " + str + " -> ignoring it");
         }
 
     }

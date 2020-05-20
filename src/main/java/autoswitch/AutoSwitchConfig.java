@@ -4,7 +4,7 @@ import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Reloadable;
 
-@Config.HotReload(type = Config.HotReloadType.ASYNC) //set value = X for interval of X seconds. Default: 5
+@Config.HotReload(type = Config.HotReloadType.ASYNC, value = 1) //set value = X for interval of X seconds. Default: 5
 @Config.Sources({"file:${configDir}"})
 public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
 
@@ -48,10 +48,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     //Disable the swinging of the hand when trying to mow when fighting
     Boolean disableHandSwingWhenMowing();
 
-    //@TokenizerClass(StringInputVerifier.class)
     @Separator(">")
+    @DefaultValue("sword > axe > pickaxe")
     //Order for tool priorities. Shared between blocks and mobs.
-    //Values must match their appearance in the mterial config
+    //Values must match their appearance in the material config
     //Ex. ThisIsBefore > ThisIsAfter > Etc.
     String[] toolPriorityOrder();
 
@@ -63,6 +63,27 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     @DefaultValue("true")
     //Will ignore tools that are about to break when considering which tool to switch to
     Boolean tryPreserveDamagedTools();
+
+    @DefaultValue("true")
+    //Switch used tool to offhand
+    Boolean putUseActionToolInOffHand();
+
+    @DefaultValue("true")
+    //Switch for use-action of a tool
+    Boolean switchUseActions();
+
+    @DefaultValue("true")
+    //Prefer tool with minimum mining level
+    //TODO implement
+    Boolean preferMinimumViableTool();
+
+    @DefaultValue("true")
+    //Enable dumb check for tool harvestablity
+    Boolean dumbMiningLevelCheck();
+
+    @DefaultValue("true")
+    //Enable switching to items with no durability when no tool is found
+    Boolean useNoDurablityItemsWhenUnspecified();
 
 }
 

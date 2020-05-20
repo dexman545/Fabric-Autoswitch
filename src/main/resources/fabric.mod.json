@@ -1,29 +1,35 @@
 {
-  "schemaVersion": 1,
-  "id": "aswitch",
-  "version": "${version}",
+    "schemaVersion":1,
+    "id":"autoswitch",
+    "version":"${version}",
 
-  "name": "AutoSwitch",
-  "description": "Automagical switching of tools to the best one for the job.",
-  "authors": [
-    "Deximus-Maximus"
-  ],
-  "contact": {
-    "discord": "Deximus-Maximus#0682"
-  },
+    "name":"AutoSwitch",
+    "description":"Automatic switching of tools on the hotbar to the best one for the job.",
+    "authors":[
+        "Deximus-Maximus"
+    ],
+    "contact":{
+        "discord":"Deximus-Maximus#0682",
+        "homepage": "https://github.com/dexman545/Fabric-Autoswitch",
+        "sources": "https://github.com/dexman545/Fabric-Autoswitch",
+        "issues": "https://github.com/dexman545/Fabric-Autoswitch/issues"
+    },
 
-  "license": "LGPL-3.0",
-  "icon": "assets/aswitch/icon.png",
+    "license":"LGPL-3.0",
+    "icon":"assets/aswitch/icon.png",
 
-  "environment": "client",
-  "entrypoints": {
-    "client": [
-      "autoswitch.AutoSwitch"
-    ]
-  },
+    "environment":"client",
+    "entrypoints":{
+        "client":[
+            "autoswitch.AutoSwitch"
+        ]
+    },
 
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric": "*"
+    "fabric-keybindings-v0":">=0.1.1",
+    "fabric-tool-attribute-api-v1":"^1.0.2",
+    "fabric-events-interaction-v0":">=0.3.0",
+    "minecraft":">=1.14 <=1.16-alpha.20.10.a"
   }
 }

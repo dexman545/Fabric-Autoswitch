@@ -4,7 +4,7 @@ import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Reloadable;
 
-@Config.HotReload(type = Config.HotReloadType.ASYNC) //set value = X for interval of X seconds. Default: 5
+@Config.HotReload(type = Config.HotReloadType.ASYNC, value = 1) //set value = X for interval of X seconds. Default: 5
 @Config.Sources({"file:${configDirMats}"})
 public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible {
     @Separator(",")
@@ -37,7 +37,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("shears")
-    ToolHandler[] seagrass();
+    ToolHandler[] replaceable_underwater_plant();
 
     @Separator(",")
     @DefaultValue("")
@@ -53,7 +53,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("shovel;minecraft-silk_touch,shovel")
-    ToolHandler[] snow();
+    ToolHandler[] snow_layer();
 
     @Separator(",")
     @DefaultValue("")
@@ -61,7 +61,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("")
-    ToolHandler[] part();
+    ToolHandler[] supported();
 
     @Separator(",")
     @DefaultValue("shears, sword")
@@ -73,26 +73,26 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("shovel;minecraft-silk_touch,shovel")
-    ToolHandler[] clay();
+    ToolHandler[] organic_product();
 
     @Separator(",")
     @DefaultValue("shovel;minecraft-silk_touch,shovel")
-    ToolHandler[] earth();
+    ToolHandler[] soil();
 
     @Separator(",")
     @DefaultValue("shovel;minecraft-silk_touch,shovel,hoe")
-    ToolHandler[] organic();
+    ToolHandler[] solid_organic();
 
     @Separator(",")
     @DefaultValue("pickaxe;minecraft-silk_touch,any;minecraft-silk_touch,pickaxe")
-    ToolHandler[] packed_ice();
+    ToolHandler[] dense_ice();
 
     @Separator(",")
     @DefaultValue("shovel")
-    ToolHandler[] sand();
+    ToolHandler[] aggregate();
 
     @Separator(",")
-    @DefaultValue("")
+    @DefaultValue("hoe")
     ToolHandler[] sponge();
 
     @Separator(",")
@@ -124,7 +124,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] tnt();
 
     @Separator(",")
-    @DefaultValue("shears, sword")
+    @DefaultValue("shears, hoe, sword")
     ToolHandler[] leaves();
 
     @Separator(",")
@@ -153,7 +153,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("pickaxe")
-    ToolHandler[] anvil();
+    ToolHandler[] repair_station();
 
     @Separator(",")
     @DefaultValue("")
@@ -169,7 +169,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("axe, sword")
-    ToolHandler[] pumpkin();
+    ToolHandler[] gourd();
 
     @Separator(",")
     @DefaultValue("any;minecraft-silk_touch")
@@ -184,11 +184,11 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] aquaticEntity();
 
     @Separator(",")
-    @DefaultValue("any;minecraft:bane_of_arthropods")
+    @DefaultValue("any;minecraft:bane_of_arthropods,any;minecraft-sharpness,sword,axe")
     ToolHandler[] arthropod();
 
     @Separator(",")
-    @DefaultValue("any;minecraft-sharpness,sword,axe,any")
+    @DefaultValue("any;minecraft-sharpness,sword,axe")
     ToolHandler[] defaultEntity();
 
     @Separator(",")
@@ -202,6 +202,10 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     @Separator(",")
     @DefaultValue("axe,sword")
     ToolHandler[] boat();
+
+    @Separator(",")
+    @DefaultValue("minecraft-pig;minecraft-carrot_on_a_stick,minecraft-strider;minecraft-warped_fungus_on_a_stick,minecraft:creeper;minecraft:flint_and_steel")
+    ToolHandler[] useTool(); //Item to use when right-clicking on something
 
 
 
