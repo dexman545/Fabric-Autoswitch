@@ -1,5 +1,6 @@
 package autoswitch;
 
+import autoswitch.config.AutoSwitchConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -197,7 +198,7 @@ abstract class Targetable {
                 if (this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
                 rating += Util.getTargetRating(protoTarget, stack) + counter.get();
                 double finalRating = rating;
-                this.toolRating.computeIfPresent(i, (integer, aDouble) -> Math.max(aDouble, finalRating));
+                this.toolRating.computeIfPresent(i, (integer, oldRating) -> Util.toolRatingChange(oldRating, finalRating));
                 this.toolRating.putIfAbsent(i, rating);
             }
         });

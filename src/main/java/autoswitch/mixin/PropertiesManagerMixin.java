@@ -9,6 +9,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Properties;
 
+/**
+ * Used to make config file sorted
+ * Only works in production
+ */
 @Mixin(targets = "org.aeonbits.owner.PropertiesManager", remap = false)
 abstract class PropertiesManagerMixin {
     @ModifyVariable(method = "<init>", at = @At(value = "FIELD", target = "Lorg/aeonbits/owner/PropertiesManager;properties:Ljava/util/Properties;", opcode = Opcodes.PUTFIELD, shift = At.Shift.BEFORE))

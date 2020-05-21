@@ -2,7 +2,6 @@
     "schemaVersion":1,
     "id":"autoswitch",
     "version":"${version}",
-
     "name":"AutoSwitch",
     "description":"Automatic switching of tools on the hotbar to the best one for the job.",
     "authors":[
@@ -10,25 +9,21 @@
     ],
     "contact":{
         "discord":"Deximus-Maximus#0682",
-        "homepage": "https://github.com/dexman545/Fabric-Autoswitch",
-        "sources": "https://github.com/dexman545/Fabric-Autoswitch",
-        "issues": "https://github.com/dexman545/Fabric-Autoswitch/issues"
+        "homepage":"https://github.com/dexman545/Fabric-Autoswitch",
+        "sources":"https://github.com/dexman545/Fabric-Autoswitch",
+        "issues":"https://github.com/dexman545/Fabric-Autoswitch/issues"
     },
-
     "license":"LGPL-3.0",
     "icon":"assets/aswitch/icon.png",
-
-    "mixins": [
+    "mixins":[
         "autoswitch.mixins.json"
-      ],
-
+    ],
     "environment":"client",
     "entrypoints":{
         "client":[
             "autoswitch.AutoSwitch"
         ]
     },
-
     "depends":{
         "fabricloader":">=0.4.0",
         "fabric-keybindings-v0":">=0.1.1",

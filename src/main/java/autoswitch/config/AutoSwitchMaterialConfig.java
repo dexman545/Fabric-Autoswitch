@@ -1,5 +1,6 @@
-package autoswitch;
+package autoswitch.config;
 
+import autoswitch.ToolHandler;
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Reloadable;

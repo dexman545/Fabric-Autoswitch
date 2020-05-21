@@ -9,6 +9,12 @@ import net.minecraft.item.ItemStack;
 
 public class Util {
 
+    public static double toolRatingChange(double oldValue, double newValue) {
+        if (AutoSwitch.cfg.toolEnchantmentsStack()) return oldValue + newValue;
+
+        return Math.max(oldValue, newValue);
+    }
+
     public static Object getTarget(Object protoTarget) {
         if (protoTarget instanceof AbstractBlock.AbstractBlockState) {
             return ((AbstractBlock.AbstractBlockState) protoTarget).getMaterial();

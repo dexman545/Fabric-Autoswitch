@@ -1,4 +1,4 @@
-package autoswitch;
+package autoswitch.config;
 
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
@@ -88,6 +88,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     @DefaultValue("true")
     //Enable switching to items with no durability when no tool is found
     Boolean useNoDurablityItemsWhenUnspecified();
+
+    @DefaultValue("true")
+    //Enable to allow target list to stack enchantments. Disable for old behavior
+    Boolean toolEnchantmentsStack();
 
 }
 
