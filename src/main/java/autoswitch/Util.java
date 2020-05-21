@@ -53,7 +53,7 @@ public class Util {
     /**
      * Dumb mining level check using vanilla stuff
      *
-     * @param stack itemstack to check
+     * @param stack  itemstack to check
      * @param target target to check
      * @return if the target will obtain drops from the block, returns true for entities
      */

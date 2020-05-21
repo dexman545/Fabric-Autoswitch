@@ -1,12 +1,6 @@
 package autoswitch.config;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public final class SortedProperties extends Properties {
     private static final Comparator<Map.Entry<Object, Object>> KEY_COMPARATOR =

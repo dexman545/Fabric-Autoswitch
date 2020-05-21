@@ -12,12 +12,13 @@ public class EmptyCollisionBoxAttack {
     /**
      * Ray-trace to find if the player can hit an entity
      * Adapted from SwingThroughGrass mod licensed under MIT. Changes made to make it work with Fabric
-     * @link https://github.com/Exidex/SwingThroughGrass
-     * @author Exidex, modified by Deximus-Maximus for Fabric mod loader
-     * @param player player that is being evaluated against
-     * @param partialTicks should use 1.0f for this
+     *
+     * @param player             player that is being evaluated against
+     * @param partialTicks       should use 1.0f for this
      * @param blockReachDistance how far the player can reach
      * @return EntityResult
+     * @link https://github.com/Exidex/SwingThroughGrass
+     * @author Exidex, modified by Deximus-Maximus for Fabric mod loader
      */
     public static EntityHitResult rayTraceEntity(PlayerEntity player, float partialTicks, double blockReachDistance) {
         Vec3d from = player.getCameraPosVec(partialTicks);
