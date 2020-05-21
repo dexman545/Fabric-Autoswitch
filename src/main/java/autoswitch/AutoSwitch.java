@@ -41,8 +41,8 @@ public class AutoSwitch implements ClientModInitializer {
     public static final SwitchDataStorage data = new SwitchDataStorage();
 
     //Init config
-    public static AutoSwitchConfig cfg;
-    public static AutoSwitchMaterialConfig matCfg;
+    protected static AutoSwitchConfig cfg;
+    protected static AutoSwitchMaterialConfig matCfg;
 
     //Keybindings
     private static FabricKeyBinding autoswitchToggleKeybinding;
@@ -123,7 +123,7 @@ public class AutoSwitch implements ClientModInitializer {
 
         ClientTickCallback.EVENT.register(e -> {
             //Keybindings implementation BEGIN ---
-            if(autoswitchToggleKeybinding.wasPressed()) {
+            if (autoswitchToggleKeybinding.wasPressed()) {
                 //The toggle
                 doAS = !doAS;
 
@@ -188,10 +188,14 @@ public class AutoSwitch implements ClientModInitializer {
 
             //AutoSwitch handling
             if (doAS) {
-                if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
+                if (!data.getHasSwitched()) {
+                    data.setPrevSlot(player.inventory.selectedSlot);
+                }
                 Targetable.of(world.getBlockState(pos), player, onMP).changeTool().ifPresent(b -> {
                     //Handles whether or not switchback is desired as well
-                    if (b && cfg.switchbackBlocks()) {data.setHasSwitched(true);}
+                    if (b && cfg.switchbackBlocks()) {
+                        data.setHasSwitched(true);
+                    }
 
                 });
 
@@ -205,10 +209,15 @@ public class AutoSwitch implements ClientModInitializer {
 
             //AutoSwitch handling
             if (doAS) {
-                if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
+                if (!data.getHasSwitched()) {
+                    data.setPrevSlot(player.inventory.selectedSlot);
+                }
                 Targetable.of(entity, player, onMP).changeTool().ifPresent(b -> {
                     //Handles whether or not switchback is desired as well
-                    if (b && cfg.switchbackMobs()) {data.setHasSwitched(true); data.setAttackedEntity(true);}
+                    if (b && cfg.switchbackMobs()) {
+                        data.setHasSwitched(true);
+                        data.setAttackedEntity(true);
+                    }
                 });
 
             }
@@ -219,7 +228,9 @@ public class AutoSwitch implements ClientModInitializer {
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
 
             if (doAS) {
-                if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
+                if (!data.getHasSwitched()) {
+                    data.setPrevSlot(player.inventory.selectedSlot);
+                }
                 Targetable.use(entity, player, onMP).changeTool().ifPresent(handleUseSwitchConsumer());
 
             }
@@ -230,7 +241,9 @@ public class AutoSwitch implements ClientModInitializer {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 
             if (doAS) {
-                if (!data.getHasSwitched()) {data.setPrevSlot(player.inventory.selectedSlot);}
+                if (!data.getHasSwitched()) {
+                    data.setPrevSlot(player.inventory.selectedSlot);
+                }
                 Targetable.use(world.getBlockState(hitResult.getBlockPos()).getBlock(), player, onMP)
                         .changeTool().ifPresent(handleUseSwitchConsumer());
 
@@ -256,7 +269,7 @@ public class AutoSwitch implements ClientModInitializer {
             }
 
             if (b && cfg.putUseActionToolInOffHand()) {
-                assert  MinecraftClient.getInstance().getNetworkHandler() != null :
+                assert MinecraftClient.getInstance().getNetworkHandler() != null :
                         "Minecraft client was null when AutoSwitch wanted to sent a packet!";
                 MinecraftClient.getInstance().getNetworkHandler().sendPacket(
                         new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS,

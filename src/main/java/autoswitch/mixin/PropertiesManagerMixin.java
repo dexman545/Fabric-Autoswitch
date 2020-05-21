@@ -20,7 +20,7 @@ abstract class PropertiesManagerMixin {
         return new SortedProperties(properties);
     }
 
-    @Redirect(method = { "reload", "clear" }, at = @At(value = "NEW", target = "java/util/Properties"))
+    @Redirect(method = {"reload", "clear"}, at = @At(value = "NEW", target = "java/util/Properties"))
     private Properties sorted() {
         return new SortedProperties();
     }

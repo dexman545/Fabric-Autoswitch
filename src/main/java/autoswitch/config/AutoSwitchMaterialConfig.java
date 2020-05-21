@@ -209,5 +209,4 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] useTool(); //Item to use when right-clicking on something
 
 
-
 }

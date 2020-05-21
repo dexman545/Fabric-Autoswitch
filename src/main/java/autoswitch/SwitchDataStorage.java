@@ -10,25 +10,21 @@ import java.util.*;
  */
 public class SwitchDataStorage {
 
-    private int prevSlot;
-    private boolean hasSwitched;
-    private boolean attackedEntity;
-
-    public Map<UUID, Pair<String , Enchantment>> enchantToolMap = new HashMap<>();
-
-    /**
-     * Maps targets of use-action -> desired tool
-     */
-    public Map<Object, String> useMap = new HashMap<>();
-
-    public HashMap<Object, ArrayList<UUID>> toolTargetLists;
-    public LinkedHashMap<UUID, ArrayList<Integer>> toolLists;
-
     /**
      * Used to process hotbar even when no target is selected.
      * For cases where users want to use nondamageable items.
      */
-    public static ArrayList<UUID> blank = new ArrayList<>();
+    public final static ArrayList<UUID> blank = new ArrayList<>();
+    public Map<UUID, Pair<String, Enchantment>> enchantToolMap = new HashMap<>();
+    /**
+     * Maps targets of use-action -> desired tool
+     */
+    public Map<Object, String> useMap = new HashMap<>();
+    public HashMap<Object, ArrayList<UUID>> toolTargetLists;
+    public LinkedHashMap<UUID, ArrayList<Integer>> toolLists;
+    private int prevSlot;
+    private boolean hasSwitched;
+    private boolean attackedEntity;
 
     public SwitchDataStorage() {
         prevSlot = -1;

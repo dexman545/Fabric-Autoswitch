@@ -17,7 +17,7 @@ public class MaterialHandler {
     private final Object mat;
 
     public MaterialHandler(String str) {
-        switch (str.toLowerCase()){
+        switch (str.toLowerCase()) {
             case "solid_organic":
                 this.mat = Material.SOLID_ORGANIC;
                 break;
@@ -188,7 +188,7 @@ public class MaterialHandler {
     /**
      * @return returns target, may be Material, EntityGroup, or EntityType. Null if no material found
      */
-    public Object getMat(){
+    public Object getMat() {
         return this.mat;
     }
 }
