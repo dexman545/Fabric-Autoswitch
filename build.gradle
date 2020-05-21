@@ -23,7 +23,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	//OWNER library
-	modImplementation "org.aeonbits.owner:owner:1.0.10"
+	implementation "org.aeonbits.owner:owner:1.0.10"
 	include "org.aeonbits.owner:owner:1.0.10"
 
 }
