@@ -113,7 +113,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] bamboo_sapling();
 
     @Separator(",")
-    @DefaultValue("sword")
+    @DefaultValue("sword, axe")
     ToolHandler[] bamboo();
 
     @Separator(",")
