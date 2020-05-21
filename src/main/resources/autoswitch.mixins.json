@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "autoswitch.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "PropertiesManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
