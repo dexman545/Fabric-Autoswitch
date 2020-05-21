@@ -197,6 +197,10 @@ abstract class Targetable {
                 this.toolLists.get(uuid).add(i);
                 if (this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
                 rating += Util.getTargetRating(protoTarget, stack) + counter.get();
+                //prefer current slot. Has outcome of making undamageable item fallback not switching if it can help it
+                if (this.player.inventory.selectedSlot == i) {
+                    rating += 0.1;
+                }
                 double finalRating = rating;
                 this.toolRating.computeIfPresent(i, (integer, oldRating) -> Util.toolRatingChange(oldRating, finalRating));
                 this.toolRating.putIfAbsent(i, rating);
