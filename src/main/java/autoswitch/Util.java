@@ -25,7 +25,7 @@ public class Util {
 
     public static float getTargetRating(Object target, ItemStack stack) {
         if (target instanceof BlockState) { //TODO add mining level check here
-            return stack.getMiningSpeedMultiplier((BlockState) target);
+            return stack.getMiningSpeed((BlockState) target);
         }
 
         return 0;

@@ -102,9 +102,6 @@ public class MaterialHandler {
             case "sponge":
                 this.mat = Material.SPONGE;
                 break;
-            case "nether_wood":
-                this.mat = Material.NETHER_WOOD;
-                break;
             case "stone":
                 this.mat = Material.STONE;
                 break;
