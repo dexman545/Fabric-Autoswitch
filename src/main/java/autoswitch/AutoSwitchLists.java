@@ -7,17 +7,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Environment(EnvType.CLIENT)
 public class AutoSwitchLists {
 
     //Lists of Material/Entity the tool targets
-    private final HashMap<Object, ArrayList<UUID>> materialTargetLists = new HashMap<>();
+    private final ConcurrentHashMap<Object, ArrayList<UUID>> materialTargetLists = new ConcurrentHashMap<>();
 
     //Lists of tool slots
     private final LinkedHashMap<UUID, ArrayList<Integer>> toolLists = new LinkedHashMap<>();
 
-    public HashMap<Object, ArrayList<UUID>> getToolTargetLists() {
+    public ConcurrentHashMap<Object, ArrayList<UUID>> getToolTargetLists() {
 
         for (String key : AutoSwitch.matCfg.propertyNames()) {
             String raw = AutoSwitch.matCfg.getProperty(key);
