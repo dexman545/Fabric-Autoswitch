@@ -10,7 +10,6 @@ import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.Pair;
 import sun.nio.cs.ISO_8859_1;
 
-import java.nio.charset.Charset;
 import java.util.UUID;
 
 @Environment(EnvType.CLIENT)

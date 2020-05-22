@@ -4,6 +4,7 @@ import net.minecraft.enchantment.Enchantment;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Store the switch state of the player and relevant maps
@@ -15,12 +16,12 @@ public class SwitchDataStorage {
      * For cases where users want to use nondamageable items.
      */
     public final static ArrayList<UUID> blank = new ArrayList<>();
-    public Map<UUID, Pair<String, Enchantment>> enchantToolMap = new HashMap<>();
+    public Map<UUID, Pair<String, Enchantment>> enchantToolMap = new ConcurrentHashMap<>();
     /**
      * Maps targets of use-action -> desired tool
      */
-    public Map<Object, String> useMap = new HashMap<>();
-    public HashMap<Object, ArrayList<UUID>> toolTargetLists;
+    public Map<Object, String> useMap = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists;
     public LinkedHashMap<UUID, ArrayList<Integer>> toolLists;
     private int prevSlot;
     private boolean hasSwitched;

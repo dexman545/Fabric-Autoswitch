@@ -15,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -23,10 +24,10 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Environment(EnvType.CLIENT)
 abstract class Targetable {
-    HashMap<Object, ArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
-    LinkedHashMap<UUID, ArrayList<Integer>> toolLists = AutoSwitch.data.toolLists;
+    ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
+    Map<UUID, ArrayList<Integer>> toolLists = Collections.synchronizedMap(AutoSwitch.data.toolLists);
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
-    HashMap<Integer, Double> toolRating = new HashMap<>();
+    ConcurrentHashMap<Integer, Double> toolRating = new ConcurrentHashMap<>();
     PlayerEntity player;
     AutoSwitchConfig cfg;
     Boolean onMP;
