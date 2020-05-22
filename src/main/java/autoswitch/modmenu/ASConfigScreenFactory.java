@@ -1,5 +1,6 @@
 package autoswitch.modmenu;
 
+import autoswitch.AutoSwitch;
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -10,6 +11,13 @@ import net.minecraft.text.TranslatableText;
 public class ASConfigScreenFactory implements ConfigScreenFactory {
     @Override
     public Screen create(Screen parent) {
-        return new ASConfigScreen(new TranslatableText("screen.asconfig"));
+        try {
+            return new ASConfigScreen(new TranslatableText("screen.autoswitch.config"));
+        } catch (Exception e) {
+            AutoSwitch.logger.error("Failed to create modmenu screen!");
+            AutoSwitch.logger.error(e);
+        }
+
+        return null;
     }
 }
