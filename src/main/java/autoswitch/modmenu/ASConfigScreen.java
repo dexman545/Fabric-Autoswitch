@@ -65,7 +65,7 @@ public class ASConfigScreen extends Screen {
             int centerY = this.width / 2;
 
             for (int i = 1; i < 6; i++) {
-                this.drawCenteredText(matrices, this.textRenderer, new TranslatableText("msg.autoswitch.config."+i), centerX, centerY + ((i - 15) * 10), Color.RED.getRGB());
+                this.drawCenteredText(matrices, this.textRenderer, new TranslatableText("msg.autoswitch.config."+i), centerX, centerY / 3  + ((i) * 10), Color.RED.getRGB());
             }
 
             super.render(matrices, mouseX, mouseY, delta);
