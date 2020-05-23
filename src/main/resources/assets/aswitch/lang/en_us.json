@@ -12,5 +12,6 @@
 	"msg.autoswitch.config.5": "In the config folder will be your configs.",
 	"button.autoswitch.openconfigs": "Open Config Files",
 	"button.autoswitch.openfolder": "Open Config Folder",
-	"screen.autoswitch.config": "AutoSwitch Config Screen"
+	"screen.autoswitch.config": "AutoSwitch Config Screen",
+	"button.autoswitch.openwiki": "Open Wiki Page on Why There is No GUI"
 }

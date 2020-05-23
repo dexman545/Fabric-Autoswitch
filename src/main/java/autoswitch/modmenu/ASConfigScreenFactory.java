@@ -11,6 +11,10 @@ import net.minecraft.text.TranslatableText;
 public class ASConfigScreenFactory implements ConfigScreenFactory {
     @Override
     public Screen create(Screen parent) {
+        if (AutoSwitch.cfg.disableModMenuConfig()) {
+            return null;
+        }
+
         try {
             return new ASConfigScreen(new TranslatableText("screen.autoswitch.config"));
         } catch (Exception e) {
