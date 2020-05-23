@@ -22,7 +22,12 @@
     "entrypoints":{
         "client":[
             "autoswitch.AutoSwitch"
-        ]
+        ],
+        "modmenu": [ "autoswitch.modmenu.ModMenuImpl" ]
+    },
+
+    "custom": {
+        "modmenu:clientsideOnly": true
     },
     "depends":{
         "fabricloader":">=0.4.0",
