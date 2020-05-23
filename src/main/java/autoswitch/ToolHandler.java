@@ -8,7 +8,6 @@ import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.Pair;
-import sun.nio.cs.ISO_8859_1;
 
 import java.util.UUID;
 
@@ -28,7 +27,7 @@ public class ToolHandler {
         if (getTool(tagStr).equals("")) {
             AutoSwitch.logger.debug("Empty Tool Entry tried to parse");
         } else {
-            this.id = UUID.nameUUIDFromBytes(input.getBytes(ISO_8859_1.INSTANCE));
+            this.id = UUID.nameUUIDFromBytes(input.getBytes());
             this.tag = tagStr;
             if (n == 1) {
                 this.enchTag = cleanedInput[1].toLowerCase().trim().replace("-", ":");
