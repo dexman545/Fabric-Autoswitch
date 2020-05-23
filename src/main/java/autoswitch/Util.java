@@ -4,8 +4,12 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Util {
 
@@ -33,6 +37,14 @@ public class Util {
     public static float getTargetRating(Object target, ItemStack stack) {
         if (target instanceof BlockState) { //TODO add mining level check here
             return stack.getMiningSpeedMultiplier((BlockState) target);
+        }
+
+        if (target instanceof Entity) {
+            AtomicReference<Float> x = new AtomicReference<>((float) 0);
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(entityAttributeModifier -> {
+                x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()));
+            });
+            return x.get();
         }
 
         return 0;
