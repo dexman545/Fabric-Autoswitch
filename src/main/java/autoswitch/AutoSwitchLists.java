@@ -44,7 +44,7 @@ public class AutoSwitchLists {
             }
 
             //Populate target map with the list
-            if (!list.isEmpty()) {
+            if (!list.isEmpty() && (new MaterialHandler(key)).getMat() != null) {
                 this.materialTargetLists.put((new MaterialHandler(key)).getMat(), list);
             }
 
