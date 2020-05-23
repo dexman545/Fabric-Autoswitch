@@ -41,8 +41,8 @@ public class AutoSwitch implements ClientModInitializer {
     public static final SwitchDataStorage data = new SwitchDataStorage();
 
     //Init config
-    protected static AutoSwitchConfig cfg;
-    protected static AutoSwitchMaterialConfig matCfg;
+    public static AutoSwitchConfig cfg;
+    public static AutoSwitchMaterialConfig matCfg;
 
     //Keybindings
     private static FabricKeyBinding autoswitchToggleKeybinding;

@@ -93,5 +93,11 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
         //Enable to allow target list to stack enchantments. Disable for old behavior
     Boolean toolEnchantmentsStack();
 
+    @DefaultValue("false")
+        // This setting is meant to disable config GUI integration if in future the feature breaks,
+        // but the rest of AutoSwitch does not. Fallbacks are in place to ensure any changes to Minecraft do not break
+        // integration, this is simply a more extreme kill switch.
+    Boolean disableModMenuConfig();
+
 }
 
