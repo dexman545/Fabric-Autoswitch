@@ -141,6 +141,7 @@ abstract class Targetable {
         if (!switchAllowed()) {
             return Optional.empty();
         }
+        AutoSwitch.logger.error(toolRating);
         for (Map.Entry<UUID, ArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
@@ -211,7 +212,7 @@ abstract class Targetable {
                     rating += 0.1;
                 }
                 double finalRating = rating;
-                this.toolRating.computeIfPresent(slot, (iSlot, oldRating) -> Util.toolRatingChange(oldRating, finalRating));
+                this.toolRating.computeIfPresent(slot, (iSlot, oldRating) -> Util.toolRatingChange(oldRating, finalRating, stack));
                 this.toolRating.putIfAbsent(slot, rating);
             }
         });
