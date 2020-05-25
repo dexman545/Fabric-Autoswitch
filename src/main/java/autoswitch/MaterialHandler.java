@@ -17,7 +17,8 @@ public class MaterialHandler {
     private final Object mat;
 
     public MaterialHandler(String str) {
-        switch (str.toLowerCase()) {
+        str = str.toLowerCase().replace("-", ":");
+        switch (str) {
             case "solid_organic":
                 this.mat = Material.SOLID_ORGANIC;
                 break;
@@ -168,13 +169,13 @@ public class MaterialHandler {
                 break;
 
             default:
-                if (Identifier.tryParse(str.toLowerCase()) != null) { //handle use event
-                    if (Registry.ENTITY_TYPE.containsId(Identifier.tryParse(str.toLowerCase()))) {
-                        this.mat = Registry.ENTITY_TYPE.get(Identifier.tryParse(str.toLowerCase()));
+                if (Identifier.tryParse(str) != null) { //handle use event
+                    if (Registry.ENTITY_TYPE.containsId(Identifier.tryParse(str))) {
+                        this.mat = Registry.ENTITY_TYPE.get(Identifier.tryParse(str));
                         break;
                     }
-                    if (Registry.BLOCK.containsId(Identifier.tryParse(str.toLowerCase()))) {
-                        this.mat = Registry.BLOCK.get(Identifier.tryParse(str.toLowerCase()));
+                    if (Registry.BLOCK.containsId(Identifier.tryParse(str))) {
+                        this.mat = Registry.BLOCK.get(Identifier.tryParse(str));
                         break;
                     }
                 }

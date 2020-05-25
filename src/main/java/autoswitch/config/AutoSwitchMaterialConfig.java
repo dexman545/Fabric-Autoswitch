@@ -202,11 +202,8 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("axe,sword")
+    @Key("minecraft-boat")
     ToolHandler[] boat();
-
-    @Separator(",")
-    @DefaultValue("minecraft-pig;minecraft-carrot_on_a_stick,minecraft-strider;minecraft-warped_fungus_on_a_stick,minecraft:creeper;minecraft:flint_and_steel")
-    ToolHandler[] useTool(); //Item to use when right-clicking on something
 
 
 }

@@ -2,6 +2,8 @@ package autoswitch;
 
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchMaterialConfig;
+import autoswitch.config.AutoSwitchUsableConfig;
+import autoswitch.config.ConfigHeaders;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -29,8 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.function.Consumer;
 
 public class AutoSwitch implements ClientModInitializer {
@@ -43,6 +44,7 @@ public class AutoSwitch implements ClientModInitializer {
     //Init config
     public static AutoSwitchConfig cfg;
     public static AutoSwitchMaterialConfig matCfg;
+    public static AutoSwitchUsableConfig usableCfg;
 
     //Keybindings
     private static FabricKeyBinding autoswitchToggleKeybinding;
@@ -61,23 +63,19 @@ public class AutoSwitch implements ClientModInitializer {
         //Configuration BEGIN ---
         String config = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitch.cfg";
         String configMats = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitchMaterials.cfg";
+        String configUsable = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitchUsable.cfg";
         ConfigFactory.setProperty("configDir", config);
         ConfigFactory.setProperty("configDirMats", configMats);
+        ConfigFactory.setProperty("configUsable", configUsable);
         cfg = ConfigFactory.create(AutoSwitchConfig.class);
         matCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
+        usableCfg = ConfigFactory.create(AutoSwitchUsableConfig.class);
 
         //generate config file; removes incorrect values from existing one as well
         try {
-            cfg.store(new FileOutputStream(config), "AutoSwitch Configuration File" +
-                    "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details" +
-                    "\nTool priority order values must match exactly with what is in the material config, both tool and enchantment");
-            matCfg.store(new FileOutputStream(configMats), "AutoSwitch Material Configuration File" +
-                    "\nformat is a comma separated list of 'toolname[;enchantment id]', where toolname is any:" +
-                    "\n\t any, pickaxe, shears, axe, shovel, hoe, trident, sword, or a specific item id, with same formatting rules as enchantments" +
-                    "\nEnchant id is optional. If present, it must be separated from the tool by a semicolon (';')" +
-                    "\nEnchant id uses '-' instead of colons. A colon can be used, but must be preceded by a backslash" +
-                    "\nList is ordered and will effect tool selection" +
-                    "\n'useTool' is for the right-click action of the player. Format: 'targetID;toolname' no support for enchantments. No repeats.");
+            cfg.store(new FileOutputStream(config), ConfigHeaders.basicConfig);
+            matCfg.store(new FileOutputStream(configMats), ConfigHeaders.materialConfig);
+            usableCfg.store(new FileOutputStream(configUsable), ConfigHeaders.usableConfig);
         } catch (IOException e) {
             logger.error("AutoSwitch failed to obtain the configs during writing!");
             logger.error(e);
@@ -94,6 +92,13 @@ public class AutoSwitch implements ClientModInitializer {
         cfg.addReloadListener(event -> {
             data.toolLists.clear();
             data.toolLists = new AutoSwitchLists().getToolLists();
+        });
+
+        usableCfg.addReloadListener(event -> {
+            data.toolTargetLists.clear();
+            data.enchantToolMap.clear();
+            data.useMap.clear();
+            data.toolTargetLists = new AutoSwitchLists().getToolTargetLists();
         });
 
         //Configuration END ---

@@ -2,6 +2,7 @@ package autoswitch;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import org.aeonbits.owner.Accessible;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -19,22 +20,20 @@ public class AutoSwitchLists {
 
     public ConcurrentHashMap<Object, ArrayList<UUID>> getToolTargetLists() {
 
-        for (String key : AutoSwitch.matCfg.propertyNames()) {
-            String raw = AutoSwitch.matCfg.getProperty(key);
+        populateMap(this.materialTargetLists, AutoSwitch.matCfg);
+        populateMap(AutoSwitch.data.useMap, AutoSwitch.usableCfg);
+
+        return this.materialTargetLists;
+
+    }
+
+    private void populateMap(ConcurrentHashMap<Object, ArrayList<UUID>> map, Accessible cfg) {
+        for (String key : cfg.propertyNames()) {
+            String raw = cfg.getProperty(key);
             String[] split = raw.split(",");
 
             ArrayList<UUID> list = new ArrayList<>();
             for (String input : split) {
-
-                //Handle special case of useTool that takes in targets and tool to use
-                if (key.equals("useTool")) {
-                    ToolHandler v = (new ToolHandler(input, 1));
-                    MaterialHandler c = (new MaterialHandler(v.getTag()));
-                    AutoSwitch.data.useMap.put(c.getMat(), v.getEnchTag());
-
-                    continue;
-                }
-
                 //Handle normal operation where input is tool and enchantment
                 UUID x = (new ToolHandler(input, 0)).getId();
                 if (x != null) {
@@ -44,13 +43,10 @@ public class AutoSwitchLists {
 
             //Populate target map with the list
             if (!list.isEmpty() && (new MaterialHandler(key)).getMat() != null) {
-                this.materialTargetLists.put((new MaterialHandler(key)).getMat(), list);
+                map.put((new MaterialHandler(key)).getMat(), list);
             }
 
         }
-
-        return this.materialTargetLists;
-
     }
 
     public LinkedHashMap<UUID, ArrayList<Integer>> getToolLists() {
