@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Util {
 
-    public static double toolRatingChange(double oldValue, double newValue) {
-        if (AutoSwitch.cfg.toolEnchantmentsStack()) return oldValue + newValue;
+    public static double toolRatingChange(double oldValue, double newValue, ItemStack stack) {
+        if (AutoSwitch.cfg.toolEnchantmentsStack() && !(stack.getItem().equals(ItemStack.EMPTY.getItem()))) return oldValue + newValue;
 
         return Math.max(oldValue, newValue);
     }
