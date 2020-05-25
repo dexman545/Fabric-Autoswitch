@@ -20,7 +20,7 @@ public class SwitchDataStorage {
     /**
      * Maps targets of use-action -> desired tool
      */
-    public Map<Object, String> useMap = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<Object, ArrayList<UUID>> useMap = new ConcurrentHashMap<>();
     public ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists;
     public LinkedHashMap<UUID, ArrayList<Integer>> toolLists;
     private int prevSlot;

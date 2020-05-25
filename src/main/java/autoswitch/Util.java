@@ -20,9 +20,20 @@ public class Util {
     }
 
     public static Object getTarget(Object protoTarget) {
+
         if (protoTarget instanceof AbstractBlock.AbstractBlockState) {
+            // Block Override
+            if (AutoSwitch.data.toolTargetLists.containsKey(((AbstractBlock.AbstractBlockState) protoTarget).getBlock())) {
+                return ((AbstractBlock.AbstractBlockState) protoTarget).getBlock();
+            }
             return ((AbstractBlock.AbstractBlockState) protoTarget).getMaterial();
         }
+
+        // Entity Override
+        if (AutoSwitch.data.toolTargetLists.containsKey(((Entity) protoTarget).getType())) {
+            return ((Entity) protoTarget).getType();
+        }
+
         if (protoTarget instanceof LivingEntity) {
             return ((LivingEntity) protoTarget).getGroup();
         }

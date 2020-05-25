@@ -141,7 +141,7 @@ abstract class Targetable {
         if (!switchAllowed()) {
             return Optional.empty();
         }
-        AutoSwitch.logger.error(toolRating);
+
         for (Map.Entry<UUID, ArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
@@ -193,27 +193,7 @@ abstract class Targetable {
             }
 
             if (ToolHandler.correctType(tool, item) && Util.isRightTool(stack, protoTarget)) {
-                double rating = 0;
-
-                // Evaluate enchantment
-                if (enchant == null) {
-                    rating += 1; //promote tool in ranking as it is the correct one
-                } else if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
-                    rating += EnchantmentHelper.getLevel(enchant, stack);
-                } else return; // Don't further consider this tool as it does not have the enchantment needed
-
-                // Add tool to selection
-                this.toolLists.putIfAbsent(uuid, new ArrayList<>());
-                this.toolLists.get(uuid).add(slot);
-                if (this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
-                rating += Util.getTargetRating(protoTarget, stack) + counter.get();
-                //prefer current slot. Has outcome of making undamageable item fallback not switching if it can help it
-                if (this.player.inventory.selectedSlot == slot) {
-                    rating += 0.1;
-                }
-                double finalRating = rating;
-                this.toolRating.computeIfPresent(slot, (iSlot, oldRating) -> Util.toolRatingChange(oldRating, finalRating, stack));
-                this.toolRating.putIfAbsent(slot, rating);
+                new TargetableUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, protoTarget, counter, false);
             }
         });
 
@@ -228,11 +208,48 @@ abstract class Targetable {
     abstract Boolean switchTypeAllowed();
 
 
+    // Helper class for switching
+    class TargetableUtil {
+        /**
+         * Moves some core switch logic out of the lambda to better reuse it in both attack and use switching
+         */
+        public void updateToolListsAndRatings(ItemStack stack, UUID uuid, String tool, Enchantment enchant, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
+            double rating = 0;
+
+            // Evaluate enchantment
+            if (enchant == null) {
+                rating += 1; //promote tool in ranking as it is the correct one
+            } else if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
+                rating += EnchantmentHelper.getLevel(enchant, stack);
+            } else return; // Don't further consider this tool as it does not have the enchantment needed
+
+            // Add tool to selection
+            Targetable.this.toolLists.putIfAbsent(uuid, new ArrayList<>());
+            Targetable.this.toolLists.get(uuid).add(slot);
+            if (!useAction) {
+                if (Targetable.this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
+                rating += Util.getTargetRating(protoTarget, stack) + counter.get();
+
+                if (!tool.equals("blank") && ((stack.getItem().equals(ItemStack.EMPTY.getItem())))) { // Fix ignore overrides
+                    rating = 0.1;
+                }
+            }
+
+            //prefer current slot. Has outcome of making undamageable item fallback not switching if it can help it
+            if (Targetable.this.player.inventory.selectedSlot == slot) {
+                rating += 0.1;
+            }
+            double finalRating = rating;
+            Targetable.this.toolRating.computeIfPresent(slot, (iSlot, oldRating) -> Util.toolRatingChange(oldRating, finalRating, stack));
+            Targetable.this.toolRating.putIfAbsent(slot, rating);
+        }
+    }
+
+
 }
 
 class TargetableUsable extends Targetable {
     Object target;
-    int slot = -90;
 
     /**
      * Base constructor for Targetable, initializes the class parameters and
@@ -249,16 +266,32 @@ class TargetableUsable extends Targetable {
 
     @Override
     void populateToolSelection(ItemStack stack, int slot) {
-        AutoSwitch.data.useMap.computeIfPresent(Util.getUseTarget(this.target), (o, toolString) -> {
-            if (AutoSwitch.cfg.checkSaddlableEntitiesForSaddle() &&
-                    this.target instanceof Saddleable && !((Saddleable) this.target).isSaddled()) {
-                //Don't switch if the target isn't saddled. Assumes only use for saddleable entity would be to ride it
-                return toolString;
+
+        AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
+
+        Object target = Util.getUseTarget(this.target);
+
+        if (AutoSwitch.cfg.checkSaddlableEntitiesForSaddle() &&
+                this.target instanceof Saddleable && !((Saddleable) this.target).isSaddled()) {
+            //Don't switch if the target isn't saddled. Assumes only use for saddleable entity would be to ride it
+            return;
+        }
+
+        if (AutoSwitch.data.useMap.get(target) == null) return;
+        AutoSwitch.data.useMap.get(target).forEach(uuid -> {
+            if (uuid == null) {
+                return;
             }
-            if (ToolHandler.correctType(toolString, stack.getItem())) {
-                this.slot = slot;
+            counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
+            String tool;
+            Enchantment enchant;
+            Pair<String, Enchantment> pair = AutoSwitch.data.enchantToolMap.get(uuid);
+            tool = pair.getLeft();
+            enchant = pair.getRight();
+
+            if (ToolHandler.correctUseType(tool, stack.getItem())) {
+                new TargetableUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, this.target, counter, true);
             }
-            return toolString;
         });
     }
 
@@ -267,17 +300,6 @@ class TargetableUsable extends Targetable {
         return this.cfg.switchUseActions();
     }
 
-    @Override
-    Optional<Integer> findSlot() {
-        if (!switchAllowed()) {
-            return Optional.empty();
-        }
-        if (this.slot != -90) {
-            return Optional.of(this.slot);
-        }
-
-        return Optional.empty();
-    }
 }
 
 /**

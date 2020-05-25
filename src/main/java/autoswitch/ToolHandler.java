@@ -75,6 +75,11 @@ public class ToolHandler {
 
     }
 
+    public static boolean correctUseType(String tool, Item item) {
+        return (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
+    }
+
+
     public String getTag() {
         return tag;
     }
