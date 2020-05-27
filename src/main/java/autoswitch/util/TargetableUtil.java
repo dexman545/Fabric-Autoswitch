@@ -1,5 +1,6 @@
-package autoswitch;
+package autoswitch.util;
 
+import autoswitch.AutoSwitch;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -11,7 +12,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Util {
+public class TargetableUtil {
 
     public static double toolRatingChange(double oldValue, double newValue, ItemStack stack) {
         if (AutoSwitch.cfg.toolEnchantmentsStack() && !(stack.getItem().equals(ItemStack.EMPTY.getItem()))) return oldValue + newValue;

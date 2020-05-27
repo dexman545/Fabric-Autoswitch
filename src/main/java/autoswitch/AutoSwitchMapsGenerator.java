@@ -10,20 +10,16 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Environment(EnvType.CLIENT)
-public class AutoSwitchLists {
+public class AutoSwitchMapsGenerator {
 
-    //Lists of Material/Entity the tool targets
-    private final ConcurrentHashMap<Object, ArrayList<UUID>> materialTargetLists = new ConcurrentHashMap<>();
+    public AutoSwitchMapsGenerator() {
+        populateToolTargetMaps();
+        populateToolListMap(AutoSwitch.data.toolLists);
+    }
 
-    //Lists of tool slots
-    private final LinkedHashMap<UUID, ArrayList<Integer>> toolLists = new LinkedHashMap<>();
-
-    public ConcurrentHashMap<Object, ArrayList<UUID>> getToolTargetLists() {
-
-        populateMap(this.materialTargetLists, AutoSwitch.matCfg);
+    private void populateToolTargetMaps() {
+        populateMap(AutoSwitch.data.toolTargetLists, AutoSwitch.matCfg);
         populateMap(AutoSwitch.data.useMap, AutoSwitch.usableCfg);
-
-        return this.materialTargetLists;
 
     }
 
@@ -49,16 +45,15 @@ public class AutoSwitchLists {
         }
     }
 
-    public LinkedHashMap<UUID, ArrayList<Integer>> getToolLists() {
+    private void populateToolListMap(LinkedHashMap<UUID, ArrayList<Integer>> toolLists) {
 
         if (AutoSwitch.cfg.toolPriorityOrder() == null) {
-            return toolLists;
+            return;
         }
 
         for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
             toolLists.put((new ToolHandler(type, 0).getId()), new ArrayList<>());
         }
 
-        return toolLists;
     }
 }

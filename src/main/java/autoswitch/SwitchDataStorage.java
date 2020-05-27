@@ -21,8 +21,8 @@ public class SwitchDataStorage {
      * Maps targets of use-action -> desired tool
      */
     public ConcurrentHashMap<Object, ArrayList<UUID>> useMap = new ConcurrentHashMap<>();
-    public ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists;
-    public LinkedHashMap<UUID, ArrayList<Integer>> toolLists;
+    public ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists = new ConcurrentHashMap<>();
+    public LinkedHashMap<UUID, ArrayList<Integer>> toolLists = new LinkedHashMap<>();
     private int prevSlot;
     private boolean hasSwitched;
     private boolean attackedEntity;

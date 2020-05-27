@@ -187,7 +187,7 @@ public class MaterialHandler {
     }
 
     /**
-     * @return returns target, may be Material, EntityGroup, or EntityType. Null if no material found
+     * @return returns target, may be Material, Block, EntityGroup, or EntityType. Null if no material found
      */
     public Object getMat() {
         return this.mat;
