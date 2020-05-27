@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TargetableUtil {
 
     public static double toolRatingChange(double oldValue, double newValue, ItemStack stack) {
-        if (AutoSwitch.cfg.toolEnchantmentsStack() && !(stack.getItem().equals(ItemStack.EMPTY.getItem()))) {
+        if (AutoSwitch.cfg.toolEnchantmentsStack() && !(stack.getItem().equals(ItemStack.EMPTY.getItem())) && !(stack.getMaxDamage() == 0)) {
             return oldValue + newValue;
         }
 
