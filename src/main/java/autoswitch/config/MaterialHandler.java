@@ -1,5 +1,6 @@
-package autoswitch;
+package autoswitch.config;
 
+import autoswitch.AutoSwitch;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Material;

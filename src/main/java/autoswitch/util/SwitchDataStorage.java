@@ -1,4 +1,4 @@
-package autoswitch;
+package autoswitch.util;
 
 import net.minecraft.enchantment.Enchantment;
 import org.apache.commons.lang3.tuple.Pair;

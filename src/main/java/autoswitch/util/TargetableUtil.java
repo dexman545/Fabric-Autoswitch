@@ -15,7 +15,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TargetableUtil {
 
     public static double toolRatingChange(double oldValue, double newValue, ItemStack stack) {
-        if (AutoSwitch.cfg.toolEnchantmentsStack() && !(stack.getItem().equals(ItemStack.EMPTY.getItem()))) return oldValue + newValue;
+        if (AutoSwitch.cfg.toolEnchantmentsStack() && !(stack.getItem().equals(ItemStack.EMPTY.getItem()))) {
+            return oldValue + newValue;
+        }
 
         return Math.max(oldValue, newValue);
     }
@@ -38,24 +40,21 @@ public class TargetableUtil {
         if (protoTarget instanceof LivingEntity) {
             return ((LivingEntity) protoTarget).getGroup();
         }
-        if (protoTarget instanceof Entity) {
-            return ((Entity) protoTarget).getType();
-        }
 
-        AutoSwitch.logger.error("AutoSwitch tried to parse something that wasn't a BlockState, Entity, or Living Entity!");
-        return null;
+        return ((Entity) protoTarget).getType();
+
     }
 
     public static float getTargetRating(Object target, ItemStack stack) {
-        if (target instanceof BlockState) { //TODO add mining level check here
+        if (target instanceof BlockState) {
             return stack.getMiningSpeedMultiplier((BlockState) target);
         }
 
         if (target instanceof Entity) {
             AtomicReference<Float> x = new AtomicReference<>((float) 0);
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(entityAttributeModifier -> {
-                x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()));
-            });
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(entityAttributeModifier ->
+                    x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()))
+            );
             return x.get();
         }
 
@@ -66,12 +65,8 @@ public class TargetableUtil {
         if (protoTarget instanceof Block) {
             return protoTarget;
         }
-        if (protoTarget instanceof Entity) {
-            return ((Entity) protoTarget).getType();
-        }
 
-        AutoSwitch.logger.error("AutoSwitch tried to parse something that wasn't a Block or Entity for a use action!");
-        return null;
+        return ((Entity) protoTarget).getType();
     }
 
     /**

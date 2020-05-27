@@ -1,5 +1,6 @@
-package autoswitch;
+package autoswitch.config;
 
+import autoswitch.AutoSwitch;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.aeonbits.owner.Accessible;
@@ -31,7 +32,7 @@ public class AutoSwitchMapsGenerator {
             ArrayList<UUID> list = new ArrayList<>();
             for (String input : split) {
                 //Handle normal operation where input is tool and enchantment
-                UUID x = (new ToolHandler(input, 0)).getId();
+                UUID x = (new ToolHandler(input)).getId();
                 if (x != null) {
                     list.add(x);
                 }
@@ -52,7 +53,7 @@ public class AutoSwitchMapsGenerator {
         }
 
         for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
-            toolLists.put((new ToolHandler(type, 0).getId()), new ArrayList<>());
+            toolLists.put((new ToolHandler(type).getId()), new ArrayList<>());
         }
 
     }

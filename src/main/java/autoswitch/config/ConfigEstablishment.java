@@ -1,7 +1,6 @@
 package autoswitch.config;
 
 import autoswitch.AutoSwitch;
-import autoswitch.AutoSwitchMapsGenerator;
 import net.fabricmc.loader.api.FabricLoader;
 import org.aeonbits.owner.ConfigFactory;
 
@@ -23,7 +22,7 @@ public final class ConfigEstablishment {
 
         //generate config file; removes incorrect values from existing one as well
         try {
-            //TODO manually write config files with the following requirements:
+            //TODO manually write config files with the following requirements: (will be hard to keep updated)
             // 1. ordered (so the mixin can be removed)
             // 2. write in the comments
             // 3. do some DFU shizzle to update old configs to new defaults?

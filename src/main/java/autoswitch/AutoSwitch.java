@@ -1,6 +1,7 @@
 package autoswitch;
 
 import autoswitch.config.*;
+import autoswitch.util.SwitchDataStorage;
 import autoswitch.util.SwitchUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
