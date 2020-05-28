@@ -13,13 +13,6 @@ group = project.maven_group
 minecraft {
 }
 
-repositories {
-	maven {
-		name = "JitPack"
-		url "https://jitpack.io"
-	}
-}
-
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -32,6 +25,14 @@ dependencies {
 	//OWNER library
 	implementation "org.aeonbits.owner:owner:1.0.10"
 	include "org.aeonbits.owner:owner:1.0.10"
+
+	//ModMenu
+	modCompileOnly("io.github.prospector:modmenu:${project.modmenu_version}") {
+		transitive = false
+	}
+	modRuntime("io.github.prospector:modmenu:${project.modmenu_version}") {
+		transitive = false
+	}
 
 }
 

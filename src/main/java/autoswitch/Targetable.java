@@ -1,11 +1,16 @@
 package autoswitch;
 
+import autoswitch.config.AutoSwitchConfig;
+import autoswitch.config.ToolHandler;
+import autoswitch.util.SwitchDataStorage;
+import autoswitch.util.TargetableUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Saddleable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -13,19 +18,19 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Parent class for Targetable type. Used to establish shared functions and parameters that are used for manipulating
- *  the player's selected slot.
- *
+ * the player's selected slot.
  */
 @Environment(EnvType.CLIENT)
 abstract class Targetable {
-    HashMap<Object, ArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
-    LinkedHashMap<UUID, ArrayList<Integer>> toolLists = AutoSwitch.data.toolLists;
+    ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
+    Map<UUID, ArrayList<Integer>> toolLists = Collections.synchronizedMap(AutoSwitch.data.toolLists);
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
-    HashMap<Integer, Double> toolRating = new HashMap<>();
+    ConcurrentHashMap<Integer, Double> toolRating = new ConcurrentHashMap<>();
     PlayerEntity player;
     AutoSwitchConfig cfg;
     Boolean onMP;
@@ -36,7 +41,7 @@ abstract class Targetable {
      * fetches the target map and initial tool map based on configs passed to it
      *
      * @param player player this will effect
-     * @param onMP whether the player is on a remote server. If given null, will assume that AutoSwitch is allowed
+     * @param onMP   whether the player is on a remote server. If given null, will assume that AutoSwitch is allowed
      */
     public Targetable(PlayerEntity player, Boolean onMP) {
         this.cfg = AutoSwitch.cfg;
@@ -47,6 +52,7 @@ abstract class Targetable {
 
     /**
      * The "of" methods send the target to the correct function to handle it
+     *
      * @return returns the correct Targetable subclass to handle the operation
      */
     static Targetable of(Entity target, PlayerEntity player, Boolean onMP) {
@@ -69,15 +75,16 @@ abstract class Targetable {
     /**
      * Pulls the list of ItemStacks from the player's hotbar and send the stack and slot number
      * to populate the tool map. Sends an air item if the slot is empty.
+     *
      * @param player player whose inventory will be checked
      */
     public void populateToolLists(PlayerEntity player) {
         List<ItemStack> hotbar = player.inventory.main.subList(0, PlayerInventory.getHotbarSize());
-        for (int i=0; i<PlayerInventory.getHotbarSize(); i++) {
-            if (!(AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && hotbar.get(i).getMaxDamage() == 0) && (hotbar.get(i).getMaxDamage() - hotbar.get(i).getDamage() < 3) && this.cfg.tryPreserveDamagedTools()) {
+        for (int slot = 0; slot < PlayerInventory.getHotbarSize(); slot++) {
+            if (!(AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && hotbar.get(slot).getMaxDamage() == 0) && (hotbar.get(slot).getMaxDamage() - hotbar.get(slot).getDamage() < 3) && this.cfg.tryPreserveDamagedTools()) {
                 continue;
             }
-            populateTargetTools(hotbar.get(i), i);
+            populateToolSelection(hotbar.get(slot), slot);
 
         }
 
@@ -87,8 +94,9 @@ abstract class Targetable {
     /**
      * Change the players selected slot based on the results of findSlot().
      * Checks if there is a slot to change to first.
-     * @see autoswitch.Targetable#findSlot()
+     *
      * @return If no slot to change to, returns empty Otherwise returns true if the slot changed, false if it didn't
+     * @see autoswitch.Targetable#findSlot()
      */
     public Optional<Boolean> changeTool() {
         return findSlot().map(slot -> {
@@ -99,7 +107,7 @@ abstract class Targetable {
             }
 
             //Loop over it since scrollInHotbar only moves one pos
-            for (int i = Math.abs(currentSlot - slot); i > 0; i--){
+            for (int i = Math.abs(currentSlot - slot); i > 0; i--) {
                 this.player.inventory.scrollInHotbar(currentSlot - slot);
             }
             return Optional.of(true); //Slot changed
@@ -114,30 +122,35 @@ abstract class Targetable {
      */
     protected Boolean switchAllowed() {
         return ((!this.player.isCreative() || this.cfg.switchInCreative()) &&
-            (switchTypeAllowed() && (!onMP || this.cfg.switchInMP())));
+                (switchTypeAllowed() && (!onMP || this.cfg.switchInMP())));
     }
 
     //Overrides
 
     /**
      * Populate the tool map with the right tools for that type based on subclass
+     *
      * @param stack ItemStack to be checked if it is valid
-     * @param i slot of stack, to be inserted into map if it is valid
+     * @param slot  slot of stack, to be inserted into map if it is valid
      */
-    abstract void populateTargetTools(ItemStack stack, int i);
+    abstract void populateToolSelection(ItemStack stack, int slot);
 
     /**
      * Find the optimal tool slot. Return empty if there isn't one
+     *
      * @return Returns empty if autoswitch is not allowed or there is no slot to change to
      */
     Optional<Integer> findSlot() {
-        if (!switchAllowed()) {return Optional.empty();}
-        for (Map.Entry<UUID, ArrayList<Integer>> toolList : toolLists.entrySet()){ //type of tool, slots that have it
+        if (this.toolRating.isEmpty() || !switchAllowed()) {
+            return Optional.empty();
+        }
+
+        for (Map.Entry<UUID, ArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
-                for (Integer i : toolList.getValue()) {
-                    if (!this.toolRating.isEmpty() && i.equals(Collections.max(this.toolRating.entrySet(),
+                for (Integer slot : toolList.getValue()) {
+                    if (slot.equals(Collections.max(this.toolRating.entrySet(),
                             Comparator.comparingDouble(Map.Entry::getValue)).getKey())) {
-                        return Optional.of(i);
+                        return Optional.of(slot);
                     }
                 }
             }
@@ -150,16 +163,16 @@ abstract class Targetable {
      * Add tools to map that can handle this target
      *
      * @param protoTarget Entity or BlockState being attacked
-     * @param stack item in hotbar slot to check for usage
-     * @param i hotbar slot number
+     * @param stack       item in hotbar slot to check for usage
+     * @param slot        hotbar slot number
      */
-    void populateTargetToolsAttack(Object protoTarget, ItemStack stack, int i) {
+    void populateToolSelectionCore(Object protoTarget, ItemStack stack, int slot) {
         Item item = stack.getItem();
 
         // Establish base value to add to the tool rating, promoting higher priority tools from the config in the selection
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
 
-        Object target = Util.getTarget(protoTarget);
+        Object target = TargetableUtil.getTarget(protoTarget);
 
         // Evaluate target and find tools
 
@@ -167,7 +180,9 @@ abstract class Targetable {
         if (!AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && this.toolTargetLists.get(target) == null) return;
 
         this.toolTargetLists.getOrDefault(target, SwitchDataStorage.blank).forEach(uuid -> {
-            if (uuid == null) {return;}
+            if (uuid == null) {
+                return;
+            }
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
             String tool;
             Enchantment enchant;
@@ -180,24 +195,8 @@ abstract class Targetable {
                 enchant = null;
             }
 
-            if (ToolHandler.correctType(tool, item) && Util.isRightTool(stack, protoTarget)) {
-                double rating = 0;
-
-                // Evaluate enchantment
-                if (enchant == null) {
-                    rating += 1; //promote tool in ranking as it is the correct one
-                } else if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
-                    rating += EnchantmentHelper.getLevel(enchant, stack);
-                } else return; // Don't further consider this tool as it does not have the enchantment needed
-
-                // Add tool to selection
-                this.toolLists.putIfAbsent(uuid, new ArrayList<>());
-                this.toolLists.get(uuid).add(i);
-                if (this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
-                rating += Util.getTargetRating(protoTarget, stack) + counter.get();
-                double finalRating = rating;
-                this.toolRating.computeIfPresent(i, (integer, aDouble) -> Math.max(aDouble, finalRating));
-                this.toolRating.putIfAbsent(i, rating);
+            if (ToolHandler.correctType(tool, item) && TargetableUtil.isRightTool(stack, protoTarget)) {
+                new TargetableMapUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, protoTarget, counter, false);
             }
         });
 
@@ -206,16 +205,54 @@ abstract class Targetable {
 
     /**
      * Determine config value for switching for mobs/blocks
+     *
      * @return true if that type of switch is allowed in the config
      */
     abstract Boolean switchTypeAllowed();
+
+
+    // Helper class for switching
+    class TargetableMapUtil {
+        /**
+         * Moves some core switch logic out of the lambda to better reuse it in both attack and use switching
+         */
+        public void updateToolListsAndRatings(ItemStack stack, UUID uuid, String tool, Enchantment enchant, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
+            double rating = 0;
+
+            // Evaluate enchantment
+            if (enchant == null) {
+                rating += 1; //promote tool in ranking as it is the correct one
+            } else if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
+                rating += EnchantmentHelper.getLevel(enchant, stack);
+            } else return; // Don't further consider this tool as it does not have the enchantment needed
+
+            // Add tool to selection
+            Targetable.this.toolLists.putIfAbsent(uuid, new ArrayList<>());
+            Targetable.this.toolLists.get(uuid).add(slot);
+            if (!useAction) {
+                if (Targetable.this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
+                rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
+
+                if (!tool.equals("blank") && ((stack.getItem().equals(ItemStack.EMPTY.getItem())))) { // Fix ignore overrides
+                    rating = 0.1;
+                }
+            }
+
+            //prefer current slot. Has outcome of making undamageable item fallback not switching if it can help it
+            if (Targetable.this.player.inventory.selectedSlot == slot) {
+                rating += 0.1;
+            }
+            double finalRating = rating;
+            Targetable.this.toolRating.computeIfPresent(slot, (iSlot, oldRating) -> TargetableUtil.toolRatingChange(oldRating, finalRating, stack));
+            Targetable.this.toolRating.putIfAbsent(slot, rating);
+        }
+    }
 
 
 }
 
 class TargetableUsable extends Targetable {
     Object target;
-    int slot = -90;
 
     /**
      * Base constructor for Targetable, initializes the class parameters and
@@ -231,12 +268,33 @@ class TargetableUsable extends Targetable {
     }
 
     @Override
-    void populateTargetTools(ItemStack stack, int i) {
-        AutoSwitch.data.useMap.computeIfPresent(Util.getUseTarget(this.target), (o, s) -> {
-            if (ToolHandler.correctType(s, stack.getItem())) {
-                this.slot = i;
+    void populateToolSelection(ItemStack stack, int slot) {
+
+        AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
+
+        Object target = TargetableUtil.getUseTarget(this.target);
+
+        if (AutoSwitch.cfg.checkSaddlableEntitiesForSaddle() &&
+                this.target instanceof Saddleable && !((Saddleable) this.target).isSaddled()) {
+            //Don't switch if the target isn't saddled. Assumes only use for saddleable entity would be to ride it
+            return;
+        }
+
+        if (AutoSwitch.data.useMap.get(target) == null) return;
+        AutoSwitch.data.useMap.get(target).forEach(uuid -> {
+            if (uuid == null) {
+                return;
             }
-            return s;
+            counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
+            String tool;
+            Enchantment enchant;
+            Pair<String, Enchantment> pair = AutoSwitch.data.enchantToolMap.get(uuid);
+            tool = pair.getLeft();
+            enchant = pair.getRight();
+
+            if (ToolHandler.correctUseType(tool, stack.getItem())) {
+                new TargetableMapUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, this.target, counter, true);
+            }
         });
     }
 
@@ -245,15 +303,6 @@ class TargetableUsable extends Targetable {
         return this.cfg.switchUseActions();
     }
 
-    @Override
-    Optional<Integer> findSlot() {
-        if (!switchAllowed()) {return Optional.empty();}
-        if (this.slot != -90) {
-            return Optional.of(this.slot);
-        }
-
-        return Optional.empty();
-    }
 }
 
 /**
@@ -270,7 +319,7 @@ class TargetableNone extends Targetable {
     }
 
     @Override
-    void populateTargetTools(ItemStack stack, int i) {
+    void populateToolSelection(ItemStack stack, int i) {
 
     }
 
@@ -303,12 +352,13 @@ class TargetableEntity extends Targetable {
 
     /**
      * Checks against enchants on the stack and TridentItem class
+     *
      * @param stack ItemStack to be checked if it is valid
-     * @param i     slot of stack, to be inserted into map if it is valid
+     * @param slot  slot of stack, to be inserted into map if it is valid
      */
     @Override
-    void populateTargetTools(ItemStack stack, int i) {
-        populateTargetToolsAttack(this.entity, stack, i);
+    void populateToolSelection(ItemStack stack, int slot) {
+        populateToolSelectionCore(this.entity, stack, slot);
 
     }
 
@@ -335,12 +385,13 @@ class TargetableMaterial extends Targetable {
 
     /**
      * Checks against Item and enchantments on the stack
+     *
      * @param stack ItemStack to be checked if it is valid
-     * @param i slot of stack, to be inserted into map if it is valid
+     * @param slot  slot of stack, to be inserted into map if it is valid
      */
     @Override
-    void populateTargetTools(ItemStack stack, int i) {
-        populateTargetToolsAttack(this.bs, stack, i);
+    void populateToolSelection(ItemStack stack, int slot) {
+        populateToolSelectionCore(this.bs, stack, slot);
 
     }
 

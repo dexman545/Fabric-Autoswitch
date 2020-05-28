@@ -1,5 +1,6 @@
-package autoswitch;
+package autoswitch.config;
 
+import autoswitch.AutoSwitch;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -15,22 +16,10 @@ import java.util.UUID;
 public class ToolHandler {
     private UUID id = null;
 
-    public String getTag() {
-        return tag;
-    }
-
-    private String tag = null;
-
-    public String getEnchTag() {
-        return enchTag;
-    }
-
-    private String enchTag = null;
-
-    public ToolHandler(String input, int n) {
+    public ToolHandler(String input) {
         String[] cleanedInput = input.split(";");
         String tagStr = cleanedInput[0].toLowerCase().trim().replace("-", ":");
-        String enchantStr = cleanedInput.length > n + 1 ? cleanedInput[n+1].toLowerCase().trim().replace("-", ":") : "";
+        String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase().trim().replace("-", ":") : "";
         Enchantment enchant = null;
         Identifier enchantID = Identifier.tryParse(enchantStr);
 
@@ -38,14 +27,11 @@ public class ToolHandler {
             AutoSwitch.logger.debug("Empty Tool Entry tried to parse");
         } else {
             this.id = UUID.nameUUIDFromBytes(input.getBytes());
-            this.tag = tagStr;
-            if (n == 1) {
-                this.enchTag = cleanedInput[1].toLowerCase().trim().replace("-", ":");
-            }
-
 
             if ((!Registry.ENCHANTMENT.containsId(enchantID))) {
-                if (!enchantStr.equals("")) {AutoSwitch.logger.warn("Enchantment not found in registry: " + enchantStr);}
+                if (!enchantStr.equals("")) {
+                    AutoSwitch.logger.warn("Enchantment not found in registry: " + enchantStr);
+                }
             } else {
                 enchant = Registry.ENCHANTMENT.get(enchantID);
             }
@@ -54,26 +40,6 @@ public class ToolHandler {
             AutoSwitch.data.enchantToolMap.put(id, Pair.of(tagStr, enchant));
         }
 
-    }
-
-    private String getTool(String t) {
-        switch (t){
-            case "axe":
-            case "trident":
-            case "shovel":
-            case "pickaxe":
-            case "sword":
-            case "shears":
-            case "hoe":
-            case "any":
-            default:
-                return Identifier.tryParse(t) != null ? t : "";
-        }
-
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     /**
@@ -100,6 +66,47 @@ public class ToolHandler {
         } else if ((tool.equals("sword") || tool.equals("any")) && (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem)) {
             return true;
         } else return (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
+
+    }
+
+    public static boolean correctUseType(String tool, Item item) {
+        return (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
+    }
+
+    private String getTool(String t) {
+        switch (t) {
+            case "axe":
+            case "trident":
+            case "shovel":
+            case "pickaxe":
+            case "sword":
+            case "shears":
+            case "hoe":
+            case "any":
+            default:
+                return Identifier.tryParse(t) != null ? t : "";
+        }
+
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public static boolean correctType(String tool, Item item) {
+        if ((tool.equals("pickaxe") || tool.equals("any")) && (FabricToolTags.PICKAXES.contains(item) || item instanceof PickaxeItem)) {
+            return true;
+        } else if ((tool.equals("shovel") || tool.equals("any")) && (FabricToolTags.SHOVELS.contains(item) || item instanceof ShovelItem)) {
+            return true;
+        } else if ((tool.equals("hoe") || tool.equals("any")) && (FabricToolTags.HOES.contains(item) || item instanceof HoeItem)) {
+            return true;
+        } else if ((tool.equals("shears") || tool.equals("any")) && (item instanceof ShearsItem)) {
+            return true;
+        } else if ((tool.equals("trident") || tool.equals("any")) && (item instanceof TridentItem)) {
+            return true;
+        } else if ((tool.equals("axe") || tool.equals("any")) && (FabricToolTags.AXES.contains(item) || item instanceof AxeItem)) {
+            return true;
+        } else return (tool.equals("sword") || tool.equals("any")) && (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem);
 
     }
 }
