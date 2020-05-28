@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Environment(EnvType.CLIENT)
 public class AutoSwitchMapsGenerator {
@@ -25,12 +26,12 @@ public class AutoSwitchMapsGenerator {
 
     }
 
-    private void populateMap(ConcurrentHashMap<Object, ArrayList<UUID>> map, Accessible cfg) {
+    private void populateMap(ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> map, Accessible cfg) {
         for (String key : cfg.propertyNames()) {
             String raw = cfg.getProperty(key);
             String[] split = raw.split(",");
 
-            ArrayList<UUID> list = new ArrayList<>();
+            CopyOnWriteArrayList<UUID> list = new CopyOnWriteArrayList<>();
             for (String input : split) {
                 //Handle normal operation where input is tool and enchantment
                 UUID x = (new ToolHandler(input)).getId();
@@ -47,14 +48,14 @@ public class AutoSwitchMapsGenerator {
         }
     }
 
-    private void populateToolListMap(Map<UUID, ArrayList<Integer>> toolLists) {
+    private void populateToolListMap(Map<UUID, CopyOnWriteArrayList<Integer>> toolLists) {
 
         if (AutoSwitch.cfg.toolPriorityOrder() == null) {
             return;
         }
 
         for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
-            toolLists.put((new ToolHandler(type).getId()), new ArrayList<>());
+            toolLists.put((new ToolHandler(type).getId()), new CopyOnWriteArrayList<>());
         }
 
     }

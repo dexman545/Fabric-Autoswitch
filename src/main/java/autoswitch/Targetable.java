@@ -19,6 +19,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -27,8 +28,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Environment(EnvType.CLIENT)
 abstract class Targetable {
-    ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
-    Map<UUID, ArrayList<Integer>> toolLists = Collections.synchronizedMap(AutoSwitch.data.toolLists);
+    ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
+    Map<UUID, CopyOnWriteArrayList<Integer>> toolLists = Collections.synchronizedMap(AutoSwitch.data.toolLists);
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
     ConcurrentHashMap<Integer, Double> toolRating = new ConcurrentHashMap<>();
     PlayerEntity player;
@@ -145,7 +146,7 @@ abstract class Targetable {
             return Optional.empty();
         }
 
-        for (Map.Entry<UUID, ArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
+        for (Map.Entry<UUID, CopyOnWriteArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
                     if (slot.equals(Collections.max(this.toolRating.entrySet(),
@@ -227,7 +228,7 @@ abstract class Targetable {
             } else return; // Don't further consider this tool as it does not have the enchantment needed
 
             // Add tool to selection
-            Targetable.this.toolLists.putIfAbsent(uuid, new ArrayList<>());
+            Targetable.this.toolLists.putIfAbsent(uuid, new CopyOnWriteArrayList<>());
             Targetable.this.toolLists.get(uuid).add(slot);
             if (!useAction) {
                 if (Targetable.this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
