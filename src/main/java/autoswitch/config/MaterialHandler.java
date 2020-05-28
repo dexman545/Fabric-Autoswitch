@@ -19,6 +19,7 @@ public class MaterialHandler {
 
     public MaterialHandler(String str) {
         str = str.toLowerCase().replace("-", ":");
+        switch (str) {
             case "solid_organic":
                 this.mat = Material.ORGANIC;
                 break;

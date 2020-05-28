@@ -10,7 +10,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.Saddleable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -273,12 +272,6 @@ class TargetableUsable extends Targetable {
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
 
         Object target = TargetableUtil.getUseTarget(this.target);
-
-        if (AutoSwitch.cfg.checkSaddlableEntitiesForSaddle() &&
-                this.target instanceof Saddleable && !((Saddleable) this.target).isSaddled()) {
-            //Don't switch if the target isn't saddled. Assumes only use for saddleable entity would be to ride it
-            return;
-        }
 
         if (AutoSwitch.data.useMap.get(target) == null) return;
         AutoSwitch.data.useMap.get(target).forEach(uuid -> {

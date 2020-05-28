@@ -1,7 +1,6 @@
 package autoswitch.util;
 
 import autoswitch.AutoSwitch;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -24,12 +23,12 @@ public class TargetableUtil {
 
     public static Object getTarget(Object protoTarget) {
 
-        if (protoTarget instanceof AbstractBlock.AbstractBlockState) {
+        if (protoTarget instanceof BlockState) {
             // Block Override
-            if (AutoSwitch.data.toolTargetLists.containsKey(((AbstractBlock.AbstractBlockState) protoTarget).getBlock())) {
-                return ((AbstractBlock.AbstractBlockState) protoTarget).getBlock();
+            if (AutoSwitch.data.toolTargetLists.containsKey(((BlockState) protoTarget).getBlock())) {
+                return ((BlockState) protoTarget).getBlock();
             }
-            return ((AbstractBlock.AbstractBlockState) protoTarget).getMaterial();
+            return ((BlockState) protoTarget).getMaterial();
         }
 
         // Entity Override
@@ -47,13 +46,13 @@ public class TargetableUtil {
 
     public static float getTargetRating(Object target, ItemStack stack) {
         if (target instanceof BlockState) {
-            return stack.getMiningSpeedMultiplier((BlockState) target);
+            return stack.getMiningSpeed((BlockState) target);
         }
 
         if (target instanceof Entity) {
             AtomicReference<Float> x = new AtomicReference<>((float) 0);
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(entityAttributeModifier ->
-                    x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()))
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.ATTACK_DAMAGE.getId()).forEach(entityAttributeModifier ->
+                    x.updateAndGet(v -> (float) (v + entityAttributeModifier.getAmount()))
             );
             return x.get();
         }

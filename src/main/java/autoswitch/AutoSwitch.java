@@ -114,7 +114,7 @@ public class AutoSwitch implements ClientModInitializer {
 
             //Checks for implementing switchback feature
             if (e.player != null) {
-                if (data.getHasSwitched() && !e.player.handSwinging) {
+                if (data.getHasSwitched() && !e.player.isHandSwinging) {
                     //uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
                     if ((!data.hasAttackedEntity() || !cfg.switchbackWaits()) ||
                             (e.player.getAttackCooldownProgress(-20.0f) == 1.0f && data.hasAttackedEntity())) {
@@ -141,7 +141,7 @@ public class AutoSwitch implements ClientModInitializer {
             //Disable block breaking iff mowing is disabled and there's an entity to hit
             EntityHitResult entityResult = SwitchUtil.rayTraceEntity(player, 1.0F, 4.5D);
             if (entityResult != null && cfg.controlMowingWhenFighting() && !mowing) {
-                player.handSwinging = !cfg.disableHandSwingWhenMowing();
+                player.isHandSwinging = !cfg.disableHandSwingWhenMowing();
                 return ActionResult.FAIL;
             }
 

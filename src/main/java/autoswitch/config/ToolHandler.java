@@ -93,20 +93,4 @@ public class ToolHandler {
         return id;
     }
 
-    public static boolean correctType(String tool, Item item) {
-        if ((tool.equals("pickaxe") || tool.equals("any")) && (FabricToolTags.PICKAXES.contains(item) || item instanceof PickaxeItem)) {
-            return true;
-        } else if ((tool.equals("shovel") || tool.equals("any")) && (FabricToolTags.SHOVELS.contains(item) || item instanceof ShovelItem)) {
-            return true;
-        } else if ((tool.equals("hoe") || tool.equals("any")) && (FabricToolTags.HOES.contains(item) || item instanceof HoeItem)) {
-            return true;
-        } else if ((tool.equals("shears") || tool.equals("any")) && (item instanceof ShearsItem)) {
-            return true;
-        } else if ((tool.equals("trident") || tool.equals("any")) && (item instanceof TridentItem)) {
-            return true;
-        } else if ((tool.equals("axe") || tool.equals("any")) && (FabricToolTags.AXES.contains(item) || item instanceof AxeItem)) {
-            return true;
-        } else return (tool.equals("sword") || tool.equals("any")) && (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem);
-
-    }
 }
