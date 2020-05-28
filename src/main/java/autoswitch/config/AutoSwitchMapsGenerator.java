@@ -1,29 +1,27 @@
-package autoswitch;
+package autoswitch.config;
 
+import autoswitch.AutoSwitch;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.aeonbits.owner.Accessible;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Environment(EnvType.CLIENT)
-public class AutoSwitchLists {
+public class AutoSwitchMapsGenerator {
 
-    //Lists of Material/Entity the tool targets
-    private final ConcurrentHashMap<Object, ArrayList<UUID>> materialTargetLists = new ConcurrentHashMap<>();
+    public AutoSwitchMapsGenerator() {
+        populateToolTargetMaps();
+        populateToolListMap(AutoSwitch.data.toolLists);
+    }
 
-    //Lists of tool slots
-    private final LinkedHashMap<UUID, ArrayList<Integer>> toolLists = new LinkedHashMap<>();
-
-    public ConcurrentHashMap<Object, ArrayList<UUID>> getToolTargetLists() {
-
-        populateMap(this.materialTargetLists, AutoSwitch.matCfg);
+    private void populateToolTargetMaps() {
+        populateMap(AutoSwitch.data.toolTargetLists, AutoSwitch.matCfg);
         populateMap(AutoSwitch.data.useMap, AutoSwitch.usableCfg);
-
-        return this.materialTargetLists;
 
     }
 
@@ -35,7 +33,7 @@ public class AutoSwitchLists {
             ArrayList<UUID> list = new ArrayList<>();
             for (String input : split) {
                 //Handle normal operation where input is tool and enchantment
-                UUID x = (new ToolHandler(input, 0)).getId();
+                UUID x = (new ToolHandler(input)).getId();
                 if (x != null) {
                     list.add(x);
                 }
@@ -49,16 +47,15 @@ public class AutoSwitchLists {
         }
     }
 
-    public LinkedHashMap<UUID, ArrayList<Integer>> getToolLists() {
+    private void populateToolListMap(Map<UUID, ArrayList<Integer>> toolLists) {
 
         if (AutoSwitch.cfg.toolPriorityOrder() == null) {
-            return toolLists;
+            return;
         }
 
         for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
-            toolLists.put((new ToolHandler(type, 0).getId()), new ArrayList<>());
+            toolLists.put((new ToolHandler(type).getId()), new ArrayList<>());
         }
 
-        return toolLists;
     }
 }

@@ -1,5 +1,6 @@
-package autoswitch;
+package autoswitch.config;
 
+import autoswitch.AutoSwitch;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -14,13 +15,11 @@ import java.util.UUID;
 @Environment(EnvType.CLIENT)
 public class ToolHandler {
     private UUID id = null;
-    private String tag = null;
-    private String enchTag = null;
 
-    public ToolHandler(String input, int n) {
+    public ToolHandler(String input) {
         String[] cleanedInput = input.split(";");
         String tagStr = cleanedInput[0].toLowerCase().trim().replace("-", ":");
-        String enchantStr = cleanedInput.length > n + 1 ? cleanedInput[n + 1].toLowerCase().trim().replace("-", ":") : "";
+        String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase().trim().replace("-", ":") : "";
         Enchantment enchant = null;
         Identifier enchantID = Identifier.tryParse(enchantStr);
 
@@ -28,11 +27,6 @@ public class ToolHandler {
             AutoSwitch.logger.debug("Empty Tool Entry tried to parse");
         } else {
             this.id = UUID.nameUUIDFromBytes(input.getBytes());
-            this.tag = tagStr;
-            if (n == 1) {
-                this.enchTag = cleanedInput[1].toLowerCase().trim().replace("-", ":");
-            }
-
 
             if ((!Registry.ENCHANTMENT.containsId(enchantID))) {
                 if (!enchantStr.equals("")) {
@@ -77,15 +71,6 @@ public class ToolHandler {
 
     public static boolean correctUseType(String tool, Item item) {
         return (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
-    }
-
-
-    public String getTag() {
-        return tag;
-    }
-
-    public String getEnchTag() {
-        return enchTag;
     }
 
     private String getTool(String t) {

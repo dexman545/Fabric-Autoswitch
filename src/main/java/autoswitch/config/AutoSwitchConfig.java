@@ -9,43 +9,43 @@ import org.aeonbits.owner.Reloadable;
 public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
 
     @DefaultValue("true")
-        //Display toggle message above hotbar. Set to false for normal chat message
+    @Comment("Display toggle message above hotbar. Set to false for normal chat message.")
     Boolean toggleMsgOverHotbar();
 
     @DefaultValue("true")
-        //Display toggle message, set to false to remove it
+    @Comment("Display toggle message, set to false to remove it.")
     Boolean displayToggleMsg();
 
     @DefaultValue("false")
-        //AutoSwitch functionality in creative mode
+    @Comment("AutoSwitch functionality in creative mode.")
     Boolean switchInCreative();
 
     @DefaultValue("true")
-        //AutoSwitch for mining
+    @Comment("AutoSwitch for mining.")
     Boolean switchForBlocks();
 
     @DefaultValue("true")
-        //AutoSwitch for PvE
+    @Comment("AutoSwitch for attacking mobs.")
     Boolean switchForMobs();
 
     @DefaultValue("true")
-        //AutoSwitch when in multiplayer
+    @Comment("Allow AutoSwitch when in multiplayer.")
     Boolean switchInMP();
 
     @DefaultValue("true")
-        //Return to previous slot when not attacking a block
+    @Comment("Return to previous slot when not attacking a block.")
     Boolean switchbackBlocks();
 
     @DefaultValue("true")
-        //Return to previous slot after attacking a mob
+    @Comment("Return to previous slot after attacking a mob.")
     Boolean switchbackMobs();
 
     @DefaultValue("true")
-        //Let AutoSwitch control breaking a block with an empty collision box (ie. tall grass) when trying to attack a mob
+    @Comment("Let AutoSwitch prevent breaking a block with an empty collision box (ie. tall grass) when trying to attack a mob.")
     Boolean controlMowingWhenFighting();
 
     @DefaultValue("true")
-        //Disable the swinging of the hand when trying to mow when fighting
+    @Comment("Disable the swinging of the hand when trying to mow when fighting.")
     Boolean disableHandSwingWhenMowing();
 
     @Separator(">")
@@ -57,40 +57,39 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
 
     @DefaultValue("true")
     @Key("switchbackWaitsForCooldownWhenAttackingMobs")
-        //before switching back when fighting a mob, wait for the attack cooldown to finish. Fixes attacks not doing a lot of damage
+    @Comment("Before switching back when fighting a mob, wait for the attack cooldown to finish. Fixes attacks not doing a lot of damage.")
     Boolean switchbackWaits();
 
     @DefaultValue("true")
-        //Will ignore tools that are about to break when considering which tool to switch to
+    @Comment("Will ignore tools that are about to break when considering which tool to switch to.")
     Boolean tryPreserveDamagedTools();
 
     @DefaultValue("true")
-        //Switch used tool to offhand
+    @Comment("Switch used tool to offhand.")
     Boolean putUseActionToolInOffHand();
 
     @DefaultValue("true")
-        //Switch for use-action of a tool
+    @Comment("Switch for use-action of a tool.")
     Boolean switchUseActions();
 
     @DefaultValue("true")
-        //Prefer tool with minimum mining level
-        //TODO implement
+    @Comment("Prefer tool with minimum mining level.")
     Boolean preferMinimumViableTool();
 
     @DefaultValue("true")
-        //Checks if a saddlable entity has a saddle for use action to switch. Does not allow switching to a saddle on hotbar.
+    @Comment("Checks if a saddlable entity has a saddle for use action to switch. Does not allow switching to a saddle on hotbar.")
     Boolean checkSaddlableEntitiesForSaddle();
 
     @DefaultValue("true")
-        //Enable dumb check for tool harvestablity
+    @Comment("Enable dumb check for tool harvestablity on the targeted block.")
     Boolean dumbMiningLevelCheck();
 
     @DefaultValue("true")
-        //Enable switching to items with no durability when no tool is found
+    @Comment("Enable switching to items with no durability when no tool is found.")
     Boolean useNoDurablityItemsWhenUnspecified();
 
     @DefaultValue("true")
-        //Enable to allow target list to stack enchantments. Disable for old behavior
+    @Comment("Enable to allow target list to stack enchantments. Disable for old behavior.")
     Boolean toolEnchantmentsStack();
 
     @DefaultValue("false")

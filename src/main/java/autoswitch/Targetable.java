@@ -1,6 +1,9 @@
 package autoswitch;
 
 import autoswitch.config.AutoSwitchConfig;
+import autoswitch.config.ToolHandler;
+import autoswitch.util.SwitchDataStorage;
+import autoswitch.util.TargetableUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -138,14 +141,14 @@ abstract class Targetable {
      * @return Returns empty if autoswitch is not allowed or there is no slot to change to
      */
     Optional<Integer> findSlot() {
-        if (!switchAllowed()) {
+        if (this.toolRating.isEmpty() || !switchAllowed()) {
             return Optional.empty();
         }
 
         for (Map.Entry<UUID, ArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
-                    if (!this.toolRating.isEmpty() && slot.equals(Collections.max(this.toolRating.entrySet(),
+                    if (slot.equals(Collections.max(this.toolRating.entrySet(),
                             Comparator.comparingDouble(Map.Entry::getValue)).getKey())) {
                         return Optional.of(slot);
                     }
@@ -169,7 +172,7 @@ abstract class Targetable {
         // Establish base value to add to the tool rating, promoting higher priority tools from the config in the selection
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
 
-        Object target = Util.getTarget(protoTarget);
+        Object target = TargetableUtil.getTarget(protoTarget);
 
         // Evaluate target and find tools
 
@@ -192,8 +195,8 @@ abstract class Targetable {
                 enchant = null;
             }
 
-            if (ToolHandler.correctType(tool, item) && Util.isRightTool(stack, protoTarget)) {
-                new TargetableUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, protoTarget, counter, false);
+            if (ToolHandler.correctType(tool, item) && TargetableUtil.isRightTool(stack, protoTarget)) {
+                new TargetableMapUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, protoTarget, counter, false);
             }
         });
 
@@ -209,7 +212,7 @@ abstract class Targetable {
 
 
     // Helper class for switching
-    class TargetableUtil {
+    class TargetableMapUtil {
         /**
          * Moves some core switch logic out of the lambda to better reuse it in both attack and use switching
          */
@@ -228,7 +231,7 @@ abstract class Targetable {
             Targetable.this.toolLists.get(uuid).add(slot);
             if (!useAction) {
                 if (Targetable.this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
-                rating += Util.getTargetRating(protoTarget, stack) + counter.get();
+                rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
 
                 if (!tool.equals("blank") && ((stack.getItem().equals(ItemStack.EMPTY.getItem())))) { // Fix ignore overrides
                     rating = 0.1;
@@ -240,7 +243,7 @@ abstract class Targetable {
                 rating += 0.1;
             }
             double finalRating = rating;
-            Targetable.this.toolRating.computeIfPresent(slot, (iSlot, oldRating) -> Util.toolRatingChange(oldRating, finalRating, stack));
+            Targetable.this.toolRating.computeIfPresent(slot, (iSlot, oldRating) -> TargetableUtil.toolRatingChange(oldRating, finalRating, stack));
             Targetable.this.toolRating.putIfAbsent(slot, rating);
         }
     }
@@ -269,7 +272,7 @@ class TargetableUsable extends Targetable {
 
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
 
-        Object target = Util.getUseTarget(this.target);
+        Object target = TargetableUtil.getUseTarget(this.target);
 
         if (AutoSwitch.cfg.checkSaddlableEntitiesForSaddle() &&
                 this.target instanceof Saddleable && !((Saddleable) this.target).isSaddled()) {
@@ -290,7 +293,7 @@ class TargetableUsable extends Targetable {
             enchant = pair.getRight();
 
             if (ToolHandler.correctUseType(tool, stack.getItem())) {
-                new TargetableUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, this.target, counter, true);
+                new TargetableMapUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, this.target, counter, true);
             }
         });
     }

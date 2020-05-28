@@ -14,7 +14,7 @@ public interface ConfigHeaders {
             "\nList is ordered and will effect tool selection" +
             "\nYou can cadd block/mob-specific overrides by adding it's id on a new line and adding values to the right of" +
             "\nthe equals sign ('=') as you would normally. Check the boat for an example." +
-            "\nRemove the line or the values after the equals sign will disable the switch.";
+            "\nRemoving the values after the equals sign will disable the switch. In the case of overrides, the line may be removed.";
 
     String usableConfig = "AutoSwitch Usable Configuration File" +
             "\nThis file defines tool switching targets for the 'use' action (right clicking) on a mob or block." +
@@ -25,6 +25,6 @@ public interface ConfigHeaders {
             "\nEnchant id uses '-' instead of colons. A colon can be used, but must be preceded by a backslash" +
             "\nList is ordered and will effect tool selection" +
             "\nTo add mobs or blocks you wish to target, simply enter their id on a new line, followed by an '=' and the id of the tool you want to be used." +
-            "\nRemove the line or the values after the equals sign will disable the switch.";
+            "\nRRemoving the values after the equals sign will disable the switch. In case of user added targets, removing the line will also work.";
 
 }
