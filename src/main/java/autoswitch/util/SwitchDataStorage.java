@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Store the switch state of the player and relevant maps
@@ -15,14 +16,14 @@ public class SwitchDataStorage {
      * Used to process hotbar even when no target is selected.
      * For cases where users want to use nondamageable items.
      */
-    public final static ArrayList<UUID> blank = new ArrayList<>();
+    public final static CopyOnWriteArrayList<UUID> blank = new CopyOnWriteArrayList<>();
     public Map<UUID, Pair<String, Enchantment>> enchantToolMap = new ConcurrentHashMap<>();
     /**
      * Maps targets of use-action -> desired tool
      */
-    public ConcurrentHashMap<Object, ArrayList<UUID>> useMap = new ConcurrentHashMap<>();
-    public ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists = new ConcurrentHashMap<>();
-    public Map<UUID, ArrayList<Integer>> toolLists = Collections.synchronizedMap(new LinkedHashMap<>());
+    public ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> useMap = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> toolTargetLists = new ConcurrentHashMap<>();
+    public Map<UUID, CopyOnWriteArrayList<Integer>> toolLists = Collections.synchronizedMap(new LinkedHashMap<>());
     private int prevSlot;
     private boolean hasSwitched;
     private boolean attackedEntity;
