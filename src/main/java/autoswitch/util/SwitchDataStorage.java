@@ -22,7 +22,7 @@ public class SwitchDataStorage {
      */
     public ConcurrentHashMap<Object, ArrayList<UUID>> useMap = new ConcurrentHashMap<>();
     public ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists = new ConcurrentHashMap<>();
-    public LinkedHashMap<UUID, ArrayList<Integer>> toolLists = new LinkedHashMap<>();
+    public Map<UUID, ArrayList<Integer>> toolLists = Collections.synchronizedMap(new LinkedHashMap<>());
     private int prevSlot;
     private boolean hasSwitched;
     private boolean attackedEntity;

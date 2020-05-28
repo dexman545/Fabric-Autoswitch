@@ -7,6 +7,7 @@ import org.aeonbits.owner.Accessible;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,7 +47,7 @@ public class AutoSwitchMapsGenerator {
         }
     }
 
-    private void populateToolListMap(LinkedHashMap<UUID, ArrayList<Integer>> toolLists) {
+    private void populateToolListMap(Map<UUID, ArrayList<Integer>> toolLists) {
 
         if (AutoSwitch.cfg.toolPriorityOrder() == null) {
             return;

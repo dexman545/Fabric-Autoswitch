@@ -141,14 +141,14 @@ abstract class Targetable {
      * @return Returns empty if autoswitch is not allowed or there is no slot to change to
      */
     Optional<Integer> findSlot() {
-        if (!switchAllowed()) {
+        if (this.toolRating.isEmpty() || !switchAllowed()) {
             return Optional.empty();
         }
 
         for (Map.Entry<UUID, ArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
-                    if (!this.toolRating.isEmpty() && slot.equals(Collections.max(this.toolRating.entrySet(),
+                    if (slot.equals(Collections.max(this.toolRating.entrySet(),
                             Comparator.comparingDouble(Map.Entry::getValue)).getKey())) {
                         return Optional.of(slot);
                     }

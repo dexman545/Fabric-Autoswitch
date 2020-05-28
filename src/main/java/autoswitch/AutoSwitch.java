@@ -141,7 +141,7 @@ public class AutoSwitch implements ClientModInitializer {
 
 
             //AutoSwitch handling
-            if (doAS) {
+            if (doAS && cfg.switchForBlocks()) {
                 if (!data.getHasSwitched()) {
                     data.setPrevSlot(player.inventory.selectedSlot);
                 }
@@ -162,7 +162,7 @@ public class AutoSwitch implements ClientModInitializer {
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
 
             //AutoSwitch handling
-            if (doAS) {
+            if (doAS && cfg.switchForMobs()) {
                 if (!data.getHasSwitched()) {
                     data.setPrevSlot(player.inventory.selectedSlot);
                 }
@@ -181,7 +181,7 @@ public class AutoSwitch implements ClientModInitializer {
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
 
-            if (doAS) {
+            if (doAS && cfg.switchUseActions()) {
                 if (!data.getHasSwitched()) {
                     data.setPrevSlot(player.inventory.selectedSlot);
                 }
@@ -194,7 +194,7 @@ public class AutoSwitch implements ClientModInitializer {
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
 
-            if (doAS) {
+            if (doAS && cfg.switchUseActions()) {
                 if (!data.getHasSwitched()) {
                     data.setPrevSlot(player.inventory.selectedSlot);
                 }
