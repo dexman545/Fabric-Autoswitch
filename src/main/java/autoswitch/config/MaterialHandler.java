@@ -1,5 +1,6 @@
-package autoswitch;
+package autoswitch.config;
 
+import autoswitch.AutoSwitch;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Material;
@@ -187,7 +188,7 @@ public class MaterialHandler {
     }
 
     /**
-     * @return returns target, may be Material, EntityGroup, or EntityType. Null if no material found
+     * @return returns target, may be Material, Block, EntityGroup, or EntityType. Null if no material found
      */
     public Object getMat() {
         return this.mat;

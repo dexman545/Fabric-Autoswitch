@@ -1,13 +1,23 @@
-package autoswitch;
+package autoswitch.util;
 
+import autoswitch.AutoSwitch;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
-public class EmptyCollisionBoxAttack {
+import java.util.function.Consumer;
+
+@Environment(EnvType.CLIENT)
+public class SwitchUtil {
 
     /**
      * Ray-trace to find if the player can hit an entity
@@ -26,6 +36,26 @@ public class EmptyCollisionBoxAttack {
         Vec3d to = from.add(look.x * blockReachDistance, look.y * blockReachDistance, look.z * blockReachDistance);
 
         return ProjectileUtil.getEntityCollision(player.world, player, from, to, (new Box(from, to)), EntityPredicates.VALID_ENTITY);
+    }
+
+    /**
+     * @return Consumer to handle mob switchback and moving of stack to offhand
+     */
+    public static Consumer<Boolean> handleUseSwitchConsumer() {
+        return b -> {
+            if (b && AutoSwitch.cfg.switchbackMobs()) {
+                AutoSwitch.data.setHasSwitched(true);
+                AutoSwitch.data.setAttackedEntity(true);
+            }
+
+            if (b && AutoSwitch.cfg.putUseActionToolInOffHand()) {
+                assert MinecraftClient.getInstance().getNetworkHandler() != null :
+                        "Minecraft client was null when AutoSwitch wanted to sent a packet!";
+                MinecraftClient.getInstance().getNetworkHandler().sendPacket(
+                        new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS,
+                                BlockPos.ORIGIN, Direction.DOWN));
+            }
+        };
     }
 
 }

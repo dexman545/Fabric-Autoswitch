@@ -1,4 +1,4 @@
-package autoswitch;
+package autoswitch.util;
 
 import net.minecraft.enchantment.Enchantment;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,8 +21,8 @@ public class SwitchDataStorage {
      * Maps targets of use-action -> desired tool
      */
     public ConcurrentHashMap<Object, ArrayList<UUID>> useMap = new ConcurrentHashMap<>();
-    public ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists;
-    public LinkedHashMap<UUID, ArrayList<Integer>> toolLists;
+    public ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists = new ConcurrentHashMap<>();
+    public Map<UUID, ArrayList<Integer>> toolLists = Collections.synchronizedMap(new LinkedHashMap<>());
     private int prevSlot;
     private boolean hasSwitched;
     private boolean attackedEntity;
