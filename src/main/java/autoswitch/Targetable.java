@@ -15,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -146,8 +147,6 @@ abstract class Targetable {
             return Optional.empty();
         }
 
-        AutoSwitch.logger.info(toolRating);
-
         for (Map.Entry<UUID, CopyOnWriteArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
@@ -237,9 +236,9 @@ abstract class Targetable {
                     rating += -1 * Math.log10(rating); // reverse and clamp tool
                 }
                 rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
-                AutoSwitch.logger.info(rating);
+                AutoSwitch.logger.debug("Rating: {}; Slot: {}; TargetRating: {}", rating, slot, TargetableUtil.getTargetRating(protoTarget, stack));
 
-                if (!tool.equals("blank") && ((stack.getItem().equals(ItemStack.EMPTY.getItem())))) { // Fix ignore overrides
+                if (!tool.equals("blank") && ((stack.getItem().getMaxDamage() == 0))) { // Fix ignore overrides
                     rating = 0.1;
                 }
             }
