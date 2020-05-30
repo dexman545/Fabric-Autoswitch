@@ -82,7 +82,7 @@ public class TargetableUtil {
         if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
 
         if (target instanceof BlockState) { //TODO add mining level check here
-            return ((BlockState) target).getMaterial().canBreakByHand() || stack.isEffectiveOn((BlockState) target);
+            return !((BlockState) target).method_29291() || stack.isEffectiveOn((BlockState) target);
         }
 
         return true;
