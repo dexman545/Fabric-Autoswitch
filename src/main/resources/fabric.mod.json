@@ -22,8 +22,7 @@
     "entrypoints":{
         "client":[
             "autoswitch.AutoSwitch"
-        ],
-        "modmenu": [ "autoswitch.modmenu.ModMenuImpl" ]
+        ]
     },
 
     "custom": {
