@@ -62,7 +62,7 @@ public class TargetableUtil {
     }
 
     public static float getTargetRating(Object target, ItemStack stack) {
-        if (target instanceof BlockState) {
+        if (target instanceof BlockState) { //TODO correct clamping for instabreak situations ie. swords on bamboo
             return clampToolRating(stack.getMiningSpeedMultiplier((BlockState) target));
         }
 

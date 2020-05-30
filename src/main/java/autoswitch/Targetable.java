@@ -146,7 +146,7 @@ abstract class Targetable {
             return Optional.empty();
         }
 
-        AutoSwitch.logger.info(toolRating);
+        AutoSwitch.logger.debug(toolRating);
         for (Map.Entry<UUID, CopyOnWriteArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
@@ -238,7 +238,6 @@ abstract class Targetable {
                     rating += -1 * Math.log10(rating); // reverse and clamp tool
                 }
                 rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
-                //AutoSwitch.logger.info("Rating: {}; Slot: {}; TargetRating: {}", rating, slot, TargetableUtil.getTargetRating(protoTarget, stack));
 
                 if (!tool.equals("blank") && ((stack.getItem().getMaxDamage() == 0))) { // Fix ignore overrides
                     rating = 0.1;
@@ -251,7 +250,7 @@ abstract class Targetable {
             }
             double finalRating = rating;
             boolean finalStackEnchants = stackEnchants;
-            AutoSwitch.logger.info("Rating: {}; Slot: {}", rating, slot);
+            AutoSwitch.logger.debug("Rating: {}; Slot: {}", rating, slot);
 
             Targetable.this.toolRating.computeIfPresent(slot, (iSlot, oldRating) -> TargetableUtil.toolRatingChange(oldRating, finalRating, stack, finalStackEnchants));
             Targetable.this.toolRating.putIfAbsent(slot, rating);
