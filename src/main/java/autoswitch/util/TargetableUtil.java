@@ -45,9 +45,25 @@ public class TargetableUtil {
 
     }
 
+    /**
+     * Function has a maximum of 1 at e
+     * is 0 at 1; decays from e -> infinity
+     * the (1/.16) is correction factor to have maximum output be 1, instead of 0.16
+     *
+     * @param original original rating
+     * @return clamped rating if needed
+     */
+    public static float clampToolRating(float original) {
+        if (AutoSwitch.cfg.preferMinimumViableTool()) {
+            return (float) ((1/.16) * Math.log10(original) * (1/original));
+        }
+
+        return original;
+    }
+
     public static float getTargetRating(Object target, ItemStack stack) {
         if (target instanceof BlockState) {
-            return stack.getMiningSpeedMultiplier((BlockState) target);
+            return clampToolRating(stack.getMiningSpeedMultiplier((BlockState) target));
         }
 
         if (target instanceof Entity) {

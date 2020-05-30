@@ -146,6 +146,8 @@ abstract class Targetable {
             return Optional.empty();
         }
 
+        AutoSwitch.logger.info(toolRating);
+
         for (Map.Entry<UUID, CopyOnWriteArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
@@ -231,8 +233,11 @@ abstract class Targetable {
             Targetable.this.toolLists.putIfAbsent(uuid, new CopyOnWriteArrayList<>());
             Targetable.this.toolLists.get(uuid).add(slot);
             if (!useAction) {
-                if (Targetable.this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
+                if (Targetable.this.cfg.preferMinimumViableTool()) {
+                    rating += -1 * Math.log10(rating); // reverse and clamp tool
+                }
                 rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
+                AutoSwitch.logger.info(rating);
 
                 if (!tool.equals("blank") && ((stack.getItem().equals(ItemStack.EMPTY.getItem())))) { // Fix ignore overrides
                     rating = 0.1;
