@@ -46,9 +46,11 @@ public class TargetableUtil {
     }
 
     /**
-     * Function has a maximum of 1 at e
-     * is 0 at 1; decays from e -> infinity
-     * the (1/.16) is correction factor to have maximum output be 1, instead of 0.16
+     * Function has a maximum of 1 at e; is 0 at 1; decays from e -> infinity.
+     * The (1/.16) is correction factor to have maximum output be 1, instead of 0.16
+     *
+     * Default output for getMiningSpeed is 1, same speed as the player's hand. This function clamps that to 0,
+     * as it is not a viable tool under normal circumstances.
      *
      * @param original original rating
      * @return clamped rating if needed
