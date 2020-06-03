@@ -4,12 +4,18 @@ import autoswitch.AutoSwitch;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TargetableUtil {
@@ -69,11 +75,26 @@ public class TargetableUtil {
         }
 
         if (target instanceof Entity) {
+            if (!(stack.getItem() instanceof ToolItem)) return 0;
+
             AtomicReference<Float> x = new AtomicReference<>((float) 0);
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(entityAttributeModifier ->
-                    x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()))
-            );
-            return x.get();
+            AtomicReference<Float> y = new AtomicReference<>((float) 0);
+
+            // Get attack speed
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_SPEED).forEach(entityAttributeModifier -> {
+                y.updateAndGet(v -> (float) (v - entityAttributeModifier.getValue()));
+            });
+
+            if (AutoSwitch.cfg.weaponRatingIncludesEnchants()) { //Evaluate attack damage based on enchantments
+                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(entityAttributeModifier ->
+                        x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()))
+                );
+
+                return x.get() * (3 - y.get());
+            } else { // No care for enchantments
+                return (3-y.get() * ((ToolItem) stack.getItem()).getMaterial().getAttackDamage());
+            }
+
         }
 
         return 0;
