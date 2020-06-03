@@ -28,9 +28,7 @@ public class ASConfigScreen extends Screen {
     @Override
     protected void init() {
         try {
-            this.openFolder = this.addButton(new ButtonWidget(this.width / 2 - 200, 2 * this.height / 3, 150, 20, new TranslatableText("button.autoswitch.openfolder"), (button -> {
-                Util.getOperatingSystem().open(FabricLoader.getInstance().getConfigDirectory());
-            })) {
+            this.openFolder = this.addButton(new ButtonWidget(this.width / 2 - 200, 2 * this.height / 3, 150, 20, new TranslatableText("button.autoswitch.openfolder"), (button -> Util.getOperatingSystem().open(FabricLoader.getInstance().getConfigDirectory()))) {
                 public Text getMessage() {
                     return new TranslatableText("button.autoswitch.openfolder");
                 }
