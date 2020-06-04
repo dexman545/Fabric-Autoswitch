@@ -8,13 +8,14 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TargetableUtil {
 
-    public static double toolRatingChange(double oldValue, double newValue, ItemStack stack) {
-        if (AutoSwitch.cfg.toolEnchantmentsStack() && !(stack.getItem().equals(ItemStack.EMPTY.getItem())) && !(stack.getMaxDamage() == 0)) {
+    public static double toolRatingChange(double oldValue, double newValue, ItemStack stack, boolean stackEnchant) {
+        if (stackEnchant && AutoSwitch.cfg.toolEnchantmentsStack() && !(stack.getItem().equals(ItemStack.EMPTY.getItem())) && !(stack.getMaxDamage() == 0)) {
             return oldValue + newValue;
         }
 
@@ -44,17 +45,48 @@ public class TargetableUtil {
 
     }
 
+    /**
+     * Function has a maximum of 1 at e; is 0 at 1; decays from e -> infinity.
+     * The (1/.16) is correction factor to have maximum output be 1, instead of 0.16
+     *
+     * Default output for getMiningSpeed is 1, same speed as the player's hand. This function clamps that to 0,
+     * as it is not a viable tool under normal circumstances.
+     *
+     * @param original original rating
+     * @return clamped rating if needed
+     */
+    public static float clampToolRating(float original) {
+        if (AutoSwitch.cfg.preferMinimumViableTool()) {
+            return (float) ((1/.16) * Math.log10(original) / original);
+        }
+
+        return original;
+    }
+
     public static float getTargetRating(Object target, ItemStack stack) {
-        if (target instanceof BlockState) {
-            return stack.getMiningSpeed((BlockState) target);
+        if (target instanceof BlockState) { //TODO correct clamping for instabreak situations ie. swords on bamboo
+            return clampToolRating(stack.getMiningSpeed((BlockState) target));
         }
 
         if (target instanceof Entity) {
+            if (!(stack.getItem() instanceof ToolItem)) return 0;
+
             AtomicReference<Float> x = new AtomicReference<>((float) 0);
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.ATTACK_DAMAGE.getId()).forEach(entityAttributeModifier ->
-                    x.updateAndGet(v -> (float) (v + entityAttributeModifier.getAmount()))
-            );
-            return x.get();
+            AtomicReference<Float> y = new AtomicReference<>((float) 0);
+
+            // Get attack speed
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.ATTACK_SPEED.getId()).forEach(entityAttributeModifier -> y.updateAndGet(v -> (float) (v - entityAttributeModifier.getAmount())));
+
+            if (AutoSwitch.cfg.weaponRatingIncludesEnchants()) { //Evaluate attack damage based on enchantments
+                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.ATTACK_DAMAGE.getId()).forEach(entityAttributeModifier ->
+                        x.updateAndGet(v -> (float) (v + entityAttributeModifier.getAmount()))
+                );
+
+                return x.get() * (3 - y.get());
+            } else { // No care for enchantments
+                return (3-y.get() * ((ToolItem) stack.getItem()).getMaterial().getAttackDamage());
+            }
+
         }
 
         return 0;

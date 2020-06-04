@@ -104,10 +104,6 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] wood();
 
     @Separator(",")
-    @DefaultValue("axe;minecraft-mending, axe")
-    ToolHandler[] nether_wood();
-
-    @Separator(",")
     @DefaultValue("sword")
     ToolHandler[] bamboo_sapling();
 

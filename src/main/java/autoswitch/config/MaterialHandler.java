@@ -21,10 +21,10 @@ public class MaterialHandler {
         str = str.toLowerCase().replace("-", ":");
         switch (str) {
             case "solid_organic":
-                this.mat = Material.ORGANIC;
+                this.mat = Material.SOLID_ORGANIC;
                 break;
             case "repair_station":
-                this.mat = Material.ANVIL;
+                this.mat = Material.REPAIR_STATION;
                 break;
             case "bamboo":
                 this.mat = Material.BAMBOO;
@@ -42,13 +42,13 @@ public class MaterialHandler {
                 this.mat = Material.CARPET;
                 break;
             case "organic_product":
-                this.mat = Material.CLAY;
+                this.mat = Material.ORGANIC_PRODUCT;
                 break;
             case "cobweb":
                 this.mat = Material.COBWEB;
                 break;
             case "soil":
-                this.mat = Material.EARTH;
+                this.mat = Material.SOIL;
                 break;
             case "egg":
                 this.mat = Material.EGG;
@@ -66,10 +66,10 @@ public class MaterialHandler {
                 this.mat = Material.METAL;
                 break;
             case "dense_ice":
-                this.mat = Material.PACKED_ICE;
+                this.mat = Material.DENSE_ICE;
                 break;
             case "supported":
-                this.mat = Material.PART;
+                this.mat = Material.SUPPORTED;
                 break;
             case "piston":
                 this.mat = Material.PISTON;
@@ -78,7 +78,7 @@ public class MaterialHandler {
                 this.mat = Material.PLANT;
                 break;
             case "gourd":
-                this.mat = Material.PUMPKIN;
+                this.mat = Material.GOURD;
                 break;
             case "redstone_lamp":
                 this.mat = Material.REDSTONE_LAMP;
@@ -87,16 +87,16 @@ public class MaterialHandler {
                 this.mat = Material.REPLACEABLE_PLANT;
                 break;
             case "aggregate":
-                this.mat = Material.SAND;
+                this.mat = Material.AGGREGATE;
                 break;
             case "replaceable_underwater_plant":
-                this.mat = Material.SEAGRASS;
+                this.mat = Material.REPLACEABLE_UNDERWATER_PLANT;
                 break;
             case "shulker_box":
                 this.mat = Material.SHULKER_BOX;
                 break;
             case "snow_layer":
-                this.mat = Material.SNOW;
+                this.mat = Material.SNOW_LAYER;
                 break;
             case "snow_block":
                 this.mat = Material.SNOW_BLOCK;

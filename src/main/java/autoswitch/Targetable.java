@@ -18,6 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -26,8 +27,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Environment(EnvType.CLIENT)
 abstract class Targetable {
-    ConcurrentHashMap<Object, ArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
-    Map<UUID, ArrayList<Integer>> toolLists = Collections.synchronizedMap(AutoSwitch.data.toolLists);
+    ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
+    Map<UUID, CopyOnWriteArrayList<Integer>> toolLists = Collections.synchronizedMap(AutoSwitch.data.toolLists);
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
     ConcurrentHashMap<Integer, Double> toolRating = new ConcurrentHashMap<>();
     PlayerEntity player;
@@ -144,7 +145,8 @@ abstract class Targetable {
             return Optional.empty();
         }
 
-        for (Map.Entry<UUID, ArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
+        AutoSwitch.logger.debug(toolRating);
+        for (Map.Entry<UUID, CopyOnWriteArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
                     if (slot.equals(Collections.max(this.toolRating.entrySet(),
@@ -217,22 +219,26 @@ abstract class Targetable {
          */
         public void updateToolListsAndRatings(ItemStack stack, UUID uuid, String tool, Enchantment enchant, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
             double rating = 0;
+            boolean stackEnchants = true;
 
             // Evaluate enchantment
             if (enchant == null) {
                 rating += 1; //promote tool in ranking as it is the correct one
+                stackEnchants = false; // items without the enchant shouldn't stack with ones that do
             } else if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
                 rating += EnchantmentHelper.getLevel(enchant, stack);
             } else return; // Don't further consider this tool as it does not have the enchantment needed
 
             // Add tool to selection
-            Targetable.this.toolLists.putIfAbsent(uuid, new ArrayList<>());
+            Targetable.this.toolLists.putIfAbsent(uuid, new CopyOnWriteArrayList<>());
             Targetable.this.toolLists.get(uuid).add(slot);
             if (!useAction) {
-                if (Targetable.this.cfg.preferMinimumViableTool()) rating = -1 * Math.log10(rating); // reverse and clamp tool
+                if (Targetable.this.cfg.preferMinimumViableTool()) {
+                    rating += -1 * Math.log10(rating); // reverse and clamp tool
+                }
                 rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
 
-                if (!tool.equals("blank") && ((stack.getItem().equals(ItemStack.EMPTY.getItem())))) { // Fix ignore overrides
+                if (!tool.equals("blank") && ((stack.getItem().getMaxDamage() == 0))) { // Fix ignore overrides
                     rating = 0.1;
                 }
             }
@@ -242,7 +248,10 @@ abstract class Targetable {
                 rating += 0.1;
             }
             double finalRating = rating;
-            Targetable.this.toolRating.computeIfPresent(slot, (iSlot, oldRating) -> TargetableUtil.toolRatingChange(oldRating, finalRating, stack));
+            boolean finalStackEnchants = stackEnchants;
+            AutoSwitch.logger.debug("Rating: {}; Slot: {}", rating, slot);
+
+            Targetable.this.toolRating.computeIfPresent(slot, (iSlot, oldRating) -> TargetableUtil.toolRatingChange(oldRating, finalRating, stack, finalStackEnchants));
             Targetable.this.toolRating.putIfAbsent(slot, rating);
         }
     }

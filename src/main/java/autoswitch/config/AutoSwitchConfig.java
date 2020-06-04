@@ -77,10 +77,6 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean preferMinimumViableTool();
 
     @DefaultValue("true")
-    @Comment("Checks if a saddlable entity has a saddle for use action to switch. Does not allow switching to a saddle on hotbar.")
-    Boolean checkSaddlableEntitiesForSaddle();
-
-    @DefaultValue("true")
     @Comment("Enable dumb check for tool harvestablity on the targeted block.")
     Boolean dumbMiningLevelCheck();
 
@@ -97,6 +93,12 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
         // but the rest of AutoSwitch does not. Fallbacks are in place to ensure any changes to Minecraft do not break
         // integration, this is simply a more extreme kill switch.
     Boolean disableModMenuConfig();
+
+    @DefaultValue("false")
+    @Comment("Tools with enchantments that increase attack damage will be rated higher. " +
+            "This means an axe with sharpness can be preferred over a sword." +
+            "Set to true to enable this functionality. False ignores the enchantments.")
+    Boolean weaponRatingIncludesEnchants();
 
 }
 
