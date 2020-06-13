@@ -6,8 +6,7 @@ import autoswitch.util.SwitchUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
@@ -15,10 +14,10 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.api.event.server.ServerStopCallback;
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.EntityHitResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,8 +36,8 @@ public class AutoSwitch implements ClientModInitializer {
     public static AutoSwitchUsableConfig usableCfg;
 
     //Keybindings
-    private static FabricKeyBinding autoswitchToggleKeybinding;
-    private static FabricKeyBinding mowingWhenFightingToggleKeybinding;
+    private static KeyBinding autoswitchToggleKeybinding;
+    private static KeyBinding mowingWhenFightingToggleKeybinding;
 
     private boolean doAS = true;
 
@@ -60,23 +59,19 @@ public class AutoSwitch implements ClientModInitializer {
         new AutoSwitchMapsGenerator();
 
         //Keybindings
-        autoswitchToggleKeybinding = FabricKeyBinding.Builder.create(
-                new Identifier("autoswitch", "toggle"),
+        autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.autoswitch.toggle",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_R,
                 "AutoSwitch"
-        ).build();
+        ));
 
-        mowingWhenFightingToggleKeybinding = FabricKeyBinding.Builder.create(
-                new Identifier("autoswitch", "toggle_mowing"),
+        mowingWhenFightingToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.autoswitch.toggle_mowing",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_G,
                 "AutoSwitch"
-        ).build();
-
-        KeyBindingRegistry.INSTANCE.addCategory("AutoSwitch");
-        KeyBindingRegistry.INSTANCE.register(autoswitchToggleKeybinding);
-        KeyBindingRegistry.INSTANCE.register(mowingWhenFightingToggleKeybinding);
+        ));
 
         ClientTickCallback.EVENT.register(e -> {
             //Keybindings implementation BEGIN ---
