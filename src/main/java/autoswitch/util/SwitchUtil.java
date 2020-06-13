@@ -52,7 +52,7 @@ public class SwitchUtil {
                 assert MinecraftClient.getInstance().getNetworkHandler() != null :
                         "Minecraft client was null when AutoSwitch wanted to sent a packet!";
                 MinecraftClient.getInstance().getNetworkHandler().sendPacket(
-                        new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS,
+                        new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND,
                                 BlockPos.ORIGIN, Direction.DOWN));
             }
         };
