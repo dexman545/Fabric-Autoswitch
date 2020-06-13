@@ -53,6 +53,9 @@ public class AutoSwitch implements ClientModInitializer {
         // Create config files and load them
         new ConfigEstablishment();
 
+        // Pull value for delayed switching
+        doAS = !cfg.disableSwitchingOnStartup();
+
         //Populate data on startup
         new AutoSwitchMapsGenerator();
 
@@ -124,9 +127,15 @@ public class AutoSwitch implements ClientModInitializer {
 
         //Check if the client is on a multiplayer server
         //This is only called when starting a SP world, not on server join
-        ServerStartCallback.EVENT.register((minecraftServer -> onMP = false));
+        ServerStartCallback.EVENT.register((minecraftServer -> {
+            onMP = false;
+            doAS = !cfg.disableSwitchingOnStartup();
+        }));
         //Disable onMP when leaving SP
-        ServerStopCallback.EVENT.register((minecraftServer -> onMP = true));
+        ServerStopCallback.EVENT.register((minecraftServer -> {
+            onMP = true;
+            doAS = !cfg.disableSwitchingOnStartup();
+        }));
 
         //Block Swap
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
