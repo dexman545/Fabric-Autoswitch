@@ -104,5 +104,9 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
             "Set to true to enable this functionality. False ignores the enchantments.")
     Boolean weaponRatingIncludesEnchants();
 
+    @DefaultValue("false")
+    @Comment("Will force use of the toggle key in order to enable switching")
+    Boolean disableSwitchingOnStartup();
+
 }
 
