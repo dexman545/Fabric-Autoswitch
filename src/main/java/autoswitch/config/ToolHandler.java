@@ -11,6 +11,7 @@ import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Environment(EnvType.CLIENT)
 public class ToolHandler {
@@ -20,24 +21,36 @@ public class ToolHandler {
         String[] cleanedInput = input.split(";");
         String tagStr = cleanedInput[0].toLowerCase().trim().replace("-", ":");
         String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase().trim().replace("-", ":") : "";
-        Enchantment enchant = null;
-        Identifier enchantID = Identifier.tryParse(enchantStr);
+
+        CopyOnWriteArrayList<Enchantment> enchants = new CopyOnWriteArrayList<>();
+        CopyOnWriteArrayList<Identifier> enchantIdentifiers = new CopyOnWriteArrayList<>();
+        String[] multiEnch;
+
+        if (!enchantStr.equals("")) {
+            multiEnch = enchantStr.split("&");
+
+            for (String ench : multiEnch) {
+                enchantIdentifiers.add(Identifier.tryParse(ench));
+            }
+        }
 
         if (getTool(tagStr).equals("")) {
             AutoSwitch.logger.debug("Empty Tool Entry tried to parse");
         } else {
             this.id = UUID.nameUUIDFromBytes(input.getBytes());
 
-            if ((!Registry.ENCHANTMENT.containsId(enchantID))) {
-                if (!enchantStr.equals("")) {
-                    AutoSwitch.logger.warn("Enchantment not found in registry: " + enchantStr);
+            enchantIdentifiers.forEach(identifier -> {
+                if ((!Registry.ENCHANTMENT.containsId(identifier))) {
+                    if (!enchantStr.equals("")) {
+                        AutoSwitch.logger.warn("An enchantment was not found in registry: " + enchantStr);
+                    }
+                } else {
+                    enchants.add(Registry.ENCHANTMENT.get(identifier));
                 }
-            } else {
-                enchant = Registry.ENCHANTMENT.get(enchantID);
-            }
+            });
 
             AutoSwitch.logger.debug("Adding item to toolmap... " + input);
-            AutoSwitch.data.enchantToolMap.put(id, Pair.of(tagStr, enchant));
+            AutoSwitch.data.enchantToolMap.put(id, Pair.of(tagStr, enchants));
         }
 
     }

@@ -187,18 +187,18 @@ abstract class Targetable {
             }
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
             String tool;
-            Enchantment enchant;
+            CopyOnWriteArrayList<Enchantment> enchants;
             if (uuid != SwitchDataStorage.blank.get(0)) {
-                Pair<String, Enchantment> pair = AutoSwitch.data.enchantToolMap.get(uuid);
+                Pair<String, CopyOnWriteArrayList<Enchantment>> pair = AutoSwitch.data.enchantToolMap.get(uuid);
                 tool = pair.getLeft();
-                enchant = pair.getRight();
+                enchants = pair.getRight();
             } else { // Handle case of no target but user desires fallback to items
                 tool = "blank";
-                enchant = null;
+                enchants = null;
             }
 
             if (ToolHandler.isCorrectType(tool, item) && TargetableUtil.isRightTool(stack, protoTarget)) {
-                new TargetableMapUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, protoTarget, counter, false);
+                new TargetableMapUtil().updateToolListsAndRatings(stack, uuid, tool, enchants, slot, protoTarget, counter, false);
             }
         });
 
@@ -218,17 +218,21 @@ abstract class Targetable {
         /**
          * Moves some core switch logic out of the lambda to better reuse it in both attack and use switching
          */
-        public void updateToolListsAndRatings(ItemStack stack, UUID uuid, String tool, Enchantment enchant, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
+        public void updateToolListsAndRatings(ItemStack stack, UUID uuid, String tool, CopyOnWriteArrayList<Enchantment> enchants, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
             double rating = 0;
             boolean stackEnchants = true;
 
             // Evaluate enchantment
-            if (enchant == null) {
+            if (enchants == null) {
                 rating += 1; //promote tool in ranking as it is the correct one
                 stackEnchants = false; // items without the enchant shouldn't stack with ones that do
-            } else if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
-                rating += EnchantmentHelper.getLevel(enchant, stack);
-            } else return; // Don't further consider this tool as it does not have the enchantment needed
+            } else {
+                for (Enchantment enchant : enchants) {
+                    if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
+                        rating += 1.1 * EnchantmentHelper.getLevel(enchant, stack);
+                    } else return; // Don't further consider this tool as it does not have the enchantment needed
+                }
+            }
 
             // Add tool to selection
             Targetable.this.toolLists.putIfAbsent(uuid, new CopyOnWriteArrayList<>());
@@ -296,8 +300,8 @@ class TargetableUsable extends Targetable {
             }
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
             String tool;
-            Enchantment enchant;
-            Pair<String, Enchantment> pair = AutoSwitch.data.enchantToolMap.get(uuid);
+            CopyOnWriteArrayList<Enchantment> enchant;
+            Pair<String, CopyOnWriteArrayList<Enchantment>> pair = AutoSwitch.data.enchantToolMap.get(uuid);
             tool = pair.getLeft();
             enchant = pair.getRight();
 
