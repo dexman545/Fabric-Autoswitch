@@ -170,7 +170,7 @@ public class MaterialHandler {
                 break;
 
             default:
-                if (Identifier.tryParse(str) != null) { //handle use event
+                if (Identifier.tryParse(str) != null) {
                     if (Registry.ENTITY_TYPE.containsId(Identifier.tryParse(str))) {
                         this.mat = Registry.ENTITY_TYPE.get(Identifier.tryParse(str));
                         break;
