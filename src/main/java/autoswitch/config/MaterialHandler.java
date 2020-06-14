@@ -68,7 +68,7 @@ public class MaterialHandler {
             case "dense_ice":
                 this.mat = Material.DENSE_ICE;
                 break;
-            case "supported":
+            case "sub_block":
                 this.mat = Material.SUPPORTED;
                 break;
             case "piston":
