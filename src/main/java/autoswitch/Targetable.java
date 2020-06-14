@@ -197,7 +197,7 @@ abstract class Targetable {
                 enchant = null;
             }
 
-            if (ToolHandler.correctType(tool, item) && TargetableUtil.isRightTool(stack, protoTarget)) {
+            if (ToolHandler.isCorrectType(tool, item) && TargetableUtil.isRightTool(stack, protoTarget)) {
                 new TargetableMapUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, protoTarget, counter, false);
             }
         });
@@ -301,7 +301,7 @@ class TargetableUsable extends Targetable {
             tool = pair.getLeft();
             enchant = pair.getRight();
 
-            if (ToolHandler.correctUseType(tool, stack.getItem())) {
+            if (ToolHandler.isCorrectUseType(tool, stack.getItem())) {
                 new TargetableMapUtil().updateToolListsAndRatings(stack, uuid, tool, enchant, slot, this.target, counter, true);
             }
         });

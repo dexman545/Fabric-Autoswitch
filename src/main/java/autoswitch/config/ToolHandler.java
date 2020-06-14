@@ -49,8 +49,17 @@ public class ToolHandler {
      * @param item item from hotbar
      * @return true if tool name and item match
      */
-    public static boolean correctType(String tool, Item item) {
+    public static boolean isCorrectType(String tool, Item item) {
         if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) return true;
+        return isCorrectTool(tool, item);
+
+    }
+
+    public static boolean isCorrectUseType(String tool, Item item) {
+        return isCorrectTool(tool, item);
+    }
+
+    private static boolean isCorrectTool(String tool, Item item) {
         if ((tool.equals("pickaxe") || tool.equals("any")) && (FabricToolTags.PICKAXES.contains(item) || item instanceof PickaxeItem)) {
             return true;
         } else if ((tool.equals("shovel") || tool.equals("any")) && (FabricToolTags.SHOVELS.contains(item) || item instanceof ShovelItem)) {
@@ -66,11 +75,6 @@ public class ToolHandler {
         } else if ((tool.equals("sword") || tool.equals("any")) && (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem)) {
             return true;
         } else return (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
-
-    }
-
-    public static boolean correctUseType(String tool, Item item) {
-        return (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
     }
 
     private String getTool(String t) {
