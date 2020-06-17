@@ -52,7 +52,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] lava();
 
     @Separator(",")
-    @DefaultValue("shovel;minecraft-silk_touch, shovel;minecraft-mending, shovel")
+    @DefaultValue("shovel;minecraft-silk_touch, shovel;minecraft-mending, shovel;minecraft-efficiency, shovel")
     ToolHandler[] snow_layer();
 
     @Separator(",")
@@ -68,15 +68,15 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] cobweb();
 
     @Separator(",")
-    @DefaultValue("pickaxe;minecraft-mending, pickaxe")
+    @DefaultValue("pickaxe;minecraft-mending, pickaxe;minecraft-efficiency, pickaxe")
     ToolHandler[] redstone_lamp();
 
     @Separator(",")
-    @DefaultValue("shovel;minecraft-silk_touch, shovel;minecraft-mending, shovel")
+    @DefaultValue("shovel;minecraft-silk_touch, shovel;minecraft-mending, shovel;minecraft-efficiency, shovel")
     ToolHandler[] organic_product();
 
     @Separator(",")
-    @DefaultValue("shovel;minecraft-silk_touch, shovel;minecraft-mending, shovel")
+    @DefaultValue("shovel;minecraft-silk_touch, shovel;minecraft-efficiency, shovel;minecraft-mending, shovel")
     ToolHandler[] soil();
 
     @Separator(",")
@@ -84,27 +84,27 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] solid_organic();
 
     @Separator(",")
-    @DefaultValue("pickaxe;minecraft-silk_touch,any;minecraft-silk_touch, pickaxe;minecraft-mending, pickaxe")
+    @DefaultValue("pickaxe;minecraft-silk_touch, any;minecraft-silk_touch, pickaxe;minecraft-efficiency, pickaxe;minecraft-mending, pickaxe")
     ToolHandler[] dense_ice();
 
     @Separator(",")
-    @DefaultValue("shovel;minecraft-mending, shovel")
+    @DefaultValue("shovel;minecraft-efficiency, shovel;minecraft-mending, shovel")
     ToolHandler[] aggregate();
 
     @Separator(",")
-    @DefaultValue("hoe;minecraft-mending, hoe")
+    @DefaultValue("hoe;minecraft-efficiency, hoe;minecraft-mending, hoe")
     ToolHandler[] sponge();
 
     @Separator(",")
-    @DefaultValue("pickaxe;minecraft-mending, pickaxe")
+    @DefaultValue("pickaxe;minecraft-efficiency, pickaxe;minecraft-mending, pickaxe")
     ToolHandler[] shulker_box();
 
     @Separator(",")
-    @DefaultValue("axe;minecraft-fortune, axe;minecraft-silk_touch, axe;minecraft-mending, axe")
+    @DefaultValue("axe;minecraft-fortune, axe;minecraft-silk_touch, axe;minecraft-efficiency, axe;minecraft-mending, axe")
     ToolHandler[] wood();
 
     @Separator(",")
-    @DefaultValue("axe;minecraft-mending, axe")
+    @DefaultValue("axe;minecraft-efficiency, axe;minecraft-mending, axe")
     ToolHandler[] nether_wood();
 
     @Separator(",")
@@ -160,7 +160,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] barrier();
 
     @Separator(",")
-    @DefaultValue("pickaxe;minecraft-mending, pickaxe")
+    @DefaultValue("pickaxe;minecraft-efficiency, pickaxe;minecraft-mending, pickaxe")
     ToolHandler[] piston();
 
     @Separator(",")
@@ -168,7 +168,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] unused_plant();
 
     @Separator(",")
-    @DefaultValue("axe;minecraft-mending, sword;minecraft-mending, axe, sword")
+    @DefaultValue("axe;minecraft-efficiency, axe;minecraft-mending, sword;minecraft-mending, axe, sword")
     ToolHandler[] gourd();
 
     @Separator(",")
