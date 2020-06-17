@@ -57,7 +57,7 @@ public class TargetableUtil {
      * @return clamped rating if needed
      */
     public static float clampToolRating(float original) {
-        if (AutoSwitch.cfg.preferMinimumViableTool()) {
+        if (AutoSwitch.cfg.preferMinimumViableTool() && original > 0) {
             return (float) ((1/.16) * Math.log10(original) / original);
         }
 
