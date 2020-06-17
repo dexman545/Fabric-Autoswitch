@@ -204,5 +204,37 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     @Key("minecraft-boat")
     ToolHandler[] boat();
 
+    // Hoe's special breaking since solid_organic will like enchants more than hoes
+
+    @Separator(",")
+    @DefaultValue("hoe;minecraft-efficiency, hoe;minecraft-mending, hoe")
+    @Key("minecraft-nether_wart_block")
+    ToolHandler[] hoeSpecial1();
+
+    @Separator(",")
+    @DefaultValue("hoe;minecraft-efficiency, hoe;minecraft-mending, hoe")
+    @Key("minecraft-warped_wart_block")
+    ToolHandler[] hoeSpecial2();
+
+    @Separator(",")
+    @DefaultValue("hoe;minecraft-efficiency, hoe;minecraft-mending, hoe")
+    @Key("minecraft-shroomlight")
+    ToolHandler[] hoeSpecial3();
+
+    @Separator(",")
+    @DefaultValue("hoe;minecraft-efficiency, hoe;minecraft-mending, hoe")
+    @Key("minecraft-hay_block")
+    ToolHandler[] hoeSpecial4();
+
+    @Separator(",")
+    @DefaultValue("hoe;minecraft-efficiency, hoe;minecraft-mending, hoe")
+    @Key("minecraft-target")
+    ToolHandler[] hoeSpecial5();
+
+    @Separator(",")
+    @DefaultValue("hoe;minecraft-efficiency, hoe;minecraft-mending, hoe")
+    @Key("minecraft-dried_kelp_block")
+    ToolHandler[] hoeSpecial6();
+
 
 }
