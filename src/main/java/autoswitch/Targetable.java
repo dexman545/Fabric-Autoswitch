@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 /**
  * Parent class for Targetable type. Used to establish shared functions and parameters that are used for manipulating
@@ -227,18 +228,21 @@ abstract class Targetable {
                 rating += 1; //promote tool in ranking as it is the correct one
                 stackEnchants = false; // items without the enchant shouldn't stack with ones that do
             } else {
+                double enchantRating = 0;
                 for (Enchantment enchant : enchants) {
                     if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
-                        rating += 1.1 * EnchantmentHelper.getLevel(enchant, stack);
+                        enchantRating += 1.1 * EnchantmentHelper.getLevel(enchant, stack);
                     } else return; // Don't further consider this tool as it does not have the enchantment needed
                 }
+                rating += enchantRating;
+                AutoSwitch.logger.debug("Slot: {}; EnchantRating: {}", slot, enchantRating);
             }
 
             // Add tool to selection
             Targetable.this.toolLists.putIfAbsent(uuid, new CopyOnWriteArrayList<>());
             Targetable.this.toolLists.get(uuid).add(slot);
             if (!useAction) {
-                if (Targetable.this.cfg.preferMinimumViableTool()) {
+                if (Targetable.this.cfg.preferMinimumViableTool() && rating != 0D) {
                     rating += -1 * Math.log10(rating); // reverse and clamp tool
                 }
                 rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
