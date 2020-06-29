@@ -1,12 +1,10 @@
 buildscript {
 	repositories { jcenter() }
-	dependencies {
-		classpath("io.github.fudge:forgedflowerloom:1.0.0")
-	}
 }
 
 plugins {
 	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id "com.github.fudge.forgedflowerloom" version "2.0.0"
 	id 'maven-publish'
 }
 
@@ -16,10 +14,6 @@ targetCompatibility = JavaVersion.VERSION_1_8
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
-
-minecraft {
-	addDecompiler(new ForgedFlowerDecompiler(project))
-}
 
 dependencies {
 	//to change the versions see the gradle.properties file

@@ -6,14 +6,13 @@ import autoswitch.util.SwitchUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
-import net.fabricmc.fabric.api.event.server.ServerStartCallback;
-import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TranslatableText;
@@ -73,7 +72,7 @@ public class AutoSwitch implements ClientModInitializer {
                 "AutoSwitch"
         ));
 
-        ClientTickCallback.EVENT.register(e -> {
+        ClientTickEvents.END_CLIENT_TICK.register(e -> {
             //Keybindings implementation BEGIN ---
             if (autoswitchToggleKeybinding.wasPressed()) {
                 //The toggle
@@ -122,12 +121,12 @@ public class AutoSwitch implements ClientModInitializer {
 
         //Check if the client is on a multiplayer server
         //This is only called when starting a SP world, not on server join
-        ServerStartCallback.EVENT.register((minecraftServer -> {
+        ServerLifecycleEvents.SERVER_STARTED.register((minecraftServer -> {
             onMP = false;
             doAS = !cfg.disableSwitchingOnStartup();
         }));
         //Disable onMP when leaving SP
-        ServerStopCallback.EVENT.register((minecraftServer -> {
+        ServerLifecycleEvents.SERVER_STOPPED.register((minecraftServer -> {
             onMP = true;
             doAS = !cfg.disableSwitchingOnStartup();
         }));
