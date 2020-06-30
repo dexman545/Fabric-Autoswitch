@@ -57,7 +57,7 @@ public class TargetableUtil {
      * @return clamped rating if needed
      */
     public static float clampToolRating(float original) {
-        if (AutoSwitch.cfg.preferMinimumViableTool()) {
+        if (AutoSwitch.cfg.preferMinimumViableTool() && original > 0) {
             return (float) ((1/.16) * Math.log10(original) / original);
         }
 
@@ -76,16 +76,19 @@ public class TargetableUtil {
             AtomicReference<Float> y = new AtomicReference<>((float) 0);
 
             // Get attack speed
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_SPEED).forEach(entityAttributeModifier -> y.updateAndGet(v -> (float) (v - entityAttributeModifier.getValue())));
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_SPEED)
+                    .forEach(entityAttributeModifier -> y.updateAndGet(v ->
+                            (float) (v - entityAttributeModifier.getValue())));
 
             if (AutoSwitch.cfg.weaponRatingIncludesEnchants()) { //Evaluate attack damage based on enchantments
-                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(entityAttributeModifier ->
-                        x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()))
+                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                        .forEach(entityAttributeModifier ->
+                                x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()))
                 );
 
                 return x.get() * (3 - y.get());
             } else { // No care for enchantments
-                return (3-y.get() * ((ToolItem) stack.getItem()).getMaterial().getAttackDamage());
+                return ((3-y.get()) * ((ToolItem) stack.getItem()).getMaterial().getAttackDamage());
             }
 
         }

@@ -68,7 +68,7 @@ public class MaterialHandler {
             case "dense_ice":
                 this.mat = Material.DENSE_ICE;
                 break;
-            case "supported":
+            case "sub_block":
                 this.mat = Material.SUPPORTED;
                 break;
             case "piston":
@@ -170,7 +170,7 @@ public class MaterialHandler {
                 break;
 
             default:
-                if (Identifier.tryParse(str) != null) { //handle use event
+                if (Identifier.tryParse(str) != null) {
                     if (Registry.ENTITY_TYPE.containsId(Identifier.tryParse(str))) {
                         this.mat = Registry.ENTITY_TYPE.get(Identifier.tryParse(str));
                         break;

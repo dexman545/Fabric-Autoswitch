@@ -11,6 +11,7 @@ import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Environment(EnvType.CLIENT)
 public class ToolHandler {
@@ -20,24 +21,36 @@ public class ToolHandler {
         String[] cleanedInput = input.split(";");
         String tagStr = cleanedInput[0].toLowerCase().trim().replace("-", ":");
         String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase().trim().replace("-", ":") : "";
-        Enchantment enchant = null;
-        Identifier enchantID = Identifier.tryParse(enchantStr);
+
+        CopyOnWriteArrayList<Enchantment> enchants = new CopyOnWriteArrayList<>();
+        CopyOnWriteArrayList<Identifier> enchantIdentifiers = new CopyOnWriteArrayList<>();
+        String[] multiEnch;
+
+        if (!enchantStr.equals("")) {
+            multiEnch = enchantStr.split("&");
+
+            for (String ench : multiEnch) {
+                enchantIdentifiers.add(Identifier.tryParse(ench));
+            }
+        }
 
         if (getTool(tagStr).equals("")) {
             AutoSwitch.logger.debug("Empty Tool Entry tried to parse");
         } else {
             this.id = UUID.nameUUIDFromBytes(input.getBytes());
 
-            if ((!Registry.ENCHANTMENT.containsId(enchantID))) {
-                if (!enchantStr.equals("")) {
-                    AutoSwitch.logger.warn("Enchantment not found in registry: " + enchantStr);
+            enchantIdentifiers.forEach(identifier -> {
+                if ((!Registry.ENCHANTMENT.containsId(identifier))) {
+                    if (!enchantStr.equals("")) {
+                        AutoSwitch.logger.warn("An enchantment was not found in registry: " + enchantStr);
+                    }
+                } else {
+                    enchants.add(Registry.ENCHANTMENT.get(identifier));
                 }
-            } else {
-                enchant = Registry.ENCHANTMENT.get(enchantID);
-            }
+            });
 
             AutoSwitch.logger.debug("Adding item to toolmap... " + input);
-            AutoSwitch.data.enchantToolMap.put(id, Pair.of(tagStr, enchant));
+            AutoSwitch.data.enchantToolMap.put(id, Pair.of(tagStr, enchants));
         }
 
     }
@@ -49,8 +62,17 @@ public class ToolHandler {
      * @param item item from hotbar
      * @return true if tool name and item match
      */
-    public static boolean correctType(String tool, Item item) {
+    public static boolean isCorrectType(String tool, Item item) {
         if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) return true;
+        return isCorrectTool(tool, item);
+
+    }
+
+    public static boolean isCorrectUseType(String tool, Item item) {
+        return isCorrectTool(tool, item);
+    }
+
+    private static boolean isCorrectTool(String tool, Item item) {
         if ((tool.equals("pickaxe") || tool.equals("any")) && (FabricToolTags.PICKAXES.contains(item) || item instanceof PickaxeItem)) {
             return true;
         } else if ((tool.equals("shovel") || tool.equals("any")) && (FabricToolTags.SHOVELS.contains(item) || item instanceof ShovelItem)) {
@@ -66,11 +88,6 @@ public class ToolHandler {
         } else if ((tool.equals("sword") || tool.equals("any")) && (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem)) {
             return true;
         } else return (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
-
-    }
-
-    public static boolean correctUseType(String tool, Item item) {
-        return (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
     }
 
     private String getTool(String t) {
