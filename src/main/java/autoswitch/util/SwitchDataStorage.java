@@ -17,7 +17,7 @@ public class SwitchDataStorage {
      * For cases where users want to use nondamageable items.
      */
     public final static CopyOnWriteArrayList<UUID> blank = new CopyOnWriteArrayList<>();
-    public Map<UUID, Pair<String, Enchantment>> enchantToolMap = new ConcurrentHashMap<>();
+    public Map<UUID, Pair<String, CopyOnWriteArrayList<Enchantment>>> enchantToolMap = new ConcurrentHashMap<>();
     /**
      * Maps targets of use-action -> desired tool
      */
