@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TranslatableText;
@@ -133,6 +134,7 @@ public class AutoSwitch implements ClientModInitializer {
 
         //Block Swap
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+            if (!world.isClient) return ActionResult.PASS; //Fix for LAN worlds
 
             //Mowing control
             //Disable block breaking iff mowing is disabled and there's an entity to hit
@@ -163,6 +165,7 @@ public class AutoSwitch implements ClientModInitializer {
 
         //Entity Swap
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
+            if (!world.isClient) return ActionResult.PASS; //Fix for LAN worlds
 
             //AutoSwitch handling
             if (doAS && cfg.switchForMobs()) {
@@ -183,6 +186,7 @@ public class AutoSwitch implements ClientModInitializer {
         });
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
+            if (!world.isClient) return ActionResult.PASS; //Fix for LAN worlds
 
             if (doAS && cfg.switchUseActions()) {
                 if (!data.getHasSwitched()) {
@@ -196,6 +200,7 @@ public class AutoSwitch implements ClientModInitializer {
         });
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            if (!world.isClient) return ActionResult.PASS; //Fix for LAN worlds
 
             if (doAS && cfg.switchUseActions()) {
                 if (!data.getHasSwitched()) {
