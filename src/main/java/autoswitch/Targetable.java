@@ -3,6 +3,7 @@ package autoswitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.ToolHandler;
 import autoswitch.util.SwitchDataStorage;
+import autoswitch.util.SwitchUtil;
 import autoswitch.util.TargetableUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * the player's selected slot.
  */
 @Environment(EnvType.CLIENT)
-abstract class Targetable {
+public abstract class Targetable {
     ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
     Map<UUID, CopyOnWriteArrayList<Integer>> toolLists = Collections.synchronizedMap(AutoSwitch.data.toolLists);
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
@@ -56,20 +57,28 @@ abstract class Targetable {
      *
      * @return returns the correct Targetable subclass to handle the operation
      */
-    static Targetable of(Entity target, PlayerEntity player, Boolean onMP) {
+    protected static Targetable of(Entity target, PlayerEntity player, Boolean onMP) {
         return new TargetableEntity(target, player, onMP);
     }
 
-    static Targetable of(BlockState target, PlayerEntity player, Boolean onMP) {
+    protected static Targetable of(BlockState target, PlayerEntity player, Boolean onMP) {
         return new TargetableMaterial(target, player, onMP);
     }
 
-    static Targetable use(Object protoTarget, PlayerEntity player, Boolean onMP) {
+    public static Targetable use(Object protoTarget, PlayerEntity player, Boolean onMP) {
         return new TargetableUsable(player, onMP, protoTarget);
     }
 
-    static Targetable of(int prevSlot, PlayerEntity player) {
+    public static Targetable of(int prevSlot, PlayerEntity player) {
         return new TargetableNone(prevSlot, player);
+    }
+
+    public static Targetable of(Object protoTarget, PlayerEntity player, boolean onMP) {
+        if (protoTarget instanceof BlockState) return new TargetableMaterial((BlockState) protoTarget, player, onMP);
+        if (protoTarget instanceof Entity) return new TargetableEntity((Entity) protoTarget, player, onMP);
+
+        AutoSwitch.logger.error("Tried to switch for nothing recognizable!");
+        return null;
     }
 
 
