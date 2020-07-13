@@ -1,5 +1,6 @@
 package autoswitch.events;
 
+import autoswitch.AutoSwitch;
 import net.minecraft.util.ActionResult;
 
 import java.util.Set;
@@ -37,6 +38,16 @@ public class Scheduler {
         schedule.forEach(task -> {
             if (task.event.equals(event)) schedule.remove(task);
         });
+    }
+
+    public boolean isCurrentlyTargeted(Object protoTarget) {
+        AutoSwitch.logger.error(schedule);
+        for (Task task : schedule) {
+            AutoSwitch.logger.error("Has: {}; Got: {}", task.event.getProtoTarget(), protoTarget);
+            if (task.event.getProtoTarget().equals(protoTarget)) return true;
+        }
+
+        return false;
     }
 
     class Task {

@@ -57,7 +57,7 @@ public class AutoSwitch implements ClientModInitializer {
         // Create config files and load them
         new ConfigEstablishment();
 
-        // Pull value for delayed switching
+        // Pull value for switching on startup
         doAS = !cfg.disableSwitchingOnStartup();
 
         //Populate data on startup
@@ -113,7 +113,7 @@ public class AutoSwitch implements ClientModInitializer {
 
             //Checks for implementing switchback feature
             if (e.player != null) {
-                SwitchEvent.SWITCHBACK.setPlayer(e.player).invoke();
+                //SwitchEvent.SWITCHBACK.setPlayer(e.player).invoke();
                 //scheduler.schedule(SwitchEvents.SWITCHBACK.setPlayer(e.player), 20, tickTime); //schedules it every tick to offset is meaningless
                 scheduler.execute(tickTime);
             }
