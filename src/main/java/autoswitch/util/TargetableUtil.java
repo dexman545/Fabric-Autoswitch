@@ -96,6 +96,13 @@ public class TargetableUtil {
         return 0;
     }
 
+    public static boolean skipSlot(ItemStack itemStack) {
+        return (!(AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()) && // Don't skip iff undamagable items are needed
+                !(itemStack.isDamageable() && (itemStack.getMaxDamage() - itemStack.getDamage() > 3)) && //TODO add energy API stuff
+                AutoSwitch.cfg.tryPreserveDamagedTools());
+
+    }
+
     public static Object getUseTarget(Object protoTarget) {
         if (protoTarget instanceof Block) {
             return protoTarget;
