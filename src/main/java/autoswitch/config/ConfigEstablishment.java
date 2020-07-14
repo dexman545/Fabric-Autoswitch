@@ -10,9 +10,9 @@ import java.io.IOException;
 public final class ConfigEstablishment {
 
     public ConfigEstablishment() {
-        String config = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitch.cfg";
-        String configMats = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitchMaterials.cfg";
-        String configUsable = FabricLoader.getInstance().getConfigDirectory().toString() + "/autoswitchUsable.cfg";
+        String config = FabricLoader.getInstance().getConfigDir().toString() + "/autoswitch.cfg";
+        String configMats = FabricLoader.getInstance().getConfigDir().toString() + "/autoswitchMaterials.cfg";
+        String configUsable = FabricLoader.getInstance().getConfigDir().toString() + "/autoswitchUsable.cfg";
         ConfigFactory.setProperty("configDir", config);
         ConfigFactory.setProperty("configDirMats", configMats);
         ConfigFactory.setProperty("configUsable", configUsable);
