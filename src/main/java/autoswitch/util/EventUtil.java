@@ -11,12 +11,7 @@ public class EventUtil {
 
         if (!world.isClient()) return ActionResult.PASS; // Make sure this is only run on client
 
-        AutoSwitch.logger.error(event.getProtoTarget());
-
-        if (AutoSwitch.data.getHasSwitched() && !AutoSwitch.scheduler.isCurrentlyTargeted(event.getProtoTarget())) {
-            deltaTime += AutoSwitch.switchDelay;
-
-        } //todo fix this being fired twice as tool switching triggers it a second time
+        if (AutoSwitch.data.getHasSwitched()) deltaTime += AutoSwitch.switchDelay; //todo fix this being fired twice as tool switching triggers it a second time
 
         AutoSwitch.scheduler.schedule(event.setWorld(true), deltaTime, currentTime);
 

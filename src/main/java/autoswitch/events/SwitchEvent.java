@@ -60,8 +60,6 @@ public enum SwitchEvent {
             AutoSwitch.data.setHasSwitched(false);
             AutoSwitch.data.setAttackedEntity(false);
 
-            AutoSwitch.data.setSwitchTarget(null);
-
             return true;
         }
 
@@ -108,13 +106,7 @@ public enum SwitchEvent {
     }
 
     protected boolean canSwitch() {
-        if (clientWorld && doSwitch && doSwitchType && !protoTarget.equals(AutoSwitch.data.getSwitchTarget())) {
-            AutoSwitch.logger.error("HI");
-            AutoSwitch.data.setSwitchTarget(protoTarget);
-            return true;
-        }
-        return false;
-        //return clientWorld && doSwitch && doSwitchType; // Client is checked to fix LAN worlds (Issue #18)
+        return clientWorld && doSwitch && doSwitchType; // Client is checked to fix LAN worlds (Issue #18)
     }
 
     protected boolean setHasSwitch() {
@@ -191,9 +183,5 @@ public enum SwitchEvent {
     public SwitchEvent setDoSwitch(boolean doAS) {
         this.doSwitch = doAS;
         return this;
-    }
-
-    public Object getProtoTarget() {
-        return protoTarget;
     }
 }

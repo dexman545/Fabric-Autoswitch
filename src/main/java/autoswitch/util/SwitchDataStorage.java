@@ -27,7 +27,6 @@ public class SwitchDataStorage {
     private int prevSlot;
     private boolean hasSwitched;
     private boolean attackedEntity;
-    private Object switchTarget;
 
     public SwitchDataStorage() {
         prevSlot = -1;
@@ -66,11 +65,4 @@ public class SwitchDataStorage {
     }
 
 
-    public Object getSwitchTarget() {
-        return switchTarget;
-    }
-
-    public void setSwitchTarget(Object switchTarget) {
-        this.switchTarget = switchTarget;
-    }
 }
