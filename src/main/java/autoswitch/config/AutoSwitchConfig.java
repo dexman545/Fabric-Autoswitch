@@ -41,7 +41,8 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean switchbackMobs();
 
     @DefaultValue("true")
-    @Comment("Let AutoSwitch prevent breaking a block with an empty collision box (ie. tall grass) when trying to attack a mob.")
+    @Comment("Let AutoSwitch prevent breaking a block with an empty collision box (ie. tall grass) " +
+            "when trying to attack a mob.")
     Boolean controlMowingWhenFighting();
 
     @DefaultValue("true")
@@ -57,7 +58,8 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
 
     @DefaultValue("true")
     @Key("switchbackWaitsForCooldownWhenAttackingMobs")
-    @Comment("Before switching back when fighting a mob, wait for the attack cooldown to finish. Fixes attacks not doing a lot of damage.")
+    @Comment("Before switching back when fighting a mob, wait for the attack cooldown to finish. " +
+            "Fixes attacks not doing a lot of damage.")
     Boolean switchbackWaits();
 
     @DefaultValue("true")
@@ -77,7 +79,8 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean preferMinimumViableTool();
 
     @DefaultValue("true")
-    @Comment("Checks if a saddlable entity has a saddle for use action to switch. Does not allow switching to a saddle on hotbar.")
+    @Comment("Checks if a saddlable entity has a saddle for use action to switch. " +
+            "Does not allow switching to a saddle on hotbar.")
     Boolean checkSaddlableEntitiesForSaddle();
 
     @DefaultValue("true")
@@ -108,5 +111,13 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     @Comment("Will force use of the toggle key in order to enable switching")
     Boolean disableSwitchingOnStartup();
 
+    @DefaultValue("0.05") // 1 ticks time
+    @Comment("Delay in seconds from end of hand swinging to perform switchback action")
+    Float switchbackDelay();
+
+    @DefaultValue("0.05")
+    @Comment("Delay in seconds from triggering of normal switch action on the basis that the previous switch " +
+            "has not been undone via switchback")
+    Float switchDelay();
 }
 
