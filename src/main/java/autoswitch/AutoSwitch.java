@@ -46,8 +46,6 @@ public class AutoSwitch implements ClientModInitializer {
 
     public static boolean mowing = true;
 
-    public static double switchDelay = 2;
-
     private int tickTime = 0;
 
     @Override
@@ -115,7 +113,10 @@ public class AutoSwitch implements ClientModInitializer {
             if (e.player != null) {
                 assert e.world != null: "World was null when a player wasn't?!";
 
+                // Schedule switchback iff it is needed
                 EventUtil.eventHandler(e.world, tickTime, 0, SwitchEvent.SWITCHBACK.setPlayer(e.player));
+
+                // Tick event system clock
                 scheduler.execute(tickTime);
             }
 
