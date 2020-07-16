@@ -114,7 +114,9 @@ public class AutoSwitch implements ClientModInitializer {
             //Checks for implementing switchback feature
             if (e.player != null) {
                 SwitchEvent.SWITCHBACK.setPlayer(e.player).invoke();
-                //scheduler.schedule(SwitchEvents.SWITCHBACK.setPlayer(e.player), 20, tickTime); //schedules it every tick to offset is meaningless
+                EventUtil.eventHandler(e.world, tickTime, 0, SwitchEvent.SWITCHBACK.setPlayer(e.player));
+                //SwitchEvent.HAS_SWITCHED.invoke();
+                //scheduler.schedule(SwitchEvent.SWITCHBACK.setPlayer(e.player), 10, tickTime); //schedules it every tick to offset is meaningless
                 scheduler.execute(tickTime);
             }
 

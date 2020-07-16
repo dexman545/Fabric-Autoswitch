@@ -85,7 +85,7 @@ public enum SwitchEvent {
     HAS_SWITCHED {
         @Override
         public ActionResult invoke() {
-            hasSwitched = false;
+            //hasSwitched = false;
 
             return ActionResult.PASS;
         }
@@ -106,7 +106,7 @@ public enum SwitchEvent {
     }
 
     protected boolean canSwitch() {
-        return clientWorld && doSwitch && doSwitchType; // Client is checked to fix LAN worlds (Issue #18)
+        return clientWorld && doSwitch && doSwitchType && player.handSwinging; // Client is checked to fix LAN worlds (Issue #18)
     }
 
     protected boolean setHasSwitch() {
