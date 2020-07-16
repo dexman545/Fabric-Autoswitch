@@ -92,7 +92,7 @@ public enum SwitchEvent {
     };
 
     private static Object protoTarget;
-    private static PlayerEntity player;
+    public static PlayerEntity player;
     private static boolean clientWorld;
     private static boolean onMP;
     private static boolean doSwitchType;
