@@ -13,12 +13,14 @@ public class EventUtil {
 
         if (!world.isClient()) return ActionResult.PASS; // Make sure this is only run on client
 
+        if (!event.handlePreSwitchTasks()) return ActionResult.FAIL;
+
         if (AutoSwitch.data.getHasSwitched()) deltaTime += AutoSwitch.switchDelay;
 
         //Fix switchback not being delayed
         if (event == SwitchEvent.SWITCHBACK) {
 
-            // TODO improve so special case of switchback isn't needed
+            // TODO improve so special case for switchback isn't needed
             if (AutoSwitch.data.getHasSwitched() && !SwitchEvent.player.handSwinging && !hasScheduledSwitchback) {
                 AutoSwitch.scheduler.schedule(event.setWorld(true), 6, currentTime);
                 hasScheduledSwitchback = true;
