@@ -90,8 +90,8 @@ public class AutoSwitch implements ClientModInitializer {
                     //Toggle message
                     TranslatableText msg = new TranslatableText(doAS && (!onMP || cfg.switchInMP()) ?
                             "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
-                    //Display msg above hotbar, set false to display in text chat
                     assert e.player != null : "Player was unexpectedly null";
+                    //Display msg above hotbar, set false to display in text chat
                     e.player.sendMessage(msg, cfg.toggleMsgOverHotbar());
                 }
 
@@ -104,19 +104,18 @@ public class AutoSwitch implements ClientModInitializer {
                     //Toggle message
                     TranslatableText msg = new TranslatableText(mowing || !cfg.controlMowingWhenFighting() ?
                             "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
-                    //Display msg above hotbar, set false to display in text chat
                     assert e.player != null : "Player was unexpectedly null";
+                    //Display msg above hotbar, set false to display in text chat
                     e.player.sendMessage(msg, cfg.toggleMsgOverHotbar());
                 }
             }
             //Keybindings implementation END ---
 
-            //Checks for implementing switchback feature
+            // Tick event system and check if scheduling a switchback is needed via EventUtil
             if (e.player != null) {
-                //SwitchEvent.SWITCHBACK.setPlayer(e.player).invoke();
+                assert e.world != null: "World was null when a player wasn't?!";
+
                 EventUtil.eventHandler(e.world, tickTime, 0, SwitchEvent.SWITCHBACK.setPlayer(e.player));
-                //SwitchEvent.HAS_SWITCHED.invoke();
-                //scheduler.schedule(SwitchEvent.SWITCHBACK.setPlayer(e.player), 10, tickTime); //schedules it every tick to offset is meaningless
                 scheduler.execute(tickTime);
             }
 
@@ -128,6 +127,7 @@ public class AutoSwitch implements ClientModInitializer {
             onMP = false;
             doAS = !cfg.disableSwitchingOnStartup();
         }));
+
         //Disable onMP when leaving SP
         ServerLifecycleEvents.SERVER_STOPPED.register((minecraftServer -> {
             onMP = true;

@@ -1,32 +1,28 @@
 package autoswitch.events;
 
-import net.minecraft.util.ActionResult;
-
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public class Scheduler {
-    private Set<Task> schedule = new CopyOnWriteArraySet<>();
+    private final Set<Task> schedule = new CopyOnWriteArraySet<>();
 
-    public ActionResult schedule(SwitchEvent event, double deltaTimeSec, int initTickTime) {
+    public void schedule(SwitchEvent event, double deltaTimeSec, int initTickTime) {
         int deltaTimeTicks = (int) Math.floor(deltaTimeSec * 20);
 
         if (deltaTimeTicks == 0) {
             // Schedules for the next tick to make sure there is no lock on switching
             schedule.add(new Task(event, initTickTime, initTickTime + 1));
-            return ActionResult.PASS;
+            return;
         }
 
         schedule.add(new Task(event, initTickTime, initTickTime + deltaTimeTicks));
 
-        return ActionResult.PASS;
     }
 
     public void execute(int currentTick) {
 
         schedule.forEach(task -> {
-            //task.event.handlePreSwitchTasks() TODO check
-            if (task.finalTickTime <= currentTick) {
+            if (task.finalTickTime <= currentTick && task.event.handlePreSwitchTasks()) {
                 task.event.invoke();
                 schedule.remove(task);
             }
@@ -39,7 +35,7 @@ public class Scheduler {
         });
     }
 
-    class Task {
+    static class Task {
         public int initTickTime;
         public int finalTickTime;
         public SwitchEvent event;
