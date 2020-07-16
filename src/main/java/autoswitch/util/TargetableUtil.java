@@ -96,6 +96,10 @@ public class TargetableUtil {
         return 0;
     }
 
+    /**
+     * @param itemStack stack to evaluate
+     * @return whether or not this stack should be skipped for consideration as a tool
+     */
     public static boolean skipSlot(ItemStack itemStack) {
         return (!(AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()) && // Don't skip iff undamagable items are needed
                 !(itemStack.isDamageable() && (itemStack.getMaxDamage() - itemStack.getDamage() > 3)) && //TODO add energy API stuff
