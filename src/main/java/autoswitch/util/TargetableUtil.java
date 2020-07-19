@@ -2,7 +2,6 @@ package autoswitch.util;
 
 import autoswitch.AutoSwitch;
 import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -11,6 +10,9 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TargetableUtil {
@@ -24,26 +26,37 @@ public class TargetableUtil {
     }
 
     public static Object getTarget(Object protoTarget) {
+        return getTarget(AutoSwitch.data.toolTargetLists, protoTarget);
+    }
 
+    public static Object getUseTarget(Object protoTarget) {
+        return getTarget(AutoSwitch.data.useMap, protoTarget);
+    }
+
+
+    public static Object getTarget(ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> map, Object protoTarget) {
         if (protoTarget instanceof AbstractBlock.AbstractBlockState) {
             // Block Override
-            if (AutoSwitch.data.toolTargetLists.containsKey(((AbstractBlock.AbstractBlockState) protoTarget).getBlock())) {
+            if (map.containsKey(((AbstractBlock.AbstractBlockState) protoTarget).getBlock())) {
                 return ((AbstractBlock.AbstractBlockState) protoTarget).getBlock();
             }
             return ((AbstractBlock.AbstractBlockState) protoTarget).getMaterial();
         }
 
-        // Entity Override
-        if (AutoSwitch.data.toolTargetLists.containsKey(((Entity) protoTarget).getType())) {
+        if (protoTarget instanceof Entity) {
+            // Entity Override
+            if (map.containsKey(((Entity) protoTarget).getType())) {
+                return ((Entity) protoTarget).getType();
+            }
+
+            if (protoTarget instanceof LivingEntity) {
+                return ((LivingEntity) protoTarget).getGroup();
+            }
+
             return ((Entity) protoTarget).getType();
         }
 
-        if (protoTarget instanceof LivingEntity) {
-            return ((LivingEntity) protoTarget).getGroup();
-        }
-
-        return ((Entity) protoTarget).getType();
-
+        return null;
     }
 
     /**
@@ -105,14 +118,6 @@ public class TargetableUtil {
                 !(itemStack.isDamageable() && (itemStack.getMaxDamage() - itemStack.getDamage() > 3)) && //TODO add energy API stuff
                 AutoSwitch.cfg.tryPreserveDamagedTools());
 
-    }
-
-    public static Object getUseTarget(Object protoTarget) {
-        if (protoTarget instanceof Block) {
-            return protoTarget;
-        }
-
-        return ((Entity) protoTarget).getType();
     }
 
     /**
