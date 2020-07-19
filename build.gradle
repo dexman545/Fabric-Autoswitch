@@ -1,11 +1,17 @@
 buildscript {
-	repositories { jcenter() }
+	repositories {
+		jcenter()
+	}
 }
 
 plugins {
 	id 'fabric-loom' version '0.4-SNAPSHOT'
 	id "com.github.fudge.forgedflowerloom" version "2.0.0"
 	id 'maven-publish'
+}
+
+repositories {
+	maven { url 'https://jitpack.io' }
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -35,6 +41,9 @@ dependencies {
 	modRuntime("io.github.prospector:modmenu:${project.modmenu_version}") {
 		transitive = false
 	}
+
+	modApi 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
+	include 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
 
 }
 

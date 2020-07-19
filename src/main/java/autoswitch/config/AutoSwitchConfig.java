@@ -119,5 +119,9 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     @Comment("Delay in seconds from triggering of normal switch action on the basis that the previous switch " +
             "has not been undone via switchback")
     Float switchDelay();
+
+    @DefaultValue("true")
+    @Comment("Ignore tools with 0 energy/durability")
+    Boolean skipDepletedItems();
 }
 

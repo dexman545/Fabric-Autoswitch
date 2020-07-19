@@ -1,9 +1,15 @@
 package autoswitch.config;
 
 import autoswitch.AutoSwitch;
+import autoswitch.api.AutoSwitchMap;
+import autoswitch.api.DurabilityGetter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.minecraft.item.*;
+import net.minecraft.tag.Tag;
 import org.aeonbits.owner.Accessible;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
 import java.util.UUID;
@@ -38,9 +44,11 @@ public class AutoSwitchMapsGenerator {
                 }
             }
 
+            AutoSwitch.data.targets.computeIfAbsent(key, k -> (new MaterialHandler(k)).getMat());
+
             //Populate target map with the list
-            if (!list.isEmpty() && (new MaterialHandler(key)).getMat() != null) {
-                map.put((new MaterialHandler(key)).getMat(), list);
+            if (!list.isEmpty() && AutoSwitch.data.targets.containsKey(key)) {
+                map.put(AutoSwitch.data.targets.get(key), list);
             }
 
         }
