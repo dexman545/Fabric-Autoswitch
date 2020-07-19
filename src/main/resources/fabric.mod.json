@@ -25,10 +25,6 @@
         ],
         "modmenu": [ "autoswitch.modmenu.ModMenuImpl" ]
     },
-
-    "custom": {
-        "modmenu:clientsideOnly": true
-    },
     "depends":{
         "fabricloader":">=0.9.0",
         "fabric-key-binding-api-v1":">=1.0.0",
