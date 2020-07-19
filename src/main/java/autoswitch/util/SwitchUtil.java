@@ -51,7 +51,6 @@ public class SwitchUtil {
             if (b && AutoSwitch.cfg.putUseActionToolInOffHand()) {
                 assert MinecraftClient.getInstance().getNetworkHandler() != null :
                         "Minecraft client was null when AutoSwitch wanted to sent a packet!";
-                AutoSwitch.logger.error("test");
                 MinecraftClient.getInstance().getNetworkHandler().sendPacket(
                         new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND,
                                 BlockPos.ORIGIN, Direction.DOWN));

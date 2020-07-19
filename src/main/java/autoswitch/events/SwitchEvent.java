@@ -102,9 +102,10 @@ public enum SwitchEvent {
     },
     OFFHAND {
         @Override
-        public void invoke() {
+        public void invoke() { //todo fix breaking switchback after invocation
             SwitchUtil.handleUseSwitchConsumer().accept(doOffhandSwitch);
             doOffhandSwitch = false;
+            AutoSwitch.scheduler.schedule(SwitchEvent.SWITCHBACK, 0, 0);
 
         }
     };
