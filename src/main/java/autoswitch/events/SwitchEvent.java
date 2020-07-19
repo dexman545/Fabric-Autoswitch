@@ -51,8 +51,10 @@ public enum SwitchEvent {
             if (!handlePreSwitchTasks()) return; // Mowing Control
             handlePrevSlot();
 
-            Objects.requireNonNull(Targetable.of(protoTarget, player, onMP)).changeTool()
-                    .ifPresent(this::handlePostSwitchTasks);
+            Targetable targetable;
+            if ((targetable = Targetable.of(protoTarget, player, onMP)) != null) {
+                targetable.changeTool().ifPresent(this::handlePostSwitchTasks);
+            }
 
         }
     },
