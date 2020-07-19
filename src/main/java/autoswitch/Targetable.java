@@ -3,7 +3,6 @@ package autoswitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.ToolHandler;
 import autoswitch.util.SwitchDataStorage;
-import autoswitch.util.SwitchUtil;
 import autoswitch.util.TargetableUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -184,6 +183,7 @@ public abstract class Targetable {
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
 
         Object target = TargetableUtil.getTarget(protoTarget);
+        if (target == null) return;
 
         // Evaluate target and find tools
 
@@ -298,6 +298,7 @@ class TargetableUsable extends Targetable {
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
 
         Object target = TargetableUtil.getUseTarget(this.target);
+        if (target == null) return;
 
         if (AutoSwitch.cfg.checkSaddlableEntitiesForSaddle() &&
                 this.target instanceof Saddleable && !((Saddleable) this.target).isSaddled()) {
