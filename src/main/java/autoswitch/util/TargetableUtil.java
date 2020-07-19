@@ -114,10 +114,36 @@ public class TargetableUtil {
      * @return whether or not this stack should be skipped for consideration as a tool
      */
     public static boolean skipSlot(ItemStack itemStack) {
+        // Skip energy items that are out of power
+        if (AutoSwitch.cfg.skipDepletedItems() && !itemStack.isDamageable() && getDurability(itemStack) == 0) {
+            return true;
+        }
         return (!(AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()) && // Don't skip iff undamagable items are needed
-                !(itemStack.isDamageable() && (itemStack.getMaxDamage() - itemStack.getDamage() > 3)) && //TODO add energy API stuff
-                AutoSwitch.cfg.tryPreserveDamagedTools());
+                isAlmostBroken(itemStack) && AutoSwitch.cfg.tryPreserveDamagedTools());
 
+    }
+
+    private static boolean isAlmostBroken(ItemStack stack) {
+        int threshold = 3;
+
+        return getDurability(stack) <= threshold;
+
+    }
+
+    private static int getDurability(ItemStack stack) {
+        AtomicReference<Number> durability = new AtomicReference<>(0);
+
+        if (!stack.isDamageable()) {
+            AutoSwitch.data.damageMap.forEach((clazz, durabilityGetter) -> {
+                if (clazz.isInstance(stack.getItem())) {
+                    durability.set(durabilityGetter.getDurability(stack));
+                }
+            });
+        } else {
+            return stack.getMaxDamage() - stack.getDamage(); // Vanilla items
+        }
+
+        return durability.get().intValue();
     }
 
     /**

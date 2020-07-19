@@ -6,12 +6,14 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.*;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Environment(EnvType.CLIENT)
 public class ToolHandler {
@@ -73,21 +75,32 @@ public class ToolHandler {
     }
 
     private static boolean isCorrectTool(String tool, Item item) {
-        if ((tool.equals("pickaxe") || tool.equals("any")) && (FabricToolTags.PICKAXES.contains(item) || item instanceof PickaxeItem)) {
-            return true;
-        } else if ((tool.equals("shovel") || tool.equals("any")) && (FabricToolTags.SHOVELS.contains(item) || item instanceof ShovelItem)) {
-            return true;
-        } else if ((tool.equals("hoe") || tool.equals("any")) && (FabricToolTags.HOES.contains(item) || item instanceof HoeItem)) {
-            return true;
-        } else if ((tool.equals("shears") || tool.equals("any")) && (FabricToolTags.SHEARS.contains(item) || item instanceof ShearsItem)) {
-            return true;
-        } else if ((tool.equals("trident") || tool.equals("any")) && (item instanceof TridentItem)) {
-            return true;
-        } else if ((tool.equals("axe") || tool.equals("any")) && (FabricToolTags.AXES.contains(item) || item instanceof AxeItem)) {
-            return true;
-        } else if ((tool.equals("sword") || tool.equals("any")) && (FabricToolTags.SWORDS.contains(item) || item instanceof SwordItem)) {
-            return true;
-        } else return (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
+        AtomicBoolean matches = new AtomicBoolean(false);
+
+        AutoSwitch.data.toolGroupings.forEach((toolKey, tagClassPair) -> {
+            if (tool.equals(toolKey) || tool.equals("any")) {
+                if (checkTagAndClass(tagClassPair.getLeft(), tagClassPair.getRight(), item)) {
+                    matches.set(true);
+                }
+            }
+        });
+
+        return matches.get() || (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
+    }
+
+    private static boolean checkTagAndClass(Tag<Item> tag, Class<?> clazz, Item item) {
+        boolean tagCheck = false;
+        boolean classCheck = false;
+
+        if (tag != null) {
+            tagCheck = tag.contains(item);
+        }
+
+        if (clazz != null) {
+            classCheck = clazz.isInstance(item);
+        }
+
+        return tagCheck || classCheck;
     }
 
     private String getTool(String t) {

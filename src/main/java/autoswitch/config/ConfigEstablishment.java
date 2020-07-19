@@ -1,8 +1,16 @@
 package autoswitch.config;
 
 import autoswitch.AutoSwitch;
+import autoswitch.api.AutoSwitchMap;
+import autoswitch.api.DurabilityGetter;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.item.*;
+import net.minecraft.tag.Tag;
+import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.ConfigFactory;
+import org.aeonbits.owner.Mutable;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,6 +27,9 @@ public final class ConfigEstablishment {
         AutoSwitch.cfg = ConfigFactory.create(AutoSwitchConfig.class);
         AutoSwitch.matCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
         AutoSwitch.usableCfg = ConfigFactory.create(AutoSwitchUsableConfig.class);
+
+        mergeConfigs(AutoSwitch.data.actionConfig, AutoSwitch.matCfg);
+        mergeConfigs(AutoSwitch.data.usableConfig, AutoSwitch.usableCfg);
 
         //generate config file; removes incorrect values from existing one as well
         try {
@@ -52,6 +63,15 @@ public final class ConfigEstablishment {
             AutoSwitch.data.enchantToolMap.clear();
             AutoSwitch.data.useMap.clear();
             new AutoSwitchMapsGenerator();
+        });
+    }
+
+    // Add API added config values
+    private  <T extends Mutable &Accessible> void mergeConfigs(AutoSwitchMap<String, String> api, T cfg) {
+        api.forEach((k, v) -> {
+            if (cfg.getProperty(k).isEmpty()) {
+                cfg.setProperty(k, v);
+            }
         });
     }
 

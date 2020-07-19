@@ -2,11 +2,12 @@ package autoswitch.config;
 
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
+import org.aeonbits.owner.Mutable;
 import org.aeonbits.owner.Reloadable;
 
 @Config.HotReload(type = Config.HotReloadType.ASYNC, value = 1) //set value = X for interval of X seconds. Default: 5
 @Config.Sources({"file:${configUsable}"})
-public interface AutoSwitchUsableConfig extends Config, Reloadable, Accessible {
+public interface AutoSwitchUsableConfig extends Config, Reloadable, Accessible, Mutable {
 
     @Separator(",")
     @DefaultValue("minecraft:flint_and_steel")

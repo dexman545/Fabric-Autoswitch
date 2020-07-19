@@ -1,6 +1,10 @@
 package autoswitch.util;
 
+import autoswitch.api.AutoSwitchMap;
+import autoswitch.api.DurabilityGetter;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.Item;
+import net.minecraft.tag.Tag;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -24,9 +28,17 @@ public class SwitchDataStorage {
     public ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> useMap = new ConcurrentHashMap<>();
     public ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> toolTargetLists = new ConcurrentHashMap<>();
     public Map<UUID, CopyOnWriteArrayList<Integer>> toolLists = Collections.synchronizedMap(new LinkedHashMap<>());
+
     private int prevSlot;
     private boolean hasSwitched;
     private boolean attackedEntity;
+
+    // API Maps
+    public AutoSwitchMap<String, Pair<Tag<Item>, Class<?>>> toolGroupings = new AutoSwitchMap<>();
+    public AutoSwitchMap<Class<?>, DurabilityGetter> damageMap = new AutoSwitchMap<>();
+    public AutoSwitchMap<String, Object> targets = new AutoSwitchMap<>();
+    public AutoSwitchMap<String, String> actionConfig = new AutoSwitchMap<>();
+    public AutoSwitchMap<String, String> usableConfig = new AutoSwitchMap<>();
 
     public SwitchDataStorage() {
         prevSlot = -1;

@@ -3,6 +3,7 @@ package autoswitch;
 import autoswitch.config.*;
 import autoswitch.events.Scheduler;
 import autoswitch.events.SwitchEvent;
+import autoswitch.util.ApiGenUtil;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchDataStorage;
 import net.fabricmc.api.ClientModInitializer;
@@ -51,6 +52,9 @@ public class AutoSwitch implements ClientModInitializer {
     @Override
     @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
+        ApiMapGenerator.createApiMaps();
+
+        ApiGenUtil.pullHookedMods();
 
         // Create config files and load them
         new ConfigEstablishment();
