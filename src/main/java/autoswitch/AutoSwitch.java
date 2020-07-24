@@ -94,7 +94,7 @@ public class AutoSwitch implements ClientModInitializer {
                             "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
                     assert e.player != null : "Player was unexpectedly null";
                     //Display msg above hotbar, set false to display in text chat
-                    e.player.sendMessage(msg, cfg.toggleMsgOverHotbar());
+                    e.player.addChatMessage(msg, cfg.toggleMsgOverHotbar());
                 }
 
             }
@@ -108,7 +108,7 @@ public class AutoSwitch implements ClientModInitializer {
                             "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
                     assert e.player != null : "Player was unexpectedly null";
                     //Display msg above hotbar, set false to display in text chat
-                    e.player.sendMessage(msg, cfg.toggleMsgOverHotbar());
+                    e.player.addChatMessage(msg, cfg.toggleMsgOverHotbar());
                 }
             }
             //Keybindings implementation END ---

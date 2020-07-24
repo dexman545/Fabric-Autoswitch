@@ -79,11 +79,6 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean preferMinimumViableTool();
 
     @DefaultValue("true")
-    @Comment("Checks if a saddlable entity has a saddle for use action to switch. " +
-            "Does not allow switching to a saddle on hotbar.")
-    Boolean checkSaddlableEntitiesForSaddle();
-
-    @DefaultValue("true")
     @Comment("Enable dumb check for tool harvestablity on the targeted block.")
     Boolean dumbMiningLevelCheck();
 

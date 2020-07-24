@@ -21,7 +21,7 @@ public class EventUtil {
         if (event == SwitchEvent.SWITCHBACK) {
 
             // TODO improve so special case for switchback isn't needed
-            if (AutoSwitch.data.getHasSwitched() && !SwitchEvent.player.handSwinging && !hasScheduledSwitchback) {
+            if (AutoSwitch.data.getHasSwitched() && !SwitchEvent.player.isHandSwinging && !hasScheduledSwitchback) {
                 AutoSwitch.scheduler.schedule(event.setWorld(true), AutoSwitch.cfg.switchbackDelay(), currentTime);
                 hasScheduledSwitchback = true;
             }

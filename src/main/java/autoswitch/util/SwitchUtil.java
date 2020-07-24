@@ -4,8 +4,8 @@ import autoswitch.AutoSwitch;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.ProjectileUtil;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.hit.EntityHitResult;
@@ -52,7 +52,7 @@ public class SwitchUtil {
                 assert MinecraftClient.getInstance().getNetworkHandler() != null :
                         "Minecraft client was null when AutoSwitch wanted to sent a packet!";
                 MinecraftClient.getInstance().getNetworkHandler().sendPacket(
-                        new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND,
+                        new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_HELD_ITEMS,
                                 BlockPos.ORIGIN, Direction.DOWN));
             }
         };

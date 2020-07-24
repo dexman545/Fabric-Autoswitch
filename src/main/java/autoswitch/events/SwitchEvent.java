@@ -22,7 +22,7 @@ public enum SwitchEvent {
                 //Disable block breaking iff mowing is disabled and there's an entity to hit
                 EntityHitResult entityResult = SwitchUtil.rayTraceEntity(player, 1.0F, 4.5D);
                 if (entityResult != null && cfg.controlMowingWhenFighting() && !AutoSwitch.mowing) {
-                    player.handSwinging = !cfg.disableHandSwingWhenMowing();
+                    player.isHandSwinging = !cfg.disableHandSwingWhenMowing();
                     return false;
                 }
             }
@@ -76,7 +76,7 @@ public enum SwitchEvent {
         @Override
         protected boolean canSwitch() {
             // Check if conditions are met for switchback
-            if (AutoSwitch.data.getHasSwitched() && !player.handSwinging) {
+            if (AutoSwitch.data.getHasSwitched() && !player.isHandSwinging) {
                 // Uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
                 return ((!AutoSwitch.data.hasAttackedEntity() || !cfg.switchbackWaits()) ||
                         (player.getAttackCooldownProgress(-20.0f) == 1.0f &&
@@ -126,7 +126,7 @@ public enum SwitchEvent {
 
     protected boolean canSwitch() {
         // Client is checked to fix LAN worlds (Issue #18)
-        return clientWorld && doSwitch && doSwitchType && player.handSwinging;
+        return clientWorld && doSwitch && doSwitchType && player.isHandSwinging;
     }
 
     protected void handlePrevSlot() {

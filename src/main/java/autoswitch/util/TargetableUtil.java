@@ -1,7 +1,6 @@
 package autoswitch.util;
 
 import autoswitch.AutoSwitch;
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
@@ -35,12 +34,12 @@ public class TargetableUtil {
 
 
     public static Object getTarget(ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> map, Object protoTarget) {
-        if (protoTarget instanceof AbstractBlock.AbstractBlockState) {
+        if (protoTarget instanceof BlockState) {
             // Block Override
-            if (map.containsKey(((AbstractBlock.AbstractBlockState) protoTarget).getBlock())) {
-                return ((AbstractBlock.AbstractBlockState) protoTarget).getBlock();
+            if (map.containsKey(((BlockState) protoTarget).getBlock())) {
+                return ((BlockState) protoTarget).getBlock();
             }
-            return ((AbstractBlock.AbstractBlockState) protoTarget).getMaterial();
+            return ((BlockState) protoTarget).getMaterial();
         }
 
         if (protoTarget instanceof Entity) {
@@ -79,7 +78,7 @@ public class TargetableUtil {
 
     public static float getTargetRating(Object target, ItemStack stack) {
         if (target instanceof BlockState) { //TODO correct clamping for instabreak situations ie. swords on bamboo
-            return clampToolRating(stack.getMiningSpeedMultiplier((BlockState) target));
+            return clampToolRating(stack.getMiningSpeed((BlockState) target));
         }
 
         if (target instanceof Entity) {
@@ -89,14 +88,14 @@ public class TargetableUtil {
             AtomicReference<Float> y = new AtomicReference<>((float) 0);
 
             // Get attack speed
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_SPEED)
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.ATTACK_SPEED.getId())
                     .forEach(entityAttributeModifier -> y.updateAndGet(v ->
-                            (float) (v - entityAttributeModifier.getValue())));
+                            (float) (v - entityAttributeModifier.getAmount())));
 
             if (AutoSwitch.cfg.weaponRatingIncludesEnchants()) { //Evaluate attack damage based on enchantments
-                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE)
+                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.ATTACK_DAMAGE.getId())
                         .forEach(entityAttributeModifier ->
-                                x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()))
+                                x.updateAndGet(v -> (float) (v + entityAttributeModifier.getAmount()))
                 );
 
                 return x.get() * (3 - y.get());
@@ -159,7 +158,7 @@ public class TargetableUtil {
         if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
 
         if (target instanceof BlockState) { //TODO add mining level check here
-            return !((BlockState) target).isToolRequired() || stack.isEffectiveOn((BlockState) target);
+            return ((BlockState) target).getMaterial().canBreakByHand() || stack.isEffectiveOn((BlockState) target);
         }
 
         return true;

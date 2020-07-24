@@ -115,8 +115,6 @@ public class ApiMapGenerator {
 
         AutoSwitch.data.targets.put("sponge", Material.SPONGE);
 
-        AutoSwitch.data.targets.put("nether_wood", Material.NETHER_WOOD);
-
         AutoSwitch.data.targets.put("stone", Material.STONE);
 
         AutoSwitch.data.targets.put("tnt", Material.TNT);
