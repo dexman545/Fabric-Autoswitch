@@ -38,9 +38,9 @@ dependencies {
 	modCompileOnly("io.github.prospector:modmenu:${project.modmenu_version}") {
 		transitive = false
 	}
-	modRuntime("io.github.prospector:modmenu:${project.modmenu_version}") {
+	/*modRuntime("io.github.prospector:modmenu:${project.modmenu_version}") {
 		transitive = false
-	}
+	}*/
 
 	modApi 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
 	include 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
@@ -86,14 +86,15 @@ publishing {
 			name = "GitHubPackages"
 			url = uri("https://maven.pkg.github.com/" + "dexman545/Fabric-Autoswitch")
 			credentials {
-				username = System.getenv("GITHUB_ACTOR")
-				password = System.getenv("GITHUB_TOKEN")
+				username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+				password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
 			}
 		}
 
 	}
 	publications {
 		mavenJava(MavenPublication) {
+			artifactId 'fabric-autoswitch'
 			// add all the jars that should be included when publishing to maven
 			artifact(remapJar) {
 				builtBy remapJar
