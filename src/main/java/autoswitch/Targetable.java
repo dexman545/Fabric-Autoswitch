@@ -4,6 +4,11 @@ import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.ToolHandler;
 import autoswitch.util.SwitchDataStorage;
 import autoswitch.util.TargetableUtil;
+import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
@@ -18,8 +23,6 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -28,10 +31,12 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Environment(EnvType.CLIENT)
 public abstract class Targetable {
-    ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
-    Map<UUID, CopyOnWriteArrayList<Integer>> toolLists = Collections.synchronizedMap(AutoSwitch.data.toolLists);
+    public static long init = 0;
+    Object2ObjectOpenHashMap<Object, ReferenceArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
+    //Map<UUID, CopyOnWriteArrayList<Integer>> toolLists = Collections.synchronizedMap(AutoSwitch.data.toolLists);
+    Object2ObjectLinkedOpenHashMap<UUID, IntArrayList> toolLists = AutoSwitch.data.toolLists;
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
-    ConcurrentHashMap<Integer, Double> toolRating = new ConcurrentHashMap<>();
+    Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
     PlayerEntity player;
     AutoSwitchConfig cfg;
     Boolean onMP;
@@ -48,6 +53,7 @@ public abstract class Targetable {
         this.cfg = AutoSwitch.cfg;
         this.onMP = (onMP != null ? onMP : false);
         this.player = player;
+        init = System.nanoTime();
     }
 
 
@@ -119,6 +125,7 @@ public abstract class Targetable {
             for (int i = Math.abs(currentSlot - slot); i > 0; i--) {
                 this.player.inventory.scrollInHotbar(currentSlot - slot);
             }
+            AutoSwitch.logger.error("Time: {} ns", (System.nanoTime() - init));
             return Optional.of(true); //Slot changed
         }).orElseGet(Optional::empty); //if nothing to change to, return empty
 
@@ -155,11 +162,11 @@ public abstract class Targetable {
         }
 
         AutoSwitch.logger.debug(toolRating);
-        for (Map.Entry<UUID, CopyOnWriteArrayList<Integer>> toolList : toolLists.entrySet()) { //type of tool, slots that have it
+        for (Map.Entry<UUID, IntArrayList> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
-                    if (slot.equals(Collections.max(this.toolRating.entrySet(),
-                            Comparator.comparingDouble(Map.Entry::getValue)).getKey())) {
+                    if (slot.equals(Collections.max(this.toolRating.int2DoubleEntrySet(),
+                            Comparator.comparingDouble(Map.Entry::getValue)).getIntKey())) {
                         return Optional.of(slot);
                     }
                 }
@@ -196,9 +203,9 @@ public abstract class Targetable {
             }
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
             String tool;
-            CopyOnWriteArrayList<Enchantment> enchants;
+            ReferenceArrayList<Enchantment> enchants;
             if (uuid != SwitchDataStorage.blank.get(0)) {
-                Pair<String, CopyOnWriteArrayList<Enchantment>> pair = AutoSwitch.data.enchantToolMap.get(uuid);
+                Pair<String, ReferenceArrayList<Enchantment>> pair = AutoSwitch.data.enchantToolMap.get(uuid);
                 tool = pair.getLeft();
                 enchants = pair.getRight();
             } else { // Handle case of no target but user desires fallback to items
@@ -227,7 +234,7 @@ public abstract class Targetable {
         /**
          * Moves some core switch logic out of the lambda to better reuse it in both attack and use switching
          */
-        public void updateToolListsAndRatings(ItemStack stack, UUID uuid, String tool, CopyOnWriteArrayList<Enchantment> enchants, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
+        public void updateToolListsAndRatings(ItemStack stack, UUID uuid, String tool, ReferenceArrayList<Enchantment> enchants, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
             double rating = 0;
             boolean stackEnchants = true;
 
@@ -247,7 +254,7 @@ public abstract class Targetable {
             }
 
             // Add tool to selection
-            Targetable.this.toolLists.putIfAbsent(uuid, new CopyOnWriteArrayList<>());
+            Targetable.this.toolLists.putIfAbsent(uuid, new IntArrayList());
             Targetable.this.toolLists.get(uuid).add(slot);
             if (!useAction) {
                 if (Targetable.this.cfg.preferMinimumViableTool() && rating != 0D) {
@@ -313,8 +320,8 @@ class TargetableUsable extends Targetable {
             }
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
             String tool;
-            CopyOnWriteArrayList<Enchantment> enchant;
-            Pair<String, CopyOnWriteArrayList<Enchantment>> pair = AutoSwitch.data.enchantToolMap.get(uuid);
+            ReferenceArrayList<Enchantment> enchant;
+            Pair<String, ReferenceArrayList<Enchantment>> pair = AutoSwitch.data.enchantToolMap.get(uuid);
             tool = pair.getLeft();
             enchant = pair.getRight();
 

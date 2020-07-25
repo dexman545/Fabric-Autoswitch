@@ -1,19 +1,15 @@
 package autoswitch.config;
 
 import autoswitch.AutoSwitch;
-import autoswitch.api.AutoSwitchMap;
-import autoswitch.api.DurabilityGetter;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.item.*;
-import net.minecraft.tag.Tag;
 import org.aeonbits.owner.Accessible;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Environment(EnvType.CLIENT)
@@ -30,12 +26,12 @@ public class AutoSwitchMapsGenerator {
 
     }
 
-    private void populateMap(ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> map, Accessible cfg) {
+    private void populateMap(Object2ObjectOpenHashMap<Object, ReferenceArrayList<UUID>> map, Accessible cfg) {
         for (String key : cfg.propertyNames()) {
             String raw = cfg.getProperty(key);
             String[] split = raw.split(",");
 
-            CopyOnWriteArrayList<UUID> list = new CopyOnWriteArrayList<>();
+            ReferenceArrayList<UUID> list = new ReferenceArrayList<>();
             for (String input : split) {
                 //Handle normal operation where input is tool and enchantment
                 UUID x = (new ToolHandler(input)).getId();
@@ -54,14 +50,14 @@ public class AutoSwitchMapsGenerator {
         }
     }
 
-    private void populateToolListMap(Map<UUID, CopyOnWriteArrayList<Integer>> toolLists) {
+    private void populateToolListMap(Map<UUID, IntArrayList> toolLists) {
 
         if (AutoSwitch.cfg.toolPriorityOrder() == null) {
             return;
         }
 
         for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
-            toolLists.put((new ToolHandler(type).getId()), new CopyOnWriteArrayList<>());
+            toolLists.put((new ToolHandler(type).getId()), new IntArrayList());
         }
 
     }

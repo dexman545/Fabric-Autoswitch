@@ -1,6 +1,7 @@
 package autoswitch.config;
 
 import autoswitch.AutoSwitch;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -24,8 +25,8 @@ public class ToolHandler {
         String tagStr = cleanedInput[0].toLowerCase().trim().replace("-", ":");
         String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase().trim().replace("-", ":") : "";
 
-        CopyOnWriteArrayList<Enchantment> enchants = new CopyOnWriteArrayList<>();
-        CopyOnWriteArrayList<Identifier> enchantIdentifiers = new CopyOnWriteArrayList<>();
+        ReferenceArrayList<Enchantment> enchants = new ReferenceArrayList<>();
+        ReferenceArrayList<Identifier> enchantIdentifiers = new ReferenceArrayList<>();
         String[] multiEnch;
 
         if (!enchantStr.equals("")) {
