@@ -1,6 +1,7 @@
 package autoswitch.config;
 
 import autoswitch.AutoSwitch;
+import com.google.common.primitives.Longs;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -18,9 +19,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Environment(EnvType.CLIENT)
 public class ToolHandler {
-    private UUID id = null;
+    private long id = 0;
 
     public ToolHandler(String input) {
+        long init = System.nanoTime();
         String[] cleanedInput = input.split(";");
         String tagStr = cleanedInput[0].toLowerCase().trim().replace("-", ":");
         String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase().trim().replace("-", ":") : "";
@@ -40,7 +42,8 @@ public class ToolHandler {
         if (getTool(tagStr).equals("")) {
             AutoSwitch.logger.debug("Empty Tool Entry tried to parse");
         } else {
-            this.id = UUID.nameUUIDFromBytes(input.getBytes());
+
+            this.id = input.hashCode();
 
             enchantIdentifiers.forEach(identifier -> {
                 if ((!Registry.ENCHANTMENT.containsId(identifier))) {
@@ -54,6 +57,7 @@ public class ToolHandler {
 
             AutoSwitch.logger.debug("Adding item to toolmap... " + input);
             AutoSwitch.data.enchantToolMap.put(id, Pair.of(tagStr, enchants));
+            AutoSwitch.logger.error("ToolhandlerCreation: {} ns", System.nanoTime() - init);
         }
 
     }
@@ -120,7 +124,7 @@ public class ToolHandler {
 
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 }

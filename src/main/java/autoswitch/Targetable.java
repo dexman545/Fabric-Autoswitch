@@ -4,9 +4,9 @@ import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.ToolHandler;
 import autoswitch.util.SwitchDataStorage;
 import autoswitch.util.TargetableUtil;
-import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.fabricmc.api.EnvType;
@@ -24,6 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.LongConsumer;
 
 /**
  * Parent class for Targetable type. Used to establish shared functions and parameters that are used for manipulating
@@ -32,9 +33,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @Environment(EnvType.CLIENT)
 public abstract class Targetable {
     public static long init = 0;
-    Object2ObjectOpenHashMap<Object, ReferenceArrayList<UUID>> toolTargetLists = AutoSwitch.data.toolTargetLists;
-    //Map<UUID, CopyOnWriteArrayList<Integer>> toolLists = Collections.synchronizedMap(AutoSwitch.data.toolLists);
-    Object2ObjectLinkedOpenHashMap<UUID, IntArrayList> toolLists = AutoSwitch.data.toolLists;
+    Object2ObjectOpenHashMap<Object, LongArrayList> toolTargetLists = AutoSwitch.data.toolTargetLists;
+    Long2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
     Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
     PlayerEntity player;
@@ -162,7 +162,7 @@ public abstract class Targetable {
         }
 
         AutoSwitch.logger.debug(toolRating);
-        for (Map.Entry<UUID, IntArrayList> toolList : toolLists.entrySet()) { //type of tool, slots that have it
+        for (Map.Entry<Long, IntArrayList> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
                     if (slot.equals(Collections.max(this.toolRating.int2DoubleEntrySet(),
@@ -197,8 +197,8 @@ public abstract class Targetable {
         // Short circuit as no target and no non-damageable fallback desired
         if (!AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && this.toolTargetLists.get(target) == null) return;
 
-        this.toolTargetLists.getOrDefault(target, SwitchDataStorage.blank).forEach(uuid -> {
-            if (uuid == null) {
+        this.toolTargetLists.getOrDefault(target, SwitchDataStorage.blank).forEach((LongConsumer) uuid -> {
+            if (uuid == 0) {
                 return;
             }
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
@@ -234,7 +234,7 @@ public abstract class Targetable {
         /**
          * Moves some core switch logic out of the lambda to better reuse it in both attack and use switching
          */
-        public void updateToolListsAndRatings(ItemStack stack, UUID uuid, String tool, ReferenceArrayList<Enchantment> enchants, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
+        public void updateToolListsAndRatings(ItemStack stack, long uuid, String tool, ReferenceArrayList<Enchantment> enchants, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
             double rating = 0;
             boolean stackEnchants = true;
 
@@ -314,8 +314,8 @@ class TargetableUsable extends Targetable {
         }
 
         if (AutoSwitch.data.useMap.get(target) == null) return;
-        AutoSwitch.data.useMap.get(target).forEach(uuid -> {
-            if (uuid == null) {
+        AutoSwitch.data.useMap.get(target).forEach((LongConsumer) uuid -> {
+            if (uuid == 0) {
                 return;
             }
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred

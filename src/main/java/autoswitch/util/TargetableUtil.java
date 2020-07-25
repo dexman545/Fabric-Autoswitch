@@ -1,6 +1,7 @@
 package autoswitch.util;
 
 import autoswitch.AutoSwitch;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.minecraft.block.AbstractBlock;
@@ -33,7 +34,7 @@ public class TargetableUtil {
         return getTarget(AutoSwitch.data.useMap, protoTarget);
     }
 
-    public static Object getTarget(Object2ObjectOpenHashMap<Object, ReferenceArrayList<UUID>> map, Object protoTarget) {
+    public static Object getTarget(Object2ObjectOpenHashMap<Object, LongArrayList> map, Object protoTarget) {
         if (protoTarget instanceof AbstractBlock.AbstractBlockState) {
             // Block Override
             if (map.containsKey(((AbstractBlock.AbstractBlockState) protoTarget).getBlock())) {
