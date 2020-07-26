@@ -72,13 +72,6 @@ public class ToolHandler {
 
     }
 
-    /**
-     * Checks if the tool is of the correct type or not
-     *
-     * @param tool tool name from config
-     * @param item item from hotbar
-     * @return true if tool name and item match
-     */
     public static boolean isCorrectType(String tool, Item item) {
         if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) return true;
         return isCorrectTool(tool, item);
@@ -89,6 +82,13 @@ public class ToolHandler {
         return isCorrectTool(tool, item);
     }
 
+    /**
+     * Checks if the tool is of the correct type or not
+     *
+     * @param tool tool name from config
+     * @param item item from hotbar
+     * @return true if tool name and item match
+     */
     private static boolean isCorrectTool(String tool, Item item) {
         AtomicBoolean matches = new AtomicBoolean(false);
 
