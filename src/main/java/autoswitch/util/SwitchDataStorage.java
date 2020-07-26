@@ -2,20 +2,16 @@ package autoswitch.util;
 
 import autoswitch.api.AutoSwitchMap;
 import autoswitch.api.DurabilityGetter;
-import com.google.common.primitives.Longs;
+import com.google.common.primitives.Ints;
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Store the switch state of the player and relevant maps
@@ -26,15 +22,15 @@ public class SwitchDataStorage {
      * Used to process hotbar even when no target is selected.
      * For cases where users want to use nondamageable items.
      */
-    public final static LongArrayList blank = new LongArrayList();
+    public final static IntArrayList blank = new IntArrayList();
 
-    public Long2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> enchantToolMap = new Long2ObjectOpenHashMap<>();
+    public Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> enchantToolMap = new Int2ObjectOpenHashMap<>();
     /**
      * Maps targets of use-action -> desired tool
      */
-    public Object2ObjectOpenHashMap<Object, LongArrayList> useMap = new Object2ObjectOpenHashMap<>();
-    public Object2ObjectOpenHashMap<Object, LongArrayList> toolTargetLists = new Object2ObjectOpenHashMap<>();
-    public Long2ObjectLinkedOpenHashMap<IntArrayList> toolLists = new Long2ObjectLinkedOpenHashMap<>();
+    public Object2ObjectOpenHashMap<Object, IntArrayList> useMap = new Object2ObjectOpenHashMap<>();
+    public Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = new Object2ObjectOpenHashMap<>();
+    public Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = new Int2ObjectLinkedOpenHashMap<>();
 
     private int prevSlot;
     private boolean hasSwitched;
@@ -51,7 +47,7 @@ public class SwitchDataStorage {
         prevSlot = -1;
         hasSwitched = false;
         attackedEntity = false;
-        blank.add(Longs.fromByteArray("__BLANK__".getBytes()));
+        blank.add(Ints.fromByteArray("__BLANK__".getBytes()));
     }
 
     public boolean getHasSwitched() {

@@ -1,19 +1,12 @@
 package autoswitch.config;
 
 import autoswitch.AutoSwitch;
+import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.longs.AbstractLong2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import org.aeonbits.owner.Accessible;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Environment(EnvType.CLIENT)
 public class AutoSwitchMapsGenerator {
@@ -29,15 +22,15 @@ public class AutoSwitchMapsGenerator {
 
     }
 
-    private void populateMap(Object2ObjectOpenHashMap<Object, LongArrayList> map, Accessible cfg) {
+    private void populateMap(Object2ObjectOpenHashMap<Object, IntArrayList> map, Accessible cfg) {
         for (String key : cfg.propertyNames()) {
             String raw = cfg.getProperty(key);
             String[] split = raw.split(",");
 
-            LongArrayList list = new LongArrayList();
+            IntArrayList list = new IntArrayList();
             for (String input : split) {
                 //Handle normal operation where input is tool and enchantment
-                long x = (new ToolHandler(input)).getId();
+                int x = (new ToolHandler(input)).getId();
                 if (x != 0) {
                     list.add(x);
                 }
@@ -53,7 +46,7 @@ public class AutoSwitchMapsGenerator {
         }
     }
 
-    private void populateToolListMap(AbstractLong2ObjectMap<IntArrayList> toolLists) {
+    private void populateToolListMap(AbstractInt2ObjectMap<IntArrayList> toolLists) {
 
         if (AutoSwitch.cfg.toolPriorityOrder() == null) {
             return;

@@ -33,8 +33,8 @@ import java.util.function.LongConsumer;
 @Environment(EnvType.CLIENT)
 public abstract class Targetable {
     public static long init = 0;
-    Object2ObjectOpenHashMap<Object, LongArrayList> toolTargetLists = AutoSwitch.data.toolTargetLists;
-    Long2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
+    Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = AutoSwitch.data.toolTargetLists;
+    Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
     Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
     PlayerEntity player;
@@ -162,7 +162,7 @@ public abstract class Targetable {
         }
 
         AutoSwitch.logger.debug(toolRating);
-        for (Map.Entry<Long, IntArrayList> toolList : toolLists.entrySet()) { //type of tool, slots that have it
+        for (Map.Entry<Integer, IntArrayList> toolList : toolLists.entrySet()) { //type of tool, slots that have it
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
                     if (slot.equals(Collections.max(this.toolRating.int2DoubleEntrySet(),
@@ -197,7 +197,7 @@ public abstract class Targetable {
         // Short circuit as no target and no non-damageable fallback desired
         if (!AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && this.toolTargetLists.get(target) == null) return;
 
-        this.toolTargetLists.getOrDefault(target, SwitchDataStorage.blank).forEach((LongConsumer) uuid -> {
+        this.toolTargetLists.getOrDefault(target, SwitchDataStorage.blank).forEach((java.util.function.IntConsumer) uuid -> {
             if (uuid == 0) {
                 return;
             }
@@ -234,7 +234,7 @@ public abstract class Targetable {
         /**
          * Moves some core switch logic out of the lambda to better reuse it in both attack and use switching
          */
-        public void updateToolListsAndRatings(ItemStack stack, long uuid, String tool, ReferenceArrayList<Enchantment> enchants, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
+        public void updateToolListsAndRatings(ItemStack stack, int uuid, String tool, ReferenceArrayList<Enchantment> enchants, int slot, Object protoTarget, AtomicReference<Float> counter, boolean useAction) {
             double rating = 0;
             boolean stackEnchants = true;
 
@@ -314,7 +314,7 @@ class TargetableUsable extends Targetable {
         }
 
         if (AutoSwitch.data.useMap.get(target) == null) return;
-        AutoSwitch.data.useMap.get(target).forEach((LongConsumer) uuid -> {
+        AutoSwitch.data.useMap.get(target).forEach((java.util.function.IntConsumer) uuid -> {
             if (uuid == 0) {
                 return;
             }

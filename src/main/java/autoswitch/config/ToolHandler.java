@@ -1,28 +1,23 @@
 package autoswitch.config;
 
 import autoswitch.AutoSwitch;
-import com.google.common.primitives.Longs;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Environment(EnvType.CLIENT)
 public class ToolHandler {
-    private long id = 0;
+    private int id = 0;
 
     public ToolHandler(String input) {
-        long init = System.nanoTime();
         String[] cleanedInput = input.split(";");
         String tagStr = cleanedInput[0].toLowerCase().trim().replace("-", ":");
         String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase().trim().replace("-", ":") : "";
@@ -57,7 +52,6 @@ public class ToolHandler {
 
             AutoSwitch.logger.debug("Adding item to toolmap... " + input);
             AutoSwitch.data.enchantToolMap.put(id, Pair.of(tagStr, enchants));
-            AutoSwitch.logger.error("ToolhandlerCreation: {} ns", System.nanoTime() - init);
         }
 
     }
@@ -124,7 +118,7 @@ public class ToolHandler {
 
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 }
