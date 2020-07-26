@@ -26,7 +26,6 @@
     },
     "depends":{
         "fabricloader":">=0.9.0",
-        "fabric-key-binding-api-v1":">=1.0.0",
         "fabric-tool-attribute-api-v1":"^1.0.0",
         "fabric-lifecycle-events-v1":">=1.0.0",
         "minecraft":">=1.14 <=1.16-alpha.20.10.a",

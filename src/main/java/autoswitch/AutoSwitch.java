@@ -10,15 +10,19 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -66,19 +70,39 @@ public class AutoSwitch implements ClientModInitializer {
         new AutoSwitchMapsGenerator();
 
         //Keybindings
-        autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.autoswitch.toggle",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_R,
-                "AutoSwitch"
-        ));
+        if (FabricLoader.getInstance().isModLoaded("fabric-key-binding-api-v1")) {
+            autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.autoswitch.toggle",
+                    InputUtil.Type.KEYSYM,
+                    GLFW.GLFW_KEY_R,
+                    "AutoSwitch"
+            ));
 
-        mowingWhenFightingToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.autoswitch.toggle_mowing",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_G,
-                "AutoSwitch"
-        ));
+            mowingWhenFightingToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                    "key.autoswitch.toggle_mowing",
+                    InputUtil.Type.KEYSYM,
+                    GLFW.GLFW_KEY_G,
+                    "AutoSwitch"
+            ));
+        } else {
+            autoswitchToggleKeybinding = FabricKeyBinding.Builder.create(
+                    new Identifier("autoswitch", "toggle"),
+                    InputUtil.Type.KEYSYM,
+                    GLFW.GLFW_KEY_R,
+                    "AutoSwitch"
+            ).build();
+
+            mowingWhenFightingToggleKeybinding = FabricKeyBinding.Builder.create(
+                    new Identifier("autoswitch", "toggle_mowing"),
+                    InputUtil.Type.KEYSYM,
+                    GLFW.GLFW_KEY_G,
+                    "AutoSwitch"
+            ).build();
+
+            KeyBindingRegistry.INSTANCE.addCategory("AutoSwitch");
+            KeyBindingRegistry.INSTANCE.register((FabricKeyBinding) autoswitchToggleKeybinding);
+            KeyBindingRegistry.INSTANCE.register((FabricKeyBinding) mowingWhenFightingToggleKeybinding);
+        }
 
         ClientTickEvents.END_CLIENT_TICK.register(e -> {
             tickTime += 1;
