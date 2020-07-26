@@ -18,6 +18,11 @@ public class ToolHandler {
     private int id = 0;
 
     public ToolHandler(String input) {
+        // Skip the rest of the evaluation as the toolselector has already been handled
+        if (AutoSwitch.data.toolSelectorKeys.containsKey(input)) {
+            this.id = AutoSwitch.data.toolSelectorKeys.getInt(input);
+            return;
+        }
         String[] cleanedInput = input.split(";");
         String tagStr = cleanedInput[0].toLowerCase().trim().replace("-", ":");
         String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase().trim().replace("-", ":") : "";
@@ -38,7 +43,18 @@ public class ToolHandler {
             AutoSwitch.logger.debug("Empty Tool Entry tried to parse");
         } else {
 
+            // Gets hashcode for use as id. While this isn't guaranteed to be unique,
+            // the chance of a collision in this use case is extremely slim. If it ever collides,
+            // the following while loop should fix it. If not, revert this change to UUID or better hash.
             this.id = input.hashCode();
+
+            // Logic to ensure that hashcodes
+            while (AutoSwitch.data.toolSelectorKeys.containsValue(this.id)) {
+                this.id += 1;
+                AutoSwitch.logger.error("Conflicting ID generated for toolselctor: {}, attempting to fix...", input);
+            }
+
+            AutoSwitch.data.toolSelectorKeys.put(input, this.id);
 
             enchantIdentifiers.forEach(identifier -> {
                 if ((!Registry.ENCHANTMENT.containsId(identifier))) {
@@ -51,7 +67,7 @@ public class ToolHandler {
             });
 
             AutoSwitch.logger.debug("Adding item to toolmap... " + input);
-            AutoSwitch.data.enchantToolMap.put(id, Pair.of(tagStr, enchants));
+            AutoSwitch.data.toolSelectors.put(this.id, Pair.of(tagStr, enchants));
         }
 
     }

@@ -205,7 +205,7 @@ public abstract class Targetable {
             String tool;
             ReferenceArrayList<Enchantment> enchants;
             if (uuid != SwitchDataStorage.blank.get(0)) {
-                Pair<String, ReferenceArrayList<Enchantment>> pair = AutoSwitch.data.enchantToolMap.get(uuid);
+                Pair<String, ReferenceArrayList<Enchantment>> pair = AutoSwitch.data.toolSelectors.get(uuid);
                 tool = pair.getLeft();
                 enchants = pair.getRight();
             } else { // Handle case of no target but user desires fallback to items
@@ -321,7 +321,7 @@ class TargetableUsable extends Targetable {
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
             String tool;
             ReferenceArrayList<Enchantment> enchant;
-            Pair<String, ReferenceArrayList<Enchantment>> pair = AutoSwitch.data.enchantToolMap.get(uuid);
+            Pair<String, ReferenceArrayList<Enchantment>> pair = AutoSwitch.data.toolSelectors.get(uuid);
             tool = pair.getLeft();
             enchant = pair.getRight();
 

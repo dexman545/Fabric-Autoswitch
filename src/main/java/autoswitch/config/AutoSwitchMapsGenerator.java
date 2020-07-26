@@ -14,6 +14,12 @@ public class AutoSwitchMapsGenerator {
     public AutoSwitchMapsGenerator() {
         populateToolTargetMaps();
         populateToolListMap(AutoSwitch.data.toolLists);
+
+        // Trim the maps
+        AutoSwitch.data.toolSelectors.trim();
+        AutoSwitch.data.toolLists.trim();
+        AutoSwitch.data.useMap.trim();
+        AutoSwitch.data.toolTargetLists.trim();
     }
 
     private void populateToolTargetMaps() {

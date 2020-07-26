@@ -19,9 +19,12 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.ArrayList;
 
 public class AutoSwitch implements ClientModInitializer {
 

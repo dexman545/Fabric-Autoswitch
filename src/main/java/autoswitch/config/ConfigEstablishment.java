@@ -50,7 +50,6 @@ public final class ConfigEstablishment {
 
         AutoSwitch.matCfg.addReloadListener(event -> {
             AutoSwitch.data.toolTargetLists.clear();
-            AutoSwitch.data.enchantToolMap.clear();
             new AutoSwitchMapsGenerator();
         });
 
@@ -60,7 +59,6 @@ public final class ConfigEstablishment {
         });
 
         AutoSwitch.usableCfg.addReloadListener(event -> {
-            AutoSwitch.data.enchantToolMap.clear();
             AutoSwitch.data.useMap.clear();
             new AutoSwitchMapsGenerator();
         });

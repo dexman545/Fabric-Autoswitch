@@ -6,6 +6,7 @@ import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.minecraft.enchantment.Enchantment;
@@ -24,13 +25,15 @@ public class SwitchDataStorage {
      */
     public final static IntArrayList blank = new IntArrayList();
 
-    public Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> enchantToolMap = new Int2ObjectOpenHashMap<>();
     /**
      * Maps targets of use-action -> desired tool
      */
     public Object2ObjectOpenHashMap<Object, IntArrayList> useMap = new Object2ObjectOpenHashMap<>();
     public Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = new Object2ObjectOpenHashMap<>();
     public Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = new Int2ObjectLinkedOpenHashMap<>();
+
+    public Object2IntOpenHashMap<String> toolSelectorKeys = new Object2IntOpenHashMap<>();
+    public Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> toolSelectors = new Int2ObjectOpenHashMap<>();
 
     private int prevSlot;
     private boolean hasSwitched;
