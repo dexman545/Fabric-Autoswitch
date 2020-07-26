@@ -51,7 +51,7 @@ public class ToolHandler {
             // Logic to ensure that hashcodes
             while (AutoSwitch.data.toolSelectorKeys.containsValue(this.id)) {
                 this.id += 1;
-                AutoSwitch.logger.error("Conflicting ID generated for toolselctor: {}, attempting to fix...", input);
+                AutoSwitch.logger.error("Conflicting ID generated for toolselector: {}, attempting to fix...", input);
             }
 
             AutoSwitch.data.toolSelectorKeys.put(input, this.id);
