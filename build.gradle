@@ -79,22 +79,9 @@ jar {
 	from "LICENSE"
 }
 
-// configure the maven publication
 publishing {
-	repositories {
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/" + "dexman545/Fabric-Autoswitch")
-			credentials {
-				username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-				password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-			}
-		}
-
-	}
 	publications {
 		mavenJava(MavenPublication) {
-			artifactId 'fabric-autoswitch'
 			// add all the jars that should be included when publishing to maven
 			artifact(remapJar) {
 				builtBy remapJar
@@ -102,6 +89,21 @@ publishing {
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
+		}
+	}
+}
+
+// configure the maven publication
+publishing {
+	// select the repositories you want to publish to
+	repositories {
+		maven {
+			credentials {
+				username System.getenv("GITHUB_ACTOR")
+				password System.getenv("GITHUB_TOKEN")
+			}
+			name = "GitHubPackages"
+			url = "https://maven.pkg.github.com/" + "dexman545/Fabric-Autoswitch"
 		}
 	}
 }
