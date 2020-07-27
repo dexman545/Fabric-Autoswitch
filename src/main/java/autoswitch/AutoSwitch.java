@@ -1,6 +1,9 @@
 package autoswitch;
 
 import autoswitch.config.*;
+import autoswitch.config.populator.ApiMapGenerator;
+import autoswitch.config.populator.AutoSwitchMapsGenerator;
+import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.events.Scheduler;
 import autoswitch.events.SwitchEvent;
 import autoswitch.util.ApiGenUtil;
@@ -47,7 +50,7 @@ public class AutoSwitch implements ClientModInitializer {
 
     public static boolean mowing = true;
 
-    private int tickTime = 0;
+    public static int tickTime = 0;
 
     @Override
     @Environment(EnvType.CLIENT)
@@ -148,7 +151,7 @@ public class AutoSwitch implements ClientModInitializer {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
                 EventUtil.eventHandler(world, tickTime, 0, SwitchEvent.USE.setDoSwitch(doAS)
                         .setDoSwitchType(cfg.switchUseActions()).setOnMP(onMP)
-                        .setPlayer(player).setProtoTarget(world.getBlockState(hitResult.getBlockPos()).getBlock())));
+                        .setPlayer(player).setProtoTarget(world.getBlockState(hitResult.getBlockPos()))));
 
         //Entity Swaps
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->

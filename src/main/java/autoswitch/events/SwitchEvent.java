@@ -60,6 +60,11 @@ public enum SwitchEvent {
     },
     USE {
         @Override
+        protected boolean canSwitch() {
+            return clientWorld && doSwitch && doSwitchType;
+        }
+
+        @Override
         public void invoke() {
             if (!canSwitch()) return; // Shortcircuit to make it easier to read
 
@@ -67,7 +72,9 @@ public enum SwitchEvent {
             Optional<Boolean> temp = Targetable.use(protoTarget, player, onMP).changeTool();
             temp.ifPresent(b -> {
                 doOffhandSwitch = true;
-                if (b) AutoSwitch.scheduler.schedule(SwitchEvent.OFFHAND, 0, 0);
+                AutoSwitch.logger.error(b);
+                AutoSwitch.data.setHasSwitched(b);
+                if (b) AutoSwitch.scheduler.schedule(SwitchEvent.OFFHAND, 0.1, AutoSwitch.tickTime);
             });
 
         }
@@ -104,10 +111,10 @@ public enum SwitchEvent {
     },
     OFFHAND {
         @Override
-        public void invoke() { //todo fix breaking switchback after invocation
+        public void invoke() {
             SwitchUtil.handleUseSwitchConsumer().accept(doOffhandSwitch);
             doOffhandSwitch = false;
-            AutoSwitch.scheduler.schedule(SwitchEvent.SWITCHBACK, 0, 0);
+            AutoSwitch.scheduler.schedule(SwitchEvent.SWITCHBACK, 0.1, AutoSwitch.tickTime);
 
         }
     };

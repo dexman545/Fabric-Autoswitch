@@ -1,20 +1,14 @@
-package autoswitch.config;
+package autoswitch.config.populator;
 
 import autoswitch.AutoSwitch;
-import autoswitch.api.AutoSwitchMap;
-import autoswitch.api.DurabilityGetter;
+import autoswitch.config.io.MaterialHandler;
+import autoswitch.config.io.ToolHandler;
+import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.item.*;
-import net.minecraft.tag.Tag;
 import org.aeonbits.owner.Accessible;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Environment(EnvType.CLIENT)
 public class AutoSwitchMapsGenerator {
@@ -22,6 +16,12 @@ public class AutoSwitchMapsGenerator {
     public AutoSwitchMapsGenerator() {
         populateToolTargetMaps();
         populateToolListMap(AutoSwitch.data.toolLists);
+
+        // Trim the maps
+        AutoSwitch.data.toolSelectors.trim();
+        AutoSwitch.data.toolLists.trim();
+        AutoSwitch.data.useMap.trim();
+        AutoSwitch.data.toolTargetLists.trim();
     }
 
     private void populateToolTargetMaps() {
@@ -30,16 +30,16 @@ public class AutoSwitchMapsGenerator {
 
     }
 
-    private void populateMap(ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> map, Accessible cfg) {
+    private void populateMap(Object2ObjectOpenHashMap<Object, IntArrayList> map, Accessible cfg) {
         for (String key : cfg.propertyNames()) {
             String raw = cfg.getProperty(key);
             String[] split = raw.split(",");
 
-            CopyOnWriteArrayList<UUID> list = new CopyOnWriteArrayList<>();
+            IntArrayList list = new IntArrayList();
             for (String input : split) {
                 //Handle normal operation where input is tool and enchantment
-                UUID x = (new ToolHandler(input)).getId();
-                if (x != null) {
+                int x = (new ToolHandler(input)).getId();
+                if (x != 0) {
                     list.add(x);
                 }
             }
@@ -54,14 +54,14 @@ public class AutoSwitchMapsGenerator {
         }
     }
 
-    private void populateToolListMap(Map<UUID, CopyOnWriteArrayList<Integer>> toolLists) {
+    private void populateToolListMap(AbstractInt2ObjectMap<IntArrayList> toolLists) {
 
         if (AutoSwitch.cfg.toolPriorityOrder() == null) {
             return;
         }
 
         for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
-            toolLists.put((new ToolHandler(type).getId()), new CopyOnWriteArrayList<>());
+            toolLists.put((new ToolHandler(type).getId()), new IntArrayList());
         }
 
     }

@@ -1,5 +1,6 @@
 package autoswitch.config;
 
+import autoswitch.config.util.Comment;
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Reloadable;
@@ -51,9 +52,9 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
 
     @Separator(">")
     @DefaultValue("sword > axe > pickaxe")
-        //Order for tool priorities. Shared between blocks and mobs.
-        //Values must match their appearance in the material config
-        //Ex. ThisIsBefore > ThisIsAfter > Etc.
+    @Comment("Order for tool priorities. Shared between blocks and mobs." +
+            "tool selectors must exactly match how they appear in the material and usable configs." +
+            "Ex. ThisIsBefore > ThisIsAfter > Etc.")
     String[] toolPriorityOrder();
 
     @DefaultValue("true")
@@ -92,18 +93,22 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean useNoDurablityItemsWhenUnspecified();
 
     @DefaultValue("true")
-    @Comment("Enable to allow target list to stack enchantments. Disable for old behavior.")
+    @Comment("Enable to allow target list to stack enchantments. Disable for old behavior. " +
+            "When enabled, a target selector of 'tool;fortune, tool;mending' will prefer a tool with" +
+            " both fortune and mending over one with just fortune." +
+            "This differs from 'tool;fortune&mending' in that only one enchantment is required for " +
+            "the tool to be selected, rather than both fortune and mending.")
     Boolean toolEnchantmentsStack();
 
     @DefaultValue("false")
-        // This setting is meant to disable config GUI integration if in future the feature breaks,
-        // but the rest of AutoSwitch does not. Fallbacks are in place to ensure any changes to Minecraft do not break
-        // integration, this is simply a more extreme kill switch.
+    @Comment("This setting is meant to disable config GUI integration if in future the feature breaks," +
+            "but the rest of AutoSwitch does not. Fallbacks are in place to ensure any changes to Minecraft do not break" +
+            "integration, this is simply a more extreme kill switch.")
     Boolean disableModMenuConfig();
 
     @DefaultValue("false")
     @Comment("Tools with enchantments that increase attack damage will be rated higher. " +
-            "This means an axe with sharpness can be preferred over a sword." +
+            "This means an axe with sharpness can be preferred over a sword. " +
             "Set to true to enable this functionality. False ignores the enchantments.")
     Boolean weaponRatingIncludesEnchants();
 
@@ -111,13 +116,15 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     @Comment("Will force use of the toggle key in order to enable switching")
     Boolean disableSwitchingOnStartup();
 
-    @DefaultValue("0.05") // 1 ticks time
-    @Comment("Delay in seconds from end of hand swinging to perform switchback action")
+    @DefaultValue("0.05") // 1 tick's time
+    @Comment("Delay in seconds from end of hand swinging to perform switchback action." +
+            "0.05 is 1 tick of delay.")
     Float switchbackDelay();
 
     @DefaultValue("0.05")
     @Comment("Delay in seconds from triggering of normal switch action on the basis that the previous switch " +
-            "has not been undone via switchback")
+            "has not been undone via switchback." +
+            "0.05 is 1 tick of delay.")
     Float switchDelay();
 
     @DefaultValue("true")

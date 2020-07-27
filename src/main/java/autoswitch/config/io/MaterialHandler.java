@@ -1,4 +1,4 @@
-package autoswitch.config;
+package autoswitch.config.io;
 
 import autoswitch.AutoSwitch;
 import net.fabricmc.api.EnvType;

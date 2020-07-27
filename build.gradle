@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'fabric-loom' version '0.5-SNAPSHOT'
 	id "com.github.fudge.forgedflowerloom" version "2.0.0"
 	id 'maven-publish'
 }

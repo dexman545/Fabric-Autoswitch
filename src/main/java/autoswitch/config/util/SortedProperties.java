@@ -1,4 +1,4 @@
-package autoswitch.config;
+package autoswitch.config.util;
 
 import java.util.*;
 

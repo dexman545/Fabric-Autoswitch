@@ -1,14 +1,17 @@
-package autoswitch.config;
+package autoswitch.config.populator;
 
 import autoswitch.AutoSwitch;
+import autoswitch.config.AutoSwitchMaterialConfig;
+import autoswitch.config.AutoSwitchUsableConfig;
+import autoswitch.config.util.ConfigReflection;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.*;
-import org.aeonbits.owner.Accessible;
-import org.aeonbits.owner.ConfigFactory;
 import org.apache.commons.lang3.tuple.Pair;
+
+import static autoswitch.config.util.ConfigReflection.defaults;
 
 public class ApiMapGenerator {
     public static void createApiMaps() {
@@ -33,16 +36,10 @@ public class ApiMapGenerator {
 
     // Populate maps with default values to be sent to mods
     private static void genConfigMaps() {
-        //Look for config file at random place without the files so that defaults are pulled
-        ConfigFactory.setProperty("configDirMats", "~");
-        ConfigFactory.setProperty("configUsable", "~");
+        ConfigReflection.defaults(AutoSwitch.data.actionConfig, AutoSwitchMaterialConfig.class);
+        ConfigReflection.defaults(AutoSwitch.data.usableConfig, AutoSwitchUsableConfig.class);
 
-        Accessible matCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
-        Accessible usableCfg = ConfigFactory.create(AutoSwitchUsableConfig.class);
-
-        matCfg.fill(AutoSwitch.data.actionConfig);
-        usableCfg.fill(AutoSwitch.data.usableConfig);
-
+        // PoC for ensuring empty values don't get passed allowing mods to override
         /*for (String key : matCfg.propertyNames()) {
             if (!matCfg.getProperty(key, "").equals("")) {
                 AutoSwitch.data.actionConfig.put(key, matCfg.getProperty(key));

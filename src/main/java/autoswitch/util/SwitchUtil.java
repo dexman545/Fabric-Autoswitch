@@ -45,7 +45,6 @@ public class SwitchUtil {
         return b -> {
             if (b && AutoSwitch.cfg.switchbackMobs()) {
                 AutoSwitch.data.setHasSwitched(true);
-                AutoSwitch.data.setAttackedEntity(true);
             }
 
             if (b && AutoSwitch.cfg.putUseActionToolInOffHand()) {

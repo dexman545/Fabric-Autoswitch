@@ -1,19 +1,21 @@
-package autoswitch.config;
+package autoswitch.config.io;
 
 import autoswitch.AutoSwitch;
 import autoswitch.api.AutoSwitchMap;
-import autoswitch.api.DurabilityGetter;
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import autoswitch.config.*;
+import autoswitch.config.populator.AutoSwitchMapsGenerator;
+import autoswitch.config.util.ConfigHeaders;
+import autoswitch.util.ApiGenUtil;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.item.*;
-import net.minecraft.tag.Tag;
 import org.aeonbits.owner.Accessible;
+import org.aeonbits.owner.Config;
 import org.aeonbits.owner.ConfigFactory;
 import org.aeonbits.owner.Mutable;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Set;
 
 public final class ConfigEstablishment {
 
@@ -33,14 +35,11 @@ public final class ConfigEstablishment {
 
         //generate config file; removes incorrect values from existing one as well
         try {
-            //TODO manually write config files with the following requirements: (will be hard to keep updated)
-            // 1. ordered (so the mixin can be removed)
-            // 2. write in the comments
-            // 3. do some DFU shizzle to update old configs to new defaults?
-            // 4. make sure OWNER will still read from the file
-            AutoSwitch.cfg.store(new FileOutputStream(config), ConfigHeaders.basicConfig);
-            AutoSwitch.matCfg.store(new FileOutputStream(configMats), ConfigHeaders.materialConfig);
-            AutoSwitch.usableCfg.store(new FileOutputStream(configUsable), ConfigHeaders.usableConfig);
+
+            genFile(config, AutoSwitch.cfg, ConfigHeaders.basicConfig, null);
+            genFile(configMats, AutoSwitch.matCfg, ConfigHeaders.materialConfig, ApiGenUtil.modActionConfigs);
+            genFile(configUsable, AutoSwitch.usableCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
+
         } catch (IOException e) {
             AutoSwitch.logger.error("AutoSwitch failed to obtain the configs during writing!");
             AutoSwitch.logger.error(e);
@@ -50,7 +49,6 @@ public final class ConfigEstablishment {
 
         AutoSwitch.matCfg.addReloadListener(event -> {
             AutoSwitch.data.toolTargetLists.clear();
-            AutoSwitch.data.enchantToolMap.clear();
             new AutoSwitchMapsGenerator();
         });
 
@@ -60,16 +58,23 @@ public final class ConfigEstablishment {
         });
 
         AutoSwitch.usableCfg.addReloadListener(event -> {
-            AutoSwitch.data.enchantToolMap.clear();
             AutoSwitch.data.useMap.clear();
             new AutoSwitchMapsGenerator();
         });
     }
 
+    private <T extends Accessible & Config> void
+    genFile(String path, T config, String header, Object2ObjectOpenHashMap<String, Set<String>> moddedEntries)
+            throws IOException {
+        FileOutputStream basicConfig = new FileOutputStream(path);
+        basicConfig.write(GenerateConfigTemplate.initConfig(config, moddedEntries, header).getBytes());
+        basicConfig.close();
+    }
+
     // Add API added config values
-    private  <T extends Mutable &Accessible> void mergeConfigs(AutoSwitchMap<String, String> api, T cfg) {
+    private  <T extends Mutable & Accessible> void mergeConfigs(AutoSwitchMap<String, String> api, T cfg) {
         api.forEach((k, v) -> {
-            if (cfg.getProperty(k).isEmpty()) {
+            if (cfg.getProperty(k) == null) {
                 cfg.setProperty(k, v);
             }
         });

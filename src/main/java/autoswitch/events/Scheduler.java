@@ -1,5 +1,7 @@
 package autoswitch.events;
 
+import autoswitch.AutoSwitch;
+
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 

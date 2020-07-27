@@ -1,6 +1,8 @@
 package autoswitch.util;
 
 import autoswitch.AutoSwitch;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -10,9 +12,6 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TargetableUtil {
@@ -33,8 +32,7 @@ public class TargetableUtil {
         return getTarget(AutoSwitch.data.useMap, protoTarget);
     }
 
-
-    public static Object getTarget(ConcurrentHashMap<Object, CopyOnWriteArrayList<UUID>> map, Object protoTarget) {
+    public static Object getTarget(Object2ObjectOpenHashMap<Object, IntArrayList> map, Object protoTarget) {
         if (protoTarget instanceof AbstractBlock.AbstractBlockState) {
             // Block Override
             if (map.containsKey(((AbstractBlock.AbstractBlockState) protoTarget).getBlock())) {
