@@ -125,7 +125,7 @@ public abstract class Targetable {
             for (int i = Math.abs(currentSlot - slot); i > 0; i--) {
                 this.player.inventory.scrollInHotbar(currentSlot - slot);
             }
-            AutoSwitch.logger.error("Time: {} ns", (System.nanoTime() - init));
+            AutoSwitch.logger.error("Time Taken to Evaluate and Execute Change Tool: {} ns", (System.nanoTime() - init));
             return Optional.of(true); //Slot changed
         }).orElseGet(Optional::empty); //if nothing to change to, return empty
 
