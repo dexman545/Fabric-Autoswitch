@@ -15,7 +15,9 @@ import org.aeonbits.owner.Mutable;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class ConfigEstablishment {
 
@@ -35,10 +37,22 @@ public final class ConfigEstablishment {
 
         //generate config file; removes incorrect values from existing one as well
         try {
+            // Pull mod version
+            AtomicReference<String> currentVersion = new AtomicReference<>();
+            String configVersion = AutoSwitch.cfg.configVersion();
 
-            genFile(config, AutoSwitch.cfg, ConfigHeaders.basicConfig, null);
-            genFile(configMats, AutoSwitch.matCfg, ConfigHeaders.materialConfig, ApiGenUtil.modActionConfigs);
-            genFile(configUsable, AutoSwitch.usableCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
+            FabricLoader.getInstance().getModContainer("autoswitch").ifPresent(modContainer -> {
+                currentVersion.set(modContainer.getMetadata().getVersion().getFriendlyString());
+            });
+
+            // Check if the configs need to be rewritten
+            if (AutoSwitch.cfg.alwaysRewriteConfigs() || !configVersion.equals(currentVersion.get())) {
+                AutoSwitch.cfg.setProperty("configVersion", currentVersion.get()); // Update version before writing
+
+                genFile(config, AutoSwitch.cfg, ConfigHeaders.basicConfig, null);
+                genFile(configMats, AutoSwitch.matCfg, ConfigHeaders.materialConfig, ApiGenUtil.modActionConfigs);
+                genFile(configUsable, AutoSwitch.usableCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
+            }
 
         } catch (IOException e) {
             AutoSwitch.logger.error("AutoSwitch failed to obtain the configs during writing!");

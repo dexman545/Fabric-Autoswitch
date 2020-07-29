@@ -3,11 +3,12 @@ package autoswitch.config;
 import autoswitch.config.util.Comment;
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
+import org.aeonbits.owner.Mutable;
 import org.aeonbits.owner.Reloadable;
 
 @Config.HotReload(type = Config.HotReloadType.ASYNC, value = 1) //set value = X for interval of X seconds. Default: 5
 @Config.Sources({"file:${configDir}"})
-public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
+public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutable {
 
     @DefaultValue("true")
     @Comment("Display toggle message above hotbar. Set to false for normal chat message.")
@@ -117,18 +118,30 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible {
     Boolean disableSwitchingOnStartup();
 
     @DefaultValue("0.05") // 1 tick's time
-    @Comment("Delay in seconds from end of hand swinging to perform switchback action." +
+    @Comment("Delay in seconds from end of hand swinging to perform switchback action. Resolution on the order of ticks." +
             "0.05 is 1 tick of delay.")
     Float switchbackDelay();
 
     @DefaultValue("0.05")
     @Comment("Delay in seconds from triggering of normal switch action on the basis that the previous switch " +
-            "has not been undone via switchback." +
+            "has not been undone via switchback. Resolution on the order of ticks." +
             "0.05 is 1 tick of delay.")
     Float switchDelay();
 
     @DefaultValue("true")
     @Comment("Ignore tools with 0 energy/durability")
     Boolean skipDepletedItems();
+
+    @DefaultValue("")
+    @Comment("No touchy! For checking when to regen config files!")
+    String configVersion();
+
+    @DefaultValue("false")
+    @Comment("When enabled, the config files will be regenerated upon every MC startup. " +
+            "This means any user-added config entries will be moved to the bottom in the 'Overrides' section. " +
+            "When disabled, the files will only be rewritten when the config version does not match expected one. " +
+            "Do note that the material and usable configs will not regenerate if removed with this disabled if the " +
+            "main config was not also removed.")
+    Boolean alwaysRewriteConfigs();
 }
 
