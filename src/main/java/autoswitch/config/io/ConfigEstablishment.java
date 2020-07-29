@@ -22,6 +22,16 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public final class ConfigEstablishment {
 
+    // AutoSwitch has 3 config files - basic, material, and usable.
+    // Each can be represented by a map of key -> value pairs.
+    // The basic config consists of a set of keys that is non-expandable and known at and before compile-time.
+    // Its values are booleans, numerics, and one text input.
+
+    // Material and usable configs share the same format: a minimum set of keys that are known at and before compile-
+    // time. These keys are always present. Their set of keys is not known at compile-time, as it can be expanded during
+    // user-time. There are no limits to how much a user can expand this set of keys outside of practical ones. The
+    // values of these keys share similar issues:
+
     // Each value is an Optional List of ToolSelector, where a ToolSelector is a Tool + Optional List of Enchant,
     // where Tool is either a known ToolGroup (a String key in a map of key -> (Optional Tag<Item> and Optional Class))
     // or the item's Identifier, and Enchant is the enchantment's Identifier. Neither the ToolSelector nor Enchant lists
