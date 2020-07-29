@@ -50,10 +50,6 @@ dependencies {
 processResources {
 	inputs.property "version", project.version
 
-	filesMatching('version.properties') {
-		expand "version": project.version
-	}
-
 	from(sourceSets.main.resources.srcDirs) {
 		include "fabric.mod.json"
 		expand "version": project.version
