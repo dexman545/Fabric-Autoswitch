@@ -1,14 +1,13 @@
 package autoswitch.events;
 
 import autoswitch.AutoSwitch;
-import autoswitch.Targetable;
+import autoswitch.targetable.AbstractTargetable;
 import autoswitch.util.SwitchUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.hit.EntityHitResult;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static autoswitch.AutoSwitch.cfg;
@@ -45,52 +44,52 @@ public enum SwitchEvent {
         }
 
         @Override
-        public void invoke() {
-            if (!canSwitch()) return; // Shortcircuit to make it easier to read
+        public boolean invoke() {
+            if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
-            if (!handlePreSwitchTasks()) return; // Mowing Control
+            if (!handlePreSwitchTasks()) return false; // Mowing Control
             handlePrevSlot();
 
-            Targetable targetable;
-            if ((targetable = Targetable.of(protoTarget, player, onMP)) != null) {
-                targetable.changeTool().ifPresent(this::handlePostSwitchTasks);
-            }
+            AbstractTargetable targetable = AbstractTargetable.attack(protoTarget, player, onMP);
+            targetable.changeTool().ifPresent(this::handlePostSwitchTasks);
 
+            return true;
         }
     },
     USE {
         @Override
-        protected boolean canSwitch() {
-            return clientWorld && doSwitch && doSwitchType;
+        protected boolean canNotSwitch() {
+            return !clientWorld || !doSwitch || !doSwitchType;
         }
 
         @Override
-        public void invoke() {
-            if (!canSwitch()) return; // Shortcircuit to make it easier to read
+        public boolean invoke() {
+            if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
             handlePrevSlot();
-            Optional<Boolean> temp = Targetable.use(protoTarget, player, onMP).changeTool();
+            Optional<Boolean> temp = AbstractTargetable.use(protoTarget, player, onMP).changeTool();
             temp.ifPresent(b -> {
                 doOffhandSwitch = true;
-                AutoSwitch.logger.error(b);
                 AutoSwitch.data.setHasSwitched(b);
                 if (b) AutoSwitch.scheduler.schedule(SwitchEvent.OFFHAND, 0.1, AutoSwitch.tickTime);
             });
+
+            return true;
 
         }
     },
     SWITCHBACK {
         @Override
-        protected boolean canSwitch() {
+        protected boolean canNotSwitch() {
             // Check if conditions are met for switchback
             if (AutoSwitch.data.getHasSwitched() && !player.handSwinging) {
                 // Uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
-                return ((!AutoSwitch.data.hasAttackedEntity() || !cfg.switchbackWaits()) ||
-                        (player.getAttackCooldownProgress(-20.0f) == 1.0f &&
-                                AutoSwitch.data.hasAttackedEntity()));
+                return ((AutoSwitch.data.hasAttackedEntity() && cfg.switchbackWaits()) &&
+                        (player.getAttackCooldownProgress(-20.0f) != 1.0f ||
+                                !AutoSwitch.data.hasAttackedEntity()));
             }
 
-            return false;
+            return true;
         }
 
         private void handlePostSwitchTasks(boolean hasSwitched) {
@@ -102,19 +101,22 @@ public enum SwitchEvent {
         }
 
         @Override
-        public void invoke() {
-            if (!canSwitch()) return; // Shortcircuit to make it easier to read
+        public boolean invoke() {
+            if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
-            Targetable.of(AutoSwitch.data.getPrevSlot(), player).changeTool().ifPresent(this::handlePostSwitchTasks);
+            AbstractTargetable.switchback(AutoSwitch.data.getPrevSlot(), player).changeTool().ifPresent(this::handlePostSwitchTasks);
 
+            return true;
         }
     },
     OFFHAND {
         @Override
-        public void invoke() {
+        public boolean invoke() {
             SwitchUtil.handleUseSwitchConsumer().accept(doOffhandSwitch);
             doOffhandSwitch = false;
             AutoSwitch.scheduler.schedule(SwitchEvent.SWITCHBACK, 0.1, AutoSwitch.tickTime);
+
+            return true;
 
         }
     };
@@ -128,12 +130,11 @@ public enum SwitchEvent {
     private static boolean doOffhandSwitch;
 
 
-    public void invoke() {
-    }
+    public abstract boolean invoke();
 
-    protected boolean canSwitch() {
+    protected boolean canNotSwitch() {
         // Client is checked to fix LAN worlds (Issue #18)
-        return clientWorld && doSwitch && doSwitchType && player.handSwinging;
+        return !clientWorld || !doSwitch || !doSwitchType || !player.handSwinging;
     }
 
     protected void handlePrevSlot() {

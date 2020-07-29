@@ -23,8 +23,9 @@ public class GenerateConfigTemplate {
     public static <T extends Config & Accessible> String initConfig(T cfg, Object2ObjectOpenHashMap<String, Set<String>> moddedEntries, String header) {
         if (header == null) header = "";
         header = header.replace("\n", "\n# ");
-        header = "# " + header; // Prepend comment symbol
-        StringBuilder config = new StringBuilder(!header.equals("") ? header + "\n\n" : "");
+
+        header = !header.isEmpty() ? "# " + header + "\n\n" : ""; // Prepend comment symbol and filter empty header
+        StringBuilder config = new StringBuilder(header);
 
         SortedProperties comments = new SortedProperties(new Properties());
         SortedProperties defaults = new SortedProperties(new Properties());

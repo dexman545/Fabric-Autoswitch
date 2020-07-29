@@ -11,6 +11,7 @@ public final class SortedProperties extends Properties {
     }
 
     public SortedProperties() {
+        super();
     }
 
     @Override

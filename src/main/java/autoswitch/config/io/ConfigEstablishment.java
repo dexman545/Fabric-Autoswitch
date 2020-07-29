@@ -2,7 +2,9 @@ package autoswitch.config.io;
 
 import autoswitch.AutoSwitch;
 import autoswitch.api.AutoSwitchMap;
-import autoswitch.config.*;
+import autoswitch.config.AutoSwitchConfig;
+import autoswitch.config.AutoSwitchMaterialConfig;
+import autoswitch.config.AutoSwitchUsableConfig;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.config.util.ConfigHeaders;
 import autoswitch.util.ApiGenUtil;
@@ -15,11 +17,15 @@ import org.aeonbits.owner.Mutable;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 public final class ConfigEstablishment {
+
+    // Each value is an Optional List of ToolSelector, where a ToolSelector is a Tool + Optional List of Enchant,
+    // where Tool is either a known ToolGroup (a String key in a map of key -> (Optional Tag<Item> and Optional Class))
+    // or the item's Identifier, and Enchant is the enchantment's Identifier. Neither the ToolSelector nor Enchant lists
+    // are bounded outside of practical limitations.
 
     public ConfigEstablishment() {
         String config = FabricLoader.getInstance().getConfigDir().toString() + "/autoswitch.cfg";
@@ -41,9 +47,8 @@ public final class ConfigEstablishment {
             AtomicReference<String> currentVersion = new AtomicReference<>();
             String configVersion = AutoSwitch.cfg.configVersion();
 
-            FabricLoader.getInstance().getModContainer("autoswitch").ifPresent(modContainer -> {
-                currentVersion.set(modContainer.getMetadata().getVersion().getFriendlyString());
-            });
+            FabricLoader.getInstance().getModContainer("autoswitch").ifPresent(modContainer ->
+                    currentVersion.set(modContainer.getMetadata().getVersion().getFriendlyString()));
 
             // Check if the configs need to be rewritten
             if (AutoSwitch.cfg.alwaysRewriteConfigs() || !configVersion.equals(currentVersion.get())) {

@@ -1,7 +1,5 @@
 package autoswitch.events;
 
-import autoswitch.AutoSwitch;
-
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -25,8 +23,7 @@ public class Scheduler {
 
         schedule.forEach(task -> {
             if (task.finalTickTime <= currentTick && task.event.handlePreSwitchTasks()) {
-                task.event.invoke();
-                schedule.remove(task);
+                if (task.event.invoke()) schedule.remove(task);
             }
         });
     }

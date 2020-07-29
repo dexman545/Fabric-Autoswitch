@@ -11,8 +11,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.*;
 import org.apache.commons.lang3.tuple.Pair;
 
-import static autoswitch.config.util.ConfigReflection.defaults;
-
 public class ApiMapGenerator {
     public static void createApiMaps() {
 
@@ -143,11 +141,11 @@ public class ApiMapGenerator {
         AutoSwitch.data.targets.put("structure_void", Material.STRUCTURE_VOID);
 
         // Entities
-        AutoSwitch.data.targets.put("aquaticentity", EntityGroup.AQUATIC);
+        AutoSwitch.data.targets.put("aquaticEntity", EntityGroup.AQUATIC);
 
         AutoSwitch.data.targets.put("arthropod", EntityGroup.ARTHROPOD);
 
-        AutoSwitch.data.targets.put("defaultentity", EntityGroup.DEFAULT);
+        AutoSwitch.data.targets.put("defaultEntity", EntityGroup.DEFAULT);
 
         AutoSwitch.data.targets.put("illager", EntityGroup.ILLAGER);
 
