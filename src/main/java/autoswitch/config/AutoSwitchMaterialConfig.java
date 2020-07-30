@@ -156,7 +156,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] tnt();
 
     @Separator(",")
-    @DefaultValue("shears;minecraft-mending, shears,  hoe;minecraft-mending, hoe, sword;minecraft-mending, sword")
+    @DefaultValue("shears;minecraft-mending, shears, hoe;minecraft-silk_touch, hoe;minecraft-mending, hoe, sword;minecraft-mending, sword")
     @Comment("A Material")
     ToolHandler[] leaves();
 
