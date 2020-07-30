@@ -60,7 +60,7 @@ public class TargetableUtil {
     /**
      * Function has a maximum of 1 at e; is 0 at 1; decays from e -> infinity.
      * The (1/.16) is correction factor to have maximum output be 1, instead of 0.16
-     *
+     * <p>
      * Default output for getMiningSpeed is 1, same speed as the player's hand. This function clamps that to 0,
      * as it is not a viable tool under normal circumstances.
      *
@@ -69,7 +69,7 @@ public class TargetableUtil {
      */
     public static float clampToolRating(float original) {
         if (AutoSwitch.cfg.preferMinimumViableTool() && original > 0) {
-            return (float) ((1/.16) * Math.log10(original) / original);
+            return (float) ((1 / .16) * Math.log10(original) / original);
         }
 
         return original;
@@ -95,11 +95,11 @@ public class TargetableUtil {
                 stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE)
                         .forEach(entityAttributeModifier ->
                                 x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()))
-                );
+                        );
 
                 return x.get() * (3 - y.get());
             } else { // No care for enchantments
-                return ((3-y.get()) * ((ToolItem) stack.getItem()).getMaterial().getAttackDamage());
+                return ((3 - y.get()) * ((ToolItem) stack.getItem()).getMaterial().getAttackDamage());
             }
 
         }

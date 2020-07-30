@@ -101,7 +101,7 @@ public final class ConfigEstablishment {
     }
 
     // Add API added config values
-    private  <T extends Mutable & Accessible> void mergeConfigs(AutoSwitchMap<String, String> api, T cfg) {
+    private <T extends Mutable & Accessible> void mergeConfigs(AutoSwitchMap<String, String> api, T cfg) {
         api.forEach((k, v) -> {
             if (cfg.getProperty(k) == null) {
                 cfg.setProperty(k, v);

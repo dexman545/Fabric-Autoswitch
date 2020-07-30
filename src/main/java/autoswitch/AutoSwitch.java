@@ -1,9 +1,11 @@
 package autoswitch;
 
-import autoswitch.config.*;
+import autoswitch.config.AutoSwitchConfig;
+import autoswitch.config.AutoSwitchMaterialConfig;
+import autoswitch.config.AutoSwitchUsableConfig;
+import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.config.populator.ApiMapGenerator;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
-import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.events.Scheduler;
 import autoswitch.events.SwitchEvent;
 import autoswitch.util.ApiGenUtil;
@@ -118,7 +120,7 @@ public class AutoSwitch implements ClientModInitializer {
 
             // Tick event system and check if scheduling a switchback is needed via EventUtil
             if (e.player != null) {
-                assert e.world != null: "World was null when a player wasn't?!";
+                assert e.world != null : "World was null when a player wasn't?!";
 
                 // Schedule switchback iff it is needed
                 EventUtil.eventHandler(e.world, tickTime, 0, SwitchEvent.SWITCHBACK.setPlayer(e.player));

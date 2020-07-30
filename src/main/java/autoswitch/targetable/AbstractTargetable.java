@@ -172,15 +172,15 @@ public abstract class AbstractTargetable {
     /**
      * Add tools to map that can handle this target
      *
-     * @param stack       item in hotbar slot to check for usage
-     * @param slot        hotbar slot number
-     * @param targetGetter lookup protoTarget in the correct map
-     * @param toolSelector check ToolType for correct case
+     * @param stack           item in hotbar slot to check for usage
+     * @param slot            hotbar slot number
+     * @param targetGetter    lookup protoTarget in the correct map
+     * @param toolSelector    check ToolType for correct case
      * @param toolSelectorMap ToolSelectors relevant to the case
      */
     void processToolSelectors(ItemStack stack, int slot,
-                                        Object2ObjectOpenHashMap<Object, IntArrayList> toolSelectorMap,
-                                        TargetGetter targetGetter, ToolSelector toolSelector) {
+                              Object2ObjectOpenHashMap<Object, IntArrayList> toolSelectorMap,
+                              TargetGetter targetGetter, ToolSelector toolSelector) {
         if (!switchAllowed()) return; // Short-circuit to not evaluate tools when cannot switch
 
         Item item = stack.getItem();

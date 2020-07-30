@@ -2,6 +2,7 @@ package autoswitch.modmenu;
 
 import autoswitch.AutoSwitch;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -51,7 +52,7 @@ public class ASConfigScreen extends Screen {
                 }
             });
 
-            this.question = this.addButton(new ButtonWidget(this.width / 2  - 150, this.height - 30, 300, 20, new TranslatableText("button.autoswitch.openwiki"), (buttonWidget) -> {
+            this.question = this.addButton(new ButtonWidget(this.width / 2 - 150, this.height - 30, 300, 20, new TranslatableText("button.autoswitch.openwiki"), (buttonWidget) -> {
                 try {
                     Util.getOperatingSystem().open(new URL("https://github.com/dexman545/Fabric-Autoswitch/wiki/Why-Does-AutoSwitch-Not-Include-an-In-Game-GUI-For-Editing-Configs%3F"));
                 } catch (MalformedURLException e) {
@@ -86,7 +87,7 @@ public class ASConfigScreen extends Screen {
             int centerY = this.width / 2;
 
             for (int i = 1; i < 6; i++) {
-                this.drawCenteredText(matrices, this.textRenderer, new TranslatableText("msg.autoswitch.config."+i), centerX, centerY / 3  + ((i) * 10), Color.RED.getRGB());
+                drawCenteredText(matrices, this.textRenderer, new TranslatableText("msg.autoswitch.config." + i), centerX, centerY / 3 + ((i) * 10), Color.RED.getRGB());
             }
 
             super.render(matrices, mouseX, mouseY, delta);

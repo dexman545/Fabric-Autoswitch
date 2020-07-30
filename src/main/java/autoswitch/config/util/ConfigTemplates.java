@@ -62,7 +62,7 @@ public class ConfigTemplates {
         Enumeration<String> enumKeys = AutoSwitch.data.toolGroupings.keys();
 
         while (enumKeys.hasMoreElements()) {
-            keys.append(keys.length() > 0 ? ", ": "").append(enumKeys.nextElement());
+            keys.append(keys.length() > 0 ? ", " : "").append(enumKeys.nextElement());
         }
 
         return category("Provided Tool Groupings by AutoSwitch and Mods it Interfaced With", "",
@@ -106,7 +106,7 @@ public class ConfigTemplates {
             out.append(string).append("\n");
         }
 
-        out.delete(out.length()-1, out.length());
+        out.delete(out.length() - 1, out.length());
 
         return out.toString();
     }

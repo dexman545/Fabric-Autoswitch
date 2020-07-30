@@ -2,9 +2,9 @@ package autoswitch.config.io;
 
 import autoswitch.config.AutoSwitchMaterialConfig;
 import autoswitch.config.AutoSwitchUsableConfig;
-import autoswitch.config.util.SortedProperties;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.config.util.ConfigTemplates;
+import autoswitch.config.util.SortedProperties;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
