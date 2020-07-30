@@ -34,17 +34,16 @@ public class SwitchDataStorage {
 
     public Object2IntOpenHashMap<String> toolSelectorKeys = new Object2IntOpenHashMap<>();
     public Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> toolSelectors = new Int2ObjectOpenHashMap<>();
-
-    private int prevSlot;
-    private boolean hasSwitched;
-    private boolean attackedEntity;
-
     // API Maps
     public AutoSwitchMap<String, Pair<Tag<Item>, Class<?>>> toolGroupings = new AutoSwitchMap<>();
     public AutoSwitchMap<Class<?>, DurabilityGetter> damageMap = new AutoSwitchMap<>();
     public AutoSwitchMap<String, Object> targets = new AutoSwitchMap<>();
     public AutoSwitchMap<String, String> actionConfig = new AutoSwitchMap<>();
     public AutoSwitchMap<String, String> usableConfig = new AutoSwitchMap<>();
+
+    private int prevSlot;
+    private boolean hasSwitched;
+    private boolean attackedEntity;
 
     public SwitchDataStorage() {
         prevSlot = -1;

@@ -10,10 +10,10 @@ import java.util.Enumeration;
 public class ConfigTemplates {
     static int width = 131;
     static String commentChar = "#";
+    public static String border = Strings.repeat(commentChar, width);
     static String baseCommentedText = "# <FILL> #";
     static String modCategoryDescription = "Config Entries Provided by: ";
     static String defaultValueComment = "\n# Default Value: ";
-    public static String border = Strings.repeat(commentChar, width);
 
     public static String modCategory(String modName) {
         return category(modName, modCategoryDescription);

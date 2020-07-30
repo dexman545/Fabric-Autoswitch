@@ -32,27 +32,24 @@ public class AutoSwitch implements ClientModInitializer {
 
     public static final Logger logger = LogManager.getLogger("AutoSwitch");
 
-    public static Scheduler scheduler = new Scheduler();
-
     //Create object to store player switch state
     public static final SwitchDataStorage data = new SwitchDataStorage();
+    public static Scheduler scheduler = new Scheduler();
 
     //Init config
     public static AutoSwitchConfig cfg;
     public static AutoSwitchMaterialConfig matCfg;
     public static AutoSwitchUsableConfig usableCfg;
 
+    public static boolean mowing = true;
+    public static int tickTime = 0;
+
     //Keybindings
     private static KeyBinding autoswitchToggleKeybinding;
     private static KeyBinding mowingWhenFightingToggleKeybinding;
 
     private boolean doAS = true;
-
     private boolean onMP = true;
-
-    public static boolean mowing = true;
-
-    public static int tickTime = 0;
 
     @Override
     @Environment(EnvType.CLIENT)

@@ -276,23 +276,23 @@ public abstract class AbstractTargetable {
         return false;
     }
 
-    @FunctionalInterface
-    interface TargetGetter {
-        Object getTarget(Object protoTarget);
-    }
-
-    @FunctionalInterface
-    interface ToolSelector {
-        boolean correctType(String tool, Item item);
-    }
-
-
     /**
      * Determine config value for switching for mobs/blocks
      *
      * @return true if that type of switch is allowed in the config
      */
     abstract Boolean switchTypeAllowed();
+
+    @FunctionalInterface
+    interface TargetGetter {
+        Object getTarget(Object protoTarget);
+    }
+
+
+    @FunctionalInterface
+    interface ToolSelector {
+        boolean correctType(String tool, Item item);
+    }
 
 }
 
