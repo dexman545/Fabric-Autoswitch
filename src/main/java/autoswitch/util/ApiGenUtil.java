@@ -12,8 +12,8 @@ import org.apache.commons.lang3.SerializationUtils;
 import java.util.Set;
 
 public class ApiGenUtil {
-    public static Object2ObjectOpenHashMap<String, Set<String>> modActionConfigs = new Object2ObjectOpenHashMap<>();
-    public static Object2ObjectOpenHashMap<String, Set<String>> modUseConfigs = new Object2ObjectOpenHashMap<>();
+    public static final Object2ObjectOpenHashMap<String, Set<String>> modActionConfigs = new Object2ObjectOpenHashMap<>();
+    public static final Object2ObjectOpenHashMap<String, Set<String>> modUseConfigs = new Object2ObjectOpenHashMap<>();
 
     public static void pullHookedMods() {
         FabricLoader.getInstance().getEntrypointContainers("autoswitch", AutoSwitchApi.class).forEach(entrypoint -> {

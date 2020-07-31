@@ -30,13 +30,13 @@ import java.util.function.IntConsumer;
  */
 @Environment(EnvType.CLIENT)
 public abstract class AbstractTargetable {
-    Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = AutoSwitch.data.toolTargetLists;
-    Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
+    final Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = AutoSwitch.data.toolTargetLists;
+    final Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
-    Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
+    final Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
     PlayerEntity player;
-    AutoSwitchConfig cfg;
-    Boolean onMP;
+    final AutoSwitchConfig cfg;
+    final Boolean onMP;
 
     Object protoTarget = null;
 

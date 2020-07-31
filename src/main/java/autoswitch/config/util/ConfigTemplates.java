@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 public class ConfigTemplates {
-    static int width = 131;
-    static String commentChar = "#";
-    public static String border = Strings.repeat(commentChar, width);
-    static String baseCommentedText = "# <FILL> #";
-    static String modCategoryDescription = "Config Entries Provided by: ";
-    static String defaultValueComment = "\n# Default Value: ";
+    static final int width = 131;
+    static final String commentChar = "#";
+    public static final String border = Strings.repeat(commentChar, width);
+    static final String baseCommentedText = "# <FILL> #";
+    static final String modCategoryDescription = "Config Entries Provided by: ";
+    static final String defaultValueComment = "\n# Default Value: ";
 
     public static String modCategory(String modName) {
         return category(modName, modCategoryDescription);

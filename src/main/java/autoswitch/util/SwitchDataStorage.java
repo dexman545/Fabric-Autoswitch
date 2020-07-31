@@ -28,18 +28,19 @@ public class SwitchDataStorage {
     /**
      * Maps targets of use-action -> desired tool
      */
-    public Object2ObjectOpenHashMap<Object, IntArrayList> useMap = new Object2ObjectOpenHashMap<>();
-    public Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = new Object2ObjectOpenHashMap<>();
-    public Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = new Int2ObjectLinkedOpenHashMap<>();
+    public final Object2ObjectOpenHashMap<Object, IntArrayList> useMap = new Object2ObjectOpenHashMap<>();
+    public final Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = new Object2ObjectOpenHashMap<>();
+    public final Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = new Int2ObjectLinkedOpenHashMap<>();
 
-    public Object2IntOpenHashMap<String> toolSelectorKeys = new Object2IntOpenHashMap<>();
-    public Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> toolSelectors = new Int2ObjectOpenHashMap<>();
+    public final Object2IntOpenHashMap<String> toolSelectorKeys = new Object2IntOpenHashMap<>();
+    public final Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> toolSelectors = new Int2ObjectOpenHashMap<>();
+
     // API Maps
-    public AutoSwitchMap<String, Pair<Tag<Item>, Class<?>>> toolGroupings = new AutoSwitchMap<>();
-    public AutoSwitchMap<Class<?>, DurabilityGetter> damageMap = new AutoSwitchMap<>();
-    public AutoSwitchMap<String, Object> targets = new AutoSwitchMap<>();
-    public AutoSwitchMap<String, String> actionConfig = new AutoSwitchMap<>();
-    public AutoSwitchMap<String, String> usableConfig = new AutoSwitchMap<>();
+    public final AutoSwitchMap<String, Pair<Tag<Item>, Class<?>>> toolGroupings = new AutoSwitchMap<>();
+    public final AutoSwitchMap<Class<?>, DurabilityGetter> damageMap = new AutoSwitchMap<>();
+    public final AutoSwitchMap<String, Object> targets = new AutoSwitchMap<>();
+    public final AutoSwitchMap<String, String> actionConfig = new AutoSwitchMap<>();
+    public final AutoSwitchMap<String, String> usableConfig = new AutoSwitchMap<>();
 
     private int prevSlot;
     private boolean hasSwitched;

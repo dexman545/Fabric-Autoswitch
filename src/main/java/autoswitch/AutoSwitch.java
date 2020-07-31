@@ -34,7 +34,7 @@ public class AutoSwitch implements ClientModInitializer {
 
     //Create object to store player switch state
     public static final SwitchDataStorage data = new SwitchDataStorage();
-    public static Scheduler scheduler = new Scheduler();
+    public static final Scheduler scheduler = new Scheduler();
 
     //Init config
     public static AutoSwitchConfig cfg;

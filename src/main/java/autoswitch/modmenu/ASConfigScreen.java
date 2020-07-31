@@ -28,7 +28,7 @@ public class ASConfigScreen extends Screen {
     @Override
     protected void init() {
         try {
-            this.openFolder = this.addButton(new ButtonWidget(this.width / 2 - 200, 2 * this.height / 3, 150, 20, new TranslatableText("button.autoswitch.openfolder"), (button -> Util.getOperatingSystem().open(FabricLoader.getInstance().getConfigDirectory()))) {
+            this.openFolder = this.addButton(new ButtonWidget(this.width / 2 - 200, 2 * this.height / 3, 150, 20, new TranslatableText("button.autoswitch.openfolder"), (button -> Util.getOperatingSystem().open(FabricLoader.getInstance().getConfigDir().toString()))) {
                 public Text getMessage() {
                     return new TranslatableText("button.autoswitch.openfolder");
                 }
@@ -39,8 +39,8 @@ public class ASConfigScreen extends Screen {
             });
 
             this.openConfigFiles = this.addButton(new ButtonWidget(this.width / 2 + 50, 2 * this.height / 3, 150, 20, new TranslatableText("button.autoswitch.openconfigs"), (button -> {
-                Util.getOperatingSystem().open(new File(FabricLoader.getInstance().getConfigDirectory().toString(), "autoswitch.cfg"));
-                Util.getOperatingSystem().open(new File(FabricLoader.getInstance().getConfigDirectory().toString(), "autoswitchMaterials.cfg"));
+                Util.getOperatingSystem().open(new File(FabricLoader.getInstance().getConfigDir().toString(), "autoswitch.cfg"));
+                Util.getOperatingSystem().open(new File(FabricLoader.getInstance().getConfigDir().toString(), "autoswitchMaterials.cfg"));
             })) {
                 public Text getMessage() {
                     return new TranslatableText("button.autoswitch.openconfigs");

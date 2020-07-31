@@ -35,9 +35,9 @@ public class Scheduler {
     }
 
     static class Task {
-        public int initTickTime;
-        public int finalTickTime;
-        public SwitchEvent event;
+        public final int initTickTime;
+        public final int finalTickTime;
+        public final SwitchEvent event;
 
         Task(SwitchEvent event, int initTickTime, int finalTickTime) {
             this.event = event;
