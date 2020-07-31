@@ -21,6 +21,7 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+//noinspection SpellCheckingInspection
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -81,12 +82,17 @@ jar {
 
 publishing {
 	publications {
+		//noinspection GroovyAssignabilityCheck
 		mavenJava(MavenPublication) {
 			// add all the jars that should be included when publishing to maven
+			//noinspection GroovyAssignabilityCheck
 			artifact(remapJar) {
+				//noinspection GroovyAssignabilityCheck
 				builtBy remapJar
 			}
+			//noinspection GroovyAssignabilityCheck
 			artifact(sourcesJar) {
+				//noinspection GroovyAssignabilityCheck
 				builtBy remapSourcesJar
 			}
 		}
