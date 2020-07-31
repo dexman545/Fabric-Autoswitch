@@ -33,7 +33,8 @@ public class SwitchDataStorage {
     public final Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = new Int2ObjectLinkedOpenHashMap<>();
 
     public final Object2IntOpenHashMap<String> toolSelectorKeys = new Object2IntOpenHashMap<>();
-    public final Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> toolSelectors = new Int2ObjectOpenHashMap<>();
+    public final Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> toolSelectors =
+            new Int2ObjectOpenHashMap<>();
 
     // API Maps
     public final AutoSwitchMap<String, Pair<Tag<Item>, Class<?>>> toolGroupings = new AutoSwitchMap<>();

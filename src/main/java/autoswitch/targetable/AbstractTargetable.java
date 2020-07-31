@@ -34,10 +34,9 @@ public abstract class AbstractTargetable {
     final Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
     final Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
-    PlayerEntity player;
     final AutoSwitchConfig cfg;
     final Boolean onMP;
-
+    PlayerEntity player;
     Object protoTarget = null;
 
 

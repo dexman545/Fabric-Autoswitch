@@ -92,6 +92,7 @@ public final class ConfigEstablishment {
         });
     }
 
+    // Write file
     private <T extends Accessible & Config> void
     genFile(String path, T config, String header, Object2ObjectOpenHashMap<String, Set<String>> moddedEntries)
             throws IOException {

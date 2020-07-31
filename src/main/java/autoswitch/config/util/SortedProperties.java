@@ -2,6 +2,7 @@ package autoswitch.config.util;
 
 import java.util.*;
 
+// Version of Properties that is sorted
 public final class SortedProperties extends Properties {
     private static final Comparator<Map.Entry<Object, Object>> KEY_COMPARATOR =
             Comparator.comparing(entry -> entry.getKey().toString());

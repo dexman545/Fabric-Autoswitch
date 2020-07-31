@@ -20,7 +20,17 @@ import static autoswitch.config.util.ConfigReflection.defaults;
 
 public class GenerateConfigTemplate {
 
-    public static <T extends Config & Accessible> String initConfig(T cfg, Object2ObjectOpenHashMap<String, Set<String>> moddedEntries, String header) {
+    /**
+     * Generate prettified String of the provided config file for writing to file.
+     *
+     * @param cfg           Config to pull current user values from
+     * @param moddedEntries default entries provided by mods via the API
+     * @param header        Head for the file
+     * @param <T>           Generic config parameter
+     * @return prettified config file.
+     */
+    public static <T extends Config & Accessible>
+    String initConfig(T cfg, Object2ObjectOpenHashMap<String, Set<String>> moddedEntries, String header) {
         if (header == null) header = "";
         header = header.replace("\n", "\n# ");
 
@@ -63,6 +73,7 @@ public class GenerateConfigTemplate {
         Properties cfgProp = new Properties();
         cfg.fill(cfgProp);
 
+        // Move user-provided keys to bottom, within their own category
         Set<Object> userKeys = diffMaps(defaults, cfgProp);
         if (userKeys != null) {
             config.append("\n# Overrides").append("\n").append(ConfigTemplates.border).append("\n\n");

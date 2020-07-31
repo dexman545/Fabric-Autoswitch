@@ -13,6 +13,10 @@ import org.aeonbits.owner.Accessible;
 @Environment(EnvType.CLIENT)
 public class AutoSwitchMapsGenerator {
 
+    /**
+     * Populates maps AutoSwitch uses for switching.
+     * Maps populated: ToolSelectors, ToolLists, UseMap, and ToolTargetLists
+     */
     public AutoSwitchMapsGenerator() {
         populateToolTargetMaps();
         populateToolListMap(AutoSwitch.data.toolLists);
@@ -24,12 +28,22 @@ public class AutoSwitchMapsGenerator {
         AutoSwitch.data.toolTargetLists.trim();
     }
 
+    /**
+     * Populate Target maps (toolTargetLists and useMap).
+     */
     private void populateToolTargetMaps() {
         populateMap(AutoSwitch.data.toolTargetLists, AutoSwitch.matCfg);
         populateMap(AutoSwitch.data.useMap, AutoSwitch.usableCfg);
 
     }
 
+    /**
+     * Populates the provided map from the config file, parsing the input via ToolHandler and MaterialHandler
+     * into something usable.
+     *
+     * @param map Map to populate.
+     * @param cfg Config to pull data from.
+     */
     private void populateMap(Object2ObjectOpenHashMap<Object, IntArrayList> map, Accessible cfg) {
         for (String key : cfg.propertyNames()) {
             String raw = cfg.getProperty(key);
@@ -54,14 +68,18 @@ public class AutoSwitchMapsGenerator {
         }
     }
 
+    /**
+     * Populate tool lists with order from the primary config. This allows for global overriding of tool selection
+     * preferences.
+     *
+     * @param toolLists list to populate from primary config.
+     */
     private void populateToolListMap(AbstractInt2ObjectMap<IntArrayList> toolLists) {
 
-        if (AutoSwitch.cfg.toolPriorityOrder() == null) {
-            return;
-        }
-
-        for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
-            toolLists.put((new ToolHandler(type).getId()), new IntArrayList());
+        if (AutoSwitch.cfg.toolPriorityOrder() != null) {
+            for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
+                toolLists.put((new ToolHandler(type).getId()), new IntArrayList());
+            }
         }
 
     }
