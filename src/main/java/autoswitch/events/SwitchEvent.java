@@ -104,7 +104,8 @@ public enum SwitchEvent {
         public boolean invoke() {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
-            AbstractTargetable.switchback(AutoSwitch.data.getPrevSlot(), player).changeTool().ifPresent(this::handlePostSwitchTasks);
+            AbstractTargetable.switchback(AutoSwitch.data.getPrevSlot(), player)
+                    .changeTool().ifPresent(this::handlePostSwitchTasks);
 
             return true;
         }
