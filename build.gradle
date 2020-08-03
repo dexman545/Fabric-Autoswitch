@@ -8,10 +8,15 @@ plugins {
 	id 'fabric-loom' version '0.5-SNAPSHOT'
 	id "com.github.fudge.forgedflowerloom" version "2.0.0"
 	id 'maven-publish'
+	id 'musical-code' version '1.0'
 }
 
 repositories {
 	maven { url 'https://jitpack.io' }
+}
+
+musicalCode {
+	config 'musical-config.txt'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8

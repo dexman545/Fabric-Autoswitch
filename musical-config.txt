@@ -1,0 +1,3 @@
+# https://github.com/Earthcomputer/MusicalCode
+# Material pull
+net/minecraft/block/AbstractBlock$AbstractBlockState.getMaterial() Lnet/minecraft/block/Material;
