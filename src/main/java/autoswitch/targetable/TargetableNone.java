@@ -9,7 +9,7 @@ import java.util.Optional;
  * Implementation of Targetable when there is no target. Intended for switchback feature.
  */
 class TargetableNone extends AbstractTargetable {
-    final int prevSlot;
+    private final int prevSlot;
 
     public TargetableNone(int prevSlot, PlayerEntity player) {
         super(player, null);

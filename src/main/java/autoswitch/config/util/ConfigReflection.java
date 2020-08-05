@@ -18,7 +18,7 @@ public class ConfigReflection {
      * Map of config classes for check and casting as asking for the class on the config object directly
      * returns some random sun object.
      */
-    public static final ObjectArrayList<Class<? extends Config>> configClasses = new ObjectArrayList<>();
+    private static final ObjectArrayList<Class<? extends Config>> configClasses = new ObjectArrayList<>();
 
     static {
         configClasses.add(AutoSwitchMaterialConfig.class);
@@ -37,19 +37,19 @@ public class ConfigReflection {
     }
 
     // Get the config entry's key
-    public static String key(Method method) {
+    private static String key(Method method) {
         Config.Key key = method.getAnnotation(Config.Key.class);
         return (key == null) ? method.getName() : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
     }
 
     // get the config entry's comment
-    public static String comment(Method method) {
+    private static String comment(Method method) {
         Comment comment = method.getAnnotation(Comment.class);
         return (comment != null) ? "# " + comment.value() : null;
     }
 
     // Get the config entry's value
-    public static String defaultValue(Method method) {
+    private static String defaultValue(Method method) {
         Config.DefaultValue defaultValue = method.getAnnotation(Config.DefaultValue.class);
         return defaultValue != null ? defaultValue.value() : null;
     }

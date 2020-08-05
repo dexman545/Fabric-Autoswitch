@@ -8,9 +8,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.TranslatableText;
 
 @Environment(EnvType.CLIENT)
-public class ASConfigScreenFactory implements ConfigScreenFactory {
+class ASConfigScreenFactory implements ConfigScreenFactory<ASConfigScreen> {
     @Override
-    public Screen create(Screen parent) {
+    public ASConfigScreen create(Screen parent) {
         if (AutoSwitch.cfg.disableModMenuConfig()) {
             return null;
         }

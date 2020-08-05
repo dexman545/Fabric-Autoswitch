@@ -9,9 +9,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
+import net.minecraft.tag.Tag;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TargetableUtil {
@@ -75,7 +80,7 @@ public class TargetableUtil {
      * @param original original rating
      * @return clamped rating if needed
      */
-    public static float clampToolRating(float original) {
+    private static float clampToolRating(float original) {
         if (AutoSwitch.cfg.preferMinimumViableTool() && original > 0) {
             return (float) ((1 / .16) * Math.log10(original) / original);
         }
@@ -172,4 +177,49 @@ public class TargetableUtil {
         return true;
     }
 
+    public static boolean isCorrectType(String tool, Item item) {
+        if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) return true;
+        return isCorrectTool(tool, item);
+
+    }
+
+    public static boolean isCorrectUseType(String tool, Item item) {
+        return isCorrectTool(tool, item);
+    }
+
+    /**
+     * Checks if the tool is of the correct type or not
+     *
+     * @param tool tool name from config
+     * @param item item from hotbar
+     * @return true if tool name and item match
+     */
+    private static boolean isCorrectTool(String tool, Item item) {
+        AtomicBoolean matches = new AtomicBoolean(false);
+
+        AutoSwitch.data.toolGroupings.forEach((toolKey, tagClassPair) -> {
+            if (tool.equals(toolKey) || tool.equals("any")) {
+                if (checkTagAndClass(tagClassPair.getLeft(), tagClassPair.getRight(), item)) {
+                    matches.set(true);
+                }
+            }
+        });
+
+        return matches.get() || (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
+    }
+
+    private static boolean checkTagAndClass(Tag<Item> tag, Class<?> clazz, Item item) {
+        boolean tagCheck = false;
+        boolean classCheck = false;
+
+        if (tag != null) {
+            tagCheck = tag.contains(item);
+        }
+
+        if (clazz != null) {
+            classCheck = clazz.isInstance(item);
+        }
+
+        return tagCheck || classCheck;
+    }
 }

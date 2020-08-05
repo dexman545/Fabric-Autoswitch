@@ -133,12 +133,12 @@ public enum SwitchEvent {
 
     public abstract boolean invoke();
 
-    protected boolean canNotSwitch() {
+    boolean canNotSwitch() {
         // Client is checked to fix LAN worlds (Issue #18)
         return !clientWorld || !doSwitch || !doSwitchType || !player.handSwinging;
     }
 
-    protected void handlePrevSlot() {
+    void handlePrevSlot() {
         if (!AutoSwitch.data.getHasSwitched()) {
             AutoSwitch.data.setPrevSlot(player.inventory.selectedSlot);
         }

@@ -72,52 +72,6 @@ public class ToolHandler {
 
     }
 
-    public static boolean isCorrectType(String tool, Item item) {
-        if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) return true;
-        return isCorrectTool(tool, item);
-
-    }
-
-    public static boolean isCorrectUseType(String tool, Item item) {
-        return isCorrectTool(tool, item);
-    }
-
-    /**
-     * Checks if the tool is of the correct type or not
-     *
-     * @param tool tool name from config
-     * @param item item from hotbar
-     * @return true if tool name and item match
-     */
-    private static boolean isCorrectTool(String tool, Item item) {
-        AtomicBoolean matches = new AtomicBoolean(false);
-
-        AutoSwitch.data.toolGroupings.forEach((toolKey, tagClassPair) -> {
-            if (tool.equals(toolKey) || tool.equals("any")) {
-                if (checkTagAndClass(tagClassPair.getLeft(), tagClassPair.getRight(), item)) {
-                    matches.set(true);
-                }
-            }
-        });
-
-        return matches.get() || (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
-    }
-
-    private static boolean checkTagAndClass(Tag<Item> tag, Class<?> clazz, Item item) {
-        boolean tagCheck = false;
-        boolean classCheck = false;
-
-        if (tag != null) {
-            tagCheck = tag.contains(item);
-        }
-
-        if (clazz != null) {
-            classCheck = clazz.isInstance(item);
-        }
-
-        return tagCheck || classCheck;
-    }
-
     private String getTool(String t) {
         switch (t) {
             case "axe":

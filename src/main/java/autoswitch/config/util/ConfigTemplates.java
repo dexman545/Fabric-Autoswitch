@@ -8,19 +8,19 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 public class ConfigTemplates {
-    static final int width = 131;
-    static final String commentChar = "#";
+    private static final int width = 131;
+    private static final String commentChar = "#";
     public static final String border = Strings.repeat(commentChar, width);
-    static final String baseCommentedText = "# <FILL> #";
-    static final String modCategoryDescription = "Config Entries Provided by: ";
-    static final String defaultValueComment = "\n# Default Value: ";
+    private static final String baseCommentedText = "# <FILL> #";
+    private static final String modCategoryDescription = "Config Entries Provided by: ";
+    private static final String defaultValueComment = "\n# Default Value: ";
 
     public static String modCategory(String modName) {
         return category(modName, modCategoryDescription);
 
     }
 
-    public static String category(String name, String categoryDesc, String... info) {
+    private static String category(String name, String categoryDesc, String... info) {
         String title = categoryDesc + name;
 
         if (title.length() < width - 4) {
@@ -70,11 +70,11 @@ public class ConfigTemplates {
                 , keys.toString());
     }
 
-    static String configCommentEntry(String defaultValue) {
+    private static String configCommentEntry(String defaultValue) {
         return (defaultValue != null && !defaultValue.equals("")) ? defaultValueComment + defaultValue : "";
     }
 
-    static String configEntry(String cfg, String comment, String defaultValue) {
+    private static String configEntry(String cfg, String comment, String defaultValue) {
         StringBuilder out = new StringBuilder();
         if (comment != null && !comment.equals("")) {
             out.append("\n");
@@ -87,19 +87,19 @@ public class ConfigTemplates {
 
     }
 
-    static String configValueEntry(String key, String value) {
+    private static String configValueEntry(String key, String value) {
         if (value == null) value = "";
         key = key.replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
         return key + " = " + value;
     }
 
-    static String centeredString(String input) {
+    private static String centeredString(String input) {
         int centering = (int) Math.ceil((width - input.length() - 4) / 2f);
 
         return Strings.repeat(" ", centering) + input;
     }
 
-    static String combineToBlock(String... strings) {
+    private static String combineToBlock(String... strings) {
         StringBuilder out = new StringBuilder();
 
         for (String string : strings) {

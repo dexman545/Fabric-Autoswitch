@@ -31,11 +31,11 @@ import java.util.function.IntConsumer;
 @Environment(EnvType.CLIENT)
 public abstract class AbstractTargetable {
     final Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = AutoSwitch.data.toolTargetLists;
-    final Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
+    private final Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
-    final Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
+    private final Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
     final AutoSwitchConfig cfg;
-    final Boolean onMP;
+    private final Boolean onMP;
     PlayerEntity player;
     Object protoTarget = null;
 
@@ -47,7 +47,7 @@ public abstract class AbstractTargetable {
      * @param player player this will effect
      * @param onMP   whether the player is on a remote server. If given null, will assume that AutoSwitch is allowed
      */
-    public AbstractTargetable(PlayerEntity player, Boolean onMP) {
+    AbstractTargetable(PlayerEntity player, Boolean onMP) {
         this.cfg = AutoSwitch.cfg;
         this.onMP = (onMP != null ? onMP : false);
         this.player = player;
@@ -87,7 +87,7 @@ public abstract class AbstractTargetable {
      *
      * @param player player whose inventory will be checked
      */
-    public void populateToolLists(PlayerEntity player) {
+    void populateToolLists(PlayerEntity player) {
         List<ItemStack> hotbar = player.inventory.main.subList(0, PlayerInventory.getHotbarSize());
         for (int slot = 0; slot < PlayerInventory.getHotbarSize(); slot++) {
             if (TargetableUtil.skipSlot(hotbar.get(slot))) {
@@ -130,7 +130,7 @@ public abstract class AbstractTargetable {
      * @return returns true if the config allows autoswitch to happen; false otherwise.
      * Does not take into account toggle (AutoSwitch#doAS)
      */
-    protected Boolean switchAllowed() {
+    private Boolean switchAllowed() {
         return ((!this.player.isCreative() || this.cfg.switchInCreative()) &&
                 (switchTypeAllowed() && (!onMP || this.cfg.switchInMP())));
     }
@@ -221,8 +221,8 @@ public abstract class AbstractTargetable {
     /**
      * Moves some core switch logic out of the lambda to increase clarity
      */
-    void updateToolListsAndRatings(ItemStack stack, int id, String tool, ReferenceArrayList<Enchantment> enchants,
-                                   int slot, AtomicReference<Float> counter) {
+    private void updateToolListsAndRatings(ItemStack stack, int id, String tool, ReferenceArrayList<Enchantment> enchants,
+                                           int slot, AtomicReference<Float> counter) {
         double rating = 0;
         boolean stackEnchants = true;
 
@@ -269,11 +269,11 @@ public abstract class AbstractTargetable {
 
     }
 
-    protected boolean isUse() {
+    boolean isUse() {
         return false;
     }
 
-    protected boolean checkSpecialCase(Object target) {
+    boolean checkSpecialCase(Object target) {
         return false;
     }
 

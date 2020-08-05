@@ -1,7 +1,6 @@
 package autoswitch.targetable;
 
 import autoswitch.AutoSwitch;
-import autoswitch.config.io.ToolHandler;
 import autoswitch.util.TargetableUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -33,7 +32,7 @@ class TargetableAttack extends AbstractTargetable {
     @Override
     void populateToolSelection(ItemStack stack, int slot) {
         processToolSelectors(stack, slot, AutoSwitch.data.toolTargetLists,
-                TargetableUtil::getAttackTarget, ToolHandler::isCorrectType);
+                TargetableUtil::getAttackTarget, TargetableUtil::isCorrectType);
     }
 
     @Override

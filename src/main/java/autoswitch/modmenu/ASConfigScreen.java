@@ -15,13 +15,13 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class ASConfigScreen extends Screen {
+class ASConfigScreen extends Screen {
 
-    ButtonWidget openFolder;
-    ButtonWidget openConfigFiles;
-    ButtonWidget question;
+    private ButtonWidget openFolder;
+    private ButtonWidget openConfigFiles;
+    private ButtonWidget question;
 
-    protected ASConfigScreen(Text title) {
+    ASConfigScreen(Text title) {
         super(title);
     }
 

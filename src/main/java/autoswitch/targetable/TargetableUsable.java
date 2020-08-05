@@ -1,7 +1,6 @@
 package autoswitch.targetable;
 
 import autoswitch.AutoSwitch;
-import autoswitch.config.io.ToolHandler;
 import autoswitch.util.TargetableUtil;
 import net.minecraft.entity.Saddleable;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,7 +24,7 @@ class TargetableUsable extends AbstractTargetable {
     @Override
     protected void populateToolSelection(ItemStack stack, int slot) {
         processToolSelectors(stack, slot, AutoSwitch.data.useMap,
-                TargetableUtil::getUseTarget, ToolHandler::isCorrectUseType);
+                TargetableUtil::getUseTarget, TargetableUtil::isCorrectUseType);
     }
 
     @Override

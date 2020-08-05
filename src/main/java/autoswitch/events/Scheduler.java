@@ -34,12 +34,12 @@ public class Scheduler {
         });
     }
 
-    static class Task {
-        public final int initTickTime;
-        public final int finalTickTime;
-        public final SwitchEvent event;
+    private static class Task {
+        private final int initTickTime;
+        private final int finalTickTime;
+        private final SwitchEvent event;
 
-        Task(SwitchEvent event, int initTickTime, int finalTickTime) {
+        private Task(SwitchEvent event, int initTickTime, int finalTickTime) {
             this.event = event;
             this.finalTickTime = finalTickTime;
             this.initTickTime = initTickTime;
