@@ -9,6 +9,10 @@ public class EventUtil {
 
     private static boolean hasScheduledSwitchback = false;
 
+    public static ActionResult schedulePrimaryEvent(World world, SwitchEvent event) {
+        return eventHandler(world, AutoSwitch.tickTime, 0, event);
+    }
+
     public static ActionResult eventHandler(World world, int currentTime, double deltaTime, SwitchEvent event) {
 
         if (!world.isClient()) return ActionResult.PASS; // Make sure this is only run on client
@@ -36,4 +40,5 @@ public class EventUtil {
 
         return ActionResult.PASS;
     }
+
 }

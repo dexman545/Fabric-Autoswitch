@@ -143,24 +143,25 @@ public class AutoSwitch implements ClientModInitializer {
 
         //Block Swaps
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
-                EventUtil.eventHandler(world, tickTime, 0, SwitchEvent.ATTACK.setPlayer(player).setOnMP(onMP)
+                EventUtil.schedulePrimaryEvent(world, SwitchEvent.ATTACK.setPlayer(player).setOnMP(onMP)
                         .setDoSwitch(doAS).setDoSwitchType(cfg.switchForBlocks())
                         .setProtoTarget(world.getBlockState(pos))));
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
-                EventUtil.eventHandler(world, tickTime, 0, SwitchEvent.USE.setDoSwitch(doAS)
-                        .setDoSwitchType(cfg.switchUseActions()).setOnMP(onMP)
-                        .setPlayer(player).setProtoTarget(world.getBlockState(hitResult.getBlockPos()))));
+                EventUtil.schedulePrimaryEvent(world, SwitchEvent.USE.setPlayer(player).setOnMP(onMP)
+                        .setDoSwitch(doAS).setDoSwitchType(cfg.switchUseActions())
+                        .setProtoTarget(world.getBlockState(hitResult.getBlockPos()))));
 
         //Entity Swaps
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
-                EventUtil.eventHandler(world, tickTime, 0, SwitchEvent.ATTACK.setPlayer(player).setOnMP(onMP)
-                        .setDoSwitch(doAS).setDoSwitchType(cfg.switchForMobs()).setProtoTarget(entity)));
+                EventUtil.schedulePrimaryEvent(world, SwitchEvent.ATTACK.setPlayer(player).setOnMP(onMP)
+                        .setDoSwitch(doAS).setDoSwitchType(cfg.switchForMobs())
+                        .setProtoTarget(entity)));
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) ->
-                EventUtil.eventHandler(world, tickTime, 0, SwitchEvent.USE.setDoSwitch(doAS)
-                        .setDoSwitchType(cfg.switchUseActions()).setOnMP(onMP)
-                        .setPlayer(player).setProtoTarget(entity)));
+                EventUtil.schedulePrimaryEvent(world, SwitchEvent.USE.setPlayer(player).setOnMP(onMP)
+                        .setDoSwitch(doAS).setDoSwitchType(cfg.switchUseActions())
+                        .setProtoTarget(entity)));
 
         //Notify when AS Loaded
         logger.info("AutoSwitch Loaded");

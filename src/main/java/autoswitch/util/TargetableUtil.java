@@ -17,14 +17,15 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TargetableUtil {
 
     public static double toolRatingChange(double oldValue, double newValue, ItemStack stack, boolean stackEnchant) {
-        if (stackEnchant && AutoSwitch.cfg.toolEnchantmentsStack() && !(stack.getItem().equals(ItemStack.EMPTY.getItem())) && !(stack.getMaxDamage() == 0)) {
+        if (stackEnchant && AutoSwitch.cfg.toolEnchantmentsStack() &&
+                !(stack.getItem().equals(ItemStack.EMPTY.getItem())) && !(stack.getMaxDamage() == 0)) {
             return oldValue + newValue;
         }
 
         return Math.max(oldValue, newValue);
     }
 
-    public static Object getTarget(Object protoTarget) {
+    public static Object getAttackTarget(Object protoTarget) {
         return getTarget(AutoSwitch.data.toolTargetLists, protoTarget);
     }
 
@@ -32,7 +33,14 @@ public class TargetableUtil {
         return getTarget(AutoSwitch.data.useMap, protoTarget);
     }
 
-    public static Object getTarget(Object2ObjectOpenHashMap<Object, IntArrayList> map, Object protoTarget) {
+    /**
+     * Extract target from protoTarget, given a map of targets to examine.
+     *
+     * @param map         map of targets to compare protoTarget to
+     * @param protoTarget object to extract target data from
+     * @return target
+     */
+    private static Object getTarget(Object2ObjectOpenHashMap<Object, IntArrayList> map, Object protoTarget) {
         if (protoTarget instanceof AbstractBlock.AbstractBlockState) {
             // Block Override
             if (map.containsKey(((AbstractBlock.AbstractBlockState) protoTarget).getBlock())) {
@@ -116,7 +124,8 @@ public class TargetableUtil {
         if (AutoSwitch.cfg.skipDepletedItems() && !itemStack.isDamageable() && getDurability(itemStack) == 0) {
             return true;
         }
-        return (!(AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()) && // Don't skip iff undamagable items are needed
+        // First part: don't skip iff undamagable items are needed
+        return (!(AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()) &&
                 isAlmostBroken(itemStack) && AutoSwitch.cfg.tryPreserveDamagedTools());
 
     }

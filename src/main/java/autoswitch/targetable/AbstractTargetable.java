@@ -146,7 +146,8 @@ public abstract class AbstractTargetable {
         }
 
         AutoSwitch.logger.debug(toolRating);
-        for (Int2ObjectMap.Entry<IntArrayList> toolList : toolLists.int2ObjectEntrySet()) { //type of tool, slots that have it
+        // toolList is a list of slots that have a specific tool
+        for (Int2ObjectMap.Entry<IntArrayList> toolList : toolLists.int2ObjectEntrySet()) {
             if (!toolList.getValue().isEmpty()) {
                 for (Integer slot : toolList.getValue()) {
                     if (slot.equals(Collections.max(this.toolRating.int2DoubleEntrySet(),
@@ -184,7 +185,8 @@ public abstract class AbstractTargetable {
 
         Item item = stack.getItem();
 
-        // Establish base value to add to the tool rating, promoting higher priority tools from the config in the selection
+        // Establish base value to add to the tool rating,
+        // promoting higher priority tools from the config in the selection
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
 
         Object target = targetGetter.getTarget(protoTarget);

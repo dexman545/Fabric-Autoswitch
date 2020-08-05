@@ -50,7 +50,7 @@ public class GenerateConfigTemplate {
             config.append("\n");
         }
 
-        // Generate default config values
+        // Generate default config values. Regex is to fix colons in config file
         for (String propertyName : defaults.stringPropertyNames()) {
             String entry = ConfigTemplates.configEntry(propertyName.replaceAll("(?<!\\\\)(?:\\\\{2})*:",
                     "\\\\:"), cfg.getProperty(propertyName),

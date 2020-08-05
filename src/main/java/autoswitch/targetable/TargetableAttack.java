@@ -33,7 +33,7 @@ class TargetableAttack extends AbstractTargetable {
     @Override
     void populateToolSelection(ItemStack stack, int slot) {
         processToolSelectors(stack, slot, AutoSwitch.data.toolTargetLists,
-                TargetableUtil::getTarget, ToolHandler::isCorrectType);
+                TargetableUtil::getAttackTarget, ToolHandler::isCorrectType);
     }
 
     @Override
