@@ -30,5 +30,11 @@
         "fabric-lifecycle-events-v1":">=1.0.0",
         "minecraft":">=1.16-alpha.20.22.a",
         "autoswitch-api": "^1.0.0"
+    },
+    "custom": {
+        "modupdater": {
+            "strategy": "curseforge",
+            "projectID": 347405
+        }
     }
 }

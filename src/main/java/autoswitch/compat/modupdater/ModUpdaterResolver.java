@@ -12,9 +12,9 @@ public class ModUpdaterResolver  implements ModUpdaterEntryPoint {
     public boolean isVersionCompatible(String version) {
         AtomicReference<String> mcVersion = new AtomicReference<>();
 
-        FabricLoader.getInstance().getModContainer("minecraft").ifPresent(modContainer -> {
-            mcVersion.set(modContainer.getMetadata().getVersion().getFriendlyString());
-        });
+        FabricLoader.getInstance().getModContainer("minecraft").ifPresent(modContainer ->
+                mcVersion.set(modContainer.getMetadata().getVersion().getFriendlyString())
+        );
 
         // cg1 = major, cg2 = minor, cg3 = patch, cg4 = prerelease and cg5 = buildmetadata
         Pattern versionPattern = Pattern.compile("^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$");
