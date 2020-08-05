@@ -1,4 +1,4 @@
-package autoswitch.modmenu;
+package autoswitch.compat.modmenu;
 
 import autoswitch.AutoSwitch;
 import net.fabricmc.loader.api.FabricLoader;

@@ -20,7 +20,8 @@
         "client":[
             "autoswitch.AutoSwitch"
         ],
-        "modmenu": [ "autoswitch.modmenu.ModMenuImpl" ]
+        "modmenu": [ "autoswitch.compat.modmenu.ModMenuImpl" ],
+        "modupdater": [ "autoswitch.compat.modupdater.ModUpdaterResolver" ]
     },
     "depends":{
         "fabricloader":">=0.9.0",

@@ -1,4 +1,4 @@
-package autoswitch.modmenu;
+package autoswitch.compat.modmenu;
 
 import autoswitch.AutoSwitch;
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
