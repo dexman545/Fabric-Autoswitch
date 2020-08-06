@@ -14,7 +14,7 @@ public class ModMenuImpl implements ModMenuApi {
 
         try {
             return new ASConfigScreenFactory();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             AutoSwitch.logger.error("Failed to make ModMenu screen for AutoSwitch");
             AutoSwitch.logger.error(e);
         }

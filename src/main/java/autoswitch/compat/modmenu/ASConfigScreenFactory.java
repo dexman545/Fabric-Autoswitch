@@ -17,7 +17,7 @@ class ASConfigScreenFactory implements ConfigScreenFactory<ASConfigScreen> {
 
         try {
             return new ASConfigScreen(new TranslatableText("screen.autoswitch.config"));
-        } catch (Exception e) {
+        } catch (Throwable e) {
             AutoSwitch.logger.error("Failed to create modmenu screen!");
             AutoSwitch.logger.error(e);
         }

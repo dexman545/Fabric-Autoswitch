@@ -12,7 +12,6 @@ import net.minecraft.util.Util;
 
 import java.awt.*;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 class ASConfigScreen extends Screen {
@@ -54,7 +53,7 @@ class ASConfigScreen extends Screen {
             this.question = this.addButton(new ButtonWidget(this.width / 2 - 150, this.height - 30, 300, 20, new TranslatableText("button.autoswitch.openwiki"), (buttonWidget) -> {
                 try {
                     Util.getOperatingSystem().open(new URL("https://github.com/dexman545/Fabric-Autoswitch/wiki/Why-Does-AutoSwitch-Not-Include-an-In-Game-GUI-For-Editing-Configs%3F"));
-                } catch (MalformedURLException e) {
+                } catch (Throwable e) {
                     AutoSwitch.logger.error("Failed to open Wiki Page");
                     AutoSwitch.logger.error(e);
                 }
@@ -70,7 +69,7 @@ class ASConfigScreen extends Screen {
             });
 
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             AutoSwitch.logger.error("Failed to initialize screen!");
             AutoSwitch.logger.error(e);
         }
@@ -91,7 +90,7 @@ class ASConfigScreen extends Screen {
 
             super.render(matrices, mouseX, mouseY, delta);
 
-        } catch (Exception e) {
+        } catch (Throwable e) {
             AutoSwitch.logger.error("Failed to render screen!");
             AutoSwitch.logger.error(e);
         }
