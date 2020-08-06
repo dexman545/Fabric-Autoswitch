@@ -11,7 +11,7 @@ public class ModMenuImpl implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-
+        //TODO proper config screen - rendering is hard
         try {
             return new ASConfigScreenFactory();
         } catch (Throwable e) {

@@ -11,11 +11,11 @@ public class Scheduler {
 
         if (deltaTimeTicks == 0) {
             // Schedules for the next tick to make sure there is no lock on switching
-            schedule.add(new Task(event, initTickTime, initTickTime + 1));
+            schedule.add(new Task(event, initTickTime + 1));
             return;
         }
 
-        schedule.add(new Task(event, initTickTime, initTickTime + deltaTimeTicks));
+        schedule.add(new Task(event, initTickTime + deltaTimeTicks));
 
     }
 
@@ -35,14 +35,12 @@ public class Scheduler {
     }
 
     private static class Task {
-        private final int initTickTime;
         private final int finalTickTime;
         private final SwitchEvent event;
 
-        private Task(SwitchEvent event, int initTickTime, int finalTickTime) {
+        private Task(SwitchEvent event, int finalTickTime) {
             this.event = event;
             this.finalTickTime = finalTickTime;
-            this.initTickTime = initTickTime;
         }
 
     }
