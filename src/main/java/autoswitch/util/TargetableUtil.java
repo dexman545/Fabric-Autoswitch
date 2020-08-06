@@ -136,10 +136,7 @@ public class TargetableUtil {
     }
 
     private static boolean isAlmostBroken(ItemStack stack) {
-        int threshold = 3;
-
-        return getDurability(stack) <= threshold;
-
+        return getDurability(stack) <= 3;
     }
 
     private static int getDurability(ItemStack stack) {
@@ -177,10 +174,9 @@ public class TargetableUtil {
         return true;
     }
 
-    public static boolean isCorrectType(String tool, Item item) {
-        if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) return true;
-        return isCorrectTool(tool, item);
-
+    public static boolean isCorrectAttackType(String tool, Item item) {
+        return (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) ||
+                isCorrectTool(tool, item);
     }
 
     public static boolean isCorrectUseType(String tool, Item item) {
@@ -209,17 +205,6 @@ public class TargetableUtil {
     }
 
     private static boolean checkTagAndClass(Tag<Item> tag, Class<?> clazz, Item item) {
-        boolean tagCheck = false;
-        boolean classCheck = false;
-
-        if (tag != null) {
-            tagCheck = tag.contains(item);
-        }
-
-        if (clazz != null) {
-            classCheck = clazz.isInstance(item);
-        }
-
-        return tagCheck || classCheck;
+        return (tag != null && tag.contains(item)) || (clazz != null && clazz.isInstance(item));
     }
 }

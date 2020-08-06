@@ -176,7 +176,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] cactus();
 
     @Separator(",")
-    @DefaultValue("pickaxe;minecraft-fortune,pickaxe;minecraft-silk_touch, pickaxe;minecraft-mending, pickaxe")
+    @DefaultValue("pickaxe;minecraft-fortune,pickaxe;minecraft-silk_touch, pickaxe;minecraft-mending, pickaxe;minecraft-efficiency, pickaxe")
     @Comment("A Material for blocks that are stone or made from it, and generally prefer to be broken by a pickaxe, such as ores.")
     ToolHandler[] stone();
 

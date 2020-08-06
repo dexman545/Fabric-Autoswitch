@@ -12,7 +12,7 @@ class TargetableNone extends AbstractTargetable {
     private final int prevSlot;
 
     public TargetableNone(int prevSlot, PlayerEntity player) {
-        super(player, null);
+        super(player, false);
         this.prevSlot = prevSlot;
     }
 
