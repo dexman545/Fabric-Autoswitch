@@ -2,12 +2,20 @@ package autoswitch.util;
 
 import autoswitch.AutoSwitch;
 import autoswitch.events.SwitchEvent;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 
 public class EventUtil {
 
     private static boolean hasScheduledSwitchback = false;
+
+    public static ActionResult scheduleEvent(SwitchEvent event, boolean doSwitch, World world, PlayerEntity player,
+                                             boolean onMP, boolean doSwitchType, Object protoTarget) {
+        return schedulePrimaryEvent(world, event.setPlayer(player).setOnMP(onMP)
+                .setDoSwitch(doSwitch).setDoSwitchType(doSwitchType)
+                .setProtoTarget(protoTarget));
+    }
 
     public static ActionResult schedulePrimaryEvent(World world, SwitchEvent event) {
         return eventHandler(world, AutoSwitch.tickTime, 0, event);

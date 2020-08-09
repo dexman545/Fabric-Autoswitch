@@ -88,6 +88,8 @@ public class ApiMapGenerator {
 
         AutoSwitch.data.targets.put("sub_block", Material.SUPPORTED);
 
+        AutoSwitch.data.targets.put("supported", Material.SUPPORTED);
+
         AutoSwitch.data.targets.put("piston", Material.PISTON);
 
         AutoSwitch.data.targets.put("plant", Material.PLANT);

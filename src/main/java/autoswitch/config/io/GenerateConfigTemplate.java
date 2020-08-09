@@ -54,7 +54,7 @@ public class GenerateConfigTemplate {
         for (String propertyName : defaults.stringPropertyNames()) {
             String entry = ConfigTemplates.configEntry(propertyName.replaceAll("(?<!\\\\)(?:\\\\{2})*:",
                     "\\\\:"), cfg.getProperty(propertyName),
-                    comments.getProperty(propertyName), defaults.getProperty(propertyName)) + "\n";
+                    "# " + comments.getProperty(propertyName), defaults.getProperty(propertyName)) + "\n";
             config.append(entry);
         }
 

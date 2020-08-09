@@ -31,10 +31,10 @@ import java.util.function.IntConsumer;
 @Environment(EnvType.CLIENT)
 public abstract class AbstractTargetable {
     final Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = AutoSwitch.data.toolTargetLists;
+    final AutoSwitchConfig cfg;
     private final Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
     private final Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
-    final AutoSwitchConfig cfg;
     private final Boolean onMP;
     PlayerEntity player;
     Object protoTarget = null;
@@ -194,9 +194,8 @@ public abstract class AbstractTargetable {
         if (target == null || checkSpecialCase(target)) return;
 
         toolSelectorMap.getOrDefault(target, SwitchDataStorage.blank).forEach((IntConsumer) id -> {
-            if (id == 0) {
-                return;
-            }
+            if (id == 0) return; // Check if no ID was assigned to the toolSelector.
+
             counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
             String tool;
             ReferenceArrayList<Enchantment> enchants;

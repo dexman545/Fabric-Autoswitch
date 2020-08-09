@@ -45,7 +45,7 @@ public class ConfigReflection {
     // get the config entry's comment
     private static String comment(Method method) {
         Comment comment = method.getAnnotation(Comment.class);
-        return (comment != null) ? "# " + comment.value() : null;
+        return (comment != null) ? comment.value() : null;
     }
 
     // Get the config entry's value

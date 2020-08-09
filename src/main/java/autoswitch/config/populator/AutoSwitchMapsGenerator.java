@@ -17,7 +17,7 @@ public class AutoSwitchMapsGenerator {
      * Populates maps AutoSwitch uses for switching.
      * Maps populated: ToolSelectors, ToolLists, UseMap, and ToolTargetLists
      */
-    public AutoSwitchMapsGenerator() {
+    public static void populateAutoSwitchMaps() {
         populateToolTargetMaps();
         populateToolListMap(AutoSwitch.data.toolLists);
 
@@ -31,7 +31,7 @@ public class AutoSwitchMapsGenerator {
     /**
      * Populate Target maps (toolTargetLists and useMap).
      */
-    private void populateToolTargetMaps() {
+    private static void populateToolTargetMaps() {
         populateMap(AutoSwitch.data.toolTargetLists, AutoSwitch.matCfg);
         populateMap(AutoSwitch.data.useMap, AutoSwitch.usableCfg);
 
@@ -44,7 +44,7 @@ public class AutoSwitchMapsGenerator {
      * @param map Map to populate.
      * @param cfg Config to pull data from.
      */
-    private void populateMap(Object2ObjectOpenHashMap<Object, IntArrayList> map, Accessible cfg) {
+    private static void populateMap(Object2ObjectOpenHashMap<Object, IntArrayList> map, Accessible cfg) {
         for (String key : cfg.propertyNames()) {
             String raw = cfg.getProperty(key);
             String[] split = raw.split(",");
@@ -74,7 +74,7 @@ public class AutoSwitchMapsGenerator {
      *
      * @param toolLists list to populate from primary config.
      */
-    private void populateToolListMap(AbstractInt2ObjectMap<IntArrayList> toolLists) {
+    private static void populateToolListMap(AbstractInt2ObjectMap<IntArrayList> toolLists) {
 
         if (AutoSwitch.cfg.toolPriorityOrder() != null) {
             for (String type : AutoSwitch.cfg.toolPriorityOrder()) {

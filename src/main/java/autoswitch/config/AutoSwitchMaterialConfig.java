@@ -78,7 +78,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     @Separator(",")
     @DefaultValue("")
     @Comment("A Material for scaffolding, rails, flowerpots, skulls, and similar. Wiki calls it 'Decoration.'")
-    ToolHandler[] supported();
+    ToolHandler[] sub_block();
 
     @Separator(",")
     @DefaultValue("shears;minecraft-mending, sword;minecraft-mending, shears, sword")

@@ -66,7 +66,7 @@ public class ConfigTemplates {
         }
 
         return category("Provided Tool Groupings by AutoSwitch and Mods it Interfaced With", "",
-                "Tool groupings are a way to specify multiple tools at once. The names should be self explanatory."
+                "Tool groupings are a way to specify multiple tools at once. To match any grouping, use 'any'."
                 , keys.toString());
     }
 

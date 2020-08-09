@@ -11,6 +11,7 @@ import autoswitch.events.SwitchEvent;
 import autoswitch.util.ApiGenUtil;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchDataStorage;
+import autoswitch.util.TickUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,7 +24,6 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.TranslatableText;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -45,87 +45,54 @@ public class AutoSwitch implements ClientModInitializer {
     public static int tickTime = 0;
 
     //Keybindings
-    private static KeyBinding autoswitchToggleKeybinding;
-    private static KeyBinding mowingWhenFightingToggleKeybinding;
+    private final KeyBinding autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.autoswitch.toggle",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_R,
+            "AutoSwitch"
+    ));
+
+    private final KeyBinding mowingWhenFightingToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.autoswitch.toggle_mowing",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_G,
+            "AutoSwitch"
+    ));
 
     private boolean doAS = true;
-    private boolean onMP = true;
+    private boolean onMP = true; // Could be replaced with MinecraftClient.getInstance().isInSinglePlayer()
 
     @Override
     @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
+        // Interface with other mods and generate needed tables
         ApiMapGenerator.createApiMaps();
-
         ApiGenUtil.pullHookedMods();
 
         // Create config files and load them
-        new ConfigEstablishment();
+        ConfigEstablishment.establishConfigs();
 
         // Pull value for delayed switching
         doAS = !cfg.disableSwitchingOnStartup();
 
-        //Populate data on startup
-        new AutoSwitchMapsGenerator();
-
-        //Keybindings
-        autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.autoswitch.toggle",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_R,
-                "AutoSwitch"
-        ));
-
-        mowingWhenFightingToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.autoswitch.toggle_mowing",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_G,
-                "AutoSwitch"
-        ));
+        // Populate data on startup
+        AutoSwitchMapsGenerator.populateAutoSwitchMaps();
 
         ClientTickEvents.END_CLIENT_TICK.register(e -> {
-            tickTime += 1;
-
             //Keybindings implementation BEGIN ---
             if (autoswitchToggleKeybinding.wasPressed()) {
-                //The toggle
-                doAS = !doAS;
-
-                if (cfg.displayToggleMsg()) {
-                    //Toggle message
-                    TranslatableText msg = new TranslatableText(doAS && (!onMP || cfg.switchInMP()) ?
-                            "msg.autoswitch.toggle_true" : "msg.autoswitch.toggle_false");
-                    assert e.player != null : "Player was unexpectedly null";
-                    //Display msg above hotbar, set false to display in text chat
-                    e.player.sendMessage(msg, cfg.toggleMsgOverHotbar());
-                }
-
+                doAS = TickUtil.keybindingToggleAction(e.player, doAS, !doAS && (!onMP || cfg.switchInMP()),
+                        "msg.autoswitch.toggle_true", "msg.autoswitch.toggle_false");
             }
 
             if (mowingWhenFightingToggleKeybinding.wasPressed()) {
-                mowing = !mowing;
-
-                if (cfg.displayToggleMsg()) {
-                    //Toggle message
-                    TranslatableText msg = new TranslatableText(mowing || !cfg.controlMowingWhenFighting() ?
-                            "msg.autoswitch.mow_true" : "msg.autoswitch.mow_false");
-                    assert e.player != null : "Player was unexpectedly null";
-                    //Display msg above hotbar, set false to display in text chat
-                    e.player.sendMessage(msg, cfg.toggleMsgOverHotbar());
-                }
+                mowing = TickUtil.keybindingToggleAction(e.player, mowing, !mowing || !cfg.controlMowingWhenFighting(),
+                        "msg.autoswitch.mow_true", "msg.autoswitch.mow_false");
             }
             //Keybindings implementation END ---
 
             // Tick event system and check if scheduling a switchback is needed via EventUtil
-            if (e.player != null) {
-                assert e.world != null : "World was null when a player wasn't?!";
-
-                // Schedule switchback iff it is needed
-                EventUtil.eventHandler(e.world, tickTime, 0, SwitchEvent.SWITCHBACK.setPlayer(e.player));
-
-                // Tick event system clock
-                scheduler.execute(tickTime);
-            }
-
+            TickUtil.eventScheduleTick(e.player, e.world);
         });
 
         //Check if the client is on a multiplayer server
@@ -143,25 +110,21 @@ public class AutoSwitch implements ClientModInitializer {
 
         //Block Swaps
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
-                EventUtil.schedulePrimaryEvent(world, SwitchEvent.ATTACK.setPlayer(player).setOnMP(onMP)
-                        .setDoSwitch(doAS).setDoSwitchType(cfg.switchForBlocks())
-                        .setProtoTarget(world.getBlockState(pos))));
+                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, onMP,
+                        cfg.switchForBlocks(), world.getBlockState(pos)));
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
-                EventUtil.schedulePrimaryEvent(world, SwitchEvent.USE.setPlayer(player).setOnMP(onMP)
-                        .setDoSwitch(doAS).setDoSwitchType(cfg.switchUseActions())
-                        .setProtoTarget(world.getBlockState(hitResult.getBlockPos()))));
+                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, onMP,
+                        cfg.switchUseActions(), world.getBlockState(hitResult.getBlockPos())));
 
         //Entity Swaps
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
-                EventUtil.schedulePrimaryEvent(world, SwitchEvent.ATTACK.setPlayer(player).setOnMP(onMP)
-                        .setDoSwitch(doAS).setDoSwitchType(cfg.switchForMobs())
-                        .setProtoTarget(entity)));
+                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, onMP,
+                        cfg.switchForMobs(), entity));
 
-        UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) ->
-                EventUtil.schedulePrimaryEvent(world, SwitchEvent.USE.setPlayer(player).setOnMP(onMP)
-                        .setDoSwitch(doAS).setDoSwitchType(cfg.switchUseActions())
-                        .setProtoTarget(entity)));
+        UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
+                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, onMP,
+                        cfg.switchUseActions(), entity));
 
         //Notify when AS Loaded
         logger.info("AutoSwitch Loaded");

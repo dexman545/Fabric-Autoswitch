@@ -8,6 +8,7 @@ import autoswitch.config.AutoSwitchUsableConfig;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.config.util.ConfigHeaders;
 import autoswitch.util.ApiGenUtil;
+import autoswitch.util.SwitchUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.loader.api.FabricLoader;
 import org.aeonbits.owner.Accessible;
@@ -18,7 +19,6 @@ import org.aeonbits.owner.Mutable;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 public final class ConfigEstablishment {
 
@@ -37,7 +37,7 @@ public final class ConfigEstablishment {
     // or the item's Identifier, and Enchant is the enchantment's Identifier. Neither the ToolSelector nor Enchant lists
     // are bounded outside of practical limitations.
 
-    public ConfigEstablishment() {
+    public static void establishConfigs() {
         String config = FabricLoader.getInstance().getConfigDir().toString() + "/autoswitch.cfg";
         String configMats = FabricLoader.getInstance().getConfigDir().toString() + "/autoswitchMaterials.cfg";
         String configUsable = FabricLoader.getInstance().getConfigDir().toString() + "/autoswitchUsable.cfg";
@@ -54,15 +54,12 @@ public final class ConfigEstablishment {
         //generate config file; removes incorrect values from existing one as well
         try {
             // Pull mod version
-            AtomicReference<String> currentVersion = new AtomicReference<>();
+            String currentVersion = SwitchUtil.getAutoSwitchVersion();
             String configVersion = AutoSwitch.cfg.configVersion();
 
-            FabricLoader.getInstance().getModContainer("autoswitch").ifPresent(modContainer ->
-                    currentVersion.set(modContainer.getMetadata().getVersion().getFriendlyString()));
-
             // Check if the configs need to be rewritten
-            if (AutoSwitch.cfg.alwaysRewriteConfigs() || !configVersion.equals(currentVersion.get())) {
-                AutoSwitch.cfg.setProperty("configVersion", currentVersion.get()); // Update version before writing
+            if (AutoSwitch.cfg.alwaysRewriteConfigs() || !configVersion.equals(currentVersion)) {
+                AutoSwitch.cfg.setProperty("configVersion", currentVersion); // Update version before writing
 
                 genFile(config, AutoSwitch.cfg, ConfigHeaders.basicConfig, null);
                 genFile(configMats, AutoSwitch.matCfg, ConfigHeaders.materialConfig, ApiGenUtil.modActionConfigs);
@@ -78,22 +75,22 @@ public final class ConfigEstablishment {
 
         AutoSwitch.matCfg.addReloadListener(event -> {
             AutoSwitch.data.toolTargetLists.clear();
-            new AutoSwitchMapsGenerator();
+            AutoSwitchMapsGenerator.populateAutoSwitchMaps();
         });
 
         AutoSwitch.cfg.addReloadListener(event -> {
             AutoSwitch.data.toolLists.clear();
-            new AutoSwitchMapsGenerator();
+            AutoSwitchMapsGenerator.populateAutoSwitchMaps();
         });
 
         AutoSwitch.usableCfg.addReloadListener(event -> {
             AutoSwitch.data.useMap.clear();
-            new AutoSwitchMapsGenerator();
+            AutoSwitchMapsGenerator.populateAutoSwitchMaps();
         });
     }
 
     // Write file
-    private <T extends Accessible & Config> void
+    private static <T extends Accessible & Config> void
     genFile(String path, T config, String header, Object2ObjectOpenHashMap<String, Set<String>> moddedEntries)
             throws IOException {
         FileOutputStream basicConfig = new FileOutputStream(path);
@@ -102,7 +99,7 @@ public final class ConfigEstablishment {
     }
 
     // Add API added config values
-    private <T extends Mutable & Accessible> void mergeConfigs(AutoSwitchMap<String, String> api, T cfg) {
+    private static <T extends Mutable & Accessible> void mergeConfigs(AutoSwitchMap<String, String> api, T cfg) {
         api.forEach((k, v) -> {
             if (cfg.getProperty(k) == null) {
                 cfg.setProperty(k, v);

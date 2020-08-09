@@ -3,6 +3,8 @@ package autoswitch.util;
 import autoswitch.AutoSwitch;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
@@ -14,6 +16,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @Environment(EnvType.CLIENT)
@@ -55,6 +58,22 @@ public class SwitchUtil {
                                 BlockPos.ORIGIN, Direction.DOWN));
             }
         };
+    }
+
+    public static String getMinecraftVersion() {
+        return getVersion("minecraft");
+    }
+
+    public static String getAutoSwitchVersion() {
+        return getVersion("autoswitch");
+    }
+
+    private static String getVersion(String modid) {
+        Optional<ModContainer> modContainer = FabricLoader.getInstance().getModContainer(modid);
+        if (modContainer.isPresent()) return modContainer.get().getMetadata().getVersion().getFriendlyString();
+
+        AutoSwitch.logger.error("Could not find version for: {}", modid);
+        return "";
     }
 
 }

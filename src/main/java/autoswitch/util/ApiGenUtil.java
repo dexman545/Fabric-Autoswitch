@@ -24,17 +24,36 @@ public class ApiGenUtil {
             final AutoSwitchMap<String, String> baseUseAction = duplicateMap(AutoSwitch.data.usableConfig);
             api.moddedTargets(AutoSwitch.data.targets, AutoSwitch.data.actionConfig, AutoSwitch.data.usableConfig);
 
-            processActionDif(entrypoint.getProvider().getMetadata().getName(), baseAction);
-            processUseDif(entrypoint.getProvider().getMetadata().getName(), baseUseAction);
+            final String name = entrypoint.getProvider().getMetadata().getName();
 
-            AutoSwitch.logger.info("AutoSwitch has interfaced with the {} mod!",
-                    entrypoint.getProvider().getMetadata().getName());
+            processActionDif(name, baseAction);
+            processUseDif(name, baseUseAction);
+
+            AutoSwitch.logger.info("AutoSwitch has interfaced with the {} mod!", name);
         });
     }
 
     // Deep copy the map via (de)serializing it. All types within must be serializable
     private static <K, V> AutoSwitchMap<K, V> duplicateMap(AutoSwitchMap<K, V> map) {
         return SerializationUtils.clone(map);
+    }
+
+    private static void processActionDif(String mod, AutoSwitchMap<String, String> base) {
+        processMapDiff(mod, base, AutoSwitch.data.actionConfig, modActionConfigs);
+    }
+
+    private static void processUseDif(String mod, AutoSwitchMap<String, String> base) {
+        processMapDiff(mod, base, AutoSwitch.data.usableConfig, modUseConfigs);
+    }
+
+    private static void processMapDiff(String mod, AutoSwitchMap<String, String> base,
+                                       AutoSwitchMap<String, String> config,
+                                       Object2ObjectOpenHashMap<String, Set<String>> populationTarget) {
+        Set<String> diff = diffMaps(base, config);
+
+        if (diff != null) {
+            populationTarget.put(mod, diff);
+        }
     }
 
     private static Set<String> diffMaps(final AutoSwitchMap<String, String> base, final AutoSwitchMap<String, String> modded) {
@@ -44,24 +63,6 @@ public class ApiGenUtil {
         }
 
         return null;
-    }
-
-    private static void processActionDif(String mod, AutoSwitchMap<String, String> base) {
-        Set<String> diff = diffMaps(base, AutoSwitch.data.actionConfig);
-
-        if (diff != null) {
-            modActionConfigs.put(mod, diff);
-        }
-
-    }
-
-    private static void processUseDif(String mod, AutoSwitchMap<String, String> base) {
-        Set<String> diff = diffMaps(base, AutoSwitch.data.usableConfig);
-
-        if (diff != null) {
-            modUseConfigs.put(mod, diff);
-        }
-
     }
 
 }
