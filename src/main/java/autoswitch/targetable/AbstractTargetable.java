@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +36,6 @@ public abstract class AbstractTargetable {
     private final Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
     private final Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
-    private final Boolean onMP;
     PlayerEntity player;
     Object protoTarget = null;
 
@@ -45,11 +45,9 @@ public abstract class AbstractTargetable {
      * fetches the target map and initial tool map based on configs passed to it
      *
      * @param player player this will effect
-     * @param onMP   whether the player is on a remote server. If given null, will assume that AutoSwitch is allowed
      */
-    AbstractTargetable(PlayerEntity player, Boolean onMP) {
+    AbstractTargetable(PlayerEntity player) {
         this.cfg = AutoSwitch.cfg;
-        this.onMP = (onMP != null ? onMP : false);
         this.player = player;
     }
 
@@ -58,8 +56,8 @@ public abstract class AbstractTargetable {
      *
      * @return returns the correct AbstractTargetable subclass to handle the operation
      */
-    public static AbstractTargetable use(Object protoTarget, PlayerEntity player, Boolean onMP) {
-        return new TargetableUsable(player, onMP, protoTarget);
+    public static AbstractTargetable use(Object protoTarget, PlayerEntity player) {
+        return new TargetableUsable(player, protoTarget);
     }
 
     /**
@@ -76,8 +74,8 @@ public abstract class AbstractTargetable {
      *
      * @return returns the correct AbstractTargetable subclass to handle the operation
      */
-    public static AbstractTargetable attack(Object protoTarget, PlayerEntity player, boolean onMP) {
-        return new TargetableAttack(protoTarget, player, onMP);
+    public static AbstractTargetable attack(Object protoTarget, PlayerEntity player) {
+        return new TargetableAttack(protoTarget, player);
     }
 
 
@@ -132,7 +130,7 @@ public abstract class AbstractTargetable {
      */
     private Boolean switchAllowed() {
         return ((!this.player.isCreative() || this.cfg.switchInCreative()) &&
-                (switchTypeAllowed() && (!onMP || this.cfg.switchInMP())));
+                (switchTypeAllowed() && (MinecraftClient.getInstance().isInSingleplayer() || this.cfg.switchInMP())));
     }
 
     /**

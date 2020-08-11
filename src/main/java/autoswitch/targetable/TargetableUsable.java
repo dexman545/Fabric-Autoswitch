@@ -13,10 +13,9 @@ class TargetableUsable extends AbstractTargetable {
      * fetches the target map and initial tool map based on configs passed to it
      *
      * @param player player this will effect
-     * @param onMP   whether the player is on a remote server. If given null, will assume that AutoSwitch is allowed
      */
-    public TargetableUsable(PlayerEntity player, Boolean onMP, Object target) {
-        super(player, onMP);
+    public TargetableUsable(PlayerEntity player, Object target) {
+        super(player);
         this.protoTarget = target;
         populateToolLists(player);
     }

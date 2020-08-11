@@ -17,7 +17,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -60,7 +59,6 @@ public class AutoSwitch implements ClientModInitializer {
     ));
 
     private boolean doAS = true;
-    private boolean onMP = true; // Could be replaced with MinecraftClient.getInstance().isInSinglePlayer()
 
     @Override
     @Environment(EnvType.CLIENT)
@@ -81,7 +79,7 @@ public class AutoSwitch implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(e -> {
             //Keybindings implementation BEGIN ---
             if (autoswitchToggleKeybinding.wasPressed()) {
-                doAS = TickUtil.keybindingToggleAction(e.player, doAS, !doAS && (!onMP || cfg.switchInMP()),
+                doAS = TickUtil.keybindingToggleAction(e.player, doAS, !doAS && (e.isInSingleplayer() || cfg.switchInMP()),
                         "msg.autoswitch.toggle_true", "msg.autoswitch.toggle_false");
             }
 
@@ -95,36 +93,21 @@ public class AutoSwitch implements ClientModInitializer {
             TickUtil.eventScheduleTick(e.player, e.world);
         });
 
-        //Check if the client is on a multiplayer server
-        //This is only called when starting a SP world, not on server join
-        ServerLifecycleEvents.SERVER_STARTED.register((minecraftServer -> {
-            onMP = false;
-            doAS = !cfg.disableSwitchingOnStartup();
-        }));
-
-        //Disable onMP when leaving SP
-        ServerLifecycleEvents.SERVER_STOPPED.register((minecraftServer -> {
-            onMP = true;
-            doAS = !cfg.disableSwitchingOnStartup();
-        }));
-
         //Block Swaps
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
-                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, onMP,
-                        cfg.switchForBlocks(), world.getBlockState(pos)));
+                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, cfg.switchForBlocks(),
+                        world.getBlockState(pos)));
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
-                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, onMP,
-                        cfg.switchUseActions(), world.getBlockState(hitResult.getBlockPos())));
+                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, cfg.switchUseActions(),
+                        world.getBlockState(hitResult.getBlockPos())));
 
         //Entity Swaps
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
-                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, onMP,
-                        cfg.switchForMobs(), entity));
+                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, cfg.switchForMobs(), entity));
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
-                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, onMP,
-                        cfg.switchUseActions(), entity));
+                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, cfg.switchUseActions(), entity));
 
         //Notify when AS Loaded
         logger.info("AutoSwitch Loaded");

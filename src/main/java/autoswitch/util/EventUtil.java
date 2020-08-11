@@ -11,8 +11,8 @@ public class EventUtil {
     private static boolean hasScheduledSwitchback = false;
 
     public static ActionResult scheduleEvent(SwitchEvent event, boolean doSwitch, World world, PlayerEntity player,
-                                             boolean onMP, boolean doSwitchType, Object protoTarget) {
-        return schedulePrimaryEvent(world, event.setPlayer(player).setOnMP(onMP)
+                                             boolean doSwitchType, Object protoTarget) {
+        return schedulePrimaryEvent(world, event.setPlayer(player)
                 .setDoSwitch(doSwitch).setDoSwitchType(doSwitchType)
                 .setProtoTarget(protoTarget));
     }

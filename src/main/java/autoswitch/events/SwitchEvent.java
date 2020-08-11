@@ -50,7 +50,7 @@ public enum SwitchEvent {
             if (!handlePreSwitchTasks()) return false; // Mowing Control
             handlePrevSlot();
 
-            AbstractTargetable targetable = AbstractTargetable.attack(protoTarget, player, onMP);
+            AbstractTargetable targetable = AbstractTargetable.attack(protoTarget, player);
             targetable.changeTool().ifPresent(this::handlePostSwitchTasks);
 
             return true;
@@ -67,7 +67,7 @@ public enum SwitchEvent {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
             handlePrevSlot();
-            Optional<Boolean> temp = AbstractTargetable.use(protoTarget, player, onMP).changeTool();
+            Optional<Boolean> temp = AbstractTargetable.use(protoTarget, player).changeTool();
             temp.ifPresent(b -> {
                 doOffhandSwitch = true;
                 AutoSwitch.data.setHasSwitched(b);
@@ -125,7 +125,6 @@ public enum SwitchEvent {
     public static PlayerEntity player;
     private static Object protoTarget;
     private static boolean clientWorld;
-    private static boolean onMP;
     private static boolean doSwitchType;
     private static boolean doSwitch;
     private static boolean doOffhandSwitch;
@@ -162,11 +161,6 @@ public enum SwitchEvent {
 
     public SwitchEvent setWorld(boolean clientWorld) {
         SwitchEvent.clientWorld = clientWorld;
-        return this;
-    }
-
-    public SwitchEvent setOnMP(boolean onMP) {
-        SwitchEvent.onMP = onMP;
         return this;
     }
 

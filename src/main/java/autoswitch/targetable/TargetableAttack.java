@@ -12,12 +12,11 @@ import net.minecraft.item.ItemStack;
  */
 class TargetableAttack extends AbstractTargetable {
 
-    public TargetableAttack(Object protoTarget, PlayerEntity player, Boolean onMP) {
-        super(player, onMP);
+    public TargetableAttack(Object protoTarget, PlayerEntity player) {
+        super(player);
         this.player = player;
         this.protoTarget = protoTarget;
         populateToolLists(player);
-
     }
 
     @Override
@@ -33,11 +32,6 @@ class TargetableAttack extends AbstractTargetable {
     void populateToolSelection(ItemStack stack, int slot) {
         processToolSelectors(stack, slot, AutoSwitch.data.toolTargetLists,
                 TargetableUtil::getAttackTarget, TargetableUtil::isCorrectAttackType);
-    }
-
-    @Override
-    protected boolean isUse() {
-        return false;
     }
 
     @Override
