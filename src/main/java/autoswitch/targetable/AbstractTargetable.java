@@ -4,8 +4,6 @@ import autoswitch.AutoSwitch;
 import autoswitch.util.SwitchDataStorage;
 import autoswitch.util.TargetableUtil;
 import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
@@ -171,7 +169,7 @@ public abstract class AbstractTargetable {
 
         // Establish base value to add to the tool rating,
         // promoting higher priority tools from the config in the selection
-        AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize());
+        AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize() * 10);
 
         Object target = targetGetter.getTarget(protoTarget);
 
@@ -180,7 +178,7 @@ public abstract class AbstractTargetable {
         toolSelectorMap.getOrDefault(target, SwitchDataStorage.blank).forEach((IntConsumer) id -> {
             if (id == 0) return; // Check if no ID was assigned to the toolSelector.
 
-            counter.updateAndGet(v -> (float) (v - 0.25)); //tools later in the config list are not preferred
+            counter.updateAndGet(v -> (float) (v - 0.75)); //tools later in the config list are not preferred
             String tool;
             ReferenceArrayList<Enchantment> enchants;
 
