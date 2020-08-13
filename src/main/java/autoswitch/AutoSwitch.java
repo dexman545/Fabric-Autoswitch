@@ -36,9 +36,9 @@ public class AutoSwitch implements ClientModInitializer {
     public static final Scheduler scheduler = new Scheduler();
 
     //Init config
-    public static AutoSwitchConfig cfg;
-    public static AutoSwitchMaterialConfig matCfg;
-    public static AutoSwitchUsableConfig usableCfg;
+    public static AutoSwitchConfig featureCfg;
+    public static AutoSwitchMaterialConfig attackActionCfg;
+    public static AutoSwitchUsableConfig useActionCfg;
 
     public static boolean mowing = true;
     public static int tickTime = 0;
@@ -71,7 +71,7 @@ public class AutoSwitch implements ClientModInitializer {
         ConfigEstablishment.establishConfigs();
 
         // Pull value for delayed switching
-        doAS = !cfg.disableSwitchingOnStartup();
+        doAS = !featureCfg.disableSwitchingOnStartup();
 
         // Populate data on startup
         AutoSwitchMapsGenerator.populateAutoSwitchMaps();
@@ -79,12 +79,12 @@ public class AutoSwitch implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(e -> {
             //Keybindings implementation BEGIN ---
             if (autoswitchToggleKeybinding.wasPressed()) {
-                doAS = TickUtil.keybindingToggleAction(e.player, doAS, !doAS && (e.isInSingleplayer() || cfg.switchInMP()),
+                doAS = TickUtil.keybindingToggleAction(e.player, doAS, !doAS && (e.isInSingleplayer() || featureCfg.switchInMP()),
                         "msg.autoswitch.toggle_true", "msg.autoswitch.toggle_false");
             }
 
             if (mowingWhenFightingToggleKeybinding.wasPressed()) {
-                mowing = TickUtil.keybindingToggleAction(e.player, mowing, !mowing || !cfg.controlMowingWhenFighting(),
+                mowing = TickUtil.keybindingToggleAction(e.player, mowing, !mowing || !featureCfg.controlMowingWhenFighting(),
                         "msg.autoswitch.mow_true", "msg.autoswitch.mow_false");
             }
             //Keybindings implementation END ---
@@ -95,19 +95,19 @@ public class AutoSwitch implements ClientModInitializer {
 
         //Block Swaps
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
-                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, cfg.switchForBlocks(),
+                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, featureCfg.switchForBlocks(),
                         world.getBlockState(pos)));
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
-                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, cfg.switchUseActions(),
+                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, featureCfg.switchUseActions(),
                         world.getBlockState(hitResult.getBlockPos())));
 
         //Entity Swaps
         AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
-                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, cfg.switchForMobs(), entity));
+                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, featureCfg.switchForMobs(), entity));
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
-                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, cfg.switchUseActions(), entity));
+                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, featureCfg.switchUseActions(), entity));
 
         //Notify when AS Loaded
         logger.info("AutoSwitch Loaded");

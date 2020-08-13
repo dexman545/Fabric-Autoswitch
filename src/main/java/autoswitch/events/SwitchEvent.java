@@ -10,7 +10,7 @@ import net.minecraft.util.hit.EntityHitResult;
 
 import java.util.Optional;
 
-import static autoswitch.AutoSwitch.cfg;
+import static autoswitch.AutoSwitch.featureCfg;
 
 public enum SwitchEvent {
     ATTACK {
@@ -20,8 +20,8 @@ public enum SwitchEvent {
                 //Mowing control
                 //Disable block breaking iff mowing is disabled and there's an entity to hit
                 EntityHitResult entityResult = SwitchUtil.rayTraceEntity(player, 1.0F, 4.5D);
-                if (entityResult != null && cfg.controlMowingWhenFighting() && !AutoSwitch.mowing) {
-                    player.handSwinging = !cfg.disableHandSwingWhenMowing();
+                if (entityResult != null && featureCfg.controlMowingWhenFighting() && !AutoSwitch.mowing) {
+                    player.handSwinging = !featureCfg.disableHandSwingWhenMowing();
                     return false;
                 }
             }
@@ -32,12 +32,12 @@ public enum SwitchEvent {
         private void handlePostSwitchTasks(boolean hasSwitched) {
             // Handles switchback
             if (protoTarget instanceof Entity) {
-                if (hasSwitched && cfg.switchbackMobs()) {
+                if (hasSwitched && featureCfg.switchbackMobs()) {
                     AutoSwitch.data.setHasSwitched(true);
                     AutoSwitch.data.setAttackedEntity(true);
                 }
             } else if (protoTarget instanceof BlockState) {
-                if (hasSwitched && cfg.switchbackBlocks()) {
+                if (hasSwitched && featureCfg.switchbackBlocks()) {
                     AutoSwitch.data.setHasSwitched(true);
                 }
             }
@@ -84,7 +84,7 @@ public enum SwitchEvent {
             // Check if conditions are met for switchback
             if (AutoSwitch.data.getHasSwitched() && !player.handSwinging) {
                 // Uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
-                return ((AutoSwitch.data.hasAttackedEntity() && cfg.switchbackWaits()) &&
+                return ((AutoSwitch.data.hasAttackedEntity() && featureCfg.switchbackWaits()) &&
                         (player.getAttackCooldownProgress(-20.0f) != 1.0f ||
                                 !AutoSwitch.data.hasAttackedEntity()));
             }

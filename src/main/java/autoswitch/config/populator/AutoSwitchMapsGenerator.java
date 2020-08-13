@@ -3,7 +3,6 @@ package autoswitch.config.populator;
 import autoswitch.AutoSwitch;
 import autoswitch.config.io.MaterialHandler;
 import autoswitch.config.io.ToolHandler;
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.api.EnvType;
@@ -19,21 +18,19 @@ public class AutoSwitchMapsGenerator {
      */
     public static void populateAutoSwitchMaps() {
         populateToolTargetMaps();
-        populateToolListMap(AutoSwitch.data.toolLists);
 
         // Trim the maps
         AutoSwitch.data.toolSelectors.trim();
-        AutoSwitch.data.toolLists.trim();
-        AutoSwitch.data.useMap.trim();
-        AutoSwitch.data.toolTargetLists.trim();
+        AutoSwitch.data.target2UseActionToolSelectorsMap.trim();
+        AutoSwitch.data.target2AttackActionToolSelectorsMap.trim();
     }
 
     /**
      * Populate Target maps (toolTargetLists and useMap).
      */
     private static void populateToolTargetMaps() {
-        populateMap(AutoSwitch.data.toolTargetLists, AutoSwitch.matCfg);
-        populateMap(AutoSwitch.data.useMap, AutoSwitch.usableCfg);
+        populateMap(AutoSwitch.data.target2AttackActionToolSelectorsMap, AutoSwitch.attackActionCfg);
+        populateMap(AutoSwitch.data.target2UseActionToolSelectorsMap, AutoSwitch.useActionCfg);
 
     }
 
@@ -68,19 +65,4 @@ public class AutoSwitchMapsGenerator {
         }
     }
 
-    /**
-     * Populate tool lists with order from the primary config. This allows for global overriding of tool selection
-     * preferences.
-     *
-     * @param toolLists list to populate from primary config.
-     */
-    private static void populateToolListMap(AbstractInt2ObjectMap<IntArrayList> toolLists) {
-
-        if (AutoSwitch.cfg.toolPriorityOrder() != null) {
-            for (String type : AutoSwitch.cfg.toolPriorityOrder()) {
-                toolLists.put((new ToolHandler(type).getId()), new IntArrayList());
-            }
-        }
-
-    }
 }

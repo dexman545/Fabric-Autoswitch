@@ -54,6 +54,7 @@ dependencies {
 		transitive = false
 	}*/
 
+	// ModUpdater
 	modCompileOnly "com.thebrokenrail:modupdater:${project.modupdater_version}"
 
 }

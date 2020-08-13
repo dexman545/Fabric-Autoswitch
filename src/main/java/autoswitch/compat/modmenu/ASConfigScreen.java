@@ -25,6 +25,7 @@ class ASConfigScreen extends Screen {
     }
 
     @Override
+    //Temporary screen until a proper one is made. See https://github.com/dexman545/Fabric-Autoswitch/issues/23
     protected void init() {
         try {
             this.openFolder = this.addButton(new ButtonWidget(this.width / 2 - 200, 2 * this.height / 3, 150, 20, new TranslatableText("button.autoswitch.openfolder"), (button -> Util.getOperatingSystem().open(FabricLoader.getInstance().getConfigDir().toString()))) {

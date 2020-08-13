@@ -44,26 +44,26 @@ public final class ConfigEstablishment {
         ConfigFactory.setProperty("configDir", config);
         ConfigFactory.setProperty("configDirMats", configMats);
         ConfigFactory.setProperty("configUsable", configUsable);
-        AutoSwitch.cfg = ConfigFactory.create(AutoSwitchConfig.class);
-        AutoSwitch.matCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
-        AutoSwitch.usableCfg = ConfigFactory.create(AutoSwitchUsableConfig.class);
+        AutoSwitch.featureCfg = ConfigFactory.create(AutoSwitchConfig.class);
+        AutoSwitch.attackActionCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
+        AutoSwitch.useActionCfg = ConfigFactory.create(AutoSwitchUsableConfig.class);
 
-        mergeConfigs(AutoSwitch.data.actionConfig, AutoSwitch.matCfg);
-        mergeConfigs(AutoSwitch.data.usableConfig, AutoSwitch.usableCfg);
+        mergeConfigs(AutoSwitch.data.attackConfig, AutoSwitch.attackActionCfg);
+        mergeConfigs(AutoSwitch.data.usableConfig, AutoSwitch.useActionCfg);
 
         //generate config file; removes incorrect values from existing one as well
         try {
             // Pull mod version
             String currentVersion = SwitchUtil.getAutoSwitchVersion();
-            String configVersion = AutoSwitch.cfg.configVersion();
+            String configVersion = AutoSwitch.featureCfg.configVersion();
 
             // Check if the configs need to be rewritten
-            if (AutoSwitch.cfg.alwaysRewriteConfigs() || !configVersion.equals(currentVersion)) {
-                AutoSwitch.cfg.setProperty("configVersion", currentVersion); // Update version before writing
+            if (AutoSwitch.featureCfg.alwaysRewriteConfigs() || !configVersion.equals(currentVersion)) {
+                AutoSwitch.featureCfg.setProperty("configVersion", currentVersion); // Update version before writing
 
-                genFile(config, AutoSwitch.cfg, ConfigHeaders.basicConfig, null);
-                genFile(configMats, AutoSwitch.matCfg, ConfigHeaders.materialConfig, ApiGenUtil.modActionConfigs);
-                genFile(configUsable, AutoSwitch.usableCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
+                genFile(config, AutoSwitch.featureCfg, ConfigHeaders.basicConfig, null);
+                genFile(configMats, AutoSwitch.attackActionCfg, ConfigHeaders.materialConfig, ApiGenUtil.modActionConfigs);
+                genFile(configUsable, AutoSwitch.useActionCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
             }
 
         } catch (IOException e) {
@@ -73,18 +73,17 @@ public final class ConfigEstablishment {
 
         // Clear data and recreate it based on new config
 
-        AutoSwitch.matCfg.addReloadListener(event -> {
-            AutoSwitch.data.toolTargetLists.clear();
+        AutoSwitch.attackActionCfg.addReloadListener(event -> {
+            AutoSwitch.data.target2AttackActionToolSelectorsMap.clear();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
         });
 
-        AutoSwitch.cfg.addReloadListener(event -> {
-            AutoSwitch.data.toolLists.clear();
+        AutoSwitch.featureCfg.addReloadListener(event -> {
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
         });
 
-        AutoSwitch.usableCfg.addReloadListener(event -> {
-            AutoSwitch.data.useMap.clear();
+        AutoSwitch.useActionCfg.addReloadListener(event -> {
+            AutoSwitch.data.target2UseActionToolSelectorsMap.clear();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
         });
     }

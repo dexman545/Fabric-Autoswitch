@@ -51,13 +51,6 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("Disable the swinging of the hand when trying to mow when fighting.")
     Boolean disableHandSwingWhenMowing();
 
-    @Separator(">")
-    @DefaultValue("sword > axe > pickaxe")
-    @Comment("Order for tool priorities. Shared between blocks and mobs." +
-            "tool selectors must exactly match how they appear in the material and usable configs." +
-            "Ex. ThisIsBefore > ThisIsAfter > Etc.")
-    String[] toolPriorityOrder();
-
     @DefaultValue("true")
     @Key("switchbackWaitsForCooldownWhenAttackingMobs")
     @Comment("Before switching back when fighting a mob, wait for the attack cooldown to finish. " +

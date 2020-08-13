@@ -25,12 +25,10 @@ public class SwitchDataStorage {
      */
     public final static IntArrayList blank = new IntArrayList();
 
-    /**
-     * Maps targets of use-action -> desired tool
-     */
-    public final Object2ObjectOpenHashMap<Object, IntArrayList> useMap = new Object2ObjectOpenHashMap<>();
-    public final Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = new Object2ObjectOpenHashMap<>();
-    public final Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = new Int2ObjectLinkedOpenHashMap<>();
+    public final Object2ObjectOpenHashMap<Object, IntArrayList> target2UseActionToolSelectorsMap =
+            new Object2ObjectOpenHashMap<>();
+    public final Object2ObjectOpenHashMap<Object, IntArrayList> target2AttackActionToolSelectorsMap =
+            new Object2ObjectOpenHashMap<>();
 
     public final Object2IntOpenHashMap<String> toolSelectorKeys = new Object2IntOpenHashMap<>();
     public final Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> toolSelectors =
@@ -40,7 +38,7 @@ public class SwitchDataStorage {
     public final AutoSwitchMap<String, Pair<Tag<Item>, Class<?>>> toolGroupings = new AutoSwitchMap<>();
     public final AutoSwitchMap<Class<?>, DurabilityGetter> damageMap = new AutoSwitchMap<>();
     public final AutoSwitchMap<String, Object> targets = new AutoSwitchMap<>();
-    public final AutoSwitchMap<String, String> actionConfig = new AutoSwitchMap<>();
+    public final AutoSwitchMap<String, String> attackConfig = new AutoSwitchMap<>();
     public final AutoSwitchMap<String, String> usableConfig = new AutoSwitchMap<>();
 
     private int prevSlot;

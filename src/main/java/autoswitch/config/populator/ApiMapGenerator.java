@@ -34,7 +34,7 @@ public class ApiMapGenerator {
 
     // Populate maps with default values to be sent to mods
     private static void genConfigMaps() {
-        ConfigReflection.defaults(AutoSwitch.data.actionConfig, AutoSwitchMaterialConfig.class);
+        ConfigReflection.defaults(AutoSwitch.data.attackConfig, AutoSwitchMaterialConfig.class);
         ConfigReflection.defaults(AutoSwitch.data.usableConfig, AutoSwitchUsableConfig.class);
 
         // PoC for ensuring empty values don't get passed allowing mods to override

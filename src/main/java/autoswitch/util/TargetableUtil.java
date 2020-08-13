@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TargetableUtil {
 
     public static double toolRatingChange(double oldValue, double newValue, ItemStack stack, boolean stackEnchant) {
-        if (stackEnchant && AutoSwitch.cfg.toolEnchantmentsStack() &&
+        if (stackEnchant && AutoSwitch.featureCfg.toolEnchantmentsStack() &&
                 !(stack.getItem().equals(ItemStack.EMPTY.getItem())) && !(stack.getMaxDamage() == 0)) {
             return oldValue + newValue;
         }
@@ -31,11 +31,11 @@ public class TargetableUtil {
     }
 
     public static Object getAttackTarget(Object protoTarget) {
-        return getTarget(AutoSwitch.data.toolTargetLists, protoTarget);
+        return getTarget(AutoSwitch.data.target2AttackActionToolSelectorsMap, protoTarget);
     }
 
     public static Object getUseTarget(Object protoTarget) {
-        return getTarget(AutoSwitch.data.useMap, protoTarget);
+        return getTarget(AutoSwitch.data.target2UseActionToolSelectorsMap, protoTarget);
     }
 
     /**
@@ -81,7 +81,7 @@ public class TargetableUtil {
      * @return clamped rating if needed
      */
     private static float clampToolRating(float original) {
-        if (AutoSwitch.cfg.preferMinimumViableTool() && original > 0) {
+        if (AutoSwitch.featureCfg.preferMinimumViableTool() && original > 0) {
             return (float) ((1 / .16) * Math.log10(original) / original);
         }
 
@@ -104,7 +104,7 @@ public class TargetableUtil {
                     .forEach(entityAttributeModifier -> y.updateAndGet(v ->
                             (float) (v - entityAttributeModifier.getValue())));
 
-            if (AutoSwitch.cfg.weaponRatingIncludesEnchants()) { //Evaluate attack damage based on enchantments
+            if (AutoSwitch.featureCfg.weaponRatingIncludesEnchants()) { //Evaluate attack damage based on enchantments
                 stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE)
                         .forEach(entityAttributeModifier ->
                                 x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()))
@@ -126,12 +126,12 @@ public class TargetableUtil {
      */
     public static boolean skipSlot(ItemStack itemStack) {
         // Skip energy items that are out of power
-        if (AutoSwitch.cfg.skipDepletedItems() && !itemStack.isDamageable() && getDurability(itemStack) == 0) {
+        if (AutoSwitch.featureCfg.skipDepletedItems() && !itemStack.isDamageable() && getDurability(itemStack) == 0) {
             return true;
         }
         // First part: don't skip iff undamagable items are needed
-        return (!(AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()) &&
-                isAlmostBroken(itemStack) && AutoSwitch.cfg.tryPreserveDamagedTools());
+        return (!(AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()) &&
+                isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
 
     }
 
@@ -163,9 +163,9 @@ public class TargetableUtil {
      * @return if the target will obtain drops from the block, returns true for entities
      */
     public static boolean isRightTool(ItemStack stack, Object target) {
-        if (!AutoSwitch.cfg.dumbMiningLevelCheck()) return true;
+        if (!AutoSwitch.featureCfg.dumbMiningLevelCheck()) return true;
 
-        if (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
+        if (AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
 
         if (target instanceof BlockState) { //TODO add mining level check here
             return !((BlockState) target).isToolRequired() || stack.isEffectiveOn((BlockState) target);
@@ -175,7 +175,7 @@ public class TargetableUtil {
     }
 
     public static boolean isCorrectAttackType(String tool, Item item) {
-        return (AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) ||
+        return (AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) ||
                 isCorrectTool(tool, item);
     }
 

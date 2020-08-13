@@ -20,9 +20,9 @@ public class ApiGenUtil {
             AutoSwitchApi api = entrypoint.getEntrypoint();
             api.customDamageSystems(AutoSwitch.data.damageMap);
             api.moddedToolGroups(AutoSwitch.data.toolGroupings);
-            final AutoSwitchMap<String, String> baseAction = duplicateMap(AutoSwitch.data.actionConfig);
+            final AutoSwitchMap<String, String> baseAction = duplicateMap(AutoSwitch.data.attackConfig);
             final AutoSwitchMap<String, String> baseUseAction = duplicateMap(AutoSwitch.data.usableConfig);
-            api.moddedTargets(AutoSwitch.data.targets, AutoSwitch.data.actionConfig, AutoSwitch.data.usableConfig);
+            api.moddedTargets(AutoSwitch.data.targets, AutoSwitch.data.attackConfig, AutoSwitch.data.usableConfig);
 
             final String name = entrypoint.getProvider().getMetadata().getName();
 
@@ -39,7 +39,7 @@ public class ApiGenUtil {
     }
 
     private static void processActionDif(String mod, AutoSwitchMap<String, String> base) {
-        processMapDiff(mod, base, AutoSwitch.data.actionConfig, modActionConfigs);
+        processMapDiff(mod, base, AutoSwitch.data.attackConfig, modActionConfigs);
     }
 
     private static void processUseDif(String mod, AutoSwitchMap<String, String> base) {

@@ -21,8 +21,8 @@ class TargetableAttack extends AbstractTargetable {
 
     @Override
     Boolean switchTypeAllowed() {
-        if (this.protoTarget instanceof BlockState) return this.cfg.switchForBlocks();
-        if (this.protoTarget instanceof Entity) return this.cfg.switchbackMobs();
+        if (this.protoTarget instanceof BlockState) return this.featureCfg.switchForBlocks();
+        if (this.protoTarget instanceof Entity) return this.featureCfg.switchbackMobs();
 
         AutoSwitch.logger.error("Something strange tried to trigger a switch...");
         return false;
@@ -30,13 +30,13 @@ class TargetableAttack extends AbstractTargetable {
 
     @Override
     void populateToolSelection(ItemStack stack, int slot) {
-        processToolSelectors(stack, slot, AutoSwitch.data.toolTargetLists,
+        processToolSelectors(stack, slot, AutoSwitch.data.target2AttackActionToolSelectorsMap,
                 TargetableUtil::getAttackTarget, TargetableUtil::isCorrectAttackType);
     }
 
     @Override
     protected boolean checkSpecialCase(Object target) {
-        return !AutoSwitch.cfg.useNoDurablityItemsWhenUnspecified()
-                && this.toolTargetLists.get(target) == null;
+        return !AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified()
+                && AutoSwitch.data.target2AttackActionToolSelectorsMap.get(target) == null;
     }
 }

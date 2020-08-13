@@ -46,11 +46,11 @@ public class SwitchUtil {
      */
     public static Consumer<Boolean> handleUseSwitchConsumer() {
         return b -> {
-            if (b && AutoSwitch.cfg.switchbackMobs()) {
+            if (b && AutoSwitch.featureCfg.switchbackMobs()) {
                 AutoSwitch.data.setHasSwitched(true);
             }
 
-            if (b && AutoSwitch.cfg.putUseActionToolInOffHand()) {
+            if (b && AutoSwitch.featureCfg.putUseActionToolInOffHand()) {
                 assert MinecraftClient.getInstance().getNetworkHandler() != null :
                         "Minecraft client was null when AutoSwitch wanted to sent a packet!";
                 MinecraftClient.getInstance().getNetworkHandler().sendPacket(

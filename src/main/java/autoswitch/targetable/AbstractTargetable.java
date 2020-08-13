@@ -5,8 +5,6 @@ import autoswitch.config.AutoSwitchConfig;
 import autoswitch.util.SwitchDataStorage;
 import autoswitch.util.TargetableUtil;
 import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
@@ -31,11 +29,10 @@ import java.util.function.IntConsumer;
  */
 @Environment(EnvType.CLIENT)
 public abstract class AbstractTargetable {
-    final Object2ObjectOpenHashMap<Object, IntArrayList> toolTargetLists = AutoSwitch.data.toolTargetLists;
-    final AutoSwitchConfig cfg;
-    private final Int2ObjectLinkedOpenHashMap<IntArrayList> toolLists = AutoSwitch.data.toolLists;
+    final AutoSwitchConfig featureCfg;
+
     //Rating for tool effectiveness - ie. speed for blocks or enchantment level
-    private final Int2DoubleArrayMap toolRating = new Int2DoubleArrayMap();
+    private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
     PlayerEntity player;
     Object protoTarget = null;
 
@@ -47,7 +44,7 @@ public abstract class AbstractTargetable {
      * @param player player this will effect
      */
     AbstractTargetable(PlayerEntity player) {
-        this.cfg = AutoSwitch.cfg;
+        this.featureCfg = AutoSwitch.featureCfg;
         this.player = player;
     }
 
@@ -129,8 +126,8 @@ public abstract class AbstractTargetable {
      * Does not take into account toggle (AutoSwitch#doAS)
      */
     private Boolean switchAllowed() {
-        return ((!this.player.isCreative() || this.cfg.switchInCreative()) &&
-                (switchTypeAllowed() && (MinecraftClient.getInstance().isInSingleplayer() || this.cfg.switchInMP())));
+        return ((!this.player.isCreative() || this.featureCfg.switchInCreative()) &&
+                (switchTypeAllowed() && (MinecraftClient.getInstance().isInSingleplayer() || this.featureCfg.switchInMP())));
     }
 
     /**
@@ -139,22 +136,16 @@ public abstract class AbstractTargetable {
      * @return Returns empty if autoswitch is not allowed or there is no slot to change to
      */
     Optional<Integer> findSlot() {
-        if (!switchAllowed() || this.toolRating.isEmpty()) {
+        if (!switchAllowed() || this.slot2ToolRating.isEmpty()) {
             return Optional.empty();
         }
 
-        AutoSwitch.logger.debug(toolRating);
-        // toolList is a list of slots that have a specific tool
-        for (Int2ObjectMap.Entry<IntArrayList> toolList : toolLists.int2ObjectEntrySet()) {
-            if (!toolList.getValue().isEmpty()) {
-                for (Integer slot : toolList.getValue()) {
-                    if (slot.equals(Collections.max(this.toolRating.int2DoubleEntrySet(),
-                            Comparator.comparingDouble(Map.Entry::getValue)).getIntKey())) {
-                        return Optional.of(slot);
-                    }
-                }
-            }
+        AutoSwitch.logger.debug(slot2ToolRating);
+        if (!this.slot2ToolRating.isEmpty()) {
+            return Optional.of(Collections.max(this.slot2ToolRating.int2DoubleEntrySet(),
+                    Comparator.comparingDouble(Map.Entry::getValue)).getIntKey());
         }
+
 
         return Optional.empty();
     }
@@ -238,11 +229,8 @@ public abstract class AbstractTargetable {
             AutoSwitch.logger.debug("Slot: {}; EnchantRating: {}", slot, enchantRating);
         }
 
-        // Add tool to selection
-        this.toolLists.putIfAbsent(id, new IntArrayList());
-        this.toolLists.get(id).add(slot);
         if (!isUse()) {
-            if (this.cfg.preferMinimumViableTool() && rating != 0D) {
+            if (this.featureCfg.preferMinimumViableTool() && rating != 0D) {
                 rating += -1 * Math.log10(rating); // reverse and clamp tool
             }
             rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
@@ -260,9 +248,9 @@ public abstract class AbstractTargetable {
         boolean finalStackEnchants = stackEnchants;
         AutoSwitch.logger.debug("Rating: {}; Slot: {}", rating, slot);
 
-        this.toolRating.computeIfPresent(slot, (iSlot, oldRating) ->
+        this.slot2ToolRating.computeIfPresent(slot, (iSlot, oldRating) ->
                 TargetableUtil.toolRatingChange(oldRating, finalRating, stack, finalStackEnchants));
-        this.toolRating.putIfAbsent(slot, rating);
+        this.slot2ToolRating.putIfAbsent(slot, rating);
 
     }
 
