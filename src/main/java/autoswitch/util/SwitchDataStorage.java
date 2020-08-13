@@ -30,7 +30,15 @@ public class SwitchDataStorage {
     public final Object2ObjectOpenHashMap<Object, IntArrayList> target2AttackActionToolSelectorsMap =
             new Object2ObjectOpenHashMap<>();
 
+    /**
+     * Map of toolSelector input from the config -> it's int id.
+     * Used o ensure uniqueness of toolSelectors and avoid processing duplicates.
+     */
     public final Object2IntOpenHashMap<String> toolSelectorKeys = new Object2IntOpenHashMap<>();
+
+    /**
+     * Map of toolSelector id -> toolSelector object (string toolId, list of Enchantments).
+     */
     public final Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> toolSelectors =
             new Int2ObjectOpenHashMap<>();
 

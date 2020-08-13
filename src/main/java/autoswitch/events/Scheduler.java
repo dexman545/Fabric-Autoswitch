@@ -9,12 +9,6 @@ public class Scheduler {
     public void schedule(SwitchEvent event, double deltaTimeSec, int initTickTime) {
         int deltaTimeTicks = (int) Math.floor(deltaTimeSec * 20);
 
-        if (deltaTimeTicks == 0) {
-            // Schedules for the next tick to make sure there is no lock on switching
-            schedule.add(new Task(event, initTickTime + 1));
-            return;
-        }
-
         schedule.add(new Task(event, initTickTime + deltaTimeTicks));
 
     }

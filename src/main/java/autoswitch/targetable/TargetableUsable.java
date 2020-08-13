@@ -40,7 +40,7 @@ class TargetableUsable extends AbstractTargetable {
 
     @Override
     Boolean switchTypeAllowed() {
-        return this.featureCfg.switchUseActions();
+        return AutoSwitch.featureCfg.switchUseActions();
     }
 
 }

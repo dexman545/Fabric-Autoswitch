@@ -78,10 +78,6 @@ public final class ConfigEstablishment {
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
         });
 
-        AutoSwitch.featureCfg.addReloadListener(event -> {
-            AutoSwitchMapsGenerator.populateAutoSwitchMaps();
-        });
-
         AutoSwitch.useActionCfg.addReloadListener(event -> {
             AutoSwitch.data.target2UseActionToolSelectorsMap.clear();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();

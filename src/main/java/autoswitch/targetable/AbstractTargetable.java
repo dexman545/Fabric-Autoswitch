@@ -1,10 +1,11 @@
 package autoswitch.targetable;
 
 import autoswitch.AutoSwitch;
-import autoswitch.config.AutoSwitchConfig;
 import autoswitch.util.SwitchDataStorage;
 import autoswitch.util.TargetableUtil;
 import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
@@ -29,9 +30,7 @@ import java.util.function.IntConsumer;
  */
 @Environment(EnvType.CLIENT)
 public abstract class AbstractTargetable {
-    final AutoSwitchConfig featureCfg;
-
-    //Rating for tool effectiveness - ie. speed for blocks or enchantment level
+    //Rating for tool effectiveness - ie. speed for blocks or enchantment level based on user config
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
     PlayerEntity player;
     Object protoTarget = null;
@@ -44,7 +43,6 @@ public abstract class AbstractTargetable {
      * @param player player this will effect
      */
     AbstractTargetable(PlayerEntity player) {
-        this.featureCfg = AutoSwitch.featureCfg;
         this.player = player;
     }
 
@@ -110,10 +108,7 @@ public abstract class AbstractTargetable {
                 return Optional.of(false);
             }
 
-            //Loop over it since scrollInHotbar only moves one pos
-            for (int i = Math.abs(currentSlot - slot); i > 0; i--) {
-                this.player.inventory.scrollInHotbar(currentSlot - slot);
-            }
+            this.player.inventory.selectedSlot = slot;
 
             return Optional.of(true); //Slot changed
         }).orElseGet(Optional::empty); //if nothing to change to, return empty
@@ -126,8 +121,8 @@ public abstract class AbstractTargetable {
      * Does not take into account toggle (AutoSwitch#doAS)
      */
     private Boolean switchAllowed() {
-        return ((!this.player.isCreative() || this.featureCfg.switchInCreative()) &&
-                (switchTypeAllowed() && (MinecraftClient.getInstance().isInSingleplayer() || this.featureCfg.switchInMP())));
+        return ((!this.player.isCreative() || AutoSwitch.featureCfg.switchInCreative()) &&
+                (switchTypeAllowed() && (MinecraftClient.getInstance().isInSingleplayer() || AutoSwitch.featureCfg.switchInMP())));
     }
 
     /**
@@ -199,7 +194,7 @@ public abstract class AbstractTargetable {
             }
 
             if (toolSelector.correctType(tool, item) && (isUse() || TargetableUtil.isRightTool(stack, protoTarget))) {
-                updateToolListsAndRatings(stack, id, tool, enchants, slot, counter);
+                updateToolListsAndRatings(stack, tool, enchants, slot, counter);
             }
 
         });
@@ -209,7 +204,7 @@ public abstract class AbstractTargetable {
     /**
      * Moves some core switch logic out of the lambda to increase clarity
      */
-    private void updateToolListsAndRatings(ItemStack stack, int id, String tool, ReferenceArrayList<Enchantment> enchants,
+    private void updateToolListsAndRatings(ItemStack stack, String tool, ReferenceArrayList<Enchantment> enchants,
                                            int slot, AtomicReference<Float> counter) {
         double rating = 0;
         boolean stackEnchants = true;
@@ -230,7 +225,7 @@ public abstract class AbstractTargetable {
         }
 
         if (!isUse()) {
-            if (this.featureCfg.preferMinimumViableTool() && rating != 0D) {
+            if (AutoSwitch.featureCfg.preferMinimumViableTool() && rating != 0D) {
                 rating += -1 * Math.log10(rating); // reverse and clamp tool
             }
             rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();

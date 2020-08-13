@@ -21,8 +21,8 @@ class TargetableAttack extends AbstractTargetable {
 
     @Override
     Boolean switchTypeAllowed() {
-        if (this.protoTarget instanceof BlockState) return this.featureCfg.switchForBlocks();
-        if (this.protoTarget instanceof Entity) return this.featureCfg.switchbackMobs();
+        if (this.protoTarget instanceof BlockState) return AutoSwitch.featureCfg.switchForBlocks();
+        if (this.protoTarget instanceof Entity) return AutoSwitch.featureCfg.switchbackMobs();
 
         AutoSwitch.logger.error("Something strange tried to trigger a switch...");
         return false;
