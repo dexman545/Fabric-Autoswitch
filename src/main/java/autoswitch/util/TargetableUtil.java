@@ -126,7 +126,7 @@ public class TargetableUtil {
      */
     public static boolean skipSlot(ItemStack itemStack) {
         // Skip energy items that are out of power
-        if (AutoSwitch.featureCfg.skipDepletedItems() && !itemStack.isDamageable() && getDurability(itemStack) == 0) {
+        if (AutoSwitch.featureCfg.skipDepletedItems() && isAlmostBroken(itemStack)) {
             return true;
         }
         // First part: don't skip iff undamagable items are needed
@@ -136,11 +136,11 @@ public class TargetableUtil {
     }
 
     private static boolean isAlmostBroken(ItemStack stack) {
-        return getDurability(stack) <= 3;
+        return getDurability(stack) <= 3 && getDurability(stack) != -1;
     }
 
     private static int getDurability(ItemStack stack) {
-        AtomicReference<Number> durability = new AtomicReference<>(0);
+        AtomicReference<Number> durability = new AtomicReference<>(-1);
 
         if (!stack.isDamageable()) {
             AutoSwitch.data.damageMap.forEach((clazz, durabilityGetter) -> {
