@@ -1,5 +1,6 @@
 package autoswitch.config;
 
+import autoswitch.config.util.CaseInsensitiveEnumConverter;
 import autoswitch.config.util.Comment;
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
@@ -51,11 +52,20 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("Disable the swinging of the hand when trying to mow when fighting.")
     Boolean disableHandSwingWhenMowing();
 
-    @DefaultValue("true")
-    @Key("switchbackWaitsForCooldownWhenAttackingMobs")
-    @Comment("Before switching back when fighting a mob, wait for the attack cooldown to finish. " +
-            "Fixes attacks not doing a lot of damage.")
-    Boolean switchbackWaits();
+    @DefaultValue("BOTH")
+    @Key("switchbackWaitsForCooldown")
+    @ConverterClass(CaseInsensitiveEnumConverter.class)
+    @Comment("Before switching back when using the 'attack' action, wait for the attack cooldown to finish. " +
+            "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks smoother." +
+            "Acceptable values: BOTH, MOBS, BLOCKS, NONE")
+    SwitchDelay switchbackWaits();
+
+    enum SwitchDelay {
+        BOTH,
+        MOBS,
+        BLOCKS,
+        NONE
+    }
 
     @DefaultValue("true")
     @Comment("Will ignore tools that are about to break when considering which tool to switch to.")

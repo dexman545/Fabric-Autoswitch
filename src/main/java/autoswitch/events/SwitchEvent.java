@@ -1,6 +1,7 @@
 package autoswitch.events;
 
 import autoswitch.AutoSwitch;
+import autoswitch.config.AutoSwitchConfig;
 import autoswitch.targetable.AbstractTargetable;
 import autoswitch.util.SwitchUtil;
 import net.minecraft.block.BlockState;
@@ -84,12 +85,27 @@ public enum SwitchEvent {
             // Check if conditions are met for switchback
             if (AutoSwitch.data.getHasSwitched() && !player.handSwinging) {
                 // Uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
-                return ((AutoSwitch.data.hasAttackedEntity() && featureCfg.switchbackWaits()) &&
-                        (player.getAttackCooldownProgress(-20.0f) != 1.0f ||
-                                !AutoSwitch.data.hasAttackedEntity()));
+
+                return (doBlockSwitchback() || doMobSwitchback()) && doSwitchback();
             }
 
             return true;
+        }
+
+        private boolean doSwitchback() {
+            return player.getAttackCooldownProgress(-20.0f) != 1.0f;
+        }
+
+        private boolean doMobSwitchback() {
+            return AutoSwitch.data.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
+                    AutoSwitchConfig.SwitchDelay.BOTH ||
+                    featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchDelay.MOBS);
+        }
+
+        private boolean doBlockSwitchback() {
+            return !AutoSwitch.data.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
+                    AutoSwitchConfig.SwitchDelay.BOTH ||
+                    featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchDelay.BLOCKS);
         }
 
         private void handlePostSwitchTasks(boolean hasSwitched) {
