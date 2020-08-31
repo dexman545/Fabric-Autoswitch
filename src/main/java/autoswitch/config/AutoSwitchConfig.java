@@ -56,7 +56,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Key("switchbackWaitsForCooldown")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Comment("Before switching back when using the 'attack' action, wait for the attack cooldown to finish. " +
-            "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks smoother." +
+            "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks smoother. " +
             "Acceptable values: BOTH, MOBS, BLOCKS, NONE")
     SwitchDelay switchbackWaits();
 
