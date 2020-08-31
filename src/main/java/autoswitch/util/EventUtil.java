@@ -3,29 +3,28 @@ package autoswitch.util;
 import autoswitch.AutoSwitch;
 import autoswitch.events.SwitchEvent;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 
 public class EventUtil {
 
     private static boolean hasScheduledSwitchback = false;
 
-    public static ActionResult scheduleEvent(SwitchEvent event, boolean doSwitch, World world, PlayerEntity player,
-                                             boolean doSwitchType, Object protoTarget) {
-        return schedulePrimaryEvent(world, event.setPlayer(player)
+    public static void scheduleEvent(SwitchEvent event, boolean doSwitch, World world, PlayerEntity player,
+                                     boolean doSwitchType, Object protoTarget) {
+        schedulePrimaryEvent(world, event.setPlayer(player)
                 .setDoSwitch(doSwitch).setDoSwitchType(doSwitchType)
                 .setProtoTarget(protoTarget));
     }
 
-    public static ActionResult schedulePrimaryEvent(World world, SwitchEvent event) {
-        return eventHandler(world, AutoSwitch.tickTime, 0, event);
+    public static void schedulePrimaryEvent(World world, SwitchEvent event) {
+        eventHandler(world, AutoSwitch.tickTime, 0, event);
     }
 
-    public static ActionResult eventHandler(World world, int currentTime, double deltaTime, SwitchEvent event) {
+    public static void eventHandler(World world, int currentTime, double deltaTime, SwitchEvent event) {
 
-        if (!world.isClient()) return ActionResult.PASS; // Make sure this is only run on client
+        if (!world.isClient()) return; // Make sure this is only run on client
 
-        if (!event.handlePreSwitchTasks()) return ActionResult.FAIL;
+        if (!event.handlePreSwitchTasks()) return;
 
         if (AutoSwitch.data.getHasSwitched()) deltaTime += AutoSwitch.featureCfg.switchDelay();
 
@@ -38,7 +37,7 @@ public class EventUtil {
                 hasScheduledSwitchback = true;
             }
 
-            return ActionResult.PASS;
+            return;
         }
 
         hasScheduledSwitchback = false;
@@ -46,7 +45,6 @@ public class EventUtil {
         // Normal handing of switches
         AutoSwitch.scheduler.schedule(event.setWorld(true), deltaTime, currentTime);
 
-        return ActionResult.PASS;
     }
 
 }
