@@ -30,7 +30,7 @@ public interface AutoSwitchUsableConfig extends Config, Reloadable, Accessible, 
     ToolHandler[] strider();
 
     @Separator("'")
-    @DefaultValue("minecraft-bow")
+    @DefaultValue("")
     @Comment("For 'item use' action, ie right clicking an item into the empty air, such as for a bow.")
     ToolHandler[] bow_action();
 
