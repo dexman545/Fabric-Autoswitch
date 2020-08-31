@@ -134,7 +134,7 @@ public enum SwitchEvent {
 
     boolean canNotSwitch() {
         // Client is checked to fix LAN worlds (Issue #18)
-        return !clientWorld || !doSwitch || !doSwitchType || !player.handSwinging;
+        return !clientWorld || !doSwitch || !doSwitchType;
     }
 
     void handlePrevSlot() {
