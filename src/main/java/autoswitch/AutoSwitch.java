@@ -7,9 +7,7 @@ import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.config.populator.ApiMapGenerator;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.events.Scheduler;
-import autoswitch.events.SwitchEvent;
 import autoswitch.util.ApiGenUtil;
-import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchDataStorage;
 import autoswitch.util.TickUtil;
 import net.fabricmc.api.ClientModInitializer;
@@ -17,10 +15,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.apache.logging.log4j.LogManager;
@@ -58,7 +52,7 @@ public class AutoSwitch implements ClientModInitializer {
             "AutoSwitch"
     ));
 
-    private boolean doAS = true;
+    public static boolean doAS = true;
 
     @Override
     @Environment(EnvType.CLIENT)
@@ -92,22 +86,6 @@ public class AutoSwitch implements ClientModInitializer {
             // Tick event system and check if scheduling a switchback is needed via EventUtil
             TickUtil.eventScheduleTick(e.player, e.world);
         });
-
-        //Block Swaps
-        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) ->
-                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, featureCfg.switchForBlocks(),
-                        world.getBlockState(pos)));
-
-        UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
-                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, featureCfg.switchUseActions(),
-                        world.getBlockState(hitResult.getBlockPos())));
-
-        //Entity Swaps
-        AttackEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
-                EventUtil.scheduleEvent(SwitchEvent.ATTACK, doAS, world, player, featureCfg.switchForMobs(), entity));
-
-        UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) ->
-                EventUtil.scheduleEvent(SwitchEvent.USE, doAS, world, player, featureCfg.switchUseActions(), entity));
 
         //Notify when AS Loaded
         logger.info("AutoSwitch Loaded");
