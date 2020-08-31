@@ -66,6 +66,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     Boolean putUseActionToolInOffHand();
 
     @DefaultValue("true")
+    @Comment("Switch used tool to offhand if no item is there.")
+    Boolean preserveOffhandItem();
+
+    @DefaultValue("true")
     @Comment("Switch for use-action of a tool.")
     Boolean switchUseActions();
 

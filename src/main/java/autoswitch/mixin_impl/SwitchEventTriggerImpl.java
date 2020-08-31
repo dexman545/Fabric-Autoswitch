@@ -3,6 +3,7 @@ package autoswitch.mixin_impl;
 import autoswitch.AutoSwitch;
 import autoswitch.events.SwitchEvent;
 import autoswitch.util.EventUtil;
+import autoswitch.util.SwitchDataStorage;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -73,6 +74,8 @@ public class SwitchEventTriggerImpl {
         // Trigger switch
         switch (crosshairTarget.getType()) {
             case MISS:
+                if (desiredType != DesiredType.USE) break;
+                EventUtil.scheduleEvent(event, AutoSwitch.doAS, world, player, doSwitchType, SwitchDataStorage.itemTarget);
                 break;
             case ENTITY:
                 EntityHitResult entityHitResult = (EntityHitResult) crosshairTarget;
