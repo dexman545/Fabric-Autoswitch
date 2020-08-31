@@ -19,6 +19,8 @@ import org.apache.commons.lang3.tuple.Pair;
  */
 public class SwitchDataStorage {
 
+    public final static ItemTarget itemTarget = new ItemTarget();
+
     /**
      * Used to process hotbar even when no target is selected.
      * For cases where users want to use nondamageable items.

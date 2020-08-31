@@ -4,6 +4,7 @@ import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchMaterialConfig;
 import autoswitch.config.AutoSwitchUsableConfig;
 import autoswitch.config.util.ConfigReflection;
+import autoswitch.util.SwitchDataStorage;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityGroup;
@@ -154,6 +155,9 @@ public class ApiMapGenerator {
         AutoSwitch.data.targets.put("undead", EntityGroup.UNDEAD);
 
         AutoSwitch.data.targets.put("boat", EntityType.BOAT);
+
+        // Item Use
+        AutoSwitch.data.targets.put("bow_action", SwitchDataStorage.itemTarget);
     }
 
 }

@@ -29,5 +29,10 @@ public interface AutoSwitchUsableConfig extends Config, Reloadable, Accessible, 
     @Comment("Switch when getting on a strider so you are ready to steer it.")
     ToolHandler[] strider();
 
+    @Separator("'")
+    @DefaultValue("minecraft-bow")
+    @Comment("For 'item use' action, ie right clicking an item into the empty air, such as for a bow.")
+    ToolHandler[] bow_action();
+
 
 }

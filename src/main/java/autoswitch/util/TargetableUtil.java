@@ -46,6 +46,8 @@ public class TargetableUtil {
      * @return target
      */
     private static Object getTarget(Object2ObjectOpenHashMap<Object, IntArrayList> map, Object protoTarget) {
+        if (protoTarget instanceof ItemTarget) return protoTarget;
+
         if (protoTarget instanceof AbstractBlock.AbstractBlockState) {
             // Block Override
             if (map.containsKey(((AbstractBlock.AbstractBlockState) protoTarget).getBlock())) {
