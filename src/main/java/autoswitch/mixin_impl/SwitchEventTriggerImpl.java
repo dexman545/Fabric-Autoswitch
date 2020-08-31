@@ -15,9 +15,9 @@ import net.minecraft.util.math.BlockPos;
 
 
 /**
- * Implementation of the logic for the MineraftClient mixin
+ * Implementation of the logic for the MinecraftClient mixin
  */
-public class MixinMcClientImpl {
+public class SwitchEventTriggerImpl {
 
     /**
      * Logic for handling ATTACK type actions.
@@ -55,6 +55,7 @@ public class MixinMcClientImpl {
         SwitchEvent event;
         boolean doSwitchType;
 
+        // Set event and doSwitchType
         switch (desiredType) {
             case USE:
                 event = SwitchEvent.USE;
@@ -69,6 +70,7 @@ public class MixinMcClientImpl {
                 throw new IllegalStateException("Unexpected value: " + desiredType);
         }
 
+        // Trigger switch
         switch (crosshairTarget.getType()) {
             case MISS:
                 break;
@@ -90,6 +92,7 @@ public class MixinMcClientImpl {
 
     }
 
+    // Dummy type to allow unification of ATTACK and USE impl
     enum DesiredType{
         USE,
         ACTION

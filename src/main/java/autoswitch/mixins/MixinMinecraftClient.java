@@ -1,6 +1,6 @@
 package autoswitch.mixins;
 
-import autoswitch.mixin_impl.MixinMcClientImpl;
+import autoswitch.mixin_impl.SwitchEventTriggerImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -38,11 +38,15 @@ public abstract class MixinMinecraftClient {
     @Unique
     private BlockPos target;
 
+    /**
+     * Trigger for ATTACK event.
+     *
+     */
     @Inject(at = @At("INVOKE"), method = "doAttack")
     private void attackEvent(CallbackInfo ci) {
         assert this.player != null;
 
-        MixinMcClientImpl.attack(this.attackCooldown, this.player, this.world, this.crosshairTarget);
+        SwitchEventTriggerImpl.attack(this.attackCooldown, this.player, this.world, this.crosshairTarget);
 
         // Notify the server that the slot has changed
         Objects.requireNonNull(this.getNetworkHandler())
@@ -50,12 +54,16 @@ public abstract class MixinMinecraftClient {
 
     }
 
+    /**
+     * Trigger for USE event.
+     *
+     */
     @Inject(at = @At("INVOKE"), method = "doItemUse")
     private void useEvent(CallbackInfo ci) {
         assert this.player != null;
         assert this.interactionManager != null;
 
-        MixinMcClientImpl.interact(this.interactionManager, this.player, this.world, this.crosshairTarget);
+        SwitchEventTriggerImpl.interact(this.interactionManager, this.player, this.world, this.crosshairTarget);
 
         // Notify the server that the slot has changed
         Objects.requireNonNull(this.getNetworkHandler())
@@ -80,7 +88,7 @@ public abstract class MixinMinecraftClient {
 
         assert this.player != null;
 
-        MixinMcClientImpl.attack(this.attackCooldown, this.player, this.world, this.crosshairTarget);
+        SwitchEventTriggerImpl.attack(this.attackCooldown, this.player, this.world, this.crosshairTarget);
 
         // Notify the server that the slot has changed
         Objects.requireNonNull(this.getNetworkHandler())
