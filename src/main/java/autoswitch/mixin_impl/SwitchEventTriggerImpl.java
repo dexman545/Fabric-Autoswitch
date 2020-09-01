@@ -86,6 +86,7 @@ public class SwitchEventTriggerImpl {
                 BlockHitResult blockHitResult = ((BlockHitResult) crosshairTarget);
                 BlockPos blockPos = blockHitResult.getBlockPos();
                 BlockState blockState = world.getBlockState(blockPos);
+                if (blockState.isAir()) break;
                 EventUtil.scheduleEvent(event, AutoSwitch.doAS, world, player, doSwitchType, blockState);
                 break;
         }
