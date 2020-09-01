@@ -75,6 +75,7 @@ public class SwitchEventTriggerImpl {
         switch (crosshairTarget.getType()) {
             case MISS:
                 if (desiredType != DesiredType.USE) break;
+                if (AutoSwitch.useActionCfg.bow_action().length == 0) return; // guard to help prevent lag when rclicking into empty space
                 EventUtil.scheduleEvent(event, AutoSwitch.doAS, world, player, doSwitchType, SwitchDataStorage.itemTarget);
                 break;
             case ENTITY:
