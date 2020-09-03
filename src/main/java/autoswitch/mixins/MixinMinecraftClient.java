@@ -1,7 +1,9 @@
 package autoswitch.mixins;
 
+import autoswitch.mixin_impl.DisconnectHandler;
 import autoswitch.mixin_impl.SwitchEventTriggerImpl;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -23,24 +25,32 @@ import java.util.Objects;
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
 
-    @Shadow @Nullable public HitResult crosshairTarget;
+    @Shadow
+    @Nullable
+    public HitResult crosshairTarget;
 
-    @Shadow @Nullable public ClientPlayerEntity player;
+    @Shadow
+    @Nullable
+    public ClientPlayerEntity player;
 
-    @Shadow @Nullable public ClientWorld world;
+    @Shadow
+    @Nullable
+    public ClientWorld world;
 
-    @Shadow @Nullable public ClientPlayerInteractionManager interactionManager;
-
-    @Shadow @Nullable public abstract ClientPlayNetworkHandler getNetworkHandler();
-
-    @Shadow protected int attackCooldown;
-
+    @Shadow
+    @Nullable
+    public ClientPlayerInteractionManager interactionManager;
+    @Shadow
+    protected int attackCooldown;
     @Unique
     private BlockPos target;
 
+    @Shadow
+    @Nullable
+    public abstract ClientPlayNetworkHandler getNetworkHandler();
+
     /**
      * Trigger for ATTACK event.
-     *
      */
     @Inject(at = @At("INVOKE"), method = "doAttack")
     private void attackEvent(CallbackInfo ci) {
@@ -56,7 +66,6 @@ public abstract class MixinMinecraftClient {
 
     /**
      * Trigger for USE event.
-     *
      */
     @Inject(at = @At("INVOKE"), method = "doItemUse")
     private void useEvent(CallbackInfo ci) {
@@ -74,7 +83,6 @@ public abstract class MixinMinecraftClient {
     /**
      * Fix for doAttack only being called one the key is first pressed, this fixes not switching tools when moving
      * to a new block from the previous one, such as when the first block is broken.
-     *
      */
     @Inject(at = @At("INVOKE"), method = "handleBlockBreaking")
     private void blockAttackEventSecondary(boolean bl, CallbackInfo ci) {
@@ -93,6 +101,15 @@ public abstract class MixinMinecraftClient {
         // Notify the server that the slot has changed
         Objects.requireNonNull(this.getNetworkHandler())
                 .sendPacket(new UpdateSelectedSlotC2SPacket(this.player.inventory.selectedSlot));
+
+    }
+
+    /**
+     * Reset keybinding params and switch state when leaving a world.
+     */
+    @Inject(at = @At("INVOKE"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")
+    private void disconnectEvent(Screen screen, CallbackInfo ci) {
+        DisconnectHandler.reset();
 
     }
 
