@@ -3,7 +3,7 @@ package autoswitch.mixin_impl;
 import autoswitch.AutoSwitch;
 import autoswitch.events.SwitchEvent;
 import autoswitch.util.EventUtil;
-import autoswitch.util.SwitchDataStorage;
+import autoswitch.util.SwitchData;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -76,7 +76,7 @@ public class SwitchEventTriggerImpl {
             case MISS:
                 if (desiredType != DesiredType.USE) break;
                 if (AutoSwitch.useActionCfg.bow_action().length == 0) return; // guard to help prevent lag when rclicking into empty space
-                EventUtil.scheduleEvent(event, AutoSwitch.doAS, world, player, doSwitchType, SwitchDataStorage.itemTarget);
+                EventUtil.scheduleEvent(event, AutoSwitch.doAS, world, player, doSwitchType, SwitchData.itemTarget);
                 break;
             case ENTITY:
                 EntityHitResult entityHitResult = (EntityHitResult) crosshairTarget;

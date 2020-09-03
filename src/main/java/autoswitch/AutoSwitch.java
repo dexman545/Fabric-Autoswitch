@@ -8,7 +8,8 @@ import autoswitch.config.populator.ApiMapGenerator;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.events.Scheduler;
 import autoswitch.util.ApiGenUtil;
-import autoswitch.util.SwitchDataStorage;
+import autoswitch.util.SwitchData;
+import autoswitch.util.SwitchState;
 import autoswitch.util.TickUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -25,8 +26,9 @@ public class AutoSwitch implements ClientModInitializer {
 
     public static final Logger logger = LogManager.getLogger("AutoSwitch");
 
-    //Create object to store player switch state
-    public static final SwitchDataStorage data = new SwitchDataStorage();
+    // Create object to store player switch state and relevant data
+    public static SwitchState switchState = new SwitchState();
+    public static final SwitchData switchData = new SwitchData();
     public static final Scheduler scheduler = new Scheduler();
 
     //Init config

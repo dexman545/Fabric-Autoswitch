@@ -20,17 +20,17 @@ public class AutoSwitchMapsGenerator {
         populateToolTargetMaps();
 
         // Trim the maps
-        AutoSwitch.data.toolSelectors.trim();
-        AutoSwitch.data.target2UseActionToolSelectorsMap.trim();
-        AutoSwitch.data.target2AttackActionToolSelectorsMap.trim();
+        AutoSwitch.switchData.toolSelectors.trim();
+        AutoSwitch.switchData.target2UseActionToolSelectorsMap.trim();
+        AutoSwitch.switchData.target2AttackActionToolSelectorsMap.trim();
     }
 
     /**
      * Populate Target maps (toolTargetLists and useMap).
      */
     private static void populateToolTargetMaps() {
-        populateMap(AutoSwitch.data.target2AttackActionToolSelectorsMap, AutoSwitch.attackActionCfg);
-        populateMap(AutoSwitch.data.target2UseActionToolSelectorsMap, AutoSwitch.useActionCfg);
+        populateMap(AutoSwitch.switchData.target2AttackActionToolSelectorsMap, AutoSwitch.attackActionCfg);
+        populateMap(AutoSwitch.switchData.target2UseActionToolSelectorsMap, AutoSwitch.useActionCfg);
 
     }
 
@@ -55,11 +55,11 @@ public class AutoSwitchMapsGenerator {
                 }
             }
 
-            AutoSwitch.data.targets.computeIfAbsent(key, k -> (new MaterialHandler(k)).getMat());
+            AutoSwitch.switchData.targets.computeIfAbsent(key, k -> (new MaterialHandler(k)).getMat());
 
             //Populate target map with the list
-            if (!list.isEmpty() && AutoSwitch.data.targets.containsKey(key)) {
-                map.put(AutoSwitch.data.targets.get(key), list);
+            if (!list.isEmpty() && AutoSwitch.switchData.targets.containsKey(key)) {
+                map.put(AutoSwitch.switchData.targets.get(key), list);
             }
 
         }

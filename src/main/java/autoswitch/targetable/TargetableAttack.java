@@ -30,13 +30,13 @@ class TargetableAttack extends AbstractTargetable {
 
     @Override
     void populateToolSelection(ItemStack stack, int slot) {
-        processToolSelectors(stack, slot, AutoSwitch.data.target2AttackActionToolSelectorsMap,
+        processToolSelectors(stack, slot, AutoSwitch.switchData.target2AttackActionToolSelectorsMap,
                 TargetableUtil::getAttackTarget, TargetableUtil::isCorrectAttackType);
     }
 
     @Override
     protected boolean checkSpecialCase(Object target) {
         return !AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified()
-                && AutoSwitch.data.target2AttackActionToolSelectorsMap.get(target) == null;
+                && AutoSwitch.switchData.target2AttackActionToolSelectorsMap.get(target) == null;
     }
 }

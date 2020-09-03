@@ -48,8 +48,8 @@ public final class ConfigEstablishment {
         AutoSwitch.attackActionCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
         AutoSwitch.useActionCfg = ConfigFactory.create(AutoSwitchUsableConfig.class);
 
-        mergeConfigs(AutoSwitch.data.attackConfig, AutoSwitch.attackActionCfg);
-        mergeConfigs(AutoSwitch.data.usableConfig, AutoSwitch.useActionCfg);
+        mergeConfigs(AutoSwitch.switchData.attackConfig, AutoSwitch.attackActionCfg);
+        mergeConfigs(AutoSwitch.switchData.usableConfig, AutoSwitch.useActionCfg);
 
         //generate config file; removes incorrect values from existing one as well
         try {
@@ -74,12 +74,12 @@ public final class ConfigEstablishment {
         // Clear data and recreate it based on new config
 
         AutoSwitch.attackActionCfg.addReloadListener(event -> {
-            AutoSwitch.data.target2AttackActionToolSelectorsMap.clear();
+            AutoSwitch.switchData.target2AttackActionToolSelectorsMap.clear();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
         });
 
         AutoSwitch.useActionCfg.addReloadListener(event -> {
-            AutoSwitch.data.target2UseActionToolSelectorsMap.clear();
+            AutoSwitch.switchData.target2UseActionToolSelectorsMap.clear();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
         });
     }

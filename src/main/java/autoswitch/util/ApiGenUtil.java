@@ -18,11 +18,11 @@ public class ApiGenUtil {
     public static void pullHookedMods() {
         FabricLoader.getInstance().getEntrypointContainers("autoswitch", AutoSwitchApi.class).forEach(entrypoint -> {
             AutoSwitchApi api = entrypoint.getEntrypoint();
-            api.customDamageSystems(AutoSwitch.data.damageMap);
-            api.moddedToolGroups(AutoSwitch.data.toolGroupings);
-            final AutoSwitchMap<String, String> baseAction = duplicateMap(AutoSwitch.data.attackConfig);
-            final AutoSwitchMap<String, String> baseUseAction = duplicateMap(AutoSwitch.data.usableConfig);
-            api.moddedTargets(AutoSwitch.data.targets, AutoSwitch.data.attackConfig, AutoSwitch.data.usableConfig);
+            api.customDamageSystems(AutoSwitch.switchData.damageMap);
+            api.moddedToolGroups(AutoSwitch.switchData.toolGroupings);
+            final AutoSwitchMap<String, String> baseAction = duplicateMap(AutoSwitch.switchData.attackConfig);
+            final AutoSwitchMap<String, String> baseUseAction = duplicateMap(AutoSwitch.switchData.usableConfig);
+            api.moddedTargets(AutoSwitch.switchData.targets, AutoSwitch.switchData.attackConfig, AutoSwitch.switchData.usableConfig);
 
             final String name = entrypoint.getProvider().getMetadata().getName();
 
@@ -39,11 +39,11 @@ public class ApiGenUtil {
     }
 
     private static void processActionDif(String mod, AutoSwitchMap<String, String> base) {
-        processMapDiff(mod, base, AutoSwitch.data.attackConfig, modActionConfigs);
+        processMapDiff(mod, base, AutoSwitch.switchData.attackConfig, modActionConfigs);
     }
 
     private static void processUseDif(String mod, AutoSwitchMap<String, String> base) {
-        processMapDiff(mod, base, AutoSwitch.data.usableConfig, modUseConfigs);
+        processMapDiff(mod, base, AutoSwitch.switchData.usableConfig, modUseConfigs);
     }
 
     private static void processMapDiff(String mod, AutoSwitchMap<String, String> base,

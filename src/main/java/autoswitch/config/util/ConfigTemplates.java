@@ -59,7 +59,7 @@ public class ConfigTemplates {
 
     public static String toolGroupings() {
         StringBuilder keys = new StringBuilder();
-        Enumeration<String> enumKeys = AutoSwitch.data.toolGroupings.keys();
+        Enumeration<String> enumKeys = AutoSwitch.switchData.toolGroupings.keys();
 
         while (enumKeys.hasMoreElements()) {
             keys.append(keys.length() > 0 ? ", " : "").append(enumKeys.nextElement());

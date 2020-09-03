@@ -22,7 +22,7 @@ class TargetableUsable extends AbstractTargetable {
 
     @Override
     protected void populateToolSelection(ItemStack stack, int slot) {
-        processToolSelectors(stack, slot, AutoSwitch.data.target2UseActionToolSelectorsMap,
+        processToolSelectors(stack, slot, AutoSwitch.switchData.target2UseActionToolSelectorsMap,
                 TargetableUtil::getUseTarget, TargetableUtil::isCorrectUseType);
     }
 

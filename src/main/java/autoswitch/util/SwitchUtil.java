@@ -48,7 +48,7 @@ public class SwitchUtil {
     public static Consumer<Boolean> handleUseSwitchConsumer() {
         return b -> {
             if (b && AutoSwitch.featureCfg.switchbackMobs()) {
-                AutoSwitch.data.setHasSwitched(true);
+                AutoSwitch.switchState.setHasSwitched(true);
             }
 
             assert MinecraftClient.getInstance().getNetworkHandler() != null :

@@ -26,13 +26,13 @@ public class EventUtil {
 
         if (!event.handlePreSwitchTasks()) return;
 
-        if (AutoSwitch.data.getHasSwitched()) deltaTime += AutoSwitch.featureCfg.switchDelay();
+        if (AutoSwitch.switchState.getHasSwitched()) deltaTime += AutoSwitch.featureCfg.switchDelay();
 
         //Fix switchback not being delayed
         if (event == SwitchEvent.SWITCHBACK) {
 
             // TODO improve so special case for switchback isn't needed
-            if (AutoSwitch.data.getHasSwitched() && !SwitchEvent.player.handSwinging && !hasScheduledSwitchback) {
+            if (AutoSwitch.switchState.getHasSwitched() && !SwitchEvent.player.handSwinging && !hasScheduledSwitchback) {
                 AutoSwitch.scheduler.schedule(event.setWorld(true), AutoSwitch.featureCfg.switchbackDelay(), currentTime);
                 hasScheduledSwitchback = true;
             }

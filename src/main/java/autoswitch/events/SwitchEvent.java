@@ -34,12 +34,12 @@ public enum SwitchEvent {
             // Handles switchback
             if (protoTarget instanceof Entity) {
                 if (hasSwitched && featureCfg.switchbackMobs()) {
-                    AutoSwitch.data.setHasSwitched(true);
-                    AutoSwitch.data.setAttackedEntity(true);
+                    AutoSwitch.switchState.setHasSwitched(true);
+                    AutoSwitch.switchState.setAttackedEntity(true);
                 }
             } else if (protoTarget instanceof BlockState) {
                 if (hasSwitched && featureCfg.switchbackBlocks()) {
-                    AutoSwitch.data.setHasSwitched(true);
+                    AutoSwitch.switchState.setHasSwitched(true);
                 }
             }
         }
@@ -71,7 +71,7 @@ public enum SwitchEvent {
             Optional<Boolean> temp = AbstractTargetable.use(protoTarget, player).changeTool();
             temp.ifPresent(b -> {
                 doOffhandSwitch = true;
-                AutoSwitch.data.setHasSwitched(b);
+                AutoSwitch.switchState.setHasSwitched(b);
                 if (b) AutoSwitch.scheduler.schedule(SwitchEvent.OFFHAND, 0.1, AutoSwitch.tickTime);
             });
 
@@ -83,7 +83,7 @@ public enum SwitchEvent {
         @Override
         protected boolean canNotSwitch() {
             // Check if conditions are met for switchback
-            if (AutoSwitch.data.getHasSwitched() && !player.handSwinging) {
+            if (AutoSwitch.switchState.getHasSwitched() && !player.handSwinging) {
                 // Uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
 
                 return (doBlockSwitchback() || doMobSwitchback()) && doSwitchback();
@@ -97,21 +97,21 @@ public enum SwitchEvent {
         }
 
         private boolean doMobSwitchback() {
-            return AutoSwitch.data.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
+            return AutoSwitch.switchState.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
                     AutoSwitchConfig.SwitchDelay.BOTH ||
                     featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchDelay.MOBS);
         }
 
         private boolean doBlockSwitchback() {
-            return !AutoSwitch.data.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
+            return !AutoSwitch.switchState.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
                     AutoSwitchConfig.SwitchDelay.BOTH ||
                     featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchDelay.BLOCKS);
         }
 
         private void handlePostSwitchTasks(boolean hasSwitched) {
             if (hasSwitched) {
-                AutoSwitch.data.setHasSwitched(false);
-                AutoSwitch.data.setAttackedEntity(false);
+                AutoSwitch.switchState.setHasSwitched(false);
+                AutoSwitch.switchState.setAttackedEntity(false);
             }
 
         }
@@ -120,7 +120,7 @@ public enum SwitchEvent {
         public boolean invoke() {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
-            AbstractTargetable.switchback(AutoSwitch.data.getPrevSlot(), player)
+            AbstractTargetable.switchback(AutoSwitch.switchState.getPrevSlot(), player)
                     .changeTool().ifPresent(this::handlePostSwitchTasks);
 
             return true;
@@ -154,8 +154,8 @@ public enum SwitchEvent {
     }
 
     void handlePrevSlot() {
-        if (!AutoSwitch.data.getHasSwitched()) {
-            AutoSwitch.data.setPrevSlot(player.inventory.selectedSlot);
+        if (!AutoSwitch.switchState.getHasSwitched()) {
+            AutoSwitch.switchState.setPrevSlot(player.inventory.selectedSlot);
         }
     }
 

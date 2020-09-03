@@ -15,8 +15,8 @@ public class ToolHandler {
 
     public ToolHandler(String input) {
         // Skip the rest of the evaluation as the toolselector has already been handled
-        if (AutoSwitch.data.toolSelectorKeys.containsKey(input)) {
-            this.id = AutoSwitch.data.toolSelectorKeys.getInt(input);
+        if (AutoSwitch.switchData.toolSelectorKeys.containsKey(input)) {
+            this.id = AutoSwitch.switchData.toolSelectorKeys.getInt(input);
             return;
         }
         String[] cleanedInput = input.split(";");
@@ -45,12 +45,12 @@ public class ToolHandler {
             this.id = input.hashCode();
 
             // Logic to ensure that hashcodes
-            while (AutoSwitch.data.toolSelectorKeys.containsValue(this.id)) {
+            while (AutoSwitch.switchData.toolSelectorKeys.containsValue(this.id)) {
                 this.id += 1;
                 AutoSwitch.logger.error("Conflicting ID generated for toolselector: {}, attempting to fix...", input);
             }
 
-            AutoSwitch.data.toolSelectorKeys.put(input, this.id);
+            AutoSwitch.switchData.toolSelectorKeys.put(input, this.id);
 
             enchantIdentifiers.forEach(identifier -> {
                 if ((!Registry.ENCHANTMENT.containsId(identifier))) {
@@ -63,7 +63,7 @@ public class ToolHandler {
             });
 
             AutoSwitch.logger.debug("Adding item to toolmap... " + input);
-            AutoSwitch.data.toolSelectors.put(this.id, Pair.of(tagStr, enchants));
+            AutoSwitch.switchData.toolSelectors.put(this.id, Pair.of(tagStr, enchants));
         }
 
     }

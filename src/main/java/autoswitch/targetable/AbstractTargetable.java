@@ -1,7 +1,7 @@
 package autoswitch.targetable;
 
 import autoswitch.AutoSwitch;
-import autoswitch.util.SwitchDataStorage;
+import autoswitch.util.SwitchData;
 import autoswitch.util.TargetableUtil;
 import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -175,15 +175,15 @@ public abstract class AbstractTargetable {
 
         if (target == null || checkSpecialCase(target)) return;
 
-        toolSelectorMap.getOrDefault(target, SwitchDataStorage.blank).forEach((IntConsumer) id -> {
+        toolSelectorMap.getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
             if (id == 0) return; // Check if no ID was assigned to the toolSelector.
 
             counter.updateAndGet(v -> (float) (v - 0.75)); //tools later in the config list are not preferred
             String tool;
             ReferenceArrayList<Enchantment> enchants;
 
-            if (id != SwitchDataStorage.blank.getInt(0)) {
-                Pair<String, ReferenceArrayList<Enchantment>> pair = AutoSwitch.data.toolSelectors.get(id);
+            if (id != SwitchData.blank.getInt(0)) {
+                Pair<String, ReferenceArrayList<Enchantment>> pair = AutoSwitch.switchData.toolSelectors.get(id);
                 tool = pair.getLeft();
                 enchants = pair.getRight();
             } else { // Handle case of no target but user desires fallback to items

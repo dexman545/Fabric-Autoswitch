@@ -17,7 +17,7 @@ public class MaterialHandler {
     public MaterialHandler(String str) {
         Object mat1 = null;
         str = str.toLowerCase().replace("-", ":");
-        if (!AutoSwitch.data.targets.containsKey(str)) {
+        if (!AutoSwitch.switchData.targets.containsKey(str)) {
             if (Identifier.tryParse(str) != null) {
                 mat1 = locateMat(Registry.ENTITY_TYPE, str) != null ?
                         locateMat(Registry.ENTITY_TYPE, str) : locateMat(Registry.BLOCK, str);

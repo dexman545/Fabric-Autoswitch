@@ -31,11 +31,11 @@ public class TargetableUtil {
     }
 
     public static Object getAttackTarget(Object protoTarget) {
-        return getTarget(AutoSwitch.data.target2AttackActionToolSelectorsMap, protoTarget);
+        return getTarget(AutoSwitch.switchData.target2AttackActionToolSelectorsMap, protoTarget);
     }
 
     public static Object getUseTarget(Object protoTarget) {
-        return getTarget(AutoSwitch.data.target2UseActionToolSelectorsMap, protoTarget);
+        return getTarget(AutoSwitch.switchData.target2UseActionToolSelectorsMap, protoTarget);
     }
 
     /**
@@ -145,7 +145,7 @@ public class TargetableUtil {
         AtomicReference<Number> durability = new AtomicReference<>(-1);
 
         if (!stack.isDamageable()) {
-            AutoSwitch.data.damageMap.forEach((clazz, durabilityGetter) -> {
+            AutoSwitch.switchData.damageMap.forEach((clazz, durabilityGetter) -> {
                 if (clazz.isInstance(stack.getItem())) {
                     durability.set(durabilityGetter.getDurability(stack));
                 }
@@ -195,7 +195,7 @@ public class TargetableUtil {
     private static boolean isCorrectTool(String tool, Item item) {
         AtomicBoolean matches = new AtomicBoolean(false);
 
-        AutoSwitch.data.toolGroupings.forEach((toolKey, tagClassPair) -> {
+        AutoSwitch.switchData.toolGroupings.forEach((toolKey, tagClassPair) -> {
             if (tool.equals(toolKey) || tool.equals("any")) {
                 if (checkTagAndClass(tagClassPair.getLeft(), tagClassPair.getRight(), item)) {
                     matches.set(true);
