@@ -20,9 +20,6 @@ musicalCode {
 	config 'musical-config.txt'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
@@ -70,6 +67,11 @@ processResources {
 	from(sourceSets.main.resources.srcDirs) {
 		exclude "fabric.mod.json"
 	}
+}
+
+compileJava {
+	options.release.set(8)
+	options.incremental = true
 }
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is
