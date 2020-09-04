@@ -150,5 +150,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
             "Do note that the material and usable configs will not regenerate if removed with this disabled if the " +
             "main config was not also removed.")
     Boolean alwaysRewriteConfigs();
+
+    @DefaultValue("true")
+    @Comment("If enabled, AutoSwitch will attempt to avoid recalculating hotbar slots to be used on a particular target." +
+            "Each time that slot is modified, it's cached data is thrown out. This can benefit performance.")
+    Boolean cacheSwitchResults();
 }
 

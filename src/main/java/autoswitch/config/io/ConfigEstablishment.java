@@ -8,6 +8,7 @@ import autoswitch.config.AutoSwitchUsableConfig;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.config.util.ConfigHeaders;
 import autoswitch.util.ApiGenUtil;
+import autoswitch.util.SwitchState;
 import autoswitch.util.SwitchUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.loader.api.FabricLoader;
@@ -74,13 +75,20 @@ public final class ConfigEstablishment {
         // Clear data and recreate it based on new config
 
         AutoSwitch.attackActionCfg.addReloadListener(event -> {
+            AutoSwitch.switchState.switchActionCache.clear();
             AutoSwitch.switchData.target2AttackActionToolSelectorsMap.clear();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
         });
 
         AutoSwitch.useActionCfg.addReloadListener(event -> {
+            AutoSwitch.switchState.switchInteractCache.clear();
             AutoSwitch.switchData.target2UseActionToolSelectorsMap.clear();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
+        });
+
+        AutoSwitch.featureCfg.addReloadListener(event -> {
+            AutoSwitch.switchState.switchInteractCache.clear();
+            AutoSwitch.switchState.switchActionCache.clear();
         });
     }
 
