@@ -9,9 +9,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -86,7 +84,7 @@ public abstract class MixinMinecraftClient {
     }
 
     /**
-     * Fix for doAttack only being called one the key is first pressed, this fixes not switching tools when moving
+     * Fix for doAttack only being called once the key is first pressed, this fixes not switching tools when moving
      * to a new block from the previous one, such as when the first block is broken.
      */
     @Inject(at = @At("INVOKE"), method = "handleBlockBreaking")
