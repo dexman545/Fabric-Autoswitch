@@ -48,6 +48,11 @@ public class HotbarWatcher {
 
     private static void updateCache(final TargetableCache cache, int slot) {
         if (!cache.containsValue(slot)) return;
+
+        // Previously this was #removePairOnValue to avoid needless recalculation.
+        // This was changed to fix issues with moving a tool to the hotbar but the cache not resetting.
+        // Conveniently, it also handles the case of "blank"/non-tool switches.
+        // Alternatively, use a smarter method of removing old cache values.
         cache.clear();
     }
 
