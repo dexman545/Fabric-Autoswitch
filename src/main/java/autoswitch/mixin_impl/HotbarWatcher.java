@@ -53,6 +53,7 @@ public class HotbarWatcher {
         // This was changed to fix issues with moving a tool to the hotbar but the cache not resetting.
         // Conveniently, it also handles the case of "blank"/non-tool switches.
         // Alternatively, use a smarter method of removing old cache values.
+        //TODO smart cache update
         cache.clear();
     }
 

@@ -75,7 +75,8 @@ public class SwitchEventTriggerImpl {
         switch (crosshairTarget.getType()) {
             case MISS:
                 if (desiredType != DesiredType.USE) break;
-                if (AutoSwitch.useActionCfg.bow_action().length == 0) return; // guard to help prevent lag when rclicking into empty space
+                if (AutoSwitch.useActionCfg.bow_action().length == 0)
+                    return; // guard to help prevent lag when rclicking into empty space
                 EventUtil.scheduleEvent(event, AutoSwitch.doAS, world, player, doSwitchType, SwitchData.itemTarget);
                 break;
             case ENTITY:
@@ -98,7 +99,7 @@ public class SwitchEventTriggerImpl {
     }
 
     // Dummy type to allow unification of ATTACK and USE impl
-    enum DesiredType{
+    enum DesiredType {
         USE,
         ACTION
     }

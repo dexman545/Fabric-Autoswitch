@@ -60,13 +60,6 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
             "Acceptable values: BOTH, MOBS, BLOCKS, NONE")
     SwitchDelay switchbackWaits();
 
-    enum SwitchDelay {
-        BOTH,
-        MOBS,
-        BLOCKS,
-        NONE
-    }
-
     @DefaultValue("true")
     @Comment("Will ignore tools that are about to break when considering which tool to switch to.")
     Boolean tryPreserveDamagedTools();
@@ -155,5 +148,12 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("If enabled, AutoSwitch will attempt to avoid recalculating hotbar slots to be used on a particular target." +
             "Each time that slot is modified, it's cached data is thrown out. This can benefit performance.")
     Boolean cacheSwitchResults();
+
+    enum SwitchDelay {
+        BOTH,
+        MOBS,
+        BLOCKS,
+        NONE
+    }
 }
 

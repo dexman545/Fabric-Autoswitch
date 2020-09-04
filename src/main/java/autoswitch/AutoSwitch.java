@@ -7,7 +7,6 @@ import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.config.populator.ApiMapGenerator;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.events.Scheduler;
-import autoswitch.mixin_impl.HotbarWatcher;
 import autoswitch.util.ApiGenUtil;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
@@ -19,24 +18,17 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-
 public class AutoSwitch implements ClientModInitializer {
 
     public static final Logger logger = LogManager.getLogger("AutoSwitch");
-
-    // Create object to store player switch state and relevant data
-    public static SwitchState switchState = new SwitchState();
     public static final SwitchData switchData = new SwitchData();
     public static final Scheduler scheduler = new Scheduler();
-
+    // Create object to store player switch state and relevant data
+    public static SwitchState switchState = new SwitchState();
     //Init config
     public static AutoSwitchConfig featureCfg;
     public static AutoSwitchMaterialConfig attackActionCfg;
@@ -44,7 +36,7 @@ public class AutoSwitch implements ClientModInitializer {
 
     public static boolean mowing = true;
     public static int tickTime = 0;
-
+    public static boolean doAS = true;
     //Keybindings
     private final KeyBinding autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.autoswitch.toggle",
@@ -52,7 +44,6 @@ public class AutoSwitch implements ClientModInitializer {
             GLFW.GLFW_KEY_R,
             "AutoSwitch"
     ));
-
     private final KeyBinding mowingWhenFightingToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
             "key.autoswitch.toggle_mowing",
             InputUtil.Type.KEYSYM,
@@ -60,15 +51,12 @@ public class AutoSwitch implements ClientModInitializer {
             "AutoSwitch"
     ));
 
-    public static boolean doAS = true;
-
     @Override
     @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
         // Interface with other mods and generate needed tables
         ApiMapGenerator.createApiMaps();
         ApiGenUtil.pullHookedMods();
-
 
 
         // Create config files and load them

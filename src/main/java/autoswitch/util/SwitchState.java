@@ -1,18 +1,15 @@
 package autoswitch.util;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-
 /**
  * Store the switch state of the player and relevant maps
  */
 public class SwitchState {
 
+    public TargetableCache switchActionCache;
+    public TargetableCache switchInteractCache;
     private int prevSlot;
     private boolean hasSwitched;
     private boolean attackedEntity;
-    public TargetableCache switchActionCache;
-    public TargetableCache switchInteractCache;
 
     public SwitchState() {
         prevSlot = -1;

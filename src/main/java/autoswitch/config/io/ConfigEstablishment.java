@@ -8,7 +8,6 @@ import autoswitch.config.AutoSwitchUsableConfig;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.config.util.ConfigHeaders;
 import autoswitch.util.ApiGenUtil;
-import autoswitch.util.SwitchState;
 import autoswitch.util.SwitchUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.loader.api.FabricLoader;

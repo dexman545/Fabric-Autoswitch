@@ -1,6 +1,5 @@
 package autoswitch.mixins;
 
-import autoswitch.AutoSwitch;
 import autoswitch.mixin_impl.HotbarWatcher;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,14 +19,15 @@ import java.util.List;
 public abstract class MixinPlayerInventory {
 
 
-    @Shadow @Final public DefaultedList<ItemStack> main;
+    @Shadow
+    @Final
+    public DefaultedList<ItemStack> main;
+    private ReferenceArrayList<ItemStack> prevHotbar;
 
     @Shadow
     public static int getHotbarSize() {
         return 0;
     }
-
-    private ReferenceArrayList<ItemStack> prevHotbar;
 
     @Inject(at = @At("RETURN"), method = "setStack(ILnet/minecraft/item/ItemStack;)V")
     private void setr(int slot, ItemStack stack, CallbackInfo ci) {
