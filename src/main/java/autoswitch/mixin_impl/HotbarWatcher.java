@@ -49,7 +49,6 @@ public class HotbarWatcher {
     private static void updateCache(final TargetableCache cache, int slot) {
         if (!cache.containsValue(slot)) return;
         cache.clear();
-        //cache.removePairOnValue(slot);
     }
 
 }
