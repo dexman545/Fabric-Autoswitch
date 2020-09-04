@@ -12,6 +12,7 @@ import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,7 +44,7 @@ public abstract class MixinMinecraftClient {
     @Shadow
     protected int attackCooldown;
     @Unique
-    private BlockPos target;
+    private Vec3d target;
 
     @Shadow
     @Nullable
@@ -72,7 +73,10 @@ public abstract class MixinMinecraftClient {
         assert this.player != null;
         assert this.interactionManager != null;
 
-        //todo optimize
+        if (this.target == (this.crosshairTarget != null ? this.crosshairTarget.getPos() : null)) return;
+
+        this.target = this.crosshairTarget.getPos();
+
         SwitchEventTriggerImpl.interact(this.interactionManager, this.player, this.world, this.crosshairTarget);
 
         // Notify the server that the slot has changed
@@ -91,9 +95,9 @@ public abstract class MixinMinecraftClient {
         //todo see if primary attack event should be removed
         if (!bl || this.crosshairTarget == null || this.crosshairTarget.getType() != HitResult.Type.BLOCK) return;
 
-        if (((BlockHitResult) this.crosshairTarget).getBlockPos() == this.target) return;
+        if (this.target == this.crosshairTarget.getPos()) return;
 
-        this.target = ((BlockHitResult) this.crosshairTarget).getBlockPos();
+        this.target = this.crosshairTarget.getPos();
 
         assert this.player != null;
 
