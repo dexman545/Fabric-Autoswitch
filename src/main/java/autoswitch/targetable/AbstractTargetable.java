@@ -32,6 +32,7 @@ public abstract class AbstractTargetable {
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
     PlayerEntity player;
     Object protoTarget = null;
+    Object target = null;
 
 
     /**
@@ -135,8 +136,10 @@ public abstract class AbstractTargetable {
 
         AutoSwitch.logger.debug(slot2ToolRating);
         if (!this.slot2ToolRating.isEmpty()) {
-            return Optional.of(Collections.max(this.slot2ToolRating.int2DoubleEntrySet(),
-                    Comparator.comparingDouble(Map.Entry::getValue)).getIntKey());
+            int slot = Collections.max(this.slot2ToolRating.int2DoubleEntrySet(),
+                    Comparator.comparingDouble(Map.Entry::getValue)).getIntKey();
+            TargetableUtil.getTargetableCache(AutoSwitch.switchState, isUse()).put(this.target, slot);
+            return Optional.of(slot);
         }
 
 
@@ -172,8 +175,17 @@ public abstract class AbstractTargetable {
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize() * 10);
 
         Object target = targetGetter.getTarget(protoTarget);
+        this.target = target;
 
         if (target == null || checkSpecialCase(target)) return;
+
+        OptionalInt x = TargetableUtil.getCachedSlot(target, AutoSwitch.switchState, isUse());
+        if (x.isPresent()) {
+            this.slot2ToolRating.put(x.getAsInt(), 100D);
+            return;
+        }
+
+        //AutoSwitch.logger.error("Evaled");
 
         toolSelectorMap.getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
             if (id == 0) return; // Check if no ID was assigned to the toolSelector.

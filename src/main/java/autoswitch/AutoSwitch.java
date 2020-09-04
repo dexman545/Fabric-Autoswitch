@@ -7,6 +7,7 @@ import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.config.populator.ApiMapGenerator;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.events.Scheduler;
+import autoswitch.mixin_impl.HotbarWatcher;
 import autoswitch.util.ApiGenUtil;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
@@ -18,9 +19,14 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AutoSwitch implements ClientModInitializer {
 
@@ -62,6 +68,8 @@ public class AutoSwitch implements ClientModInitializer {
         // Interface with other mods and generate needed tables
         ApiMapGenerator.createApiMaps();
         ApiGenUtil.pullHookedMods();
+
+
 
         // Create config files and load them
         ConfigEstablishment.establishConfigs();

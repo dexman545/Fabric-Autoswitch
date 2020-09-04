@@ -72,6 +72,7 @@ public abstract class MixinMinecraftClient {
         assert this.player != null;
         assert this.interactionManager != null;
 
+        //todo optimize
         SwitchEventTriggerImpl.interact(this.interactionManager, this.player, this.world, this.crosshairTarget);
 
         // Notify the server that the slot has changed
@@ -87,7 +88,7 @@ public abstract class MixinMinecraftClient {
     @Inject(at = @At("INVOKE"), method = "handleBlockBreaking")
     private void blockAttackEventSecondary(boolean bl, CallbackInfo ci) {
         //todo see if a secondary event is needed for entities, targetedEntity and tick seem like good places to use
-        //todo see if primary event should be removed
+        //todo see if primary attack event should be removed
         if (!bl || this.crosshairTarget == null || this.crosshairTarget.getType() != HitResult.Type.BLOCK) return;
 
         if (((BlockHitResult) this.crosshairTarget).getBlockPos() == this.target) return;

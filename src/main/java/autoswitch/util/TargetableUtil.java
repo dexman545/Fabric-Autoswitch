@@ -15,7 +15,10 @@ import net.minecraft.item.ToolItem;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -155,6 +158,16 @@ public class TargetableUtil {
         }
 
         return durability.get().intValue();
+    }
+
+    public static OptionalInt getCachedSlot(Object target, SwitchState state, boolean isUseAction) {
+        return getTargetableCache(state, isUseAction).containsKey(target) ?
+                OptionalInt.of(getTargetableCache(state, isUseAction).getInt(target)) : OptionalInt.empty();
+    }
+
+    public static TargetableCache getTargetableCache(SwitchState state, boolean isUseAction) {
+        if (isUseAction) return state.switchInteractCache;
+        return state.switchActionCache;
     }
 
     /**
