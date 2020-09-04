@@ -139,7 +139,7 @@ public abstract class AbstractTargetable {
             int slot = Collections.max(this.slot2ToolRating.int2DoubleEntrySet(),
                     Comparator.comparingDouble(Map.Entry::getValue)).getIntKey();
             if (AutoSwitch.featureCfg.cacheSwitchResults()) {
-                TargetableUtil.getTargetableCache(AutoSwitch.switchState, isUse()).put(this.target, slot);
+                TargetableUtil.getTargetableCache(AutoSwitch.switchState, isUse()).put(this.protoTarget, slot);
             }
             return Optional.of(slot);
         }
@@ -170,6 +170,13 @@ public abstract class AbstractTargetable {
                               TargetGetter targetGetter, ToolSelector toolSelector) {
         if (!switchAllowed()) return; // Short-circuit to not evaluate tools when cannot switch
 
+        // Check cache
+        OptionalInt cachedSlot = TargetableUtil.getCachedSlot(protoTarget, AutoSwitch.switchState, isUse());
+        if (cachedSlot.isPresent()) {
+            this.slot2ToolRating.put(cachedSlot.getAsInt(), 100D);
+            return;
+        }
+
         Item item = stack.getItem();
 
         // Establish base value to add to the tool rating,
@@ -180,12 +187,6 @@ public abstract class AbstractTargetable {
         this.target = target;
 
         if (target == null || checkSpecialCase(target)) return;
-
-        OptionalInt cachedSlot = TargetableUtil.getCachedSlot(target, AutoSwitch.switchState, isUse());
-        if (cachedSlot.isPresent()) {
-            this.slot2ToolRating.put(cachedSlot.getAsInt(), 100D);
-            return;
-        }
 
         toolSelectorMap.getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
             if (id == 0) return; // Check if no ID was assigned to the toolSelector.
