@@ -19,7 +19,7 @@ public class TargetableCache extends Reference2IntLinkedOpenHashMap<Object> {
 
     @Override
     public int put(Object o, int v) {
-        if (this.maxSize <= this.size + 1) this.removeFirstInt();
+        if (!this.isEmpty() && this.maxSize <= this.size + 1) this.removeFirstInt();
         return super.put(o, v);
     }
 
