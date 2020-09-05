@@ -32,7 +32,6 @@ public abstract class AbstractTargetable {
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
     PlayerEntity player;
     Object protoTarget = null;
-    Object target = null;
 
 
     /**
@@ -184,7 +183,6 @@ public abstract class AbstractTargetable {
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize() * 10);
 
         Object target = targetGetter.getTarget(protoTarget);
-        this.target = target;
 
         if (target == null || checkSpecialCase(target)) return;
 
