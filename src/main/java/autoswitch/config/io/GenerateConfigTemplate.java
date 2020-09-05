@@ -32,7 +32,7 @@ public class GenerateConfigTemplate {
     public static <T extends Config & Accessible>
     String initConfig(T cfg, Object2ObjectOpenHashMap<String, Set<String>> moddedEntries, String header) {
         if (header == null) header = "";
-        header = header.replace("\n", "\n# ");
+        header = ConfigTemplates.wordWrapComment(header);
 
         header = !header.isEmpty() ? "# " + header + "\n\n" : ""; // Prepend comment symbol and filter empty header
         StringBuilder config = new StringBuilder(header);

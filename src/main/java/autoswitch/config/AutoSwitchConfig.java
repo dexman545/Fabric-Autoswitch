@@ -56,8 +56,8 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Key("switchbackWaitsForCooldown")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Comment("Before switching back when using the 'attack' action, wait for the attack cooldown to finish. " +
-            "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks smoother. " +
-            "Acceptable values: BOTH, MOBS, BLOCKS, NONE")
+            "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks visually smoother. " +
+            "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
     SwitchDelay switchbackWaits();
 
     @DefaultValue("true")
@@ -95,15 +95,15 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
 
     @DefaultValue("true")
     @Comment("Enable to allow target list to stack enchantments. Disable for old behavior. " +
-            "When enabled, a target selector of 'tool;fortune, tool;mending' will prefer a tool with" +
-            " both fortune and mending over one with just fortune." +
+            "When enabled, a target selector of 'tool;fortune, tool;mending' will prefer a tool with " +
+            "both fortune and mending over one with just fortune. " +
             "This differs from 'tool;fortune&mending' in that only one enchantment is required for " +
             "the tool to be selected, rather than both fortune and mending.")
     Boolean toolEnchantmentsStack();
 
     @DefaultValue("false")
-    @Comment("This setting is meant to disable config GUI integration if in future the feature breaks," +
-            "but the rest of AutoSwitch does not. Fallbacks are in place to ensure any changes to Minecraft do not break" +
+    @Comment("This setting is meant to disable config GUI integration if in future the feature breaks, " +
+            "but the rest of AutoSwitch does not. Fallbacks are in place to ensure any changes to Minecraft do not break " +
             "integration, this is simply a more extreme kill switch.")
     Boolean disableModMenuConfig();
 
@@ -118,13 +118,13 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     Boolean disableSwitchingOnStartup();
 
     @DefaultValue("0.05") // 1 tick's time
-    @Comment("Delay in seconds from end of hand swinging to perform switchback action. Resolution on the order of ticks." +
+    @Comment("Delay in seconds from end of hand swinging to perform switchback action. Resolution on the order of ticks. " +
             "0.05 is 1 tick of delay.")
     Float switchbackDelay();
 
     @DefaultValue("0.05")
     @Comment("Delay in seconds from triggering of normal switch action on the basis that the previous switch " +
-            "has not been undone via switchback. Resolution on the order of ticks." +
+            "has not been undone via switchback. Resolution on the order of ticks. " +
             "0.05 is 1 tick of delay.")
     Float switchDelay();
 
@@ -145,7 +145,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     Boolean alwaysRewriteConfigs();
 
     @DefaultValue("true")
-    @Comment("If enabled, AutoSwitch will attempt to avoid recalculating hotbar slots to be used on a particular target." +
+    @Comment("If enabled, AutoSwitch will attempt to avoid recalculating hotbar slots to be used on a particular target. " +
             "Each time that slot is modified, it's cached data is thrown out. This can benefit performance.")
     Boolean cacheSwitchResults();
 

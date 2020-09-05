@@ -27,7 +27,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("")
-    @Comment("A Material")
+    @Comment("A Material for carpets.")
     ToolHandler[] carpet();
 
     @Separator(",")
@@ -52,27 +52,27 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("")
-    @Comment("A Material")
+    @Comment("A Material for water.")
     ToolHandler[] water();
 
     @Separator(",")
     @DefaultValue("")
-    @Comment("A Material")
+    @Comment("A Material bubble columns.")
     ToolHandler[] bubble_column();
 
     @Separator(",")
     @DefaultValue("")
-    @Comment("A Material")
+    @Comment("A Material lava.")
     ToolHandler[] lava();
 
     @Separator(",")
     @DefaultValue("shovel;minecraft-silk_touch, shovel;minecraft-mending, shovel;minecraft-efficiency, shovel")
-    @Comment("A Material")
+    @Comment("A Material for snow layers.")
     ToolHandler[] snow_layer();
 
     @Separator(",")
     @DefaultValue("")
-    @Comment("A Material")
+    @Comment("A Material for fire.")
     ToolHandler[] fire();
 
     @Separator(",")
@@ -82,12 +82,12 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("shears;minecraft-mending, sword;minecraft-mending, shears, sword")
-    @Comment("A Material")
+    @Comment("A Material for cobwebs.")
     ToolHandler[] cobweb();
 
     @Separator(",")
     @DefaultValue("pickaxe;minecraft-mending, pickaxe;minecraft-efficiency, pickaxe")
-    @Comment("A Material")
+    @Comment("A Material redstone lamps.")
     ToolHandler[] redstone_lamp();
 
     @Separator(",")
@@ -117,12 +117,12 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("hoe;minecraft-efficiency, hoe;minecraft-mending, hoe")
-    @Comment("A Material")
+    @Comment("A Material for sponges.")
     ToolHandler[] sponge();
 
     @Separator(",")
     @DefaultValue("pickaxe;minecraft-efficiency, pickaxe;minecraft-mending, pickaxe")
-    @Comment("A Material")
+    @Comment("A Material for shulker boxes.")
     ToolHandler[] shulker_box();
 
     @Separator(",")
@@ -132,17 +132,17 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("axe;minecraft-efficiency, axe;minecraft-mending, axe")
-    @Comment("A Material")
+    @Comment("A Material for blocks crafted from Nether stems and hyphae.")
     ToolHandler[] nether_wood();
 
     @Separator(",")
     @DefaultValue("sword")
-    @Comment("A Material for blocks crafted from Nether stems and hyphae.")
+    @Comment("A Material bamboo saplings.")
     ToolHandler[] bamboo_sapling();
 
     @Separator(",")
     @DefaultValue("sword, axe;minecraft-mending, axe")
-    @Comment("A Material")
+    @Comment("A Material for grown bamboo.")
     ToolHandler[] bamboo();
 
     @Separator(",")
@@ -152,12 +152,12 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("")
-    @Comment("A Material")
+    @Comment("A Material for TNT.")
     ToolHandler[] tnt();
 
     @Separator(",")
     @DefaultValue("shears;minecraft-mending, shears, hoe;minecraft-silk_touch, hoe;minecraft-mending, hoe, sword;minecraft-mending, sword")
-    @Comment("A Material")
+    @Comment("A Material leaves.")
     ToolHandler[] leaves();
 
     @Separator(",")
@@ -172,7 +172,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("")
-    @Comment("A Material")
+    @Comment("A Material for cactus.")
     ToolHandler[] cactus();
 
     @Separator(",")
@@ -182,7 +182,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("pickaxe;minecraft-fortune, pickaxe;minecraft-mending, pickaxe")
-    @Comment("A Material")
+    @Comment("A Material for metal blocks and compressed ore blocks, such as lapis, diamond, and redstone blocks, chains, iron (trap)doors, and cauldrons.")
     ToolHandler[] metal();
 
     @Separator(",")
@@ -197,7 +197,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("")
-    @Comment("A Material")
+    @Comment("A Material barrier blocks.")
     ToolHandler[] barrier();
 
     @Separator(",")
@@ -222,12 +222,12 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("")
-    @Comment("A Material")
+    @Comment("A Material for cake.")
     ToolHandler[] cake();
 
     @Separator(",")
     @DefaultValue("trident;minecraft:impaling, any;minecraft-sharpness, sword;minecraft-mending, axe;minecraft-mending, sword, axe")
-    @Comment("An EntityGroup for gaurdians, turtles, fish, squids, dolphins, and the like.")
+    @Comment("An EntityGroup for guardians, turtles, fish, squids, dolphins, and the like.")
     ToolHandler[] aquaticEntity();
 
     @Separator(",")
@@ -293,6 +293,17 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     @Key("minecraft-dried_kelp_block")
     @Comment("A default-provided override for hoes to function properly.")
     ToolHandler[] hoeSpecial6();
+
+    @Separator(",")
+    @DefaultValue("shears;minecraft-mending, shears")
+    @Key("minecraft-nether_sprouts")
+    @Comment("A default-provided override for nether sprouts, which require shears to drop as an item.")
+    ToolHandler[] netherSprouts();
+
+    @Separator(",")
+    @DefaultValue("")
+    @Comment("A material for crimson and warped roots, as well as nether sprouts")
+    ToolHandler[] nether_shoots();
 
 
 }

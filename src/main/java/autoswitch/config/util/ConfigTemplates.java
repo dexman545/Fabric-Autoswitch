@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 public class ConfigTemplates {
-    private static final int width = 131;
+    private static final int width = 131-11;
     private static final String commentChar = "#";
     public static final String border = Strings.repeat(commentChar, width);
     private static final String baseCommentedText = "# <FILL> #";
     private static final String modCategoryDescription = "Config Entries Provided by: ";
     private static final String defaultValueComment = "\n# Default Value: ";
+    private static final String deliminatorPreserver = "((?<=%1$s)|(?=%1$s))"; // selects text before/after the delim.
 
     public static String modCategory(String modName) {
         return category(modName, modCategoryDescription);
@@ -70,6 +71,20 @@ public class ConfigTemplates {
                 , keys.toString());
     }
 
+    /**
+     * Word wrap given text for use in properties file as a comment.
+     * Supports multiline text.
+     *
+     */
+    public static String wordWrapComment(String str) {
+        StringBuilder out = new StringBuilder();
+        String[] cls = str.replaceAll("\n", "\n# ").split(String.format(deliminatorPreserver, "\n"));
+        for (String cl : cls) {
+            out.append(WordUtils.wrap(cl, width - 2, "\n# ", false));
+        }
+        return out.toString();
+    }
+
     private static String configCommentEntry(String defaultValue) {
         return (defaultValue != null && !defaultValue.equals("")) ? defaultValueComment + defaultValue : "";
     }
@@ -78,7 +93,7 @@ public class ConfigTemplates {
         StringBuilder out = new StringBuilder();
         if (comment != null && !comment.equals("")) {
             out.append("\n");
-            out.append(WordUtils.wrap(comment, width - 2, "\n# ", false));
+            out.append(wordWrapComment(comment));
         }
 
         out.append(configCommentEntry(defaultValue));
