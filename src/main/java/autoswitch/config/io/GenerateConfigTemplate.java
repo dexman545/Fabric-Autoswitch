@@ -76,7 +76,7 @@ public class GenerateConfigTemplate {
         // Move user-provided keys to bottom, within their own category
         Set<Object> userKeys = diffMaps(defaults, cfgProp);
         if (userKeys != null) {
-            config.append("\n# Overrides").append("\n").append(ConfigTemplates.border).append("\n\n");
+            config.append("\n# Overrides").append("\n").append(ConfigTemplates.border).append("\n");
             for (Object key : userKeys) {
                 config.append(ConfigTemplates.configEntry(((String) key).replaceAll("(?<!\\\\)(?:\\\\{2})*:",
                         "\\\\:"), cfg.getProperty((String) key), null, null)).append("\n");
