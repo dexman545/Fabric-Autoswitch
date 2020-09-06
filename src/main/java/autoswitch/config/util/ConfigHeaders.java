@@ -20,7 +20,8 @@ public interface ConfigHeaders {
             "\nYou can add block/mob-specific overrides by adding it's id (replacing colon with '\\:' or '-') on a new line and adding values to the right of " +
             "\nthe equals sign ('=') as you would normally. Check the boat for an example. " +
             "\nRemoving the values after the equals sign will disable the switch. In the case of overrides, the line may be removed " +
-            "for default behavior.";
+            "for default behavior." +
+            "\nIf you would like to write config values across multiple lines, use a '\\', followed by a new line. See https://stackoverflow.com/a/8978515";
 
     String usableConfig = "AutoSwitch Usable Configuration File" +
             "\nThis file defines tool switching targets for the 'use' action (right clicking) on a mob or block. " +
@@ -38,6 +39,7 @@ public interface ConfigHeaders {
             "\nYou can add block/mob-specific overrides by adding it's id (replacing colon with '\\:' or '-') on a new line and adding values to the right of " +
             "\nthe equals sign ('=') as you would normally. Check the boat for an example. " +
             "\nRemoving the values after the equals sign will disable the switch. In the case of overrides, the line may be removed " +
-            "for default behavior. ";
+            "for default behavior." +
+            "\nIf you would like to write config values across multiple lines, use a '\\', followed by a new line. See https://stackoverflow.com/a/8978515";
 
 }

@@ -55,7 +55,12 @@ public class ConfigTemplates {
     }
 
     public static String configEntry(String key, String value, String comment, String defaultValue) {
-        return configEntry(configValueEntry(key, value), comment, defaultValue);
+        return configEntry(key, value, comment, defaultValue, false);
+    }
+
+    // Multiline wrap for the config value
+    public static String configEntry(String key, String value, String comment, String defaultValue, boolean doWrap) {
+        return configEntry(configValueEntry(key, value, doWrap), comment, defaultValue);
     }
 
     public static String toolGroupings() {
@@ -103,9 +108,17 @@ public class ConfigTemplates {
     }
 
     private static String configValueEntry(String key, String value) {
+        return configValueEntry(key, value, false);
+    }
+
+    private static String configValueEntry(String key, String value, boolean doWrap) {
         if (value == null) value = "";
         key = key.replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
-        return key + " = " + value;
+        return doWrap ? configValueEntryWordwrap(key + " = " + value) : key + " = " + value;
+    }
+
+    private static String configValueEntryWordwrap(String str) {
+        return WordUtils.wrap(str, width - 2, ", \\\n", false, ",");
     }
 
     private static String centeredString(String input) {

@@ -242,7 +242,7 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("any;minecraft-sharpness, sword;minecraft-mending, axe;minecraft-mending, sword, axe")
-    @Comment("An EntityGroup for evokers, pillagers, illagers, vindicators, illusioners, and ther like.")
+    @Comment("An EntityGroup for evokers, pillagers, illagers, vindicators, illusioners, and the like.")
     ToolHandler[] illager();
 
     @Separator(",")
