@@ -31,4 +31,9 @@ public final class SortedProperties extends Properties {
         sorted.addAll(super.entrySet());
         return sorted;
     }
+
+    @Override
+    public Set<String> stringPropertyNames() {
+        return new TreeSet<>(super.stringPropertyNames());
+    }
 }
