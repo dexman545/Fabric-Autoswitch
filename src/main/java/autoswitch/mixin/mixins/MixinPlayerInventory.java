@@ -1,6 +1,6 @@
-package autoswitch.mixins;
+package autoswitch.mixin.mixins;
 
-import autoswitch.mixin_impl.HotbarWatcher;
+import autoswitch.mixin.impl.HotbarWatcher;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;

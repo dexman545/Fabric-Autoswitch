@@ -1,4 +1,4 @@
-package autoswitch.mixin_impl;
+package autoswitch.mixin.impl;
 
 import autoswitch.AutoSwitch;
 import autoswitch.util.TargetableCache;

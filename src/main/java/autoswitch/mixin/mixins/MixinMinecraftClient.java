@@ -1,7 +1,7 @@
-package autoswitch.mixins;
+package autoswitch.mixin.mixins;
 
-import autoswitch.mixin_impl.DisconnectHandler;
-import autoswitch.mixin_impl.SwitchEventTriggerImpl;
+import autoswitch.mixin.impl.DisconnectHandler;
+import autoswitch.mixin.impl.SwitchEventTriggerImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
