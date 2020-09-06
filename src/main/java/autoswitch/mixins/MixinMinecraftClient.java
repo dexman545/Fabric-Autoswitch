@@ -44,10 +44,6 @@ public abstract class MixinMinecraftClient {
     @Unique
     private Vec3d target;
 
-    @Shadow
-    @Nullable
-    public abstract ClientPlayNetworkHandler getNetworkHandler();
-
     /**
      * Trigger for ATTACK event.
      */
@@ -56,10 +52,6 @@ public abstract class MixinMinecraftClient {
         assert this.player != null;
 
         SwitchEventTriggerImpl.attack(this.attackCooldown, this.player, this.world, this.crosshairTarget);
-
-        // Notify the server that the slot has changed
-        Objects.requireNonNull(this.getNetworkHandler())
-                .sendPacket(new UpdateSelectedSlotC2SPacket(this.player.inventory.selectedSlot));
 
     }
 
@@ -76,10 +68,6 @@ public abstract class MixinMinecraftClient {
         this.target = this.crosshairTarget.getPos();
 
         SwitchEventTriggerImpl.interact(this.interactionManager, this.player, this.world, this.crosshairTarget);
-
-        // Notify the server that the slot has changed
-        Objects.requireNonNull(this.getNetworkHandler())
-                .sendPacket(new UpdateSelectedSlotC2SPacket(this.player.inventory.selectedSlot));
 
     }
 
@@ -100,10 +88,6 @@ public abstract class MixinMinecraftClient {
         assert this.player != null;
 
         SwitchEventTriggerImpl.attack(this.attackCooldown, this.player, this.world, this.crosshairTarget);
-
-        // Notify the server that the slot has changed
-        Objects.requireNonNull(this.getNetworkHandler())
-                .sendPacket(new UpdateSelectedSlotC2SPacket(this.player.inventory.selectedSlot));
 
     }
 
