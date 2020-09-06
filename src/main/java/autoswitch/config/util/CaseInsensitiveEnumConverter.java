@@ -9,6 +9,20 @@ import java.util.Locale;
 
 public class CaseInsensitiveEnumConverter<X extends Enum<X>> implements Converter<X> {
 
+    /**
+     * Could be replaced with EnumUtils#getEnum()
+     *
+     * @author https://stackoverflow.com/a/28333189
+     */
+    private static <T extends Enum<?>> @Nullable T searchEnum(Class<T> enumeration, String search) {
+        for (T each : enumeration.getEnumConstants()) {
+            if (each.name().compareToIgnoreCase(search) == 0) {
+                return each;
+            }
+        }
+        return null;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public X convert(Method method, String input) {
@@ -22,19 +36,5 @@ public class CaseInsensitiveEnumConverter<X extends Enum<X>> implements Converte
         }
         return e;
 
-    }
-
-
-    /**
-     * Could be replaced with EnumUtils#getEnum()
-     * @author https://stackoverflow.com/a/28333189
-     */
-    private static <T extends Enum<?>> @Nullable T searchEnum(Class<T> enumeration, String search) {
-        for (T each : enumeration.getEnumConstants()) {
-            if (each.name().compareToIgnoreCase(search) == 0) {
-                return each;
-            }
-        }
-        return null;
     }
 }

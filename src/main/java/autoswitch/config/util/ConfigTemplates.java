@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 public class ConfigTemplates {
-    private static final int width = 131-11;
+    private static final int width = 131 - 11;
     private static final String commentChar = "#";
     public static final String border = Strings.repeat(commentChar, width);
     private static final String baseCommentedText = "# <FILL> #";
@@ -79,7 +79,6 @@ public class ConfigTemplates {
     /**
      * Word wrap given text for use in properties file as a comment.
      * Supports multiline text.
-     *
      */
     public static String wordWrapComment(String str) {
         StringBuilder out = new StringBuilder();

@@ -2,6 +2,9 @@ package autoswitch.config.util;
 
 public final class ConfigHeaders {
 
+    public static final String basicConfig = "AutoSwitch Configuration File" +
+            "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details." +
+            "\nSetting an option to 'true' will enable it's stated behavior; using 'false' wil disable it.";
     private static final String format = "\nFormat is a comma separated list of 'tool selectors', which take the form of 'toolname[;enchantment list]', " +
             " where toolname is either a ToolGrouping, or a specific item id with same formatting rules as enchantments. " +
             "\nEnchant list is optional. If present, it must be separated from the tool by a semicolon (';'). " +
@@ -18,11 +21,6 @@ public final class ConfigHeaders {
             "for default behavior." +
             "\nIf you would like to write config values across multiple lines, use a '\\', followed by a new line. See https://stackoverflow.com/a/8978515" +
             "\nTechnical details of config files: https://github.com/dexman545/Fabric-Autoswitch/wiki/Config-Details";
-
-    public static final String basicConfig = "AutoSwitch Configuration File" +
-            "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration for more details." +
-            "\nSetting an option to 'true' will enable it's stated behavior; using 'false' wil disable it.";
-
     public static final String materialConfig = "AutoSwitch Material Configuration File" + format;
 
     public static final String usableConfig = "AutoSwitch Usable Configuration File" +
@@ -30,5 +28,6 @@ public final class ConfigHeaders {
             "\nSame format as the Material Config:" + format;
 
 
-    private ConfigHeaders(){}
+    private ConfigHeaders() {
+    }
 }
