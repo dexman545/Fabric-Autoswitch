@@ -52,7 +52,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("Disable the swinging of the hand when trying to mow when fighting.")
     Boolean disableHandSwingWhenMowing();
 
-    @DefaultValue("BOTH")
+    @DefaultValue("MOBS")
     @Key("switchbackWaitsForCooldown")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Comment("Before switching back when using the 'attack' action, wait for the attack cooldown to finish. " +
