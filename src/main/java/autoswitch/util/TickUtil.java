@@ -40,7 +40,7 @@ public class TickUtil {
      * @param player client player
      * @param world  player's world
      */
-    public static void eventScheduleTick(PlayerEntity player, World world) {
+    public static void tickEventSchedule(PlayerEntity player, World world) {
         if (player == null) return; // Ensure nothing bad happens
 
         // Schedule switchback iff it is needed

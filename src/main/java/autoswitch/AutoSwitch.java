@@ -82,7 +82,7 @@ public class AutoSwitch implements ClientModInitializer {
             //Keybindings implementation END ---
 
             // Tick event system and check if scheduling a switchback is needed via EventUtil
-            TickUtil.eventScheduleTick(e.player, e.world);
+            TickUtil.tickEventSchedule(e.player, e.world);
         });
 
         //Notify when AS Loaded
