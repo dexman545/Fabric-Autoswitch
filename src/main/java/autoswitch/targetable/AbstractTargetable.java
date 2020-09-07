@@ -225,9 +225,8 @@ public abstract class AbstractTargetable {
         } else {
             double enchantRating = 0;
             for (Enchantment enchant : enchants) {
-                if (EnchantmentHelper.getLevel(enchant, stack) > 0) {
-                    enchantRating += 1.1 * EnchantmentHelper.getLevel(enchant, stack);
-                } else return; // Don't further consider this tool as it does not have the enchantment needed
+                // Increase enchantRating if enchantment level > 0, otherwise stop processing this tool
+                if ((enchantRating += 1.1 * EnchantmentHelper.getLevel(enchant, stack)) <= 0) return;
             }
             rating += enchantRating;
             AutoSwitch.logger.debug("Slot: {}; EnchantRating: {}", slot, enchantRating);
