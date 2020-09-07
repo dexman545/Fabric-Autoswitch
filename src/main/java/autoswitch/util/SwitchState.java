@@ -15,8 +15,9 @@ public class SwitchState {
         prevSlot = -1;
         hasSwitched = false;
         attackedEntity = false;
-        switchActionCache = new TargetableCache(128);
-        switchInteractCache = new TargetableCache(128);
+        int maxCacheSize = 128;
+        switchActionCache = new TargetableCache(maxCacheSize);
+        switchInteractCache = new TargetableCache(maxCacheSize);
     }
 
     public boolean getHasSwitched() {
