@@ -24,8 +24,8 @@ public class CaseInsensitiveEnumConverter<X extends Enum<X>> implements Converte
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public X convert(Method method, String input) {
+        @SuppressWarnings("unchecked")
         Class<X> t = (Class<X>) method.getReturnType();
         X e;
         if ((e = searchEnum(t, input.toUpperCase(Locale.ENGLISH))) == null) {
