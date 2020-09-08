@@ -6,6 +6,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.util.Locale;
+
 /**
  * Custom type for use of parsing the materials config into something meaningful for AutoSwitch
  * matches strings to materials or entity type or group
@@ -16,7 +18,7 @@ public class MaterialHandler {
 
     public MaterialHandler(String str) {
         Object mat1 = null;
-        str = str.toLowerCase().replace("-", ":");
+        str = str.toLowerCase(Locale.ENGLISH).replace("-", ":");
         if (!AutoSwitch.switchData.targets.containsKey(str)) {
             if (Identifier.tryParse(str) != null) {
                 mat1 = locateMat(Registry.ENTITY_TYPE, str) != null ?
