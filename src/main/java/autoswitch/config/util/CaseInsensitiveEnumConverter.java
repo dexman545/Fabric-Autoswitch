@@ -10,7 +10,7 @@ import java.util.Locale;
 public class CaseInsensitiveEnumConverter<X extends Enum<X>> implements Converter<X> {
 
     /**
-     * Could be replaced with EnumUtils#getEnum()
+     * Could be replaced with {@link org.apache.commons.lang3.EnumUtils#getEnum(Class, String)}
      *
      * @author https://stackoverflow.com/a/28333189
      */
