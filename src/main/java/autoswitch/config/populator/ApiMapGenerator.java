@@ -119,7 +119,7 @@ public class ApiMapGenerator {
 
         AutoSwitch.switchData.targets.put("tnt", Material.TNT);
 
-        AutoSwitch.switchData.targets.put("nether_shoots", Material.field_26708);
+        AutoSwitch.switchData.targets.put("nether_shoots", Material.NETHER_SHOOTS);
 
         AutoSwitch.switchData.targets.put("underwater_plant", Material.UNDERWATER_PLANT);
 

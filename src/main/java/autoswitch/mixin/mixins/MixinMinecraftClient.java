@@ -77,7 +77,7 @@ public abstract class MixinMinecraftClient {
         //todo see if primary attack event should be removed
         if (!bl || this.crosshairTarget == null || this.crosshairTarget.getType() != HitResult.Type.BLOCK) return;
 
-        if (this.target == this.crosshairTarget.getPos()) return;
+        if (this.crosshairTarget.getPos().equals(this.target)) return;
 
         this.target = this.crosshairTarget.getPos();
 
