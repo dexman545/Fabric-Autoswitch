@@ -77,17 +77,20 @@ public final class ConfigEstablishment {
             AutoSwitch.switchState.switchActionCache.clear();
             AutoSwitch.switchData.target2AttackActionToolSelectorsMap.clear();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
+            AutoSwitch.logger.info("Attack Config Reloaded");
         });
 
         AutoSwitch.useActionCfg.addReloadListener(event -> {
             AutoSwitch.switchState.switchInteractCache.clear();
             AutoSwitch.switchData.target2UseActionToolSelectorsMap.clear();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
+            AutoSwitch.logger.info("Interact Config Reloaded");
         });
 
         AutoSwitch.featureCfg.addReloadListener(event -> {
             AutoSwitch.switchState.switchInteractCache.clear();
             AutoSwitch.switchState.switchActionCache.clear();
+            AutoSwitch.logger.info("Feature Config Reloaded");
         });
     }
 
