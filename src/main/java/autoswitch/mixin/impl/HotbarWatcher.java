@@ -12,7 +12,7 @@ import java.util.function.IntConsumer;
 public class HotbarWatcher {
 
     public static IntArrayList compareHotbars(List<ItemStack> prev, List<ItemStack> current) {
-        IntArrayList changedHotbarSlots = new IntArrayList(9);
+        IntArrayList changedHotbarSlots = new IntArrayList(PlayerInventory.getHotbarSize());
         if (prev == null || current == null) return changedHotbarSlots;
         for (int slot = 0; slot < prev.size(); slot++) {
             final ItemStack oStack = prev.get(slot);
