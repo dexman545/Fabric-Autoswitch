@@ -12,8 +12,6 @@ import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 import autoswitch.util.TickUtil;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.options.KeyBinding;
@@ -52,7 +50,6 @@ public class AutoSwitch implements ClientModInitializer {
     ));
 
     @Override
-    @Environment(EnvType.CLIENT)
     public void onInitializeClient() {
         // Interface with other mods and generate needed tables
         ApiMapGenerator.createApiMaps();
