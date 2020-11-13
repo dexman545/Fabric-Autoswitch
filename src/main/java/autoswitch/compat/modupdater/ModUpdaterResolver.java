@@ -26,6 +26,6 @@ public class ModUpdaterResolver implements ModUpdaterEntryPoint {
 
 
         //TODO keep this up to date
-        return ((mc == 15 || mc == 14) && (as == 1)) || ((mc >= 16) && (as == 2));
+        return ((mc == 15 || mc == 14) && (as == 1)) || ((mc > 16) && (as == 2) || ((mc >= 17) && (as == 3)));
     }
 }

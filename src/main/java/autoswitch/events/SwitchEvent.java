@@ -155,7 +155,7 @@ public enum SwitchEvent {
 
     void handlePrevSlot() {
         if (!AutoSwitch.switchState.getHasSwitched()) {
-            AutoSwitch.switchState.setPrevSlot(player.inventory.selectedSlot);
+            AutoSwitch.switchState.setPrevSlot(player.getInventory().selectedSlot);
         }
     }
 

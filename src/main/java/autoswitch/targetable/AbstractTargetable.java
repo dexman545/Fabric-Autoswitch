@@ -79,7 +79,7 @@ public abstract class AbstractTargetable {
      * @param player player whose inventory will be checked
      */
     void populateToolLists(PlayerEntity player) {
-        List<ItemStack> hotbar = player.inventory.main.subList(0, PlayerInventory.getHotbarSize());
+        List<ItemStack> hotbar = player.getInventory().main.subList(0, PlayerInventory.getHotbarSize());
         for (int slot = 0; slot < PlayerInventory.getHotbarSize(); slot++) {
             if (TargetableUtil.skipSlot(hotbar.get(slot))) {
                 continue;
@@ -100,13 +100,13 @@ public abstract class AbstractTargetable {
      */
     public Optional<Boolean> changeTool() {
         return findSlot().map(slot -> {
-            int currentSlot = this.player.inventory.selectedSlot;
+            int currentSlot = this.player.getInventory().selectedSlot;
             if (slot == currentSlot) {
                 //No need to change slot!
                 return Optional.of(false);
             }
 
-            this.player.inventory.selectedSlot = slot;
+            this.player.getInventory().selectedSlot = slot;
 
             return Optional.of(true); //Slot changed
         }).orElseGet(Optional::empty); //if nothing to change to, return empty
@@ -244,7 +244,7 @@ public abstract class AbstractTargetable {
         }
 
         // Prefer current slot. Has outcome of making undamageable item fallback not switch if it can help it
-        if (this.player.inventory.selectedSlot == slot) {
+        if (this.player.getInventory().selectedSlot == slot) {
             rating += 0.1;
         }
         double finalRating = rating;

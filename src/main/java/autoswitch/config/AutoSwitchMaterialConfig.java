@@ -9,11 +9,22 @@ import org.aeonbits.owner.Reloadable;
 
 @Config.HotReload(type = Config.HotReloadType.ASYNC, value = 1) //set value = X for interval of X seconds. Default: 5
 @Config.Sources({"file:${configDirMats}"})
+// Note: Material/EntityGroups need to be added to the map to be recognized
 public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible, Mutable {
     @Separator(",")
     @DefaultValue("")
     @Comment("A Material")
     ToolHandler[] air();
+
+    @Separator(",")
+    @DefaultValue("pickaxe;minecraft-silk_touch, pickaxe;minecraft-mending, pickaxe;minecraft-efficiency, pickaxe")
+    @Comment("A Material")
+    ToolHandler[] amethyst();
+
+    @Separator(",")
+    @DefaultValue("")
+    @Comment("A Material for powdered snow.")
+    ToolHandler[] passable_snow_block();
 
     @Separator(",")
     @DefaultValue("")
@@ -304,6 +315,12 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     @DefaultValue("")
     @Comment("A material for crimson and warped roots, as well as nether sprouts")
     ToolHandler[] nether_shoots();
+
+    @Separator(",")
+    @DefaultValue("")
+    @Comment("A default-provided override to make it clear to users that budding amethyst cannot be obtained by mining.")
+    @Key("minecraft-budding_amethyst")
+    ToolHandler[] budSpecial();
 
 
 }

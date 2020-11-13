@@ -145,6 +145,10 @@ public class ApiMapGenerator {
 
         AutoSwitch.switchData.targets.put("structure_void", Material.STRUCTURE_VOID);
 
+        AutoSwitch.switchData.targets.put("amethyst", Material.AMETHYST);
+
+        AutoSwitch.switchData.targets.put("passable_snow_block", Material.field_27890);
+
         // Entities
         AutoSwitch.switchData.targets.put("aquaticEntity", EntityGroup.AQUATIC);
 
