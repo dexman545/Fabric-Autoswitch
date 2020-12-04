@@ -307,8 +307,8 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
 
     @Separator(",")
     @DefaultValue("hoe;minecraft-efficiency, hoe;minecraft-mending, hoe")
-    @Comment("A Material for skulk blocks.")
-    ToolHandler[] skulk();
+    @Comment("A Material for sculk blocks.")
+    ToolHandler[] sculk();
 
     @Separator(",")
     @DefaultValue("shears;minecraft-mending, shears")
