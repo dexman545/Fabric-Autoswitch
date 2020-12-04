@@ -34,6 +34,16 @@ public abstract class AbstractTargetable {
     Object protoTarget = null;
 
     /**
+     * Base constructor for Targetable, initializes the class parameters and
+     * fetches the target map and initial tool map based on configs passed to it
+     *
+     * @param player player this will effect
+     */
+    protected AbstractTargetable(PlayerEntity player) {
+        this.player = player;
+    }
+
+    /**
      * Switch logic for 'use' action
      *
      * @return returns the correct AbstractTargetable subclass to handle the operation
