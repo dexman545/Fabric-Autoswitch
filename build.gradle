@@ -12,8 +12,18 @@ plugins {
 }
 
 repositories {
-	maven { url 'https://jitpack.io' }
-	maven { url 'https://maven.thebrokenrail.com' }
+	maven {
+		url 'https://jitpack.io'
+		content {
+			includeGroup "com.github.dexman545"
+		}
+	}
+	maven {
+		url 'https://maven.thebrokenrail.com'
+		content {
+			includeGroup "com.thebrokenrail"
+		}
+	}
 }
 
 musicalCode {
@@ -52,7 +62,7 @@ dependencies {
 	}*/
 
 	// ModUpdater
-	modCompileOnly "com.thebrokenrail:modupdater:${project.modupdater_version}"
+	//modCompileOnly "com.thebrokenrail:modupdater:${project.modupdater_version}"
 
 }
 
