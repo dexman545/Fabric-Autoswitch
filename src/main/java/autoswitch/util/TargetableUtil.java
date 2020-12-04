@@ -128,7 +128,9 @@ public class TargetableUtil {
      * @return whether or not this stack should be skipped for consideration as a tool
      */
     public static boolean skipSlot(ItemStack itemStack) {
-        AutoSwitch.logger.debug("Stack: {}; First: {}; Second: {}", itemStack, !(AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()), isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
+        AutoSwitch.logger.debug("Stack: {}; First: {}; Second: {}", itemStack,
+                !(AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()),
+                isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
         // Skip energy items that are out of power
         if (AutoSwitch.featureCfg.skipDepletedItems() &&
                 AutoSwitch.switchData.damageMap.containsKey(itemStack.getClass()) && isAlmostBroken(itemStack)) {

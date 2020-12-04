@@ -27,8 +27,10 @@ public class MaterialHandler {
                 AutoSwitch.logger.warn("AutoSwitch was not given a real id: " + str + " -> ignoring it");
             }
         }
-        if (mat1 == null) AutoSwitch.logger.warn("AutoSwitch could not find a block, entity, entity group, or material "
-                + "by this id: " + str + " -> ignoring it");
+        if (mat1 == null) {
+            AutoSwitch.logger.warn("AutoSwitch could not find a block, entity, entity group, or material "
+                    + "by this id: " + str + " -> ignoring it");
+        }
         this.mat = mat1;
     }
 

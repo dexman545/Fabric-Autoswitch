@@ -13,7 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayerInteractionManager.class)
 public class MixinClientPlayerInteractionManager {
 
-    @Shadow @Final private MinecraftClient client;
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
     /**
      * Trigger the switch events.
@@ -25,7 +27,7 @@ public class MixinClientPlayerInteractionManager {
             SwitchEventTriggerImpl.attack(0,
                     this.client.player, this.client.world, this.client.crosshairTarget);
         } else if (this.client.options.keyUse.isPressed()) {
-            SwitchEventTriggerImpl.interact((ClientPlayerInteractionManager)(Object) this,
+            SwitchEventTriggerImpl.interact((ClientPlayerInteractionManager) (Object) this,
                     this.client.player, this.client.world, this.client.crosshairTarget);
         }
     }
