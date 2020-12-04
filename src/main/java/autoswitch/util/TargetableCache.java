@@ -26,9 +26,11 @@ public class TargetableCache extends Reference2IntLinkedOpenHashMap<Object> {
     public void removePairOnValue(final int v) {
         final int[] value = this.value;
         final Object[] key = this.key;
-        for (int i = n; i-- != 0; )
-            if (!((key[i]) == null) && ((value[i]) == (v)))
+        for (int i = n; i-- != 0; ) {
+            if (!((key[i]) == null) && ((value[i]) == (v))) {
                 this.remove(key[i], v);
+            }
+        }
     }
 
     public int getMaxSize() {

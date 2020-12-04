@@ -60,8 +60,9 @@ public class ConfigReflection {
         for (Method method : methods) {
             String key = key(method);
             String value = defaultValue(method);
-            if (value != null)
+            if (value != null) {
                 properties.put(key, value);
+            }
         }
     }
 
@@ -71,8 +72,9 @@ public class ConfigReflection {
         for (Method method : methods) {
             String key = key(method);
             String value = defaultValue(method);
-            if (value != null)
+            if (value != null) {
                 properties.put(key, value);
+            }
         }
     }
 
@@ -82,8 +84,9 @@ public class ConfigReflection {
         for (Method method : methods) {
             String key = key(method);
             String value = comment(method);
-            if (value != null)
+            if (value != null) {
                 properties.put(key, value);
+            }
         }
     }
 }
