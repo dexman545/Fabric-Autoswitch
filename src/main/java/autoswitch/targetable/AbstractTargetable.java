@@ -33,17 +33,6 @@ public abstract class AbstractTargetable {
     PlayerEntity player;
     Object protoTarget = null;
 
-
-    /**
-     * Base constructor for Targetable, initializes the class parameters and
-     * fetches the target map and initial tool map based on configs passed to it
-     *
-     * @param player player this will effect
-     */
-    AbstractTargetable(PlayerEntity player) {
-        this.player = player;
-    }
-
     /**
      * Switch logic for 'use' action
      *
@@ -116,7 +105,7 @@ public abstract class AbstractTargetable {
 
     /**
      * @return returns true if the config allows autoswitch to happen; false otherwise.
-     * Does not take into account toggle (AutoSwitch#doAS)
+     * Does not take into account toggle {@link AutoSwitch#doAS}
      */
     private Boolean switchAllowed() {
         return ((!this.player.isCreative() || AutoSwitch.featureCfg.switchInCreative()) &&
@@ -124,7 +113,7 @@ public abstract class AbstractTargetable {
     }
 
     /**
-     * Find the optimal tool slot. Return empty if there isn't one
+     * Find the optimal tool slot. Return empty if there isn't one.
      *
      * @return Returns empty if autoswitch is not allowed or there is no slot to change to
      */
@@ -211,8 +200,9 @@ public abstract class AbstractTargetable {
     }
 
     /**
-     * Moves some core switch logic out of the lambda to increase clarity
+     * Generate the tool rating and add it to the tool rating map.
      */
+    // Moves some core logic out of the main processing method to increase clarity
     private void updateToolListsAndRatings(ItemStack stack, String tool, ReferenceArrayList<Enchantment> enchants,
                                            int slot, AtomicReference<Float> counter) {
         double rating = 0;
