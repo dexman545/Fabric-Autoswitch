@@ -22,9 +22,6 @@
         ],
         "modmenu":[
             "autoswitch.compat.modmenu.ModMenuImpl"
-        ],
-        "modupdater":[
-            "autoswitch.compat.modupdater.ModUpdaterResolver"
         ]
     },
     "depends":{
