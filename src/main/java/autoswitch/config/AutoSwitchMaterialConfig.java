@@ -306,6 +306,11 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     ToolHandler[] hoeSpecial6();
 
     @Separator(",")
+    @DefaultValue("hoe;minecraft-efficiency, hoe;minecraft-mending, hoe")
+    @Comment("A Material for skulk blocks.")
+    ToolHandler[] skulk();
+
+    @Separator(",")
     @DefaultValue("shears;minecraft-mending, shears")
     @Key("minecraft-nether_sprouts")
     @Comment("A default-provided override for nether sprouts, which require shears to drop as an item.")
