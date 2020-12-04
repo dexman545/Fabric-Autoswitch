@@ -29,7 +29,7 @@
         "fabric-key-binding-api-v1":">=1.0.0",
         "fabric-tool-attribute-api-v1":"^1.0.2",
         "fabric-lifecycle-events-v1":">=1.0.0",
-        "minecraft":">=1.17-alpha.20.46.a",
+        "minecraft":">=1.17-alpha.20.49.a",
         "autoswitch-api":"^1.0.0"
     },
     "mixins":[
