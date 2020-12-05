@@ -33,8 +33,7 @@ public class HotbarWatcher {
 
     }
 
-    public static void handleSlotChange(int slot, List<ItemStack> prev, List<ItemStack> current) {
-        if (!PlayerInventory.isValidHotbarIndex(slot)) return;
+    public static void handleSlotChange(List<ItemStack> prev, List<ItemStack> current) {
         updateCaches(compareHotbars(prev, current));
 
     }
@@ -47,7 +46,9 @@ public class HotbarWatcher {
     }
 
     private static void updateCache(final TargetableCache cache, int slot) {
-        if (!cache.containsValue(slot)) return;
+        // Disabled as adding items to hotbar doesn't properly fix the cache,
+        // see hoe on grass then adding shovel to hotbar
+        //if (!cache.containsValue(slot)) return;
 
         // Previously this was #removePairOnValue to avoid needless recalculation.
         // This was changed to fix issues with moving a tool to the hotbar but the cache not resetting.
