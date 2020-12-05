@@ -33,15 +33,25 @@ public abstract class MixinPlayerInventory {
 
     @Inject(at = @At("RETURN"), method = "setStack(ILnet/minecraft/item/ItemStack;)V")
     private void setr(int slot, ItemStack stack, CallbackInfo ci) {
-        List<ItemStack> hb = this.main.subList(0, getHotbarSize());
-        HotbarWatcher.handleSlotChange(slot, prevHotbar, hb);
-        prevHotbar = new ReferenceArrayList<>(hb);
+        handleHotbarUpdate(slot);
     }
 
     @Inject(at = @At("RETURN"), method = "removeStack(I)Lnet/minecraft/item/ItemStack;")
     private void rmvs(int slot, CallbackInfoReturnable<ItemStack> cir) {
+        handleHotbarUpdate(slot);
+    }
+
+    /**
+     * If the sot changed is on the hotbar, pass to the HotbarWatcher and update the prevHotbar.
+     *
+     * @param slot slot changed
+     */
+    @Unique
+    private void handleHotbarUpdate(int slot) {
+        if (!PlayerInventory.isValidHotbarIndex(slot)) return;
+
         List<ItemStack> hb = this.main.subList(0, getHotbarSize());
-        HotbarWatcher.handleSlotChange(slot, prevHotbar, hb);
+        HotbarWatcher.handleSlotChange(prevHotbar, hb);
         prevHotbar = new ReferenceArrayList<>(hb);
     }
 
