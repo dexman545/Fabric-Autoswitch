@@ -327,5 +327,11 @@ public interface AutoSwitchMaterialConfig extends Config, Reloadable, Accessible
     @Key("minecraft-budding_amethyst")
     ToolHandler[] budSpecial();
 
+    @Separator(",")
+    @DefaultValue("pickaxe;minecraft-silk_touch, pickaxe;minecraft-mending, pickaxe;minecraft-efficiency, pickaxe")
+    @Key("minecraft-ender_chest")
+    @Comment("A default-provided override for ender chests to prefer silk touch.")
+    ToolHandler[] enderChestSpecial();
+
 
 }
