@@ -6,9 +6,9 @@
   "mixins": [
   ],
   "client": [
+    "MixinClientPlayerInteractionManager",
     "MixinMinecraftClient",
-    "MixinPlayerInventory",
-    "MixinClientPlayerInteractionManager"
+    "MixinPlayerInventory"
   ],
   "injectors": {
     "defaultRequire": 1
