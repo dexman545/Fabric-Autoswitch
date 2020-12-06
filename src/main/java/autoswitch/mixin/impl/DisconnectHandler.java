@@ -16,7 +16,6 @@ public class DisconnectHandler {
 
     private static void resetKeybindingToggleState() {
         doAS = !featureCfg.disableSwitchingOnStartup();
-        mowing = false;
     }
 
     private static void resetSwitchState() {

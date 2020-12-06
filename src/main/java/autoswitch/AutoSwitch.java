@@ -32,7 +32,6 @@ public class AutoSwitch implements ClientModInitializer {
     public static AutoSwitchMaterialConfig attackActionCfg;
     public static AutoSwitchUsableConfig useActionCfg;
 
-    public static boolean mowing = true;
     public static int tickTime = 0;
     public static boolean doAS = true;
     //Keybindings
@@ -40,12 +39,6 @@ public class AutoSwitch implements ClientModInitializer {
             "key.autoswitch.toggle",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_R,
-            "AutoSwitch"
-    ));
-    private final KeyBinding mowingWhenFightingToggleKeybinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.autoswitch.toggle_mowing",
-            InputUtil.Type.KEYSYM,
-            GLFW.GLFW_KEY_G,
             "AutoSwitch"
     ));
 
@@ -70,11 +63,6 @@ public class AutoSwitch implements ClientModInitializer {
             if (autoswitchToggleKeybinding.wasPressed()) {
                 doAS = TickUtil.keybindingToggleAction(e.player, doAS, !doAS && (e.isInSingleplayer() || featureCfg.switchInMP()),
                         "msg.autoswitch.toggle_true", "msg.autoswitch.toggle_false");
-            }
-
-            if (mowingWhenFightingToggleKeybinding.wasPressed()) {
-                mowing = TickUtil.keybindingToggleAction(e.player, mowing, !mowing || !featureCfg.controlMowingWhenFighting(),
-                        "msg.autoswitch.mow_true", "msg.autoswitch.mow_false");
             }
             //Keybindings implementation END ---
 
