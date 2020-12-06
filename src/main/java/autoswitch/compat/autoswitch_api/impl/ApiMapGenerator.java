@@ -1,4 +1,4 @@
-package autoswitch.config.populator;
+package autoswitch.compat.autoswitch_api.impl;
 
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchMaterialConfig;

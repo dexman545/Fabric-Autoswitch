@@ -1,4 +1,4 @@
-package autoswitch.util;
+package autoswitch.compat.autoswitch_api.impl;
 
 import autoswitch.AutoSwitch;
 import autoswitch.api.AutoSwitchApi;

@@ -7,7 +7,7 @@ import autoswitch.config.AutoSwitchMaterialConfig;
 import autoswitch.config.AutoSwitchUsableConfig;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.config.util.ConfigHeaders;
-import autoswitch.util.ApiGenUtil;
+import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.util.SwitchUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.loader.api.FabricLoader;
@@ -38,9 +38,9 @@ public final class ConfigEstablishment {
     // are bounded outside of practical limitations.
 
     public static void establishConfigs() {
-        String config = FabricLoader.getInstance().getConfigDir().toString() + "/autoswitch.cfg";
-        String configMats = FabricLoader.getInstance().getConfigDir().toString() + "/autoswitchMaterials.cfg";
-        String configUsable = FabricLoader.getInstance().getConfigDir().toString() + "/autoswitchUsable.cfg";
+        String config = FabricLoader.getInstance().getConfigDir().resolve("autoswitch.cfg").toString();
+        String configMats = FabricLoader.getInstance().getConfigDir().resolve("autoswitchMaterials.cfg").toString();
+        String configUsable = FabricLoader.getInstance().getConfigDir().resolve("autoswitchUsable.cfg").toString();
         ConfigFactory.setProperty("configDir", config);
         ConfigFactory.setProperty("configDirMats", configMats);
         ConfigFactory.setProperty("configUsable", configUsable);
