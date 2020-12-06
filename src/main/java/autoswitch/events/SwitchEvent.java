@@ -7,7 +7,6 @@ import autoswitch.util.SwitchUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.hit.EntityHitResult;
 
 import java.util.Optional;
 
@@ -17,16 +16,6 @@ public enum SwitchEvent {
     ATTACK {
         @Override
         public boolean handlePreSwitchTasks() {
-            if (protoTarget instanceof BlockState) {
-                //Mowing control
-                //Disable block breaking iff mowing is disabled and there's an entity to hit
-                EntityHitResult entityResult = SwitchUtil.rayTraceEntity(player, 1.0F, 4.5D);
-                if (entityResult != null && featureCfg.controlMowingWhenFighting() && !AutoSwitch.mowing) {
-                    player.handSwinging = !featureCfg.disableHandSwingWhenMowing();
-                    return false;
-                }
-            }
-
             return true;
         }
 

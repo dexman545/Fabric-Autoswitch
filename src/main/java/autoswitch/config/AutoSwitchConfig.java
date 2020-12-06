@@ -43,15 +43,6 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("Return to previous slot after attacking a mob.")
     Boolean switchbackMobs();
 
-    @DefaultValue("true")
-    @Comment("Let AutoSwitch prevent breaking a block with an empty collision box (ie. tall grass) " +
-            "when trying to attack a mob.")
-    Boolean controlMowingWhenFighting();
-
-    @DefaultValue("true")
-    @Comment("Disable the swinging of the hand when trying to mow when fighting.")
-    Boolean disableHandSwingWhenMowing();
-
     @DefaultValue("MOBS")
     @Key("switchbackWaitsForCooldown")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
