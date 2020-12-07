@@ -12,13 +12,24 @@ import java.util.Optional;
 
 import static autoswitch.AutoSwitch.featureCfg;
 
+/**
+ * Processing of switch events.
+ */
 public enum SwitchEvent {
+    /**
+     * Event for "attack" action of the player.
+     */
     ATTACK {
         @Override
         public boolean handlePreSwitchTasks() {
             return true;
         }
 
+        /**
+         * Setup switchstate for switchback feature.
+         *
+         * @param hasSwitched whether a switch has occurred
+         */
         private void handlePostSwitchTasks(boolean hasSwitched) {
             // Handles switchback
             if (protoTarget instanceof Entity) {
@@ -46,6 +57,9 @@ public enum SwitchEvent {
             return true;
         }
     },
+    /**
+     * Event for "interact" or "use" action of the player.
+     */
     USE {
         @Override
         protected boolean canNotSwitch() {
@@ -68,6 +82,9 @@ public enum SwitchEvent {
 
         }
     },
+    /**
+     * Event for returning to the previously selected slot once conditions that triggered a switch are over.
+     */
     SWITCHBACK {
         @Override
         protected boolean canNotSwitch() {
@@ -81,6 +98,9 @@ public enum SwitchEvent {
             return true;
         }
 
+        /**
+         * @return if the attack cooldown has progressed enough.
+         */
         private boolean doSwitchback() {
             return player.getAttackCooldownProgress(-20.0f) != 1.0f;
         }
@@ -97,6 +117,11 @@ public enum SwitchEvent {
                     featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchDelay.BLOCKS);
         }
 
+        /**
+         * Cleanup switchstate after switching back.
+         *
+         * @param hasSwitched whether a switch has occurred
+         */
         private void handlePostSwitchTasks(boolean hasSwitched) {
             if (hasSwitched) {
                 AutoSwitch.switchState.setHasSwitched(false);
@@ -115,6 +140,9 @@ public enum SwitchEvent {
             return true;
         }
     },
+    /**
+     * Event for moving a USE action item to the offhand.
+     */
     OFFHAND {
         @Override
         public boolean invoke() {
@@ -135,20 +163,37 @@ public enum SwitchEvent {
     private static boolean doOffhandSwitch;
 
 
+    /**
+     * Try to perform the switch.
+     *
+     * @return false if the switch could not be performed
+     */
     public abstract boolean invoke();
 
+    /**
+     * @return whether switching should NOT occur based on current conditions.
+     */
     boolean canNotSwitch() {
         // Client is checked to fix LAN worlds (Issue #18)
         return !clientWorld || !doSwitch || !doSwitchType;
     }
 
+    /**
+     * Store the previously selected slot for use in the SWITCHBACK feature.
+     */
     void handlePrevSlot() {
         if (!AutoSwitch.switchState.getHasSwitched()) {
             AutoSwitch.switchState.setPrevSlot(player.getInventory().selectedSlot);
         }
     }
 
-    // For evaluation conditions before switch logic, mainly for mowing control
+
+    /**
+     * Run extra checks before performing a switch.
+     *
+     * @return whether evaluation before switching indicates that a switch should not occur.
+     */
+    // Formerly used to ensure mowing control did not trigger a switch
     public boolean handlePreSwitchTasks() {
         return true;
     }

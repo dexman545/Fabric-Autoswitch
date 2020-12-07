@@ -16,11 +16,25 @@ public class ConfigTemplates {
     private static final String defaultValueComment = "\n# Default Value: ";
     private static final String deliminatorPreserver = "((?<=%1$s)|(?=%1$s))"; // selects text before/after the delim.
 
+    /**
+     * Create a category around the provided mod name.
+     *
+     * @param modName name to have in the category
+     * @return mod category text
+     */
     public static String modCategory(String modName) {
         return category(modName, modCategoryDescription);
 
     }
 
+    /**
+     * Create category and fill with a name, description, and other information.
+     *
+     * @param name name of category.
+     * @param categoryDesc description of category
+     * @param info array of Strings to place as comments within the category block.
+     * @return the category block text
+     */
     private static String category(String name, String categoryDesc, String... info) {
         String title = categoryDesc + name;
 
@@ -63,6 +77,11 @@ public class ConfigTemplates {
         return configEntry(configValueEntry(key, value, doWrap), comment, defaultValue);
     }
 
+    /**
+     * Make category block text based on provided tool groupings.
+     *
+     * @return tool groupings category block text.
+     */
     public static String toolGroupings() {
         StringBuilder keys = new StringBuilder();
         Enumeration<String> enumKeys = AutoSwitch.switchData.toolGroupings.keys();
