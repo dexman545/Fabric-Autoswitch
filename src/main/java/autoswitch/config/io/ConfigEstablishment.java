@@ -2,12 +2,12 @@ package autoswitch.config.io;
 
 import autoswitch.AutoSwitch;
 import autoswitch.api.AutoSwitchMap;
+import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchMaterialConfig;
 import autoswitch.config.AutoSwitchUsableConfig;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.config.util.ConfigHeaders;
-import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.util.SwitchUtil;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.loader.api.FabricLoader;

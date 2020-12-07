@@ -30,9 +30,9 @@ public class ConfigTemplates {
     /**
      * Create category and fill with a name, description, and other information.
      *
-     * @param name name of category.
+     * @param name         name of category.
      * @param categoryDesc description of category
-     * @param info array of Strings to place as comments within the category block.
+     * @param info         array of Strings to place as comments within the category block.
      * @return the category block text
      */
     private static String category(String name, String categoryDesc, String... info) {

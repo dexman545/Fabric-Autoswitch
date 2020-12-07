@@ -56,10 +56,10 @@ public class SwitchEventTriggerImpl {
      * Process type of action made and desired switch action.
      * <p>Tick scheduler clock to ensure immediate-mode actions are taken on time.</p>
      *
-     * @param desiredType type of action to process for switching.
+     * @param desiredType     type of action to process for switching.
      * @param crosshairTarget target that the player is looking at.
-     * @param world the player's client world.
-     * @param player the player
+     * @param world           the player's client world.
+     * @param player          the player
      */
     private static void triggerSwitch(DesiredType desiredType, HitResult crosshairTarget, ClientWorld world, ClientPlayerEntity player) {
         SwitchEvent event;
@@ -78,7 +78,7 @@ public class SwitchEventTriggerImpl {
                 break;
             default:
                 throw new IllegalStateException("AutoSwitch encountered an unexpected enum value: " + desiredType
-                + "\nSome mod has fiddled with AS's internals!");
+                        + "\nSome mod has fiddled with AS's internals!");
         }
 
         // Trigger switch

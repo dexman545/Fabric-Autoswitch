@@ -1,13 +1,13 @@
 package autoswitch;
 
+import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
+import autoswitch.compat.autoswitch_api.impl.ApiMapGenerator;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchMaterialConfig;
 import autoswitch.config.AutoSwitchUsableConfig;
 import autoswitch.config.io.ConfigEstablishment;
-import autoswitch.compat.autoswitch_api.impl.ApiMapGenerator;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.events.Scheduler;
-import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 import autoswitch.util.TickUtil;
