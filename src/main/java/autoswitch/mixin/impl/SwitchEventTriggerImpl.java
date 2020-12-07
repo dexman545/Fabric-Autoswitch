@@ -68,7 +68,8 @@ public class SwitchEventTriggerImpl {
                         AutoSwitch.featureCfg.switchForMobs() : AutoSwitch.featureCfg.switchForBlocks();
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + desiredType);
+                throw new IllegalStateException("AutoSwitch encountered an unexpected enum value: " + desiredType
+                + "\nSome mod has fiddled with AS's internals!");
         }
 
         // Trigger switch
