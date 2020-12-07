@@ -52,6 +52,15 @@ public class SwitchEventTriggerImpl {
 
     }
 
+    /**
+     * Process type of action made and desired switch action.
+     * <p>Tick scheduler clock to ensure immediate-mode actions are taken on time.</p>
+     *
+     * @param desiredType type of action to process for switching.
+     * @param crosshairTarget target that the player is looking at.
+     * @param world the player's client world.
+     * @param player the player
+     */
     private static void triggerSwitch(DesiredType desiredType, HitResult crosshairTarget, ClientWorld world, ClientPlayerEntity player) {
         SwitchEvent event;
         boolean doSwitchType;
@@ -100,9 +109,18 @@ public class SwitchEventTriggerImpl {
 
     }
 
-    // Dummy type to allow unification of ATTACK and USE impl
+
+    /**
+     * Type used to control processing of user action for switching in a unified manor.
+     */
     enum DesiredType {
+        /**
+         * Player "interact" or "use" actions.
+         */
         USE,
+        /**
+         * Player "attack" actions.
+         */
         ACTION
     }
 
