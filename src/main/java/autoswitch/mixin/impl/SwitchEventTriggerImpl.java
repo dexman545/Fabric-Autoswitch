@@ -74,10 +74,10 @@ public class SwitchEventTriggerImpl {
                 break;
             case ACTION:
                 event = SwitchEvent.ATTACK;
-                doSwitchType = AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.SwitchType.BOTH ||
+                doSwitchType = AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.BOTH ||
                         (crosshairTarget.getType() == HitResult.Type.ENTITY ?
-                        AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.SwitchType.MOBS :
-                        AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.SwitchType.BLOCKS);
+                        AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.MOBS :
+                        AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.BLOCKS);
                 break;
             default:
                 throw new IllegalStateException("AutoSwitch encountered an unexpected enum value: " + desiredType

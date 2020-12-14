@@ -32,15 +32,15 @@ public enum SwitchEvent {
          * @param hasSwitched whether a switch has occurred
          */
         private void handlePostSwitchTasks(boolean hasSwitched) {
-            boolean doSwitchBack = featureCfg.switchbackAllowed() == AutoSwitchConfig.SwitchType.BOTH;
+            boolean doSwitchBack = featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BOTH;
             // Handles switchback
             if (protoTarget instanceof Entity) {
-                if (hasSwitched && (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.SwitchType.MOBS)) {
+                if (hasSwitched && (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.MOBS)) {
                     AutoSwitch.switchState.setHasSwitched(true);
                     AutoSwitch.switchState.setAttackedEntity(true);
                 }
             } else if (protoTarget instanceof BlockState) {
-                if (hasSwitched && (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.SwitchType.BLOCKS)) {
+                if (hasSwitched && (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BLOCKS)) {
                     AutoSwitch.switchState.setHasSwitched(true);
                 }
             }
@@ -116,14 +116,14 @@ public enum SwitchEvent {
 
         private boolean doMobSwitchback() {
             return AutoSwitch.switchState.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
-                    AutoSwitchConfig.SwitchType.BOTH ||
-                    featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchType.MOBS);
+                    AutoSwitchConfig.TargetType.BOTH ||
+                    featureCfg.switchbackWaits() == AutoSwitchConfig.TargetType.MOBS);
         }
 
         private boolean doBlockSwitchback() {
             return !AutoSwitch.switchState.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
-                    AutoSwitchConfig.SwitchType.BOTH ||
-                    featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchType.BLOCKS);
+                    AutoSwitchConfig.TargetType.BOTH ||
+                    featureCfg.switchbackWaits() == AutoSwitchConfig.TargetType.BLOCKS);
         }
 
         /**

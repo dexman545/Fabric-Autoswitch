@@ -29,7 +29,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("Allow switching on the specified type, eg. only switch for blocks by specifying 'BLOCKS'. Set to 'NONE'" +
             " to disable this behavior entirely." +
             "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
-    SwitchType switchAllowed();
+    TargetType switchAllowed();
 
     @DefaultValue("true")
     @Comment("Allow AutoSwitch when in multiplayer.")
@@ -41,7 +41,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("Return to the previous slot when no longer performing the action on the specified type. Set to 'NONE'" +
             " to disable this behavior entirely." +
             "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
-    SwitchType switchbackAllowed();
+    TargetType switchbackAllowed();
 
     @DefaultValue("MOBS")
     @Key("switchbackWaitsForCooldown")
@@ -49,7 +49,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("Before switching back when using the 'attack' action, wait for the attack cooldown to finish. " +
             "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks visually smoother. " +
             "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
-    SwitchType switchbackWaits();
+    TargetType switchbackWaits();
 
     @DefaultValue("true")
     @Comment("Will ignore tools that are about to break when considering which tool to switch to.")
@@ -144,7 +144,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
             "Each time that slot is modified, it's cached data is thrown out. This can benefit performance.")
     Boolean cacheSwitchResults();
 
-    enum SwitchType { // Do not change order, SwitchUtil relies on the ordinals
+    enum TargetType { // Do not change order, SwitchUtil relies on the ordinals
         BOTH,
         MOBS,
         BLOCKS,
