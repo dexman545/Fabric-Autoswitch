@@ -1,6 +1,7 @@
 package autoswitch.mixin.impl;
 
 import autoswitch.AutoSwitch;
+import autoswitch.config.AutoSwitchConfig;
 import autoswitch.events.SwitchEvent;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchData;
@@ -73,8 +74,10 @@ public class SwitchEventTriggerImpl {
                 break;
             case ACTION:
                 event = SwitchEvent.ATTACK;
-                doSwitchType = crosshairTarget.getType() == HitResult.Type.ENTITY ?
-                        AutoSwitch.featureCfg.switchForMobs() : AutoSwitch.featureCfg.switchForBlocks();
+                doSwitchType = AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.SwitchType.BOTH ||
+                        (crosshairTarget.getType() == HitResult.Type.ENTITY ?
+                        AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.SwitchType.MOBS :
+                        AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.SwitchType.BLOCKS);
                 break;
             default:
                 throw new IllegalStateException("AutoSwitch encountered an unexpected enum value: " + desiredType

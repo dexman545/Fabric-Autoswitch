@@ -4,8 +4,8 @@ import autoswitch.AutoSwitch;
 import autoswitch.api.AutoSwitchMap;
 import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.config.AutoSwitchConfig;
-import autoswitch.config.AutoSwitchMaterialConfig;
-import autoswitch.config.AutoSwitchUsableConfig;
+import autoswitch.config.AutoSwitchAttackActionConfig;
+import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.config.util.ConfigHeaders;
 import autoswitch.util.SwitchUtil;
@@ -15,12 +15,21 @@ import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.ConfigFactory;
 import org.aeonbits.owner.Mutable;
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.Level;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Set;
 
 public final class ConfigEstablishment {
+    private static final Path configDir = FabricLoader.getInstance().getConfigDir();
+    private static final Path featurePath = configDir.resolve("autoswitch.cfg");
+    private static final Path useActionPath = configDir.resolve("autoswitchUseAction.cfg");
+    private static final Path attackActionPath = configDir.resolve("autoswitchAttackAction.cfg");
 
     // AutoSwitch has 3 config files - basic, material, and usable.
     // Each can be represented by a map of key -> value pairs.
@@ -38,15 +47,20 @@ public final class ConfigEstablishment {
     // are bounded outside of practical limitations.
 
     public static void establishConfigs() {
-        String config = FabricLoader.getInstance().getConfigDir().resolve("autoswitch.cfg").toString();
-        String configMats = FabricLoader.getInstance().getConfigDir().resolve("autoswitchMaterials.cfg").toString();
-        String configUsable = FabricLoader.getInstance().getConfigDir().resolve("autoswitchUsable.cfg").toString();
-        ConfigFactory.setProperty("configDir", config);
-        ConfigFactory.setProperty("configDirMats", configMats);
-        ConfigFactory.setProperty("configUsable", configUsable);
+        // Update old config files
+        if (!useActionPath.toFile().exists() || !attackActionPath.toFile().exists()) {
+            updateOldConfigFiles();
+        }
+
+        String configFeature = featurePath.toString();
+        String configAttackAction = attackActionPath.toString();
+        String configUseAction = useActionPath.toString();
+        ConfigFactory.setProperty("configDir", configFeature);
+        ConfigFactory.setProperty("configDirMats", configAttackAction);
+        ConfigFactory.setProperty("configUsable", configUseAction);
         AutoSwitch.featureCfg = ConfigFactory.create(AutoSwitchConfig.class);
-        AutoSwitch.attackActionCfg = ConfigFactory.create(AutoSwitchMaterialConfig.class);
-        AutoSwitch.useActionCfg = ConfigFactory.create(AutoSwitchUsableConfig.class);
+        AutoSwitch.attackActionCfg = ConfigFactory.create(AutoSwitchAttackActionConfig.class);
+        AutoSwitch.useActionCfg = ConfigFactory.create(AutoSwitchUseActionConfig.class);
 
         mergeConfigs(AutoSwitch.switchData.attackConfig, AutoSwitch.attackActionCfg);
         mergeConfigs(AutoSwitch.switchData.usableConfig, AutoSwitch.useActionCfg);
@@ -61,9 +75,9 @@ public final class ConfigEstablishment {
             if (AutoSwitch.featureCfg.alwaysRewriteConfigs() || !configVersion.equals(currentVersion)) {
                 AutoSwitch.featureCfg.setProperty("configVersion", currentVersion); // Update version before writing
 
-                genFile(config, AutoSwitch.featureCfg, ConfigHeaders.basicConfig, null);
-                genFile(configMats, AutoSwitch.attackActionCfg, ConfigHeaders.materialConfig, ApiGenUtil.modActionConfigs);
-                genFile(configUsable, AutoSwitch.useActionCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
+                genFile(configFeature, AutoSwitch.featureCfg, ConfigHeaders.basicConfig, null);
+                genFile(configAttackAction, AutoSwitch.attackActionCfg, ConfigHeaders.attackConfig, ApiGenUtil.modActionConfigs);
+                genFile(configUseAction, AutoSwitch.useActionCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
             }
 
         } catch (IOException e) {
@@ -92,6 +106,24 @@ public final class ConfigEstablishment {
             AutoSwitch.switchState.switchActionCache.clear();
             AutoSwitch.logger.info("Feature Config Reloaded");
         });
+    }
+
+    private static void updateOldConfigFiles() {
+        try {
+            FileUtils.moveFile(useActionPath.resolveSibling("autoswitchUsable.cfg").toFile(),
+                    useActionPath.toFile());
+            FileUtils.moveFile(attackActionPath.resolveSibling("autoswitchMaterials.cfg").toFile(),
+                    attackActionPath.toFile());
+            updateOldConfigFormat(attackActionPath.toFile());
+            updateOldConfigFormat(useActionPath.toFile());
+        } catch (IOException e) {
+            AutoSwitch.logger.catching(Level.DEBUG, e);
+        }
+    }
+
+    private static void updateOldConfigFormat(File file) throws IOException {
+        String s = FileUtils.readFileToString(file, StandardCharsets.UTF_8).replaceAll("minecraft-", "minecraft!");
+        FileUtils.writeStringToFile(file, s, StandardCharsets.UTF_8, false);
     }
 
     // Write file

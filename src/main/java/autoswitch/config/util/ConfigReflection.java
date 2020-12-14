@@ -2,8 +2,8 @@ package autoswitch.config.util;
 
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
-import autoswitch.config.AutoSwitchMaterialConfig;
-import autoswitch.config.AutoSwitchUsableConfig;
+import autoswitch.config.AutoSwitchAttackActionConfig;
+import autoswitch.config.AutoSwitchUseActionConfig;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.aeonbits.owner.Config;
 
@@ -21,9 +21,9 @@ public class ConfigReflection {
     private static final ObjectArrayList<Class<? extends Config>> configClasses = new ObjectArrayList<>();
 
     static {
-        configClasses.add(AutoSwitchMaterialConfig.class);
+        configClasses.add(AutoSwitchAttackActionConfig.class);
         configClasses.add(AutoSwitchConfig.class);
-        configClasses.add(AutoSwitchUsableConfig.class);
+        configClasses.add(AutoSwitchUseActionConfig.class);
     }
 
     // Fix returning wrong class

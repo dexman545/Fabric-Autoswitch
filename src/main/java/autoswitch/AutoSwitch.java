@@ -3,8 +3,8 @@ package autoswitch;
 import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.compat.autoswitch_api.impl.ApiMapGenerator;
 import autoswitch.config.AutoSwitchConfig;
-import autoswitch.config.AutoSwitchMaterialConfig;
-import autoswitch.config.AutoSwitchUsableConfig;
+import autoswitch.config.AutoSwitchAttackActionConfig;
+import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.events.Scheduler;
@@ -29,8 +29,8 @@ public class AutoSwitch implements ClientModInitializer {
     public static SwitchState switchState = new SwitchState();
     //Init config
     public static AutoSwitchConfig featureCfg;
-    public static AutoSwitchMaterialConfig attackActionCfg;
-    public static AutoSwitchUsableConfig useActionCfg;
+    public static AutoSwitchAttackActionConfig attackActionCfg;
+    public static AutoSwitchUseActionConfig useActionCfg;
 
     public static int tickTime = 0;
     public static boolean doAS = true;

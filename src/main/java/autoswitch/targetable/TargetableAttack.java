@@ -1,6 +1,7 @@
 package autoswitch.targetable;
 
 import autoswitch.AutoSwitch;
+import autoswitch.config.AutoSwitchConfig;
 import autoswitch.util.TargetableUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -21,8 +22,14 @@ class TargetableAttack extends AbstractTargetable {
 
     @Override
     Boolean switchTypeAllowed() {
-        if (this.protoTarget instanceof BlockState) return AutoSwitch.featureCfg.switchForBlocks();
-        if (this.protoTarget instanceof Entity) return AutoSwitch.featureCfg.switchbackMobs();
+        if (AutoSwitch.featureCfg.switchbackAllowed() == AutoSwitchConfig.SwitchType.BOTH) return true;
+
+        if (this.protoTarget instanceof BlockState) {
+            return AutoSwitch.featureCfg.switchbackAllowed() == AutoSwitchConfig.SwitchType.BLOCKS;
+        }
+        if (this.protoTarget instanceof Entity) {
+            return AutoSwitch.featureCfg.switchbackAllowed() == AutoSwitchConfig.SwitchType.MOBS;
+        }
 
         AutoSwitch.logger.error("Something strange tried to trigger a switch...");
         return false;

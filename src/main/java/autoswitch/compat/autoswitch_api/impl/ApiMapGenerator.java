@@ -1,8 +1,8 @@
 package autoswitch.compat.autoswitch_api.impl;
 
 import autoswitch.AutoSwitch;
-import autoswitch.config.AutoSwitchMaterialConfig;
-import autoswitch.config.AutoSwitchUsableConfig;
+import autoswitch.config.AutoSwitchAttackActionConfig;
+import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.util.SwitchData;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -35,8 +35,8 @@ public class ApiMapGenerator {
 
     // Populate maps with default values to be sent to mods
     private static void genConfigMaps() {
-        ConfigReflection.defaults(AutoSwitch.switchData.attackConfig, AutoSwitchMaterialConfig.class);
-        ConfigReflection.defaults(AutoSwitch.switchData.usableConfig, AutoSwitchUsableConfig.class);
+        ConfigReflection.defaults(AutoSwitch.switchData.attackConfig, AutoSwitchAttackActionConfig.class);
+        ConfigReflection.defaults(AutoSwitch.switchData.usableConfig, AutoSwitchUseActionConfig.class);
 
         // PoC for ensuring empty values don't get passed allowing mods to override
         /*for (String key : matCfg.propertyNames()) {

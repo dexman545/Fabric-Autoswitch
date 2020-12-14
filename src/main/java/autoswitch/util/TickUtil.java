@@ -1,6 +1,7 @@
 package autoswitch.util;
 
 import autoswitch.AutoSwitch;
+import autoswitch.config.AutoSwitchConfig;
 import autoswitch.events.SwitchEvent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
@@ -23,12 +24,12 @@ public class TickUtil {
      */
     public static boolean keybindingToggleAction(PlayerEntity player, boolean toggle, boolean keyChooser,
                                                  String tlKeyTruthy, String tlKeyFalsy) {
-        if (featureCfg.displayToggleMsg()) {
+        if (featureCfg.toggleMessageControl() != AutoSwitchConfig.DisplayControl.OFF) {
             //Toggle message
             TranslatableText msg = new TranslatableText(keyChooser ? tlKeyTruthy : tlKeyFalsy);
 
             //Display msg above hotbar, set false to display in text chat
-            player.sendMessage(msg, featureCfg.toggleMsgOverHotbar());
+            player.sendMessage(msg, featureCfg.toggleMessageControl() == AutoSwitchConfig.DisplayControl.DEFAULT);
         }
 
         return !toggle;

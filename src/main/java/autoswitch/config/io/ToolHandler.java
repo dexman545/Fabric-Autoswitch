@@ -22,7 +22,7 @@ public class ToolHandler {
             return;
         }
         String[] cleanedInput = input.split(";");
-        String tagStr = cleanedInput[0].toLowerCase(Locale.ENGLISH).trim().replace("-", ":");
+        String tagStr = cleanedInput[0].toLowerCase(Locale.ENGLISH).trim().replace("!", ":");
         String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase(Locale.ENGLISH)
                 .trim().replace("-", ":") : "";
 

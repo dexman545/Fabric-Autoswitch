@@ -1,7 +1,7 @@
 package autoswitch.config.io;
 
-import autoswitch.config.AutoSwitchMaterialConfig;
-import autoswitch.config.AutoSwitchUsableConfig;
+import autoswitch.config.AutoSwitchAttackActionConfig;
+import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.config.util.ConfigTemplates;
 import autoswitch.config.util.SortedProperties;
@@ -45,7 +45,7 @@ public class GenerateConfigTemplate {
         sanitize(defaults);
         sanitize(comments);
 
-        if (cfg instanceof AutoSwitchUsableConfig || cfg instanceof AutoSwitchMaterialConfig) {
+        if (cfg instanceof AutoSwitchUseActionConfig || cfg instanceof AutoSwitchAttackActionConfig) {
             config.append(ConfigTemplates.toolGroupings());
             config.append("\n");
         }

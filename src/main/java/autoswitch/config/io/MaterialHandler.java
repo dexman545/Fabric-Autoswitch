@@ -18,7 +18,7 @@ public class MaterialHandler {
 
     public MaterialHandler(String str) {
         Object mat1 = null;
-        str = str.toLowerCase(Locale.ENGLISH).replace("-", ":");
+        str = str.toLowerCase(Locale.ENGLISH).replace("!", ":");
         if (!AutoSwitch.switchData.targets.containsKey(str)) {
             if (Identifier.tryParse(str) != null) {
                 mat1 = locateMat(Registry.ENTITY_TYPE, str) != null ?

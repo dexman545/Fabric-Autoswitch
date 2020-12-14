@@ -6,6 +6,7 @@ import autoswitch.targetable.AbstractTargetable;
 import autoswitch.util.SwitchUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.Saddleable;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.Optional;
@@ -31,14 +32,15 @@ public enum SwitchEvent {
          * @param hasSwitched whether a switch has occurred
          */
         private void handlePostSwitchTasks(boolean hasSwitched) {
+            boolean doSwitchBack = featureCfg.switchbackAllowed() == AutoSwitchConfig.SwitchType.BOTH;
             // Handles switchback
             if (protoTarget instanceof Entity) {
-                if (hasSwitched && featureCfg.switchbackMobs()) {
+                if (hasSwitched && (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.SwitchType.MOBS)) {
                     AutoSwitch.switchState.setHasSwitched(true);
                     AutoSwitch.switchState.setAttackedEntity(true);
                 }
             } else if (protoTarget instanceof BlockState) {
-                if (hasSwitched && featureCfg.switchbackBlocks()) {
+                if (hasSwitched && (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.SwitchType.BLOCKS)) {
                     AutoSwitch.switchState.setHasSwitched(true);
                 }
             }
@@ -66,6 +68,13 @@ public enum SwitchEvent {
             return !clientWorld || !doSwitch || !doSwitchType;
         }
 
+        private boolean doOffhand() {
+            if (AutoSwitch.featureCfg.putUseActionToolInOffHand() == AutoSwitchConfig.OffhandType.SADDLE) {
+                return protoTarget instanceof Saddleable;
+            }
+            return AutoSwitch.featureCfg.putUseActionToolInOffHand().ordinal() <= 1;
+        }
+
         @Override
         public boolean invoke() {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
@@ -73,7 +82,7 @@ public enum SwitchEvent {
             handlePrevSlot();
             Optional<Boolean> temp = AbstractTargetable.use(protoTarget, player).changeTool();
             temp.ifPresent(b -> {
-                doOffhandSwitch = true;
+                doOffhandSwitch = doOffhand();
                 AutoSwitch.switchState.setHasSwitched(b);
                 if (b) AutoSwitch.scheduler.schedule(SwitchEvent.OFFHAND, 0.1, AutoSwitch.tickTime);
             });
@@ -107,14 +116,14 @@ public enum SwitchEvent {
 
         private boolean doMobSwitchback() {
             return AutoSwitch.switchState.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
-                    AutoSwitchConfig.SwitchDelay.BOTH ||
-                    featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchDelay.MOBS);
+                    AutoSwitchConfig.SwitchType.BOTH ||
+                    featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchType.MOBS);
         }
 
         private boolean doBlockSwitchback() {
             return !AutoSwitch.switchState.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
-                    AutoSwitchConfig.SwitchDelay.BOTH ||
-                    featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchDelay.BLOCKS);
+                    AutoSwitchConfig.SwitchType.BOTH ||
+                    featureCfg.switchbackWaits() == AutoSwitchConfig.SwitchType.BLOCKS);
         }
 
         /**

@@ -11,37 +11,37 @@ import org.aeonbits.owner.Reloadable;
 @Config.Sources({"file:${configDir}"})
 public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutable {
 
-    @DefaultValue("true")
-    @Comment("Display toggle message above hotbar. Set to false for normal chat message.")
-    Boolean toggleMsgOverHotbar();
-
-    @DefaultValue("true")
-    @Comment("Display toggle message, set to false to remove it.")
-    Boolean displayToggleMsg();
+    @DefaultValue("DEFAULT")
+    @ConverterClass(CaseInsensitiveEnumConverter.class)
+    @Comment("Controls where and if the keybinding toggle message should be displayed. DEFAULT is above the hotbar," +
+            " like with bed messages. CHAT is in the chat bar, like a normal chat message. Set to OFF to disable " +
+            "the message entirely." +
+            "\nAcceptable values: DEFAULT, CHAT, OFF")
+    DisplayControl toggleMessageControl();
 
     @DefaultValue("false")
     @Comment("AutoSwitch functionality in creative mode.")
     Boolean switchInCreative();
 
-    @DefaultValue("true")
-    @Comment("AutoSwitch for mining.")
-    Boolean switchForBlocks();
-
-    @DefaultValue("true")
-    @Comment("AutoSwitch for attacking mobs.")
-    Boolean switchForMobs();
+    @DefaultValue("BOTH")
+    @Key("switchAllowedFor")
+    @ConverterClass(CaseInsensitiveEnumConverter.class)
+    @Comment("Allow switching on the specified type, eg. only switch for blocks by specifying 'BLOCKS'. Set to 'NONE'" +
+            " to disable this behavior entirely." +
+            "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
+    SwitchType switchAllowed();
 
     @DefaultValue("true")
     @Comment("Allow AutoSwitch when in multiplayer.")
     Boolean switchInMP();
 
-    @DefaultValue("true")
-    @Comment("Return to previous slot when not attacking a block.")
-    Boolean switchbackBlocks();
-
-    @DefaultValue("true")
-    @Comment("Return to previous slot after attacking a mob.")
-    Boolean switchbackMobs();
+    @DefaultValue("BOTH")
+    @ConverterClass(CaseInsensitiveEnumConverter.class)
+    @Key("switchbackAllowedFor")
+    @Comment("Return to the previous slot when no longer performing the action on the specified type. Set to 'NONE'" +
+            " to disable this behavior entirely." +
+            "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
+    SwitchType switchbackAllowed();
 
     @DefaultValue("MOBS")
     @Key("switchbackWaitsForCooldown")
@@ -49,15 +49,19 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("Before switching back when using the 'attack' action, wait for the attack cooldown to finish. " +
             "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks visually smoother. " +
             "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
-    SwitchDelay switchbackWaits();
+    SwitchType switchbackWaits();
 
     @DefaultValue("true")
     @Comment("Will ignore tools that are about to break when considering which tool to switch to.")
     Boolean tryPreserveDamagedTools();
 
-    @DefaultValue("true")
-    @Comment("Switch used tool to offhand.")
-    Boolean putUseActionToolInOffHand();
+    @DefaultValue("SADDLE")
+    @ConverterClass(CaseInsensitiveEnumConverter.class)
+    @Comment("Switch used tool to offhand for the specified type." +
+            "Use 'ALL' to move all items to the offhand. 'SADDLE' will only move the item to the offhand for " +
+            "saddleable targets." +
+            "\nAcceptable values: ALL, SADDLE, OFF.")
+    OffhandType putUseActionToolInOffHand();
 
     @DefaultValue("true")
     @Comment("Switch used tool to offhand if no item is there.")
@@ -105,7 +109,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     Boolean weaponRatingIncludesEnchants();
 
     @DefaultValue("false")
-    @Comment("Will force use of the toggle key in order to enable switching")
+    @Comment("Will force use of the toggle key in order to enable switching.")
     Boolean disableSwitchingOnStartup();
 
     @DefaultValue("0.05") // 1 tick's time
@@ -120,7 +124,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     Float switchDelay();
 
     @DefaultValue("true")
-    @Comment("Ignore tools with 0 energy/durability")
+    @Comment("Ignore tools with 0 energy/durability.")
     Boolean skipDepletedItems();
 
     @DefaultValue("")
@@ -140,11 +144,23 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
             "Each time that slot is modified, it's cached data is thrown out. This can benefit performance.")
     Boolean cacheSwitchResults();
 
-    enum SwitchDelay {
+    enum SwitchType { // Do not change order, SwitchUtil relies on the ordinals
         BOTH,
         MOBS,
         BLOCKS,
         NONE
+    }
+
+    enum DisplayControl {
+        DEFAULT,
+        CHAT,
+        OFF
+    }
+
+    enum OffhandType { // Do not change order, SwitchUtil relies on the ordinals
+        SADDLE,
+        ALL,
+        OFF
     }
 }
 
