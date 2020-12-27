@@ -87,9 +87,9 @@ public class ApiMapGenerator {
 
         AutoSwitch.switchData.targets.put("dense_ice", Material.DENSE_ICE);
 
-        AutoSwitch.switchData.targets.put("sub_block", Material.SUPPORTED);
+        AutoSwitch.switchData.targets.put("sub_block", Material.DECORATION);
 
-        AutoSwitch.switchData.targets.put("supported", Material.SUPPORTED);
+        AutoSwitch.switchData.targets.put("supported", Material.DECORATION);
 
         AutoSwitch.switchData.targets.put("piston", Material.PISTON);
 
@@ -149,7 +149,7 @@ public class ApiMapGenerator {
 
         AutoSwitch.switchData.targets.put("passable_snow_block", Material.POWDER_SNOW);
 
-        AutoSwitch.switchData.targets.put("sculk", Material.field_28242);
+        AutoSwitch.switchData.targets.put("sculk", Material.SCULK);
 
         // Entities
         AutoSwitch.switchData.targets.put("aquaticEntity", EntityGroup.AQUATIC);
