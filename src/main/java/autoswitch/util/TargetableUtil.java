@@ -185,7 +185,7 @@ public class TargetableUtil {
         if (AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
 
         if (target instanceof BlockState) { //TODO add mining level check here
-            return !((BlockState) target).isToolRequired() || stack.isEffectiveOn((BlockState) target);
+            return !((BlockState) target).isToolRequired() || stack.isSuitableFor((BlockState) target);
         }
 
         return true;
