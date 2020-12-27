@@ -30,6 +30,9 @@ public final class ConfigEstablishment {
     private static final Path featurePath = configDir.resolve("autoswitch.cfg");
     private static final Path useActionPath = configDir.resolve("autoswitchUseAction.cfg");
     private static final Path attackActionPath = configDir.resolve("autoswitchAttackAction.cfg");
+    private static final String configFeature = featurePath.toString();
+    private static final String configAttackAction = attackActionPath.toString();
+    private static final String configUseAction = useActionPath.toString();
 
     // AutoSwitch has 3 config files - basic, material, and usable.
     // Each can be represented by a map of key -> value pairs.
@@ -52,9 +55,6 @@ public final class ConfigEstablishment {
             updateOldConfigFiles();
         }
 
-        String configFeature = featurePath.toString();
-        String configAttackAction = attackActionPath.toString();
-        String configUseAction = useActionPath.toString();
         ConfigFactory.setProperty("configDir", configFeature);
         ConfigFactory.setProperty("configDirMats", configAttackAction);
         ConfigFactory.setProperty("configUsable", configUseAction);
@@ -75,9 +75,8 @@ public final class ConfigEstablishment {
             if (AutoSwitch.featureCfg.alwaysRewriteConfigs() || !configVersion.equals(currentVersion)) {
                 AutoSwitch.featureCfg.setProperty("configVersion", currentVersion); // Update version before writing
 
-                genFile(configFeature, AutoSwitch.featureCfg, ConfigHeaders.basicConfig, null);
-                genFile(configAttackAction, AutoSwitch.attackActionCfg, ConfigHeaders.attackConfig, ApiGenUtil.modActionConfigs);
-                genFile(configUseAction, AutoSwitch.useActionCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
+                writeConfigFiles();
+
             }
 
         } catch (IOException e) {
@@ -106,6 +105,19 @@ public final class ConfigEstablishment {
             AutoSwitch.switchState.switchActionCache.clear();
             AutoSwitch.logger.info("Feature Config Reloaded");
         });
+    }
+
+    /**
+     * Write all config values to file with pretty-print.
+     *
+     * Used for saving changes made by the user in the config GUI.
+     *
+     * @throws IOException when configs fail to write
+     */
+    public static void writeConfigFiles() throws IOException {
+        genFile(configFeature, AutoSwitch.featureCfg, ConfigHeaders.basicConfig, null);
+        genFile(configAttackAction, AutoSwitch.attackActionCfg, ConfigHeaders.attackConfig, ApiGenUtil.modActionConfigs);
+        genFile(configUseAction, AutoSwitch.useActionCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
     }
 
     private static void updateOldConfigFiles() {
