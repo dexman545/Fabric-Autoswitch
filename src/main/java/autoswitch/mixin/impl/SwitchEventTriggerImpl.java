@@ -8,7 +8,6 @@ import autoswitch.util.SwitchData;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -28,13 +27,12 @@ public class SwitchEventTriggerImpl {
      *
      * @param attackCooldown  the attack cooldown
      * @param player          the player
-     * @param world           the world
      * @param crosshairTarget the crosshair target
      */
-    public static void attack(int attackCooldown, ClientPlayerEntity player, ClientWorld world, HitResult crosshairTarget) {
+    public static void attack(int attackCooldown, ClientPlayerEntity player, HitResult crosshairTarget) {
         if (attackCooldown > 0 || player.isRiding() || crosshairTarget == null) return;
 
-        triggerSwitch(DesiredType.ACTION, crosshairTarget, world, player);
+        triggerSwitch(DesiredType.ACTION, crosshairTarget, player);
 
     }
 
@@ -45,13 +43,12 @@ public class SwitchEventTriggerImpl {
      *
      * @param interactionManager the interaction manager
      * @param player             the player
-     * @param world              the world
      * @param crosshairTarget    the crosshair target
      */
-    public static void interact(ClientPlayerInteractionManager interactionManager, ClientPlayerEntity player, ClientWorld world, HitResult crosshairTarget) {
+    public static void interact(ClientPlayerInteractionManager interactionManager, ClientPlayerEntity player, HitResult crosshairTarget) {
         if (interactionManager.isBreakingBlock() || player.isRiding() || crosshairTarget == null) return;
 
-        triggerSwitch(DesiredType.USE, crosshairTarget, world, player);
+        triggerSwitch(DesiredType.USE, crosshairTarget, player);
 
     }
 
@@ -61,10 +58,9 @@ public class SwitchEventTriggerImpl {
      *
      * @param desiredType     type of action to process for switching.
      * @param crosshairTarget target that the player is looking at.
-     * @param world           the player's client world.
      * @param player          the player
      */
-    private static void triggerSwitch(DesiredType desiredType, HitResult crosshairTarget, ClientWorld world, ClientPlayerEntity player) {
+    private static void triggerSwitch(DesiredType desiredType, HitResult crosshairTarget, ClientPlayerEntity player) {
         SwitchEvent event;
         boolean doSwitchType;
 
@@ -93,19 +89,19 @@ public class SwitchEventTriggerImpl {
                 if (AutoSwitch.useActionCfg.bow_action().length == 0) {
                     return; // guard to help prevent lag when rclicking into empty space
                 }
-                EventUtil.scheduleEvent(event, AutoSwitch.doAS, world, player, doSwitchType, SwitchData.itemTarget);
+                EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, SwitchData.itemTarget);
                 break;
             case ENTITY:
                 EntityHitResult entityHitResult = (EntityHitResult) crosshairTarget;
                 Entity entity = entityHitResult.getEntity();
-                EventUtil.scheduleEvent(event, AutoSwitch.doAS, world, player, doSwitchType, entity);
+                EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, entity);
                 break;
             case BLOCK:
                 BlockHitResult blockHitResult = ((BlockHitResult) crosshairTarget);
                 BlockPos blockPos = blockHitResult.getBlockPos();
-                BlockState blockState = world.getBlockState(blockPos);
+                BlockState blockState = player.clientWorld.getBlockState(blockPos);
                 if (blockState.isAir()) break;
-                EventUtil.scheduleEvent(event, AutoSwitch.doAS, world, player, doSwitchType, blockState);
+                EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, blockState);
                 break;
         }
 

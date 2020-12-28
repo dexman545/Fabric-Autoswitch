@@ -1,8 +1,8 @@
 package autoswitch.config.util;
 
 import autoswitch.AutoSwitch;
-import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchAttackActionConfig;
+import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.aeonbits.owner.Config;

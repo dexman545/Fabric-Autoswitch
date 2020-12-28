@@ -63,11 +63,6 @@ public enum SwitchEvent {
      * Event for "interact" or "use" action of the player.
      */
     USE {
-        @Override
-        protected boolean canNotSwitch() {
-            return !clientWorld || !doSwitch || !doSwitchType;
-        }
-
         private boolean doOffhand() {
             if (AutoSwitch.featureCfg.putUseActionToolInOffHand() == AutoSwitchConfig.OffhandType.SADDLE) {
                 return protoTarget instanceof Saddleable;
@@ -166,7 +161,6 @@ public enum SwitchEvent {
 
     public static PlayerEntity player;
     private static Object protoTarget;
-    private static boolean clientWorld;
     private static boolean doSwitchType;
     private static boolean doSwitch;
     private static boolean doOffhandSwitch;
@@ -184,7 +178,7 @@ public enum SwitchEvent {
      */
     boolean canNotSwitch() {
         // Client is checked to fix LAN worlds (Issue #18)
-        return !clientWorld || !doSwitch || !doSwitchType;
+        return !doSwitch || !doSwitchType;
     }
 
     /**
@@ -215,11 +209,6 @@ public enum SwitchEvent {
 
     public SwitchEvent setPlayer(PlayerEntity player) {
         SwitchEvent.player = player;
-        return this;
-    }
-
-    public SwitchEvent setWorld(boolean clientWorld) {
-        SwitchEvent.clientWorld = clientWorld;
         return this;
     }
 

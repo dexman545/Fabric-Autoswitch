@@ -3,26 +3,33 @@ package autoswitch.util;
 import autoswitch.AutoSwitch;
 import autoswitch.events.SwitchEvent;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
 
 public class EventUtil {
 
     private static boolean hasScheduledSwitchback = false;
 
-    public static void scheduleEvent(SwitchEvent event, boolean doSwitch, World world, PlayerEntity player,
+    public static void scheduleEvent(SwitchEvent event, boolean doSwitch, PlayerEntity player,
                                      boolean doSwitchType, Object protoTarget) {
-        schedulePrimaryEvent(world, event.setPlayer(player)
+        schedulePrimaryEvent(event.setPlayer(player)
                 .setDoSwitch(doSwitch).setDoSwitchType(doSwitchType)
                 .setProtoTarget(protoTarget));
     }
 
-    public static void schedulePrimaryEvent(World world, SwitchEvent event) {
-        eventHandler(world, AutoSwitch.tickTime, 0, event);
+    public static void schedulePrimaryEvent(SwitchEvent event) {
+        eventHandler(AutoSwitch.tickTime, 0, event);
     }
 
-    public static void eventHandler(World world, int currentTime, double deltaTime, SwitchEvent event) {
-
-        if (!world.isClient()) return; // Make sure this is only run on client
+    /**
+     * Add event to schedule if its pre-switch tasks are completed.
+     * Schedules switchback with proper delay.
+     *
+     * Only run on client world/tick, not server.
+     *
+     * @param currentTime current tick time
+     * @param deltaTime time till switch execution in seconds
+     * @param event event to add to queue
+     */
+    public static void eventHandler(int currentTime, double deltaTime, SwitchEvent event) {
 
         if (!event.handlePreSwitchTasks()) return;
 
@@ -33,7 +40,7 @@ public class EventUtil {
 
             // TODO improve so special case for switchback isn't needed
             if (AutoSwitch.switchState.getHasSwitched() && !SwitchEvent.player.handSwinging && !hasScheduledSwitchback) {
-                AutoSwitch.scheduler.schedule(event.setWorld(true), AutoSwitch.featureCfg.switchbackDelay(), currentTime);
+                AutoSwitch.scheduler.schedule(event, AutoSwitch.featureCfg.switchbackDelay(), currentTime);
                 hasScheduledSwitchback = true;
             }
 
@@ -43,7 +50,7 @@ public class EventUtil {
         hasScheduledSwitchback = false;
 
         // Normal handing of switches
-        AutoSwitch.scheduler.schedule(event.setWorld(true), deltaTime, currentTime);
+        AutoSwitch.scheduler.schedule(event, deltaTime, currentTime);
 
     }
 

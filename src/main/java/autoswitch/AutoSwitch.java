@@ -2,8 +2,8 @@ package autoswitch;
 
 import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.compat.autoswitch_api.impl.ApiMapGenerator;
-import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchAttackActionConfig;
+import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
@@ -67,7 +67,7 @@ public class AutoSwitch implements ClientModInitializer {
             //Keybindings implementation END ---
 
             // Tick event system and check if scheduling a switchback is needed via EventUtil
-            TickUtil.tickEventSchedule(e.player, e.world);
+            TickUtil.tickEventSchedule(e.player);
         });
 
         //Notify when AS Loaded

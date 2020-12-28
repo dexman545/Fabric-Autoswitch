@@ -1,13 +1,11 @@
 package autoswitch.util;
 
 import autoswitch.AutoSwitch;
-import autoswitch.config.AutoSwitchConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Saddleable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.util.math.BlockPos;
