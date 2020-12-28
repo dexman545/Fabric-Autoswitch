@@ -153,6 +153,15 @@ String getReleaseMonicker() {
 
 // configure the maven publication
 publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId project.maven_group
+			artifactId project.archives_base_name // Must be lowercase
+			version project.version
+
+			from components.java
+		}
+	}
 	// select the repositories you want to publish to
 	repositories {
 		maven {
