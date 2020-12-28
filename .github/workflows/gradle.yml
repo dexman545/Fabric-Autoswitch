@@ -15,3 +15,10 @@ jobs:
         java-version: 14
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Publish to github packages
+      env:
+        KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
+        KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
+        KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: ./gradlew publish --no-daemon
