@@ -154,12 +154,25 @@ String getReleaseMonicker() {
 // configure the maven publication
 publishing {
 	publications {
+		//noinspection GroovyAssignabilityCheck
 		maven(MavenPublication) {
-			groupId project.maven_group
-			artifactId project.archives_base_name // Must be lowercase
-			version project.version
+			groupId = project.maven_group
+			artifactId = project.archives_base_name // Must be lowercase
+			version = project.version
 
 			from components.java
+
+			// add all the jars that should be included when publishing to maven
+			//noinspection GroovyAssignabilityCheck
+			artifact(remapJar) {
+				//noinspection GroovyAssignabilityCheck
+				builtBy remapJar
+			}
+			//noinspection GroovyAssignabilityCheck
+			artifact(sourcesJar) {
+				//noinspection GroovyAssignabilityCheck
+				builtBy remapSourcesJar
+			}
 		}
 	}
 	// select the repositories you want to publish to
