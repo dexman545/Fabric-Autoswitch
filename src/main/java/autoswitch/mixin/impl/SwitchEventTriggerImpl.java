@@ -18,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 /**
  * Implementation of the logic for the MinecraftClient mixin
  */
+@SuppressWarnings("JavadocReference")
 public class SwitchEventTriggerImpl {
 
     /**
