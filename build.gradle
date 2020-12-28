@@ -9,7 +9,10 @@ plugins {
 	id "com.github.fudge.forgedflowerloom" version "2.0.0"
 	id 'maven-publish'
 	id 'musical-code' version '1.0'
+	id "com.modrinth.minotaur" version "1.1.0"
 }
+
+import com.modrinth.minotaur.TaskModrinthUpload
 
 repositories {
 	maven {
@@ -125,17 +128,42 @@ publishing {
 	}
 }
 
+task publishModrinth (type: TaskModrinthUpload, dependsOn: build){
+	token = System.getenv("MODRINTH")
+	projectId = 'uSdcnlts'
+	versionNumber = project.version
+	uploadFile = jar.outputs.getFiles().asPath // This is the java jar task
+	String gv = project.minecraft_version
+	addGameVersion(gv)
+	addLoader('fabric')
+	versionName = "Autopublished (potentially) alpha build"
+	changelog = "This is autopublished from github actions. Use at your own risk. See commit history or a release build for changes.\n\n" +
+			"This build may work on Minecraft versions not specified on modrinth. Release cadance at time of writing " +
+			"(12/27/2020):\n\n" +
+			"1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.17.x"
+	releaseType = getReleaseMonicker()
+
+}
+
+String getReleaseMonicker() {
+	if (((String)project.version).contains('alpha')) return "alpha"
+	if (((String)project.version).contains('beta')) return "beta"
+	return "release"
+}
+
 // configure the maven publication
 publishing {
 	// select the repositories you want to publish to
 	repositories {
 		maven {
-			credentials {
-				username System.getenv("GITHUB_ACTOR")
-				password System.getenv("GITHUB_TOKEN")
-			}
 			name = "GitHubPackages"
 			url = "https://maven.pkg.github.com/" + "dexman545/Fabric-Autoswitch"
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
+			}
 		}
 	}
 }
+
+publish.finalizedBy(publishModrinth)

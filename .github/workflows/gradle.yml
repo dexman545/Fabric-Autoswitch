@@ -21,4 +21,5 @@ jobs:
         KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
         KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: ./gradlew publish --no-daemon
+        MODRINTH: ${{ secrets.MODRINTH }}
+      run: ./gradlew publish
