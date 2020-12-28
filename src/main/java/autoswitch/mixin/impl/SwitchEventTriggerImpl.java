@@ -24,13 +24,14 @@ public class SwitchEventTriggerImpl {
     /**
      * Logic for handling ATTACK type actions.
      *
+     * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doAttack()}
+     *
      * @param attackCooldown  the attack cooldown
      * @param player          the player
      * @param world           the world
      * @param crosshairTarget the crosshair target
      */
     public static void attack(int attackCooldown, ClientPlayerEntity player, ClientWorld world, HitResult crosshairTarget) {
-        // Duplicate conditions from MinecraftClient#doAttack that prevent reaching the switch for attack logic
         if (attackCooldown > 0 || player.isRiding() || crosshairTarget == null) return;
 
         triggerSwitch(DesiredType.ACTION, crosshairTarget, world, player);
@@ -40,13 +41,14 @@ public class SwitchEventTriggerImpl {
     /**
      * Logic for handling USE actions.
      *
+     * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doItemUse()}
+     *
      * @param interactionManager the interaction manager
      * @param player             the player
      * @param world              the world
      * @param crosshairTarget    the crosshair target
      */
     public static void interact(ClientPlayerInteractionManager interactionManager, ClientPlayerEntity player, ClientWorld world, HitResult crosshairTarget) {
-        // Duplicate conditions from MinecraftClient#doItemUse that prevent reaching the switch for use logic
         if (interactionManager.isBreakingBlock() || player.isRiding() || crosshairTarget == null) return;
 
         triggerSwitch(DesiredType.USE, crosshairTarget, world, player);
