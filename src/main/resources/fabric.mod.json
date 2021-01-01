@@ -39,6 +39,8 @@
         "modupdater":{
             "strategy":"curseforge",
             "projectID":347405
-        }
+        },
+        "stopmodreposts:showToast":false,
+        "stopmodreposts:showButton":false
     }
 }
