@@ -13,6 +13,7 @@ plugins {
 }
 
 import com.modrinth.minotaur.TaskModrinthUpload
+import groovy.json.JsonSlurper
 
 repositories {
 	maven {
@@ -42,7 +43,7 @@ dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc:fabric-loader:${getNewestLoaderVersion()}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -143,6 +144,11 @@ task publishModrinth (type: TaskModrinthUpload, dependsOn: build){
 			"1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.17.x"
 	releaseType = getReleaseMonicker()
 
+}
+
+static String getNewestLoaderVersion() {
+	def loaderVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/loader/"))
+	return loaderVersions[0].version
 }
 
 String getReleaseMonicker() {
