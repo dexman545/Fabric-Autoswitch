@@ -1,6 +1,10 @@
 buildscript {
 	repositories {
 		jcenter()
+		mavenCentral()
+	}
+	dependencies {
+		classpath "com.github.yuchi:npm-semver:1.0.0"
 	}
 }
 
@@ -12,10 +16,16 @@ plugins {
 	id "com.modrinth.minotaur" version "1.1.0"
 }
 
+
+import com.github.yuchi.semver.Version
 import com.modrinth.minotaur.TaskModrinthUpload
 import groovy.json.JsonSlurper
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 repositories {
+	mavenLocal()
 	maven {
 		url 'https://jitpack.io'
 		content {
@@ -72,9 +82,10 @@ dependencies {
 
 processResources {
 	inputs.property "version", project.version
+	inputs.property "range", project.range
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": project.version, "range": project.range
 	}
 }
 
@@ -134,15 +145,17 @@ task publishModrinth (type: TaskModrinthUpload, dependsOn: build){
 	projectId = 'uSdcnlts'
 	versionNumber = project.version
 	uploadFile = jar.outputs.getFiles().asPath // This is the java jar task
-	String gv = project.minecraft_version
-	addGameVersion(gv)
 	addLoader('fabric')
 	versionName = "Autopublished (potentially) alpha build"
-	changelog = "This is autopublished from github actions. Use at your own risk. See commit history or a release build for changes.\n\n" +
+	changelog = "This is autopublished from github actions. Use at your own risk. See commit history or a release build for changes.\n\n<br />" +
 			"This build may work on Minecraft versions not specified on modrinth. Release cadance at time of writing " +
-			"(12/27/2020):\n\n" +
+			"(12/27/2020):\n\n<br />" +
 			"1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.17.x"
 	releaseType = getReleaseMonicker()
+
+	for (String ver : getAcceptableMcVersions()) {
+		addGameVersion(ver)
+	}
 
 }
 
@@ -151,10 +164,78 @@ static String getNewestLoaderVersion() {
 	return loaderVersions[0].version
 }
 
+ArrayList<String> getAcceptableMcVersions() {
+	ArrayList<String> list = new ArrayList<String>()
+
+	// Fragile
+	def mcVersions = new JsonSlurper().parse(new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"))
+	for (Object mcver : mcVersions.versions) {
+		if ("1.14.4".equals(mcver.id)) break // Don't go below 1.14.4, mostly because change in version formatting
+
+		com.github.yuchi.semver.Range r = com.github.yuchi.semver.Range.from(project.range.replace("-", ".0-"), false)
+
+		Version v = Version.from(genMcVersionString(mcver.id, mcver.url), false)
+
+		if (v == null || r == null) {
+			System.out.println(String.format("The version was null for : {}", mcver.id))
+			break
+		}
+
+		if (r.test(v)) {
+			list.add(mcver.id)
+		}
+	}
+
+	return list
+}
+
+static String genMcVersionString(String version, String metaURL) {
+	//From Fabric Loader https://github.com/FabricMC/fabric-loader/blob/master/src/main/java/net/fabricmc/loader/minecraft/McVersionLookup.java
+	Pattern RELEASE_PATTERN = Pattern.compile("\\d+\\.\\d+(\\.\\d+)?")
+	Pattern PRE_RELEASE_PATTERN = Pattern.compile(".+(?:-pre| Pre-[Rr]elease )(\\d+)")
+	Pattern RELEASE_CANDIDATE_PATTERN = Pattern.compile(".+(?:-rc| [Rr]elease Candidate )(\\d+)")
+	Pattern SNAPSHOT_PATTERN = Pattern.compile("(?:Snapshot )?(\\d+)w0?(0|[1-9]\\d*)([a-z])")
+
+	if (RELEASE_PATTERN.matcher(version).matches()) return version
+
+	String majorVersion = getMajorMcVersion(metaURL) + ".0" // fix for parser
+
+	Matcher snapshotMatcher = SNAPSHOT_PATTERN.matcher(version)
+	if (snapshotMatcher.matches()) {
+		return majorVersion + "-alpha."+snapshotMatcher.group(1)+"."+snapshotMatcher.group(2)+"."+snapshotMatcher.group(3)
+	}
+
+	Matcher rcMatcher = RELEASE_CANDIDATE_PATTERN.matcher(version)
+	if (rcMatcher.matches()) {
+		return majorVersion + "-rc." + rcMatcher.group(1)
+	}
+
+	Matcher preMatcher = PRE_RELEASE_PATTERN.matcher(version)
+	if (preMatcher.matches()) {
+		return majorVersion + "-beta." + preMatcher.group(1)
+	}
+
+	return ""
+}
+
+static String getMajorMcVersion(String metaURL) {
+	def meta = new JsonSlurper().parse(new URL(metaURL))
+	return meta.assets
+}
+
 String getReleaseMonicker() {
 	if (((String)project.version).contains('alpha')) return "alpha"
 	if (((String)project.version).contains('beta')) return "beta"
 	return "release"
+}
+
+// Fixes fabric.mod.template's variables not being replaced with Idea's run configs.
+// Add as prelaunch task, after build.
+task fixResourcesLaunch(type: Copy) {
+	String name = project.name.replace(" ", "_") + ".main"
+
+	destinationDir file("${projectDir}/out/production/${name}")
+	from processResources
 }
 
 // configure the maven publication
@@ -195,3 +276,4 @@ publishing {
 }
 
 publish.finalizedBy(publishModrinth)
+tasks.runClient.dependsOn(tasks.processResources)
