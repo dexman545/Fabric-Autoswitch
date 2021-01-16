@@ -12,8 +12,9 @@ plugins {
 	id 'fabric-loom' version '0.5-SNAPSHOT'
 	id "com.github.fudge.forgedflowerloom" version "2.0.0"
 	id 'maven-publish'
-	id 'musical-code' version '1.0'
+	id 'musical-code' version '1.2' // Compare MC versions for changes
 	id "com.modrinth.minotaur" version "1.1.0"
+	id "org.jetbrains.gradle.plugin.idea-ext" version "0.10" // To trigger musical code on project refresh
 }
 
 
@@ -42,6 +43,17 @@ repositories {
 
 musicalCode {
 	config 'musical-config.txt'
+	output 'musical-code-output.txt'
+	from getOldMcVersion(false)
+	to "${project.minecraft_version}"
+}
+
+idea.project.settings {
+	taskTriggers {
+		if (getOldMcVersion(true) != project.minecraft_version) {
+			afterSync musicalCodeTask
+		}
+	}
 }
 
 archivesBaseName = project.archives_base_name

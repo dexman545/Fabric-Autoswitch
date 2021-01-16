@@ -28,3 +28,5 @@ run/
 /eula.txt
 /logs/
 AutoSwitch API
+/musical-code-data.properties
+/musical-code-output.txt

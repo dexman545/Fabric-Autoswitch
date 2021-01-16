@@ -1,3 +1,10 @@
 # https://github.com/Earthcomputer/MusicalCode
 # Material pull
 net/minecraft/block/AbstractBlock$AbstractBlockState.getMaterial() Lnet/minecraft/block/Material;
+
+# Material class
+net/minecraft/block/Material.*
+
+# Duplicated conditions (SwitchEventTriggerImpl)
+net/minecraft/client/MinecraftClient.doAttack()V
+net/minecraft/client/MinecraftClient.doItemUse()V
