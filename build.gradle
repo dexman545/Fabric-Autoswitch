@@ -52,7 +52,7 @@ group = project.maven_group
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	mappings "net.fabricmc:yarn:${getChosenYarnVersion(true)}:v2" // Change to false for oldest Yarn of that MC version
 	modImplementation "net.fabricmc:fabric-loader:${getNewestLoaderVersion()}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
@@ -68,7 +68,7 @@ dependencies {
 	// Mod Compat
 
 	// ModMenu
-	modCompileOnly("io.github.prospector:modmenu:${project.modmenu_version}") {
+	modCompileOnly("io.github.prospector:modmenu:${getLatestModMenu()}") {
 		transitive = false
 	}
 	/*modRuntime("io.github.prospector:modmenu:${project.modmenu_version}") {
@@ -159,9 +159,58 @@ task publishModrinth (type: TaskModrinthUpload, dependsOn: build){
 
 }
 
+/**
+ * Get the newest available loader version.
+ *
+ * @return loader version.
+ */
 static String getNewestLoaderVersion() {
 	def loaderVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/loader/"))
-	return loaderVersions[0].version
+	assert loaderVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
+	return loaderVersions.first().version
+}
+
+/**
+ * Get correct Yarn version for project's MC version.
+ *
+ * @param newest whether to return the newest available Yarn version, or the oldest. Oldest may be preferred to avoid
+ * invalidating genSources' output.
+ * @return the correct Yarn version.
+ */
+String getChosenYarnVersion(boolean newest) {
+	def yarnVersions = new JsonSlurper().parse(
+			new URL("https://meta.fabricmc.net/v2/versions/yarn/${project.minecraft_version}"))
+	assert yarnVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
+	return newest ? yarnVersions.first().version : yarnVersions.last().version
+}
+
+/**
+ * Get the latest MC version.
+ *
+ * @param isStable if snapshots should be ignored or not.
+ * @return the MC version.
+ */
+static String getLatestMc(boolean isStable) {
+	def mcVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/game"))
+	assert mcVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
+	if (!isStable) return mcVersions.first().version
+	for (LinkedHashMap mcVer : mcVersions) {
+		if (mcVer.stable) return mcVer.version
+	}
+}
+
+/**
+ * Get latest Mod Menu version from Fabric's maven. Not keyed to MC version.
+ *
+ * @return mod menu version.
+ */
+// I got tired of having to find the right version, ok?
+static String getLatestModMenu() {
+	def modMenuVersions = new XmlSlurper().parseText(
+			new URL("https://maven.fabricmc.net/io/github/prospector/modmenu/maven-metadata.xml").text)
+	// For some reason Groovy was not happy with accessing it as a map, so this nonsense exists
+	def x = modMenuVersions.getProperty('versioning')
+	return x['latest']
 }
 
 ArrayList<String> getAcceptableMcVersions() {
@@ -236,6 +285,36 @@ task fixResourcesLaunch(type: Copy) {
 
 	destinationDir file("${projectDir}/out/production/${name}")
 	from processResources
+}
+
+/**
+ * @return old MC version from musical-code-data.properties for use in musical code
+ */
+String getOldMcVersion(boolean getNewMc) {
+	Properties props = new Properties()
+	File f = new File("${projectDir}/musical-code-data.properties")
+	if (!f.exists()) f.newWriter().close();
+	props.load(f.newDataInputStream())
+
+	def currMC = props.get('currMC') as String
+	def oldMC = props.get('oldMC') as String
+
+	if (oldMC == null) props.setProperty('oldMC', "${project.minecraft_version}")
+	if (currMC == null) {
+		props.setProperty('currMC', "${project.minecraft_version}")
+		currMC = project.minecraft_version
+	}
+
+	if (currMC != "${project.minecraft_version}") {
+		props.setProperty('oldMC', currMC)
+		props.setProperty('currMC', "${project.minecraft_version}")
+	}
+
+	props.store(f.newWriter(), null)
+
+	if (getNewMc) return props.get('currMC') as String
+
+	return props.get('oldMC') as String
 }
 
 // configure the maven publication
