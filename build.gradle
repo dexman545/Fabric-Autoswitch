@@ -329,42 +329,5 @@ String getOldMcVersion(boolean getNewMc) {
 	return props.get('oldMC') as String
 }
 
-// configure the maven publication
-publishing {
-	publications {
-		//noinspection GroovyAssignabilityCheck
-		maven(MavenPublication) {
-			groupId = project.maven_group
-			artifactId = project.archives_base_name // Must be lowercase
-			version = project.version
-
-			from components.java
-
-			// add all the jars that should be included when publishing to maven
-			//noinspection GroovyAssignabilityCheck
-			artifact(remapJar) {
-				//noinspection GroovyAssignabilityCheck
-				builtBy remapJar
-			}
-			//noinspection GroovyAssignabilityCheck
-			artifact(sourcesJar) {
-				//noinspection GroovyAssignabilityCheck
-				builtBy remapSourcesJar
-			}
-		}
-	}
-	// select the repositories you want to publish to
-	repositories {
-		maven {
-			name = "GitHubPackages"
-			url = "https://maven.pkg.github.com/" + "dexman545/Fabric-Autoswitch"
-			credentials {
-				username = System.getenv("GITHUB_ACTOR")
-				password = System.getenv("GITHUB_TOKEN")
-			}
-		}
-	}
-}
-
 publish.finalizedBy(publishModrinth)
 tasks.runClient.dependsOn(tasks.processResources)
