@@ -33,12 +33,6 @@ repositories {
 			includeGroup "com.github.dexman545"
 		}
 	}
-	maven {
-		url 'https://maven.thebrokenrail.com'
-		content {
-			includeGroup "com.thebrokenrail"
-		}
-	}
 }
 
 musicalCode {
@@ -86,9 +80,6 @@ dependencies {
 	/*modRuntime("io.github.prospector:modmenu:${project.modmenu_version}") {
 		transitive = false
 	}*/
-
-	// ModUpdater
-	//modCompileOnly "com.thebrokenrail:modupdater:${project.modupdater_version}"
 
 }
 
