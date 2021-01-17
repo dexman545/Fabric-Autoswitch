@@ -5,6 +5,7 @@ import autoswitch.config.AutoSwitchConfig;
 import autoswitch.events.SwitchEvent;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchData;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -23,7 +24,7 @@ public class SwitchEventTriggerImpl {
 
     /**
      * Logic for handling ATTACK type actions.
-     *
+     * <p>
      * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doAttack()}
      *
      * @param attackCooldown  the attack cooldown
@@ -34,22 +35,6 @@ public class SwitchEventTriggerImpl {
         if (attackCooldown > 0 || player.isRiding() || crosshairTarget == null) return;
 
         triggerSwitch(DesiredType.ACTION, crosshairTarget, player);
-
-    }
-
-    /**
-     * Logic for handling USE actions.
-     *
-     * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doItemUse()}
-     *
-     * @param interactionManager the interaction manager
-     * @param player             the player
-     * @param crosshairTarget    the crosshair target
-     */
-    public static void interact(ClientPlayerInteractionManager interactionManager, ClientPlayerEntity player, HitResult crosshairTarget) {
-        if (interactionManager.isBreakingBlock() || player.isRiding() || crosshairTarget == null) return;
-
-        triggerSwitch(DesiredType.USE, crosshairTarget, player);
 
     }
 
@@ -74,13 +59,13 @@ public class SwitchEventTriggerImpl {
             case ACTION:
                 event = SwitchEvent.ATTACK;
                 doSwitchType = AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.BOTH ||
-                        (crosshairTarget.getType() == HitResult.Type.ENTITY ?
-                        AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.MOBS :
-                        AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.BLOCKS);
+                               (crosshairTarget.getType() == HitResult.Type.ENTITY ?
+                                AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.MOBS :
+                                AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.BLOCKS);
                 break;
             default:
-                throw new IllegalStateException("AutoSwitch encountered an unexpected enum value: " + desiredType
-                        + "\nSome mod has fiddled with AS's internals!");
+                throw new IllegalStateException("AutoSwitch encountered an unexpected enum value: " + desiredType +
+                                                "\nSome mod has fiddled with AS's internals!");
         }
 
         // Trigger switch
@@ -108,6 +93,23 @@ public class SwitchEventTriggerImpl {
 
         // Run scheduler here as well as in the clock to ensure immediate-eval switches occur
         AutoSwitch.scheduler.execute(AutoSwitch.tickTime);
+
+    }
+
+    /**
+     * Logic for handling USE actions.
+     * <p>
+     * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doItemUse()}
+     *
+     * @param interactionManager the interaction manager
+     * @param player             the player
+     * @param crosshairTarget    the crosshair target
+     */
+    public static void interact(ClientPlayerInteractionManager interactionManager, ClientPlayerEntity player,
+                                HitResult crosshairTarget) {
+        if (interactionManager.isBreakingBlock() || player.isRiding() || crosshairTarget == null) return;
+
+        triggerSwitch(DesiredType.USE, crosshairTarget, player);
 
     }
 

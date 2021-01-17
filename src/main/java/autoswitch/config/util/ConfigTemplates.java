@@ -1,11 +1,12 @@
 package autoswitch.config.util;
 
-import autoswitch.AutoSwitch;
-import com.google.common.base.Strings;
-import org.apache.commons.lang3.text.WordUtils;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
+
+import autoswitch.AutoSwitch;
+
+import com.google.common.base.Strings;
+import org.apache.commons.lang3.text.WordUtils;
 
 public class ConfigTemplates {
     private static final int width = 131 - 11;
@@ -20,6 +21,7 @@ public class ConfigTemplates {
      * Create a category around the provided mod name.
      *
      * @param modName name to have in the category
+     *
      * @return mod category text
      */
     public static String modCategory(String modName) {
@@ -33,6 +35,7 @@ public class ConfigTemplates {
      * @param name         name of category.
      * @param categoryDesc description of category
      * @param info         array of Strings to place as comments within the category block.
+     *
      * @return the category block text
      */
     private static String category(String name, String categoryDesc, String... info) {
@@ -68,77 +71,6 @@ public class ConfigTemplates {
 
     }
 
-    public static String configEntry(String key, String value, String comment, String defaultValue) {
-        return configEntry(key, value, comment, defaultValue, false);
-    }
-
-    // Multiline wrap for the config value
-    public static String configEntry(String key, String value, String comment, String defaultValue, boolean doWrap) {
-        return configEntry(configValueEntry(key, value, doWrap), comment, defaultValue);
-    }
-
-    /**
-     * Make category block text based on provided tool groupings.
-     *
-     * @return tool groupings category block text.
-     */
-    public static String toolGroupings() {
-        StringBuilder keys = new StringBuilder();
-        Enumeration<String> enumKeys = AutoSwitch.switchData.toolGroupings.keys();
-
-        while (enumKeys.hasMoreElements()) {
-            keys.append(keys.length() > 0 ? ", " : "").append(enumKeys.nextElement());
-        }
-
-        return category("Provided Tool Groupings by AutoSwitch and Mods it Interfaced With", "",
-                "Tool groupings are a way to specify multiple tools at once. To match any grouping, use 'any'."
-                , keys.toString());
-    }
-
-    /**
-     * Word wrap given text for use in properties file as a comment.
-     * Supports multiline text.
-     */
-    public static String wordWrapComment(String str) {
-        StringBuilder out = new StringBuilder();
-        String[] cls = str.replaceAll("\n", "\n# ").split(String.format(deliminatorPreserver, "\n"));
-        for (String cl : cls) {
-            out.append(WordUtils.wrap(cl, width - 2, "\n# ", false));
-        }
-        return out.toString();
-    }
-
-    private static String configCommentEntry(String defaultValue) {
-        return (defaultValue != null && !defaultValue.equals("")) ? defaultValueComment + defaultValue : "";
-    }
-
-    private static String configEntry(String cfg, String comment, String defaultValue) {
-        StringBuilder out = new StringBuilder();
-        if (comment != null && !comment.equals("")) {
-            out.append("\n");
-            out.append(wordWrapComment(comment));
-        }
-
-        out.append(configCommentEntry(defaultValue));
-
-        return combineToBlock(out.toString(), cfg);
-
-    }
-
-    private static String configValueEntry(String key, String value) {
-        return configValueEntry(key, value, false);
-    }
-
-    private static String configValueEntry(String key, String value, boolean doWrap) {
-        if (value == null) value = "";
-        key = key.replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
-        return doWrap ? configValueEntryWordwrap(key + " = " + value) : key + " = " + value;
-    }
-
-    private static String configValueEntryWordwrap(String str) {
-        return WordUtils.wrap(str, width - 2, ", \\\n", false, ",");
-    }
-
     private static String centeredString(String input) {
         int centering = (int) Math.ceil((width - input.length() - 4) / 2f);
 
@@ -156,4 +88,75 @@ public class ConfigTemplates {
 
         return out.toString();
     }
+
+    public static String configEntry(String key, String value, String comment, String defaultValue) {
+        return configEntry(key, value, comment, defaultValue, false);
+    }
+
+    // Multiline wrap for the config value
+    public static String configEntry(String key, String value, String comment, String defaultValue, boolean doWrap) {
+        return configEntry(configValueEntry(key, value, doWrap), comment, defaultValue);
+    }
+
+    private static String configEntry(String cfg, String comment, String defaultValue) {
+        StringBuilder out = new StringBuilder();
+        if (comment != null && !comment.equals("")) {
+            out.append("\n");
+            out.append(wordWrapComment(comment));
+        }
+
+        out.append(configCommentEntry(defaultValue));
+
+        return combineToBlock(out.toString(), cfg);
+
+    }
+
+    private static String configValueEntry(String key, String value, boolean doWrap) {
+        if (value == null) value = "";
+        key = key.replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
+        return doWrap ? configValueEntryWordwrap(key + " = " + value) : key + " = " + value;
+    }
+
+    /**
+     * Word wrap given text for use in properties file as a comment. Supports multiline text.
+     */
+    public static String wordWrapComment(String str) {
+        StringBuilder out = new StringBuilder();
+        String[] cls = str.replaceAll("\n", "\n# ").split(String.format(deliminatorPreserver, "\n"));
+        for (String cl : cls) {
+            out.append(WordUtils.wrap(cl, width - 2, "\n# ", false));
+        }
+        return out.toString();
+    }
+
+    private static String configCommentEntry(String defaultValue) {
+        return (defaultValue != null && !defaultValue.equals("")) ? defaultValueComment + defaultValue : "";
+    }
+
+    private static String configValueEntryWordwrap(String str) {
+        return WordUtils.wrap(str, width - 2, ", \\\n", false, ",");
+    }
+
+    /**
+     * Make category block text based on provided tool groupings.
+     *
+     * @return tool groupings category block text.
+     */
+    public static String toolGroupings() {
+        StringBuilder keys = new StringBuilder();
+        Enumeration<String> enumKeys = AutoSwitch.switchData.toolGroupings.keys();
+
+        while (enumKeys.hasMoreElements()) {
+            keys.append(keys.length() > 0 ? ", " : "").append(enumKeys.nextElement());
+        }
+
+        return category("Provided Tool Groupings by AutoSwitch and Mods it Interfaced With", "",
+                        "Tool groupings are a way to specify multiple tools at once. To match any grouping, use 'any'.",
+                        keys.toString());
+    }
+
+    private static String configValueEntry(String key, String value) {
+        return configValueEntry(key, value, false);
+    }
+
 }

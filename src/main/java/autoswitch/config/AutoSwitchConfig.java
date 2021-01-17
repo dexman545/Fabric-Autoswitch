@@ -2,6 +2,7 @@ package autoswitch.config;
 
 import autoswitch.config.util.CaseInsensitiveEnumConverter;
 import autoswitch.config.util.Comment;
+
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Mutable;
@@ -14,9 +15,8 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @DefaultValue("DEFAULT")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Comment("Controls where and if the keybinding toggle message should be displayed. DEFAULT is above the hotbar," +
-            " like with bed messages. CHAT is in the chat bar, like a normal chat message. Set to OFF to disable " +
-            "the message entirely." +
-            "\nAcceptable values: DEFAULT, CHAT, OFF")
+             " like with bed messages. CHAT is in the chat bar, like a normal chat message. Set to OFF to disable " +
+             "the message entirely." + "\nAcceptable values: DEFAULT, CHAT, OFF")
     DisplayControl toggleMessageControl();
 
     @DefaultValue("false")
@@ -27,8 +27,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Key("switchAllowedFor")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Comment("Allow switching on the specified type, eg. only switch for blocks by specifying 'BLOCKS'. Set to 'NONE'" +
-            " to disable this behavior entirely." +
-            "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
+             " to disable this behavior entirely." + "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
     TargetType switchAllowed();
 
     @DefaultValue("true")
@@ -39,16 +38,15 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Key("switchbackAllowedFor")
     @Comment("Return to the previous slot when no longer performing the action on the specified type. Set to 'NONE'" +
-            " to disable this behavior entirely." +
-            "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
+             " to disable this behavior entirely." + "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
     TargetType switchbackAllowed();
 
     @DefaultValue("MOBS")
     @Key("switchbackWaitsForCooldown")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Comment("Before switching back when using the 'attack' action, wait for the attack cooldown to finish. " +
-            "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks visually smoother. " +
-            "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
+             "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks visually smoother. " +
+             "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
     TargetType switchbackWaits();
 
     @DefaultValue("true")
@@ -58,9 +56,8 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @DefaultValue("SADDLE")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Comment("Switch used tool to offhand for the specified type." +
-            "Use 'ALL' to move all items to the offhand. 'SADDLE' will only move the item to the offhand for " +
-            "saddleable targets." +
-            "\nAcceptable values: ALL, SADDLE, OFF.")
+             "Use 'ALL' to move all items to the offhand. 'SADDLE' will only move the item to the offhand for " +
+             "saddleable targets." + "\nAcceptable values: ALL, SADDLE, OFF.")
     OffhandType putUseActionToolInOffHand();
 
     @DefaultValue("true")
@@ -77,7 +74,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
 
     @DefaultValue("true")
     @Comment("Checks if a saddlable entity has a saddle for use action to switch. " +
-            "Does not allow switching to a saddle on hotbar.")
+             "Does not allow switching to a saddle on hotbar.")
     Boolean checkSaddlableEntitiesForSaddle();
 
     @DefaultValue("true")
@@ -90,22 +87,22 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
 
     @DefaultValue("true")
     @Comment("Enable to allow target list to stack enchantments. Disable for old behavior. " +
-            "When enabled, a target selector of 'tool;fortune, tool;mending' will prefer a tool with " +
-            "both fortune and mending over one with just fortune. " +
-            "This differs from 'tool;fortune&mending' in that only one enchantment is required for " +
-            "the tool to be selected, rather than both fortune and mending.")
+             "When enabled, a target selector of 'tool;fortune, tool;mending' will prefer a tool with " +
+             "both fortune and mending over one with just fortune. " +
+             "This differs from 'tool;fortune&mending' in that only one enchantment is required for " +
+             "the tool to be selected, rather than both fortune and mending.")
     Boolean toolEnchantmentsStack();
 
     @DefaultValue("false")
     @Comment("This setting is meant to disable config GUI integration if in future the feature breaks, " +
-            "but the rest of AutoSwitch does not. Fallbacks are in place to ensure any changes to Minecraft do not break " +
-            "integration, this is simply a more extreme kill switch.")
+             "but the rest of AutoSwitch does not. Fallbacks are in place to ensure any changes to Minecraft do not " +
+             "break " + "integration, this is simply a more extreme kill switch.")
     Boolean disableModMenuConfig();
 
     @DefaultValue("false")
     @Comment("Tools with enchantments that increase attack damage will be rated higher. " +
-            "This means an axe with sharpness can be preferred over a sword. " +
-            "Set to true to enable this functionality. False ignores the enchantments.")
+             "This means an axe with sharpness can be preferred over a sword. " +
+             "Set to true to enable this functionality. False ignores the enchantments.")
     Boolean weaponRatingIncludesEnchants();
 
     @DefaultValue("false")
@@ -113,14 +110,13 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     Boolean disableSwitchingOnStartup();
 
     @DefaultValue("0.05") // 1 tick's time
-    @Comment("Delay in seconds from end of hand swinging to perform switchback action. Resolution on the order of ticks. " +
-            "0.05 is 1 tick of delay.")
+    @Comment("Delay in seconds from end of hand swinging to perform switchback action. Resolution on the order of " +
+             "ticks. " + "0.05 is 1 tick of delay.")
     Float switchbackDelay();
 
     @DefaultValue("0.05")
     @Comment("Delay in seconds from triggering of normal switch action on the basis that the previous switch " +
-            "has not been undone via switchback. Resolution on the order of ticks. " +
-            "0.05 is 1 tick of delay.")
+             "has not been undone via switchback. Resolution on the order of ticks. " + "0.05 is 1 tick of delay.")
     Float switchDelay();
 
     @DefaultValue("true")
@@ -133,34 +129,29 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
 
     @DefaultValue("false")
     @Comment("When enabled, the config files will be regenerated upon every MC startup. " +
-            "This means any user-added config entries will be moved to the bottom in the 'Overrides' section. " +
-            "When disabled, the files will only be rewritten when the config version does not match expected one. " +
-            "Do note that the material and usable configs will not regenerate if removed with this disabled if the " +
-            "main config was not also removed.")
+             "This means any user-added config entries will be moved to the bottom in the 'Overrides' section. " +
+             "When disabled, the files will only be rewritten when the config version does not match expected one. " +
+             "Do note that the material and usable configs will not regenerate if removed with this disabled if the " +
+             "main config was not also removed.")
     Boolean alwaysRewriteConfigs();
 
     @DefaultValue("true")
-    @Comment("If enabled, AutoSwitch will attempt to avoid recalculating hotbar slots to be used on a particular target. " +
-            "Each time that slot is modified, it's cached data is thrown out. This can benefit performance.")
+    @Comment("If enabled, AutoSwitch will attempt to avoid recalculating hotbar slots to be used on a particular " +
+             "target. " +
+             "Each time that slot is modified, it's cached data is thrown out. This can benefit performance.")
     Boolean cacheSwitchResults();
 
     enum TargetType { // Do not change order, SwitchUtil relies on the ordinals
-        BOTH,
-        MOBS,
-        BLOCKS,
-        NONE
+        BOTH, MOBS, BLOCKS, NONE
     }
 
     enum DisplayControl {
-        DEFAULT,
-        CHAT,
-        OFF
+        DEFAULT, CHAT, OFF
     }
 
     enum OffhandType { // Do not change order, SwitchUtil relies on the ordinals
-        SADDLE,
-        ALL,
-        OFF
+        SADDLE, ALL, OFF
     }
+
 }
 

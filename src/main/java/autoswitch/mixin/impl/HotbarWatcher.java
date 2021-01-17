@@ -1,15 +1,29 @@
 package autoswitch.mixin.impl;
 
-import autoswitch.AutoSwitch;
-import autoswitch.util.TargetableCache;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-
 import java.util.List;
 import java.util.function.IntConsumer;
 
+import autoswitch.AutoSwitch;
+import autoswitch.util.TargetableCache;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+
 public class HotbarWatcher {
+
+    public static void handleSlotChange(List<ItemStack> prev, List<ItemStack> current) {
+        updateCaches(compareHotbars(prev, current));
+
+    }
+
+    public static void updateCaches(IntArrayList changedSlots) {
+        changedSlots.forEach((IntConsumer) slot -> {
+            updateCache(AutoSwitch.switchState.switchActionCache, slot);
+            updateCache(AutoSwitch.switchState.switchInteractCache, slot);
+        });
+    }
 
     public static IntArrayList compareHotbars(List<ItemStack> prev, List<ItemStack> current) {
         IntArrayList changedHotbarSlots = new IntArrayList(PlayerInventory.getHotbarSize());
@@ -25,26 +39,6 @@ public class HotbarWatcher {
         return changedHotbarSlots;
     }
 
-    private static boolean stacksSufficientlyDiffer(ItemStack o, ItemStack n) {
-        if (o.isEmpty() || n.isEmpty()) return true;
-        if (ItemStack.areEqual(o, n)) return false;
-
-        return !ItemStack.areTagsEqual(o, n) || !ItemStack.areItemsEqual(o, n);
-
-    }
-
-    public static void handleSlotChange(List<ItemStack> prev, List<ItemStack> current) {
-        updateCaches(compareHotbars(prev, current));
-
-    }
-
-    public static void updateCaches(IntArrayList changedSlots) {
-        changedSlots.forEach((IntConsumer) slot -> {
-            updateCache(AutoSwitch.switchState.switchActionCache, slot);
-            updateCache(AutoSwitch.switchState.switchInteractCache, slot);
-        });
-    }
-
     private static void updateCache(final TargetableCache cache, int slot) {
         // Disabled as adding items to hotbar doesn't properly fix the cache,
         // see hoe on grass then adding shovel to hotbar
@@ -56,6 +50,14 @@ public class HotbarWatcher {
         // Alternatively, use a smarter method of removing old cache values.
         //TODO smart cache update
         cache.clear();
+    }
+
+    private static boolean stacksSufficientlyDiffer(ItemStack o, ItemStack n) {
+        if (o.isEmpty() || n.isEmpty()) return true;
+        if (ItemStack.areEqual(o, n)) return false;
+
+        return !ItemStack.areTagsEqual(o, n) || !ItemStack.areItemsEqual(o, n);
+
     }
 
 }

@@ -1,8 +1,10 @@
 package autoswitch.compat.modmenu;
 
 import autoswitch.AutoSwitch;
+
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -21,4 +23,5 @@ public class ModMenuImpl implements ModMenuApi {
 
         return null;
     }
+
 }

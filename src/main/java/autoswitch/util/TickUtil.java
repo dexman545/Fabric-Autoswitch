@@ -1,13 +1,14 @@
 package autoswitch.util;
 
+import static autoswitch.AutoSwitch.featureCfg;
+import static autoswitch.AutoSwitch.tickTime;
+
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.events.SwitchEvent;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
-
-import static autoswitch.AutoSwitch.featureCfg;
-import static autoswitch.AutoSwitch.tickTime;
 
 public class TickUtil {
 
@@ -19,6 +20,7 @@ public class TickUtil {
      * @param keyChooser  choose which translation to use
      * @param tlKeyTruthy message if keyChooser is true
      * @param tlKeyFalsy  message if keyChooser is false
+     *
      * @return updated toggle
      */
     public static boolean keybindingToggleAction(PlayerEntity player, boolean toggle, boolean keyChooser,

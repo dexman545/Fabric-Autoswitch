@@ -3,18 +3,20 @@ package autoswitch.config.populator;
 import autoswitch.AutoSwitch;
 import autoswitch.config.io.MaterialHandler;
 import autoswitch.config.io.ToolHandler;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.aeonbits.owner.Accessible;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.aeonbits.owner.Accessible;
 
 @Environment(EnvType.CLIENT)
 public class AutoSwitchMapsGenerator {
 
     /**
-     * Populates maps AutoSwitch uses for switching.
-     * Maps populated: ToolSelectors, ToolLists, UseMap, and ToolTargetLists
+     * Populates maps AutoSwitch uses for switching. Maps populated: ToolSelectors, ToolLists, UseMap, and
+     * ToolTargetLists
      */
     public static void populateAutoSwitchMaps() {
         populateToolTargetMaps();
@@ -35,8 +37,8 @@ public class AutoSwitchMapsGenerator {
     }
 
     /**
-     * Populates the provided map from the config file, parsing the input via ToolHandler and MaterialHandler
-     * into something usable.
+     * Populates the provided map from the config file, parsing the input via ToolHandler and MaterialHandler into
+     * something usable.
      *
      * @param map Map to populate.
      * @param cfg Config to pull data from.

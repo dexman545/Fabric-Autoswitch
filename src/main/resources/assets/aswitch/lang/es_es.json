@@ -1,8 +1,8 @@
 {
-	"key.autoswitch.toggle": "Tecla de alternancia de cambio automático",
-	"key.autoswitch.toggle_mowing": "Llave de palanca de protección de corte",
-	"msg.autoswitch.mow_false": "Cortar al pelear: deshabilitado",
-	"msg.autoswitch.mow_true": "Cortar al pelear: habilitado",
-	"msg.autoswitch.toggle_false": "AutoSwitch: deshabilitado",
-	"msg.autoswitch.toggle_true": "AutoSwitch: habilitado"
+  "key.autoswitch.toggle": "Tecla de alternancia de cambio automático",
+  "key.autoswitch.toggle_mowing": "Llave de palanca de protección de corte",
+  "msg.autoswitch.mow_false": "Cortar al pelear: deshabilitado",
+  "msg.autoswitch.mow_true": "Cortar al pelear: habilitado",
+  "msg.autoswitch.toggle_false": "AutoSwitch: deshabilitado",
+  "msg.autoswitch.toggle_true": "AutoSwitch: habilitado"
 }

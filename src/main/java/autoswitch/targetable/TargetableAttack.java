@@ -3,6 +3,7 @@ package autoswitch.targetable;
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.util.TargetableUtil;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -21,6 +22,12 @@ class TargetableAttack extends AbstractTargetable {
     }
 
     @Override
+    void populateToolSelection(ItemStack stack, int slot) {
+        processToolSelectors(stack, slot, AutoSwitch.switchData.target2AttackActionToolSelectorsMap,
+                             TargetableUtil::getAttackTarget, TargetableUtil::isCorrectAttackType);
+    }
+
+    @Override
     Boolean switchTypeAllowed() {
         if (AutoSwitch.featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BOTH) return true;
 
@@ -36,14 +43,9 @@ class TargetableAttack extends AbstractTargetable {
     }
 
     @Override
-    void populateToolSelection(ItemStack stack, int slot) {
-        processToolSelectors(stack, slot, AutoSwitch.switchData.target2AttackActionToolSelectorsMap,
-                TargetableUtil::getAttackTarget, TargetableUtil::isCorrectAttackType);
+    protected boolean checkSpecialCase(Object target) {
+        return !AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() &&
+               AutoSwitch.switchData.target2AttackActionToolSelectorsMap.get(target) == null;
     }
 
-    @Override
-    protected boolean checkSpecialCase(Object target) {
-        return !AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified()
-                && AutoSwitch.switchData.target2AttackActionToolSelectorsMap.get(target) == null;
-    }
 }

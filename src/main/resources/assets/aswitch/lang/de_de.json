@@ -1,8 +1,8 @@
 {
-	"key.autoswitch.toggle": "AutoSwitch-Umschalttaste",
-	"key.autoswitch.toggle_mowing": "Mähschutz-Umschalttaste",
-	"msg.autoswitch.mow_false": "Mähen im Kampf: Deaktiviert",
-	"msg.autoswitch.mow_true": "Mähen im Kampf: Aktiviert",
-	"msg.autoswitch.toggle_false": "AutoSwitch: Deaktiviert",
-	"msg.autoswitch.toggle_true": "AutoSwitch: Aktiviert"
+  "key.autoswitch.toggle": "AutoSwitch-Umschalttaste",
+  "key.autoswitch.toggle_mowing": "Mähschutz-Umschalttaste",
+  "msg.autoswitch.mow_false": "Mähen im Kampf: Deaktiviert",
+  "msg.autoswitch.mow_true": "Mähen im Kampf: Aktiviert",
+  "msg.autoswitch.toggle_false": "AutoSwitch: Deaktiviert",
+  "msg.autoswitch.toggle_true": "AutoSwitch: Aktiviert"
 }

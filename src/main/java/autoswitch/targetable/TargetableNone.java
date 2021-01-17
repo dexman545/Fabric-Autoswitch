@@ -1,9 +1,9 @@
 package autoswitch.targetable;
 
+import java.util.Optional;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-
-import java.util.Optional;
 
 /**
  * Implementation of Targetable when there is no target. Intended for switchback feature.
@@ -30,4 +30,5 @@ class TargetableNone extends AbstractTargetable {
     Boolean switchTypeAllowed() {
         return true;
     }
+
 }

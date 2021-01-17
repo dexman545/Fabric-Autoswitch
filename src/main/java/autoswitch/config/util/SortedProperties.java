@@ -1,6 +1,12 @@
 package autoswitch.config.util;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 // Version of Properties that is sorted
 public final class SortedProperties extends Properties {
@@ -13,6 +19,11 @@ public final class SortedProperties extends Properties {
 
     public SortedProperties() {
         super();
+    }
+
+    @Override
+    public Set<String> stringPropertyNames() {
+        return new TreeSet<>(super.stringPropertyNames());
     }
 
     @Override
@@ -32,8 +43,4 @@ public final class SortedProperties extends Properties {
         return sorted;
     }
 
-    @Override
-    public Set<String> stringPropertyNames() {
-        return new TreeSet<>(super.stringPropertyNames());
-    }
 }

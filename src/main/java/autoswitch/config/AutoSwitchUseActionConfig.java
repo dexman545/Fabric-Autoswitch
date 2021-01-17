@@ -2,6 +2,7 @@ package autoswitch.config;
 
 import autoswitch.config.io.ToolHandler;
 import autoswitch.config.util.Comment;
+
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Mutable;

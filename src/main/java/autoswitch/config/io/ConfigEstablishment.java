@@ -1,5 +1,12 @@
 package autoswitch.config.io;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Set;
+
 import autoswitch.AutoSwitch;
 import autoswitch.api.AutoSwitchMap;
 import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
@@ -9,8 +16,8 @@ import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.config.util.ConfigHeaders;
 import autoswitch.util.SwitchUtil;
+
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.loader.api.FabricLoader;
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.ConfigFactory;
@@ -18,12 +25,7 @@ import org.aeonbits.owner.Mutable;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Level;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.Set;
+import net.fabricmc.loader.api.FabricLoader;
 
 public final class ConfigEstablishment {
     private static final Path configDir = FabricLoader.getInstance().getConfigDir();
@@ -107,44 +109,16 @@ public final class ConfigEstablishment {
         });
     }
 
-    /**
-     * Write all config values to file with pretty-print.
-     *
-     * Used for saving changes made by the user in the config GUI.
-     *
-     * @throws IOException when configs fail to write
-     */
-    public static void writeConfigFiles() throws IOException {
-        genFile(configFeature, AutoSwitch.featureCfg, ConfigHeaders.basicConfig, null);
-        genFile(configAttackAction, AutoSwitch.attackActionCfg, ConfigHeaders.attackConfig, ApiGenUtil.modActionConfigs);
-        genFile(configUseAction, AutoSwitch.useActionCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
-    }
-
     private static void updateOldConfigFiles() {
         try {
-            FileUtils.moveFile(useActionPath.resolveSibling("autoswitchUsable.cfg").toFile(),
-                    useActionPath.toFile());
+            FileUtils.moveFile(useActionPath.resolveSibling("autoswitchUsable.cfg").toFile(), useActionPath.toFile());
             FileUtils.moveFile(attackActionPath.resolveSibling("autoswitchMaterials.cfg").toFile(),
-                    attackActionPath.toFile());
+                               attackActionPath.toFile());
             updateOldConfigFormat(attackActionPath.toFile());
             updateOldConfigFormat(useActionPath.toFile());
         } catch (IOException e) {
             AutoSwitch.logger.catching(Level.DEBUG, e);
         }
-    }
-
-    private static void updateOldConfigFormat(File file) throws IOException {
-        String s = FileUtils.readFileToString(file, StandardCharsets.UTF_8).replaceAll("minecraft-", "minecraft!");
-        FileUtils.writeStringToFile(file, s, StandardCharsets.UTF_8, false);
-    }
-
-    // Write file
-    private static <T extends Accessible & Config> void
-    genFile(String path, T config, String header, Object2ObjectOpenHashMap<String, Set<String>> moddedEntries)
-            throws IOException {
-        FileOutputStream basicConfig = new FileOutputStream(path);
-        basicConfig.write(GenerateConfigTemplate.initConfig(config, moddedEntries, header).getBytes());
-        basicConfig.close();
     }
 
     // Add API added config values
@@ -154,6 +128,34 @@ public final class ConfigEstablishment {
                 cfg.setProperty(k, v);
             }
         });
+    }
+
+    /**
+     * Write all config values to file with pretty-print.
+     * <p>
+     * Used for saving changes made by the user in the config GUI.
+     *
+     * @throws IOException when configs fail to write
+     */
+    public static void writeConfigFiles() throws IOException {
+        genFile(configFeature, AutoSwitch.featureCfg, ConfigHeaders.basicConfig, null);
+        genFile(configAttackAction, AutoSwitch.attackActionCfg, ConfigHeaders.attackConfig,
+                ApiGenUtil.modActionConfigs);
+        genFile(configUseAction, AutoSwitch.useActionCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
+    }
+
+    private static void updateOldConfigFormat(File file) throws IOException {
+        String s = FileUtils.readFileToString(file, StandardCharsets.UTF_8).replaceAll("minecraft-", "minecraft!");
+        FileUtils.writeStringToFile(file, s, StandardCharsets.UTF_8, false);
+    }
+
+    // Write file
+    private static <T extends Accessible & Config> void genFile(String path, T config, String header,
+                                                                Object2ObjectOpenHashMap<String, Set<String>> moddedEntries)
+            throws IOException {
+        FileOutputStream basicConfig = new FileOutputStream(path);
+        basicConfig.write(GenerateConfigTemplate.initConfig(config, moddedEntries, header).getBytes());
+        basicConfig.close();
     }
 
 }

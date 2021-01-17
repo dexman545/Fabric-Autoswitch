@@ -1,17 +1,18 @@
 package autoswitch.events;
 
+import static autoswitch.AutoSwitch.featureCfg;
+
+import java.util.Optional;
+
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.targetable.AbstractTargetable;
 import autoswitch.util.SwitchUtil;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Saddleable;
 import net.minecraft.entity.player.PlayerEntity;
-
-import java.util.Optional;
-
-import static autoswitch.AutoSwitch.featureCfg;
 
 /**
  * Processing of switch events.
@@ -35,12 +36,14 @@ public enum SwitchEvent {
             boolean doSwitchBack = featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BOTH;
             // Handles switchback
             if (protoTarget instanceof Entity) {
-                if (hasSwitched && (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.MOBS)) {
+                if (hasSwitched &&
+                    (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.MOBS)) {
                     AutoSwitch.switchState.setHasSwitched(true);
                     AutoSwitch.switchState.setAttackedEntity(true);
                 }
             } else if (protoTarget instanceof BlockState) {
-                if (hasSwitched && (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BLOCKS)) {
+                if (hasSwitched &&
+                    (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BLOCKS)) {
                     AutoSwitch.switchState.setHasSwitched(true);
                 }
             }
@@ -110,14 +113,14 @@ public enum SwitchEvent {
         }
 
         private boolean doMobSwitchback() {
-            return AutoSwitch.switchState.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
-                    AutoSwitchConfig.TargetType.BOTH ||
+            return AutoSwitch.switchState.hasAttackedEntity() &&
+                   (featureCfg.switchbackWaits() == AutoSwitchConfig.TargetType.BOTH ||
                     featureCfg.switchbackWaits() == AutoSwitchConfig.TargetType.MOBS);
         }
 
         private boolean doBlockSwitchback() {
-            return !AutoSwitch.switchState.hasAttackedEntity() && (featureCfg.switchbackWaits() ==
-                    AutoSwitchConfig.TargetType.BOTH ||
+            return !AutoSwitch.switchState.hasAttackedEntity() &&
+                   (featureCfg.switchbackWaits() == AutoSwitchConfig.TargetType.BOTH ||
                     featureCfg.switchbackWaits() == AutoSwitchConfig.TargetType.BLOCKS);
         }
 
@@ -138,8 +141,8 @@ public enum SwitchEvent {
         public boolean invoke() {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
-            AbstractTargetable.switchback(AutoSwitch.switchState.getPrevSlot(), player)
-                    .changeTool().ifPresent(this::handlePostSwitchTasks);
+            AbstractTargetable.switchback(AutoSwitch.switchState.getPrevSlot(), player).changeTool()
+                              .ifPresent(this::handlePostSwitchTasks);
 
             return true;
         }

@@ -1,8 +1,8 @@
 {
-	"key.autoswitch.toggle": "AutoSwitch切り替えキー",
-	"key.autoswitch.toggle_mowing": "刈り取り保護トグルキー",
-	"msg.autoswitch.mow_false": "戦闘時に刈る：無効",
-	"msg.autoswitch.mow_true": "戦闘時に刈る：有効",
-	"msg.autoswitch.toggle_false": "AutoSwitch：無効",
-	"msg.autoswitch.toggle_true": "AutoSwitch：有効"
+  "key.autoswitch.toggle": "AutoSwitch切り替えキー",
+  "key.autoswitch.toggle_mowing": "刈り取り保護トグルキー",
+  "msg.autoswitch.mow_false": "戦闘時に刈る：無効",
+  "msg.autoswitch.mow_true": "戦闘時に刈る：有効",
+  "msg.autoswitch.toggle_false": "AutoSwitch：無効",
+  "msg.autoswitch.toggle_true": "AutoSwitch：有効"
 }

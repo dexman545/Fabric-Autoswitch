@@ -2,6 +2,7 @@ package autoswitch.config;
 
 import autoswitch.config.io.ToolHandler;
 import autoswitch.config.util.Comment;
+
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Mutable;
@@ -58,7 +59,8 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
 
     @Separator(",")
     @DefaultValue("shears;minecraft:mending, shears")
-    @Comment("A Material for underwater plants such as seagrass that can have a block placed in them, thus 'replacing' it.")
+    @Comment("A Material for underwater plants such as seagrass that can have a block placed in them, thus " +
+             "'replacing' it.")
     ToolHandler[] replaceable_underwater_plant();
 
     @Separator(",")
@@ -103,7 +105,8 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
 
     @Separator(",")
     @DefaultValue("shovel;minecraft:silk_touch, shovel;minecraft:mending, shovel;minecraft:efficiency, shovel")
-    @Comment("A Material for blocks that come from mobs such as honey, slime, or infested blocks. Includes clay but not bone blocks.")
+    @Comment("A Material for blocks that come from mobs such as honey, slime, or infested blocks. Includes clay but " +
+             "not bone blocks.")
     ToolHandler[] organic_product();
 
     @Separator(",")
@@ -117,7 +120,8 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolHandler[] solid_organic();
 
     @Separator(",")
-    @DefaultValue("pickaxe;minecraft:silk_touch, any;minecraft:silk_touch, pickaxe;minecraft:efficiency, pickaxe;minecraft:mending, pickaxe")
+    @DefaultValue("pickaxe;minecraft:silk_touch, any;minecraft:silk_touch, pickaxe;minecraft:efficiency, pickaxe;" +
+                  "minecraft:mending, pickaxe")
     @Comment("A Material for ice blocks that do not melt such as packed ice.")
     ToolHandler[] dense_ice();
 
@@ -137,7 +141,8 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolHandler[] shulker_box();
 
     @Separator(",")
-    @DefaultValue("axe;minecraft:fortune, axe;minecraft:silk_touch, axe;minecraft:efficiency, axe;minecraft:mending, axe")
+    @DefaultValue("axe;minecraft:fortune, axe;minecraft:silk_touch, axe;minecraft:efficiency, axe;minecraft:mending, " +
+                  "axe")
     @Comment("A Material for wood logs, and things crafted from them.")
     ToolHandler[] wood();
 
@@ -167,12 +172,14 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolHandler[] tnt();
 
     @Separator(",")
-    @DefaultValue("shears;minecraft:mending, shears, hoe;minecraft:silk_touch, hoe;minecraft:mending, hoe, sword;minecraft:mending, sword")
+    @DefaultValue("shears;minecraft:mending, shears, hoe;minecraft:silk_touch, hoe;minecraft:mending, hoe, sword;" +
+                  "minecraft:mending, sword")
     @Comment("A Material leaves.")
     ToolHandler[] leaves();
 
     @Separator(",")
-    @DefaultValue("pickaxe;minecraft:silk_touch, any;minecraft:silk_touch, pickaxe;minecraft:fortune, pickaxe;minecraft:mending, pickaxe")
+    @DefaultValue("pickaxe;minecraft:silk_touch, any;minecraft:silk_touch, pickaxe;minecraft:fortune, pickaxe;" +
+                  "minecraft:mending, pickaxe")
     @Comment("A Material for glass and glass-like blocks (includes sea lanterns and conduits).")
     ToolHandler[] glass();
 
@@ -187,13 +194,16 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolHandler[] cactus();
 
     @Separator(",")
-    @DefaultValue("pickaxe;minecraft:fortune,pickaxe;minecraft:silk_touch, pickaxe;minecraft:mending, pickaxe;minecraft:efficiency, pickaxe")
-    @Comment("A Material for blocks that are stone or made from it, and generally prefer to be broken by a pickaxe, such as ores.")
+    @DefaultValue("pickaxe;minecraft:fortune,pickaxe;minecraft:silk_touch, pickaxe;minecraft:mending, pickaxe;" +
+                  "minecraft:efficiency, pickaxe")
+    @Comment("A Material for blocks that are stone or made from it, and generally prefer to be broken by a pickaxe, " +
+             "such as ores.")
     ToolHandler[] stone();
 
     @Separator(",")
     @DefaultValue("pickaxe;minecraft:fortune, pickaxe;minecraft:mending, pickaxe")
-    @Comment("A Material for metal blocks and compressed ore blocks, such as lapis, diamond, and redstone blocks, chains, iron (trap)doors, and cauldrons.")
+    @Comment("A Material for metal blocks and compressed ore blocks, such as lapis, diamond, and redstone blocks, " +
+             "chains, iron (trap)doors, and cauldrons.")
     ToolHandler[] metal();
 
     @Separator(",")
@@ -237,12 +247,14 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolHandler[] cake();
 
     @Separator(",")
-    @DefaultValue("trident;minecraft:impaling, any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, sword, axe")
+    @DefaultValue("trident;minecraft:impaling, any;minecraft:sharpness, sword;minecraft:mending, axe;" +
+                  "minecraft:mending, sword, axe")
     @Comment("An EntityGroup for guardians, turtles, fish, squids, dolphins, and the like.")
     ToolHandler[] aquaticEntity();
 
     @Separator(",")
-    @DefaultValue("any;minecraft:bane_of_arthropods, any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, sword, axe")
+    @DefaultValue("any;minecraft:bane_of_arthropods, any;minecraft:sharpness, sword;minecraft:mending, axe;" +
+                  "minecraft:mending, sword, axe")
     @Comment("An EntityGroup for spiders, bees, silverfish, and the like.")
     ToolHandler[] arthropod();
 
@@ -257,14 +269,16 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolHandler[] illager();
 
     @Separator(",")
-    @DefaultValue("any;minecraft:smite, any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, sword,axe")
+    @DefaultValue("any;minecraft:smite, any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, " +
+                  "sword,axe")
     @Comment("An EntityGroup for mobs that take extra damage from smite, such as zombies, withers, and zoglins")
     ToolHandler[] undead();
 
     @Separator(",")
     @DefaultValue("axe;minecraft:mending, sword;minecraft:mending, axe, sword")
     @Key("minecraft!boat")
-    @Comment("An Entity, specifically a boat. This is here so that an axe will be used to break it so that any mobs in the boat aren't accidently hit.")
+    @Comment("An Entity, specifically a boat. This is here so that an axe will be used to break it so that any mobs " +
+             "in the boat aren't accidently hit.")
     ToolHandler[] boat();
 
     // Hoe's special breaking since solid_organic will like enchants more than hoes
@@ -323,7 +337,8 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
 
     @Separator(",")
     @DefaultValue("")
-    @Comment("A default-provided override to make it clear to users that budding amethyst cannot be obtained by mining.")
+    @Comment("A default-provided override to make it clear to users that budding amethyst cannot be obtained by " +
+             "mining.")
     @Key("minecraft!budding_amethyst")
     ToolHandler[] budSpecial();
 

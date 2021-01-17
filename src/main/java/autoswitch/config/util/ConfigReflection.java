@@ -1,22 +1,23 @@
 package autoswitch.config.util;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Properties;
+
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.aeonbits.owner.Config;
-
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Properties;
 
 public class ConfigReflection {
 
 
     /**
-     * Map of config classes for check and casting as asking for the class on the config object directly
-     * returns some random sun object.
+     * Map of config classes for check and casting as asking for the class on the config object directly returns some
+     * random sun object.
      */
     private static final ObjectArrayList<Class<? extends Config>> configClasses = new ObjectArrayList<>();
 
@@ -36,24 +37,6 @@ public class ConfigReflection {
         return null;
     }
 
-    // Get the config entry's key
-    private static String key(Method method) {
-        Config.Key key = method.getAnnotation(Config.Key.class);
-        return (key == null) ? method.getName() : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
-    }
-
-    // get the config entry's comment
-    private static String comment(Method method) {
-        Comment comment = method.getAnnotation(Comment.class);
-        return (comment != null) ? comment.value() : null;
-    }
-
-    // Get the config entry's value
-    private static String defaultValue(Method method) {
-        Config.DefaultValue defaultValue = method.getAnnotation(Config.DefaultValue.class);
-        return defaultValue != null ? defaultValue.value() : null;
-    }
-
     // Populate provided map object with the default values for the config
     public static void defaults(Map<String, String> properties, Class<? extends Config> clazz) {
         Method[] methods = clazz.getMethods();
@@ -64,6 +47,18 @@ public class ConfigReflection {
                 properties.put(key, value);
             }
         }
+    }
+
+    // Get the config entry's key
+    private static String key(Method method) {
+        Config.Key key = method.getAnnotation(Config.Key.class);
+        return (key == null) ? method.getName() : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
+    }
+
+    // Get the config entry's value
+    private static String defaultValue(Method method) {
+        Config.DefaultValue defaultValue = method.getAnnotation(Config.DefaultValue.class);
+        return defaultValue != null ? defaultValue.value() : null;
     }
 
     // Populate provided properties object with the default values for the config
@@ -89,4 +84,11 @@ public class ConfigReflection {
             }
         }
     }
+
+    // get the config entry's comment
+    private static String comment(Method method) {
+        Comment comment = method.getAnnotation(Comment.class);
+        return (comment != null) ? comment.value() : null;
+    }
+
 }

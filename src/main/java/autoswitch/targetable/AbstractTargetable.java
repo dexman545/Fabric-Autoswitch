@@ -1,14 +1,27 @@
 package autoswitch.targetable;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.IntConsumer;
+
 import autoswitch.AutoSwitch;
 import autoswitch.util.SwitchData;
 import autoswitch.util.TargetableUtil;
+
 import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -16,11 +29,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.IntConsumer;
 
 /**
  * Parent class for Targetable type. Used to establish shared functions and parameters that are used for manipulating
@@ -34,8 +42,8 @@ public abstract class AbstractTargetable {
     Object protoTarget = null;
 
     /**
-     * Base constructor for Targetable, initializes the class parameters and
-     * fetches the target map and initial tool map based on configs passed to it
+     * Base constructor for Targetable, initializes the class parameters and fetches the target map and initial tool map
+     * based on configs passed to it
      *
      * @param player player this will effect
      */
@@ -72,8 +80,8 @@ public abstract class AbstractTargetable {
 
 
     /**
-     * Pulls the list of ItemStacks from the player's hotbar and send the stack and slot number
-     * to populate the tool map. Sends an air item if the slot is empty.
+     * Pulls the list of ItemStacks from the player's hotbar and send the stack and slot number to populate the tool
+     * map. Sends an air item if the slot is empty.
      *
      * @param player player whose inventory will be checked
      */
@@ -89,12 +97,20 @@ public abstract class AbstractTargetable {
 
     }
 
+    /**
+     * Populate the tool map with the right tools for that type based on subclass
+     *
+     * @param stack ItemStack to be checked if it is valid
+     * @param slot  slot of stack, to be inserted into map if it is valid
+     */
+    abstract void populateToolSelection(ItemStack stack, int slot);
 
     /**
-     * Change the players selected slot based on the results of findSlot().
-     * Checks if there is a slot to change to first.
+     * Change the players selected slot based on the results of findSlot(). Checks if there is a slot to change to
+     * first.
      *
      * @return If no slot to change to, returns empty Otherwise returns true if the slot changed, false if it didn't
+     *
      * @see AbstractTargetable#findSlot()
      */
     public Optional<Boolean> changeTool() {
@@ -112,16 +128,6 @@ public abstract class AbstractTargetable {
 
     }
 
-
-    /**
-     * @return returns true if the config allows autoswitch to happen; false otherwise.
-     * Does not take into account toggle {@link AutoSwitch#doAS}
-     */
-    private Boolean switchAllowed() {
-        return ((!this.player.isCreative() || AutoSwitch.featureCfg.switchInCreative()) &&
-                (switchTypeAllowed() && (MinecraftClient.getInstance().isInSingleplayer() || AutoSwitch.featureCfg.switchInMP())));
-    }
-
     /**
      * Find the optimal tool slot. Return empty if there isn't one.
      *
@@ -134,8 +140,9 @@ public abstract class AbstractTargetable {
 
         AutoSwitch.logger.debug(slot2ToolRating);
         if (!this.slot2ToolRating.isEmpty()) {
-            int slot = Collections.max(this.slot2ToolRating.int2DoubleEntrySet(),
-                    Comparator.comparingDouble(Map.Entry::getValue)).getIntKey();
+            int slot = Collections
+                    .max(this.slot2ToolRating.int2DoubleEntrySet(), Comparator.comparingDouble(Map.Entry::getValue))
+                    .getIntKey();
             if (AutoSwitch.featureCfg.cacheSwitchResults()) {
                 TargetableUtil.getTargetableCache(AutoSwitch.switchState, isUse()).put(this.protoTarget, slot);
             }
@@ -147,12 +154,25 @@ public abstract class AbstractTargetable {
     }
 
     /**
-     * Populate the tool map with the right tools for that type based on subclass
-     *
-     * @param stack ItemStack to be checked if it is valid
-     * @param slot  slot of stack, to be inserted into map if it is valid
+     * @return returns true if the config allows autoswitch to happen; false otherwise. Does not take into account
+     * toggle {@link AutoSwitch#doAS}
      */
-    abstract void populateToolSelection(ItemStack stack, int slot);
+    private Boolean switchAllowed() {
+        return ((!this.player.isCreative() || AutoSwitch.featureCfg.switchInCreative()) &&
+                (switchTypeAllowed() && (MinecraftClient.getInstance().isInSingleplayer() ||
+                                         AutoSwitch.featureCfg.switchInMP())));
+    }
+
+    boolean isUse() {
+        return false;
+    }
+
+    /**
+     * Determine config value for switching for mobs/blocks
+     *
+     * @return true if that type of switch is allowed in the config
+     */
+    abstract Boolean switchTypeAllowed();
 
     /**
      * Add tools to map that can handle this target
@@ -163,8 +183,7 @@ public abstract class AbstractTargetable {
      * @param toolSelector    check ToolType for correct case
      * @param toolSelectorMap ToolSelectors relevant to the case
      */
-    void processToolSelectors(ItemStack stack, int slot,
-                              Object2ObjectOpenHashMap<Object, IntArrayList> toolSelectorMap,
+    void processToolSelectors(ItemStack stack, int slot, Object2ObjectOpenHashMap<Object, IntArrayList> toolSelectorMap,
                               TargetGetter targetGetter, ToolSelector toolSelector) {
         if (!switchAllowed()) return; // Short-circuit to not evaluate tools when cannot switch
 
@@ -209,6 +228,10 @@ public abstract class AbstractTargetable {
 
     }
 
+    boolean checkSpecialCase(Object target) {
+        return false;
+    }
+
     /**
      * Generate the tool rating and add it to the tool rating map.
      */
@@ -251,36 +274,23 @@ public abstract class AbstractTargetable {
         boolean finalStackEnchants = stackEnchants;
         AutoSwitch.logger.debug("Rating: {}; Slot: {}", rating, slot);
 
-        this.slot2ToolRating.computeIfPresent(slot, (iSlot, oldRating) ->
-                TargetableUtil.toolRatingChange(oldRating, finalRating, stack, finalStackEnchants));
+        this.slot2ToolRating.computeIfPresent(slot, (iSlot, oldRating) -> TargetableUtil
+                .toolRatingChange(oldRating, finalRating, stack, finalStackEnchants));
         this.slot2ToolRating.putIfAbsent(slot, rating);
 
     }
 
-    boolean isUse() {
-        return false;
-    }
-
-    boolean checkSpecialCase(Object target) {
-        return false;
-    }
-
-    /**
-     * Determine config value for switching for mobs/blocks
-     *
-     * @return true if that type of switch is allowed in the config
-     */
-    abstract Boolean switchTypeAllowed();
-
     @FunctionalInterface
     interface TargetGetter {
         Object getTarget(Object protoTarget);
+
     }
 
 
     @FunctionalInterface
     interface ToolSelector {
         boolean correctType(String tool, Item item);
+
     }
 
 }

@@ -5,12 +5,21 @@ import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.util.SwitchData;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.*;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ShearsItem;
+import net.minecraft.item.ShovelItem;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.TridentItem;
 
 public class ApiMapGenerator {
     public static void createApiMaps() {
@@ -31,26 +40,6 @@ public class ApiMapGenerator {
         // Targets
         genTargetMap();
         genConfigMaps();
-    }
-
-    // Populate maps with default values to be sent to mods
-    private static void genConfigMaps() {
-        ConfigReflection.defaults(AutoSwitch.switchData.attackConfig, AutoSwitchAttackActionConfig.class);
-        ConfigReflection.defaults(AutoSwitch.switchData.usableConfig, AutoSwitchUseActionConfig.class);
-
-        // PoC for ensuring empty values don't get passed allowing mods to override
-        /*for (String key : matCfg.propertyNames()) {
-            if (!matCfg.getProperty(key, "").equals("")) {
-                AutoSwitch.data.actionConfig.put(key, matCfg.getProperty(key));
-            }
-        }
-
-        for (String key : usableCfg.propertyNames()) {
-            if (!usableCfg.getProperty(key, "").equals("")) {
-                AutoSwitch.data.usableConfig.put(key, usableCfg.getProperty(key));
-            }
-        }*/
-
     }
 
     // Populate Targets map with default values
@@ -166,6 +155,26 @@ public class ApiMapGenerator {
 
         // Item Use
         AutoSwitch.switchData.targets.put("bow_action", SwitchData.itemTarget);
+    }
+
+    // Populate maps with default values to be sent to mods
+    private static void genConfigMaps() {
+        ConfigReflection.defaults(AutoSwitch.switchData.attackConfig, AutoSwitchAttackActionConfig.class);
+        ConfigReflection.defaults(AutoSwitch.switchData.usableConfig, AutoSwitchUseActionConfig.class);
+
+        // PoC for ensuring empty values don't get passed allowing mods to override
+        /*for (String key : matCfg.propertyNames()) {
+            if (!matCfg.getProperty(key, "").equals("")) {
+                AutoSwitch.data.actionConfig.put(key, matCfg.getProperty(key));
+            }
+        }
+
+        for (String key : usableCfg.propertyNames()) {
+            if (!usableCfg.getProperty(key, "").equals("")) {
+                AutoSwitch.data.usableConfig.put(key, usableCfg.getProperty(key));
+            }
+        }*/
+
     }
 
 }

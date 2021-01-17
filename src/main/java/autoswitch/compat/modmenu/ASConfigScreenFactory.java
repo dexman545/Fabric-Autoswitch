@@ -1,9 +1,12 @@
 package autoswitch.compat.modmenu;
 
 import autoswitch.AutoSwitch;
+
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.TranslatableText;
 
@@ -24,4 +27,5 @@ class ASConfigScreenFactory implements ConfigScreenFactory<ASConfigScreen> {
 
         return null;
     }
+
 }

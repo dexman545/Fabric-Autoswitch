@@ -1,18 +1,21 @@
 package autoswitch.compat.autoswitch_api.impl;
 
+import java.util.Set;
+
 import autoswitch.AutoSwitch;
 import autoswitch.api.AutoSwitchApi;
 import autoswitch.api.AutoSwitchMap;
+
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.SerializationUtils;
 
-import java.util.Set;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class ApiGenUtil {
-    public static final Object2ObjectOpenHashMap<String, Set<String>> modActionConfigs = new Object2ObjectOpenHashMap<>();
+    public static final Object2ObjectOpenHashMap<String, Set<String>> modActionConfigs =
+            new Object2ObjectOpenHashMap<>();
     public static final Object2ObjectOpenHashMap<String, Set<String>> modUseConfigs = new Object2ObjectOpenHashMap<>();
 
     public static void pullHookedMods() {
@@ -22,7 +25,8 @@ public class ApiGenUtil {
             api.moddedToolGroups(AutoSwitch.switchData.toolGroupings);
             final AutoSwitchMap<String, String> baseAction = duplicateMap(AutoSwitch.switchData.attackConfig);
             final AutoSwitchMap<String, String> baseUseAction = duplicateMap(AutoSwitch.switchData.usableConfig);
-            api.moddedTargets(AutoSwitch.switchData.targets, AutoSwitch.switchData.attackConfig, AutoSwitch.switchData.usableConfig);
+            api.moddedTargets(AutoSwitch.switchData.targets, AutoSwitch.switchData.attackConfig,
+                              AutoSwitch.switchData.usableConfig);
 
             final String name = entrypoint.getProvider().getMetadata().getName();
 
@@ -56,7 +60,8 @@ public class ApiGenUtil {
         }
     }
 
-    private static Set<String> diffMaps(final AutoSwitchMap<String, String> base, final AutoSwitchMap<String, String> modded) {
+    private static Set<String> diffMaps(final AutoSwitchMap<String, String> base,
+                                        final AutoSwitchMap<String, String> modded) {
         if (!base.equals(modded)) {
             MapDifference<String, String> diff = Maps.difference(base, modded);
             return diff.entriesOnlyOnRight().keySet();

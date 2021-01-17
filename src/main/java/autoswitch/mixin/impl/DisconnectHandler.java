@@ -1,8 +1,10 @@
 package autoswitch.mixin.impl;
 
-import autoswitch.util.SwitchState;
+import static autoswitch.AutoSwitch.doAS;
+import static autoswitch.AutoSwitch.featureCfg;
+import static autoswitch.AutoSwitch.switchState;
 
-import static autoswitch.AutoSwitch.*;
+import autoswitch.util.SwitchState;
 
 public class DisconnectHandler {
 

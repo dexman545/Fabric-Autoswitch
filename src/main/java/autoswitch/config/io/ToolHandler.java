@@ -1,15 +1,18 @@
 package autoswitch.config.io;
 
+import java.util.Locale;
+
 import autoswitch.AutoSwitch;
+
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Locale;
 
 @Environment(EnvType.CLIENT)
 public class ToolHandler {
@@ -23,8 +26,8 @@ public class ToolHandler {
         }
         String[] cleanedInput = input.split(";");
         String tagStr = cleanedInput[0].toLowerCase(Locale.ENGLISH).trim().replace("!", ":");
-        String enchantStr = cleanedInput.length > 1 ? cleanedInput[1].toLowerCase(Locale.ENGLISH)
-                .trim().replace("-", ":") : "";
+        String enchantStr =
+                cleanedInput.length > 1 ? cleanedInput[1].toLowerCase(Locale.ENGLISH).trim().replace("-", ":") : "";
 
         ReferenceArrayList<Enchantment> enchants = new ReferenceArrayList<>();
         ReferenceArrayList<Identifier> enchantIdentifiers = new ReferenceArrayList<>();
@@ -90,4 +93,5 @@ public class ToolHandler {
     public int getId() {
         return id;
     }
+
 }

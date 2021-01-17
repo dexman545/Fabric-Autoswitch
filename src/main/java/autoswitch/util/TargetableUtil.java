@@ -1,8 +1,14 @@
 package autoswitch.util;
 
+import java.util.OptionalInt;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 import autoswitch.AutoSwitch;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -16,15 +22,11 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.util.OptionalInt;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-
 public class TargetableUtil {
 
     public static double toolRatingChange(double oldValue, double newValue, ItemStack stack, boolean stackEnchant) {
         if (stackEnchant && AutoSwitch.featureCfg.toolEnchantmentsStack() &&
-                !(stack.getItem().equals(ItemStack.EMPTY.getItem())) && !(stack.getMaxDamage() == 0)) {
+            !(stack.getItem().equals(ItemStack.EMPTY.getItem())) && !(stack.getMaxDamage() == 0)) {
             return oldValue + newValue;
         }
 
@@ -35,15 +37,12 @@ public class TargetableUtil {
         return getTarget(AutoSwitch.switchData.target2AttackActionToolSelectorsMap, protoTarget);
     }
 
-    public static Object getUseTarget(Object protoTarget) {
-        return getTarget(AutoSwitch.switchData.target2UseActionToolSelectorsMap, protoTarget);
-    }
-
     /**
      * Extract target from protoTarget, given a map of targets to examine.
      *
      * @param map         map of targets to compare protoTarget to
      * @param protoTarget object to extract target data from
+     *
      * @return target
      */
     private static Object getTarget(Object2ObjectOpenHashMap<Object, IntArrayList> map, Object protoTarget) {
@@ -73,22 +72,8 @@ public class TargetableUtil {
         return null;
     }
 
-    /**
-     * Function has a maximum of 1 at e; is 0 at 1; decays from e -> infinity.
-     * The (1/.16) is correction factor to have maximum output be 1, instead of 0.16
-     * <p>
-     * Default output for getMiningSpeed is 1, same speed as the player's hand. This function clamps that to 0,
-     * as it is not a viable tool under normal circumstances.
-     *
-     * @param original original rating
-     * @return clamped rating if needed
-     */
-    private static float clampToolRating(float original) {
-        if (AutoSwitch.featureCfg.preferMinimumViableTool() && original > 0) {
-            return (float) ((1 / .16) * Math.log10(original) / original);
-        }
-
-        return original;
+    public static Object getUseTarget(Object protoTarget) {
+        return getTarget(AutoSwitch.switchData.target2UseActionToolSelectorsMap, protoTarget);
     }
 
     public static float getTargetRating(Object target, ItemStack stack) {
@@ -103,15 +88,13 @@ public class TargetableUtil {
             AtomicReference<Float> y = new AtomicReference<>((float) 0);
 
             // Get attack speed
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_SPEED)
-                    .forEach(entityAttributeModifier -> y.updateAndGet(v ->
-                            (float) (v - entityAttributeModifier.getValue())));
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_SPEED).forEach(
+                    entityAttributeModifier -> y.updateAndGet(v -> (float) (v - entityAttributeModifier.getValue())));
 
             if (AutoSwitch.featureCfg.weaponRatingIncludesEnchants()) { //Evaluate attack damage based on enchantments
-                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE)
-                        .forEach(entityAttributeModifier ->
-                                x.updateAndGet(v -> (float) (v + entityAttributeModifier.getValue()))
-                        );
+                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(
+                        entityAttributeModifier -> x
+                                .updateAndGet(v -> (float) (v + entityAttributeModifier.getValue())));
 
                 return x.get() * (3 - y.get());
             } else { // No care for enchantments
@@ -124,16 +107,37 @@ public class TargetableUtil {
     }
 
     /**
+     * Function has a maximum of 1 at e; is 0 at 1; decays from e -> infinity. The (1/.16) is correction factor to have
+     * maximum output be 1, instead of 0.16
+     * <p>
+     * Default output for getMiningSpeed is 1, same speed as the player's hand. This function clamps that to 0, as it is
+     * not a viable tool under normal circumstances.
+     *
+     * @param original original rating
+     *
+     * @return clamped rating if needed
+     */
+    private static float clampToolRating(float original) {
+        if (AutoSwitch.featureCfg.preferMinimumViableTool() && original > 0) {
+            return (float) ((1 / .16) * Math.log10(original) / original);
+        }
+
+        return original;
+    }
+
+    /**
      * @param itemStack stack to evaluate
+     *
      * @return whether or not this stack should be skipped for consideration as a tool
      */
     public static boolean skipSlot(ItemStack itemStack) {
         AutoSwitch.logger.debug("Stack: {}; First: {}; Second: {}", itemStack,
-                !(AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()),
-                isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
+                                !(AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() &&
+                                  !itemStack.isDamageable()),
+                                isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
         // Skip energy items that are out of power
         if (AutoSwitch.featureCfg.skipDepletedItems() &&
-                AutoSwitch.switchData.damageMap.containsKey(itemStack.getClass()) && isAlmostBroken(itemStack)) {
+            AutoSwitch.switchData.damageMap.containsKey(itemStack.getClass()) && isAlmostBroken(itemStack)) {
             return true;
         }
         // First part: don't skip iff undamagable items are needed
@@ -163,8 +167,8 @@ public class TargetableUtil {
     }
 
     public static OptionalInt getCachedSlot(Object target, SwitchState state, boolean isUseAction) {
-        return getTargetableCache(state, isUseAction).containsKey(target) ?
-                OptionalInt.of(getTargetableCache(state, isUseAction).getInt(target)) : OptionalInt.empty();
+        return getTargetableCache(state, isUseAction).containsKey(target) ? OptionalInt
+                .of(getTargetableCache(state, isUseAction).getInt(target)) : OptionalInt.empty();
     }
 
     public static TargetableCache getTargetableCache(SwitchState state, boolean isUseAction) {
@@ -177,6 +181,7 @@ public class TargetableUtil {
      *
      * @param stack  itemstack to check
      * @param target target to check
+     *
      * @return if the target will obtain drops from the block, returns true for entities
      */
     public static boolean isRightTool(ItemStack stack, Object target) {
@@ -193,11 +198,7 @@ public class TargetableUtil {
 
     public static boolean isCorrectAttackType(String tool, Item item) {
         return (AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) ||
-                isCorrectTool(tool, item);
-    }
-
-    public static boolean isCorrectUseType(String tool, Item item) {
-        return isCorrectTool(tool, item);
+               isCorrectTool(tool, item);
     }
 
     /**
@@ -205,6 +206,7 @@ public class TargetableUtil {
      *
      * @param tool tool name from config
      * @param item item from hotbar
+     *
      * @return true if tool name and item match
      */
     private static boolean isCorrectTool(String tool, Item item) {
@@ -224,4 +226,9 @@ public class TargetableUtil {
     private static boolean checkTagAndClass(Tag<Item> tag, Class<?> clazz, Item item) {
         return (tag != null && tag.contains(item)) || (clazz != null && clazz.isInstance(item));
     }
+
+    public static boolean isCorrectUseType(String tool, Item item) {
+        return isCorrectTool(tool, item);
+    }
+
 }

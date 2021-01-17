@@ -1,20 +1,20 @@
 buildscript {
-	repositories {
-		jcenter()
-		mavenCentral()
-	}
-	dependencies {
-		classpath "com.github.yuchi:npm-semver:1.0.0"
-	}
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.github.yuchi:npm-semver:1.0.0"
+    }
 }
 
 plugins {
-	id 'fabric-loom' version '0.5-SNAPSHOT'
-	id "com.github.fudge.forgedflowerloom" version "2.0.0"
-	id 'maven-publish'
-	id 'musical-code' version '1.2' // Compare MC versions for changes
-	id "com.modrinth.minotaur" version "1.1.0"
-	id "org.jetbrains.gradle.plugin.idea-ext" version "0.10" // To trigger musical code on project refresh
+    id 'fabric-loom' version '0.5-SNAPSHOT'
+    id "com.github.fudge.forgedflowerloom" version "2.0.0"
+    id 'maven-publish'
+    id 'musical-code' version '1.2' // Compare MC versions for changes
+    id "com.modrinth.minotaur" version "1.1.0"
+    id "org.jetbrains.gradle.plugin.idea-ext" version "0.10" // To trigger musical code on project refresh
 }
 
 
@@ -26,28 +26,28 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 repositories {
-	mavenLocal()
-	maven {
-		url 'https://jitpack.io'
-		content {
-			includeGroup "com.github.dexman545"
-		}
-	}
+    mavenLocal()
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup "com.github.dexman545"
+        }
+    }
 }
 
 musicalCode {
-	config 'musical-config.txt'
-	output 'musical-code-output.txt'
-	from getOldMcVersion(false)
-	to "${project.minecraft_version}"
+    config 'musical-config.txt'
+    output 'musical-code-output.txt'
+    from getOldMcVersion(false)
+    to "${project.minecraft_version}"
 }
 
 idea.project.settings {
-	taskTriggers {
-		if (getOldMcVersion(true) != project.minecraft_version) {
-			afterSync musicalCodeTask
-		}
-	}
+    taskTriggers {
+        if (getOldMcVersion(true) != project.minecraft_version) {
+            afterSync musicalCodeTask
+        }
+    }
 }
 
 archivesBaseName = project.archives_base_name
@@ -56,109 +56,109 @@ group = project.maven_group
 
 //noinspection SpellCheckingInspection
 dependencies {
-	//to change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${getChosenYarnVersion(true)}:v2" // Change to false for oldest Yarn of that MC version
-	modImplementation "net.fabricmc:fabric-loader:${getNewestLoaderVersion()}"
+    //to change the versions see the gradle.properties file
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${getChosenYarnVersion(true)}:v2" // Change to false for oldest Yarn of that MC version
+    modImplementation "net.fabricmc:fabric-loader:${getNewestLoaderVersion()}"
 
-	// Fabric API.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // Fabric API.
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	//OWNER library
-	implementation "org.aeonbits.owner:owner:1.0.10"
-	include "org.aeonbits.owner:owner:1.0.10"
+    //OWNER library
+    implementation "org.aeonbits.owner:owner:1.0.10"
+    include "org.aeonbits.owner:owner:1.0.10"
 
-	modApi 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
-	include 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
+    modApi 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
+    include 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
 
-	// Mod Compat
+    // Mod Compat
 
-	// ModMenu
-	modCompileOnly("io.github.prospector:modmenu:${getLatestModMenu()}") {
-		transitive = false
-	}
-	/*modRuntime("io.github.prospector:modmenu:${project.modmenu_version}") {
-		transitive = false
-	}*/
+    // ModMenu
+    modCompileOnly("io.github.prospector:modmenu:${getLatestModMenu()}") {
+        transitive = false
+    }
+    /*modRuntime("io.github.prospector:modmenu:${project.modmenu_version}") {
+        transitive = false
+    }*/
 
 }
 
 processResources {
-	inputs.property "version", project.version
-	inputs.property "range", project.range
+    inputs.property "version", project.version
+    inputs.property "range", project.range
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version, "range": project.range
-	}
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version, "range": project.range
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	// ensure that the encoding is set to UTF-8, no matter what the system default is
-	// this fixes some edge cases with special characters not displaying correctly
-	// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-	// If Javadoc is generated, this must be specified in that task too.
-	it.options.encoding = "UTF-8"
+    // ensure that the encoding is set to UTF-8, no matter what the system default is
+    // this fixes some edge cases with special characters not displaying correctly
+    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
+    // If Javadoc is generated, this must be specified in that task too.
+    it.options.encoding = "UTF-8"
 
-	// The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
-	// JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
-	// We'll use that if it's available, but otherwise we'll use the older option.
-	def targetVersion = 8
-	if (JavaVersion.current().isJava9Compatible()) {
-		it.options.release = targetVersion
-	} else {
-		it.sourceCompatibility = JavaVersion.toVersion(targetVersion)
-		it.targetCompatibility = JavaVersion.toVersion(targetVersion)
-	}
+    // The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
+    // JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
+    // We'll use that if it's available, but otherwise we'll use the older option.
+    def targetVersion = 8
+    if (JavaVersion.current().isJava9Compatible()) {
+        it.options.release = targetVersion
+    } else {
+        it.sourceCompatibility = JavaVersion.toVersion(targetVersion)
+        it.targetCompatibility = JavaVersion.toVersion(targetVersion)
+    }
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this line, sources will not be generated.
+    withSourcesJar()
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}" }
+    }
 }
 
 publishing {
-	publications {
-		//noinspection GroovyAssignabilityCheck
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			//noinspection GroovyAssignabilityCheck
-			artifact(remapJar) {
-				//noinspection GroovyAssignabilityCheck
-				builtBy remapJar
-			}
-			//noinspection GroovyAssignabilityCheck
-			artifact(sourcesJar) {
-				//noinspection GroovyAssignabilityCheck
-				builtBy remapSourcesJar
-			}
-		}
-	}
+    publications {
+        //noinspection GroovyAssignabilityCheck
+        mavenJava(MavenPublication) {
+            // add all the jars that should be included when publishing to maven
+            //noinspection GroovyAssignabilityCheck
+            artifact(remapJar) {
+                //noinspection GroovyAssignabilityCheck
+                builtBy remapJar
+            }
+            //noinspection GroovyAssignabilityCheck
+            artifact(sourcesJar) {
+                //noinspection GroovyAssignabilityCheck
+                builtBy remapSourcesJar
+            }
+        }
+    }
 }
 
-task publishModrinth (type: TaskModrinthUpload, dependsOn: build){
-	token = System.getenv("MODRINTH")
-	projectId = 'uSdcnlts'
-	versionNumber = project.version
-	uploadFile = jar.outputs.getFiles().asPath // This is the java jar task
-	addLoader('fabric')
-	versionName = "Autopublished (potentially) alpha build"
-	changelog = "This is autopublished from github actions. Use at your own risk. See commit history or a release build for changes.\n\n<br />" +
-			"This build may work on Minecraft versions not specified on modrinth. Release cadance at time of writing " +
-			"(12/27/2020):\n\n<br />" +
-			"1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.17.x"
-	releaseType = getReleaseMonicker()
+task publishModrinth(type: TaskModrinthUpload, dependsOn: build) {
+    token = System.getenv("MODRINTH")
+    projectId = 'uSdcnlts'
+    versionNumber = project.version
+    uploadFile = jar.outputs.getFiles().asPath // This is the java jar task
+    addLoader('fabric')
+    versionName = "Autopublished (potentially) alpha build"
+    changelog = "This is autopublished from github actions. Use at your own risk. See commit history or a release build for changes.\n\n<br />" +
+            "This build may work on Minecraft versions not specified on modrinth. Release cadance at time of writing " +
+            "(12/27/2020):\n\n<br />" +
+            "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.17.x"
+    releaseType = getReleaseMonicker()
 
-	for (String ver : getAcceptableMcVersions()) {
-		addGameVersion(ver)
-	}
+    for (String ver : getAcceptableMcVersions()) {
+        addGameVersion(ver)
+    }
 
 }
 
@@ -168,9 +168,9 @@ task publishModrinth (type: TaskModrinthUpload, dependsOn: build){
  * @return loader version.
  */
 static String getNewestLoaderVersion() {
-	def loaderVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/loader/"))
-	assert loaderVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
-	return loaderVersions.first().version
+    def loaderVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/loader/"))
+    assert loaderVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
+    return loaderVersions.first().version
 }
 
 /**
@@ -181,10 +181,10 @@ static String getNewestLoaderVersion() {
  * @return the correct Yarn version.
  */
 String getChosenYarnVersion(boolean newest) {
-	def yarnVersions = new JsonSlurper().parse(
-			new URL("https://meta.fabricmc.net/v2/versions/yarn/${project.minecraft_version}"))
-	assert yarnVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
-	return newest ? yarnVersions.first().version : yarnVersions.last().version
+    def yarnVersions = new JsonSlurper().parse(
+            new URL("https://meta.fabricmc.net/v2/versions/yarn/${project.minecraft_version}"))
+    assert yarnVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
+    return newest ? yarnVersions.first().version : yarnVersions.last().version
 }
 
 /**
@@ -194,12 +194,12 @@ String getChosenYarnVersion(boolean newest) {
  * @return the MC version.
  */
 static String getLatestMc(boolean isStable) {
-	def mcVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/game"))
-	assert mcVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
-	if (!isStable) return mcVersions.first().version
-	for (LinkedHashMap mcVer : mcVersions) {
-		if (mcVer.stable) return mcVer.version
-	}
+    def mcVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/game"))
+    assert mcVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
+    if (!isStable) return mcVersions.first().version
+    for (LinkedHashMap mcVer : mcVersions) {
+        if (mcVer.stable) return mcVer.version
+    }
 }
 
 /**
@@ -209,115 +209,115 @@ static String getLatestMc(boolean isStable) {
  */
 // I got tired of having to find the right version, ok?
 static String getLatestModMenu() {
-	def modMenuVersions = new XmlSlurper().parseText(
-			new URL("https://maven.fabricmc.net/io/github/prospector/modmenu/maven-metadata.xml").text)
-	// For some reason Groovy was not happy with accessing it as a map, so this nonsense exists
-	def x = modMenuVersions.getProperty('versioning')
-	return x['latest']
+    def modMenuVersions = new XmlSlurper().parseText(
+            new URL("https://maven.fabricmc.net/io/github/prospector/modmenu/maven-metadata.xml").text)
+    // For some reason Groovy was not happy with accessing it as a map, so this nonsense exists
+    def x = modMenuVersions.getProperty('versioning')
+    return x['latest']
 }
 
 ArrayList<String> getAcceptableMcVersions() {
-	ArrayList<String> list = new ArrayList<String>()
+    ArrayList<String> list = new ArrayList<String>()
 
-	// Fragile
-	def mcVersions = new JsonSlurper().parse(new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"))
-	for (Object mcver : mcVersions.versions) {
-		if ("1.14.4".equals(mcver.id)) break // Don't go below 1.14.4, mostly because change in version formatting
+    // Fragile
+    def mcVersions = new JsonSlurper().parse(new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"))
+    for (Object mcver : mcVersions.versions) {
+        if ("1.14.4".equals(mcver.id)) break // Don't go below 1.14.4, mostly because change in version formatting
 
-		com.github.yuchi.semver.Range r = com.github.yuchi.semver.Range.from(project.range.replace("-", ".0-"), false)
+        com.github.yuchi.semver.Range r = com.github.yuchi.semver.Range.from(project.range.replace("-", ".0-"), false)
 
-		Version v = Version.from(genMcVersionString(mcver.id, mcver.url), false)
+        Version v = Version.from(genMcVersionString(mcver.id, mcver.url), false)
 
-		if (v == null || r == null) {
-			System.out.println(String.format("The version was null for : {}", mcver.id))
-			break
-		}
+        if (v == null || r == null) {
+            System.out.println(String.format("The version was null for : {}", mcver.id))
+            break
+        }
 
-		if (r.test(v)) {
-			list.add(mcver.id)
-		}
-	}
+        if (r.test(v)) {
+            list.add(mcver.id)
+        }
+    }
 
-	return list
+    return list
 }
 
 static String genMcVersionString(String version, String metaURL) {
-	//From Fabric Loader https://github.com/FabricMC/fabric-loader/blob/master/src/main/java/net/fabricmc/loader/minecraft/McVersionLookup.java
-	Pattern RELEASE_PATTERN = Pattern.compile("\\d+\\.\\d+(\\.\\d+)?")
-	Pattern PRE_RELEASE_PATTERN = Pattern.compile(".+(?:-pre| Pre-[Rr]elease )(\\d+)")
-	Pattern RELEASE_CANDIDATE_PATTERN = Pattern.compile(".+(?:-rc| [Rr]elease Candidate )(\\d+)")
-	Pattern SNAPSHOT_PATTERN = Pattern.compile("(?:Snapshot )?(\\d+)w0?(0|[1-9]\\d*)([a-z])")
+    //From Fabric Loader https://github.com/FabricMC/fabric-loader/blob/master/src/main/java/net/fabricmc/loader/minecraft/McVersionLookup.java
+    Pattern RELEASE_PATTERN = Pattern.compile("\\d+\\.\\d+(\\.\\d+)?")
+    Pattern PRE_RELEASE_PATTERN = Pattern.compile(".+(?:-pre| Pre-[Rr]elease )(\\d+)")
+    Pattern RELEASE_CANDIDATE_PATTERN = Pattern.compile(".+(?:-rc| [Rr]elease Candidate )(\\d+)")
+    Pattern SNAPSHOT_PATTERN = Pattern.compile("(?:Snapshot )?(\\d+)w0?(0|[1-9]\\d*)([a-z])")
 
-	if (RELEASE_PATTERN.matcher(version).matches()) return version
+    if (RELEASE_PATTERN.matcher(version).matches()) return version
 
-	String majorVersion = getMajorMcVersion(metaURL) + ".0" // fix for parser
+    String majorVersion = getMajorMcVersion(metaURL) + ".0" // fix for parser
 
-	Matcher snapshotMatcher = SNAPSHOT_PATTERN.matcher(version)
-	if (snapshotMatcher.matches()) {
-		return majorVersion + "-alpha."+snapshotMatcher.group(1)+"."+snapshotMatcher.group(2)+"."+snapshotMatcher.group(3)
-	}
+    Matcher snapshotMatcher = SNAPSHOT_PATTERN.matcher(version)
+    if (snapshotMatcher.matches()) {
+        return majorVersion + "-alpha." + snapshotMatcher.group(1) + "." + snapshotMatcher.group(2) + "." + snapshotMatcher.group(3)
+    }
 
-	Matcher rcMatcher = RELEASE_CANDIDATE_PATTERN.matcher(version)
-	if (rcMatcher.matches()) {
-		return majorVersion + "-rc." + rcMatcher.group(1)
-	}
+    Matcher rcMatcher = RELEASE_CANDIDATE_PATTERN.matcher(version)
+    if (rcMatcher.matches()) {
+        return majorVersion + "-rc." + rcMatcher.group(1)
+    }
 
-	Matcher preMatcher = PRE_RELEASE_PATTERN.matcher(version)
-	if (preMatcher.matches()) {
-		return majorVersion + "-beta." + preMatcher.group(1)
-	}
+    Matcher preMatcher = PRE_RELEASE_PATTERN.matcher(version)
+    if (preMatcher.matches()) {
+        return majorVersion + "-beta." + preMatcher.group(1)
+    }
 
-	return ""
+    return ""
 }
 
 static String getMajorMcVersion(String metaURL) {
-	def meta = new JsonSlurper().parse(new URL(metaURL))
-	return meta.assets
+    def meta = new JsonSlurper().parse(new URL(metaURL))
+    return meta.assets
 }
 
 String getReleaseMonicker() {
-	if (((String)project.version).contains('alpha')) return "alpha"
-	if (((String)project.version).contains('beta')) return "beta"
-	return "release"
+    if (((String) project.version).contains('alpha')) return "alpha"
+    if (((String) project.version).contains('beta')) return "beta"
+    return "release"
 }
 
 // Fixes fabric.mod.template's variables not being replaced with Idea's run configs.
 // Add as prelaunch task, after build.
 task fixResourcesLaunch(type: Copy) {
-	String name = project.name.replace(" ", "_") + ".main"
+    String name = project.name.replace(" ", "_") + ".main"
 
-	destinationDir file("${projectDir}/out/production/${name}")
-	from processResources
+    destinationDir file("${projectDir}/out/production/${name}")
+    from processResources
 }
 
 /**
  * @return old MC version from musical-code-data.properties for use in musical code
  */
 String getOldMcVersion(boolean getNewMc) {
-	Properties props = new Properties()
-	File f = new File("${projectDir}/musical-code-data.properties")
-	if (!f.exists()) f.newWriter().close();
-	props.load(f.newDataInputStream())
+    Properties props = new Properties()
+    File f = new File("${projectDir}/musical-code-data.properties")
+    if (!f.exists()) f.newWriter().close()
+    props.load(f.newDataInputStream())
 
-	def currMC = props.get('currMC') as String
-	def oldMC = props.get('oldMC') as String
+    def currMC = props.get('currMC') as String
+    def oldMC = props.get('oldMC') as String
 
-	if (oldMC == null) props.setProperty('oldMC', "${project.minecraft_version}")
-	if (currMC == null) {
-		props.setProperty('currMC', "${project.minecraft_version}")
-		currMC = project.minecraft_version
-	}
+    if (oldMC == null) props.setProperty('oldMC', "${project.minecraft_version}")
+    if (currMC == null) {
+        props.setProperty('currMC', "${project.minecraft_version}")
+        currMC = project.minecraft_version
+    }
 
-	if (currMC != "${project.minecraft_version}") {
-		props.setProperty('oldMC', currMC)
-		props.setProperty('currMC', "${project.minecraft_version}")
-	}
+    if (currMC != "${project.minecraft_version}") {
+        props.setProperty('oldMC', currMC as String)
+        props.setProperty('currMC', "${project.minecraft_version}")
+    }
 
-	props.store(f.newWriter(), null)
+    props.store(f.newWriter(), null)
 
-	if (getNewMc) return props.get('currMC') as String
+    if (getNewMc) return props.get('currMC') as String
 
-	return props.get('oldMC') as String
+    return props.get('oldMC') as String
 }
 
 publish.finalizedBy(publishModrinth)

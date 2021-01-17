@@ -1,22 +1,23 @@
 package autoswitch.config.io;
 
-import autoswitch.config.AutoSwitchAttackActionConfig;
-import autoswitch.config.AutoSwitchUseActionConfig;
-import autoswitch.config.util.ConfigReflection;
-import autoswitch.config.util.ConfigTemplates;
-import autoswitch.config.util.SortedProperties;
-import com.google.common.collect.MapDifference;
-import com.google.common.collect.Maps;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.aeonbits.owner.Accessible;
-import org.aeonbits.owner.Config;
+import static autoswitch.config.util.ConfigReflection.comments;
+import static autoswitch.config.util.ConfigReflection.defaults;
 
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
-import static autoswitch.config.util.ConfigReflection.comments;
-import static autoswitch.config.util.ConfigReflection.defaults;
+import autoswitch.config.AutoSwitchAttackActionConfig;
+import autoswitch.config.AutoSwitchUseActionConfig;
+import autoswitch.config.util.ConfigReflection;
+import autoswitch.config.util.ConfigTemplates;
+import autoswitch.config.util.SortedProperties;
+
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.Maps;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.aeonbits.owner.Accessible;
+import org.aeonbits.owner.Config;
 
 public class GenerateConfigTemplate {
 
@@ -27,10 +28,12 @@ public class GenerateConfigTemplate {
      * @param moddedEntries default entries provided by mods via the API
      * @param header        Head for the file
      * @param <T>           Generic config parameter
+     *
      * @return prettified config file.
      */
-    public static <T extends Config & Accessible>
-    String initConfig(T cfg, Object2ObjectOpenHashMap<String, Set<String>> moddedEntries, String header) {
+    public static <T extends Config & Accessible> String initConfig(T cfg,
+                                                                    Object2ObjectOpenHashMap<String, Set<String>> moddedEntries,
+                                                                    String header) {
         if (header == null) header = "";
         header = ConfigTemplates.wordWrapComment(header);
 
@@ -52,9 +55,10 @@ public class GenerateConfigTemplate {
 
         // Generate default config values. Regex is to fix colons in config file
         for (String propertyName : defaults.stringPropertyNames()) {
-            String entry = ConfigTemplates.configEntry(propertyName.replaceAll("(?<!\\\\)(?:\\\\{2})*:",
-                    "\\\\:"), cfg.getProperty(propertyName),
-                    "# " + comments.getProperty(propertyName), defaults.getProperty(propertyName)) + "\n";
+            String entry = ConfigTemplates.configEntry(propertyName.replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\\\:"),
+                                                       cfg.getProperty(propertyName),
+                                                       "# " + comments.getProperty(propertyName),
+                                                       defaults.getProperty(propertyName)) + "\n";
             config.append(entry);
         }
 
@@ -63,9 +67,8 @@ public class GenerateConfigTemplate {
                 config.append(ConfigTemplates.modCategory(mod)).append("\n\n");
 
                 for (String key : keys) {
-                    config.append(ConfigTemplates.configEntry(key.replaceAll("(?<!\\\\)(?:\\\\{2})*:",
-                            "\\\\:"), cfg.getProperty(key), null, null))
-                            .append("\n");
+                    config.append(ConfigTemplates.configEntry(key.replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\\\:"),
+                                                              cfg.getProperty(key), null, null)).append("\n");
                 }
             });
         }
@@ -78,8 +81,8 @@ public class GenerateConfigTemplate {
         if (userKeys != null) {
             config.append("\n# Overrides").append("\n").append(ConfigTemplates.border).append("\n");
             for (Object key : userKeys) {
-                config.append(ConfigTemplates.configEntry(((String) key).replaceAll("(?<!\\\\)(?:\\\\{2})*:",
-                        "\\\\:"), cfg.getProperty((String) key), null, null)).append("\n");
+                config.append(ConfigTemplates.configEntry(((String) key).replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\\\:"),
+                                                          cfg.getProperty((String) key), null, null)).append("\n");
             }
         }
 
