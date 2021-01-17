@@ -61,7 +61,7 @@ dependencies {
 	mappings "net.fabricmc:yarn:${getChosenYarnVersion(true)}:v2" // Change to false for oldest Yarn of that MC version
 	modImplementation "net.fabricmc:fabric-loader:${getNewestLoaderVersion()}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
+	// Fabric API.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	//OWNER library
