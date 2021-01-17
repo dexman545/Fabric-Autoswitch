@@ -22,7 +22,7 @@ public abstract class MixinMinecraftClient {
      * Reset keybinding params and switch state when leaving a world.
      */
     @Inject(at = @At("HEAD"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")
-    private void disconnectEvent(Screen screen, CallbackInfo ci) {
+    private void autoswitch$disconnectEvent(Screen screen, CallbackInfo ci) {
         DisconnectHandler.reset();
 
     }

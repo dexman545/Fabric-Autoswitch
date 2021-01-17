@@ -19,7 +19,6 @@ import java.util.List;
 @Mixin(PlayerInventory.class)
 public abstract class MixinPlayerInventory {
 
-
     @Shadow
     @Final
     public DefaultedList<ItemStack> main;
@@ -32,12 +31,12 @@ public abstract class MixinPlayerInventory {
     }
 
     @Inject(at = @At("RETURN"), method = "setStack(ILnet/minecraft/item/ItemStack;)V")
-    private void setr(int slot, ItemStack stack, CallbackInfo ci) {
+    private void autoswitch$setr(int slot, ItemStack stack, CallbackInfo ci) {
         handleHotbarUpdate(slot);
     }
 
     @Inject(at = @At("RETURN"), method = "removeStack(I)Lnet/minecraft/item/ItemStack;")
-    private void rmvs(int slot, CallbackInfoReturnable<ItemStack> cir) {
+    private void autoswitch$rmvs(int slot, CallbackInfoReturnable<ItemStack> cir) {
         handleHotbarUpdate(slot);
     }
 

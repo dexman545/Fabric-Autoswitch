@@ -26,7 +26,7 @@ public class MixinClientPlayerInteractionManager {
      * Trigger the switch events.
      */
     @Inject(at = @At("HEAD"), method = "syncSelectedSlot()V")
-    private void triggerSwitchOnSlotSync(CallbackInfo ci) {
+    private void autoswitch$triggerSwitchOnSlotSync(CallbackInfo ci) {
         assert this.client.player != null;
         assert this.client.crosshairTarget != null;
         if (this.client.crosshairTarget.equals(this.prevTarget)) return;
