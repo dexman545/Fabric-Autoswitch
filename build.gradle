@@ -104,7 +104,7 @@ tasks.withType(JavaCompile).configureEach {
     // We'll use that if it's available, but otherwise we'll use the older option.
     def targetVersion = 8
     if (JavaVersion.current().isJava9Compatible()) {
-        it.options.release = targetVersion
+        it.options.release.set(targetVersion)
     } else {
         it.sourceCompatibility = JavaVersion.toVersion(targetVersion)
         it.targetCompatibility = JavaVersion.toVersion(targetVersion)
@@ -200,6 +200,7 @@ static String getLatestMc(boolean isStable) {
     for (LinkedHashMap mcVer : mcVersions) {
         if (mcVer.stable) return mcVer.version
     }
+    return "" // No MC version was found
 }
 
 /**
@@ -216,17 +217,25 @@ static String getLatestModMenu() {
     return x['latest']
 }
 
+
+/**
+ * Return a list of acceptable MC versions based on the semver string in project.range.
+ * Parsed from the official launcher metadata, could break at anytime.
+ *
+ * @return the list of acceptable MC versions
+ */
 ArrayList<String> getAcceptableMcVersions() {
     ArrayList<String> list = new ArrayList<String>()
 
     // Fragile
     def mcVersions = new JsonSlurper().parse(new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"))
     for (Object mcver : mcVersions.versions) {
-        if ("1.14.4".equals(mcver.id)) break // Don't go below 1.14.4, mostly because change in version formatting
+        if ("1.14.4" == (mcver.id as String)) break
+        // Don't go below 1.14.4, mostly because change in version formatting
 
         com.github.yuchi.semver.Range r = com.github.yuchi.semver.Range.from(project.range.replace("-", ".0-"), false)
 
-        Version v = Version.from(genMcVersionString(mcver.id, mcver.url), false)
+        Version v = Version.from(genMcVersionString(mcver.id as String, mcver.url as String), false)
 
         if (v == null || r == null) {
             System.out.println(String.format("The version was null for : {}", mcver.id))
@@ -234,13 +243,20 @@ ArrayList<String> getAcceptableMcVersions() {
         }
 
         if (r.test(v)) {
-            list.add(mcver.id)
+            list.add(mcver.id as String)
         }
     }
 
     return list
 }
 
+/**
+ * Converts a given MC version to its semver format.
+ *
+ * @param version the version to convert.
+ * @param metaURL the metadata URL to pull the major MC version from.
+ * @return the semver-compatible version for the given MC version.
+ */
 static String genMcVersionString(String version, String metaURL) {
     //From Fabric Loader https://github.com/FabricMC/fabric-loader/blob/master/src/main/java/net/fabricmc/loader/minecraft/McVersionLookup.java
     Pattern RELEASE_PATTERN = Pattern.compile("\\d+\\.\\d+(\\.\\d+)?")
@@ -270,11 +286,24 @@ static String genMcVersionString(String version, String metaURL) {
     return ""
 }
 
+/**
+ * Pulls the major game version from official launcher metadata's 'assets' key.
+ *
+ * @param metaURL the launcher meta URL for the version in question.
+ * @return the major game version, such as '1.17'
+ */
 static String getMajorMcVersion(String metaURL) {
     def meta = new JsonSlurper().parse(new URL(metaURL))
     return meta.assets
 }
 
+/**
+ * Get the type of release.
+ * <p>
+ * Used for publishing to distribution services.
+ *
+ * @return build release type, such as 'alpha', 'beta', or 'release'
+ */
 String getReleaseMonicker() {
     if (((String) project.version).contains('alpha')) return "alpha"
     if (((String) project.version).contains('beta')) return "beta"
