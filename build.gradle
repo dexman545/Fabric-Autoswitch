@@ -230,8 +230,8 @@ ArrayList<String> getAcceptableMcVersions() {
     // Fragile
     def mcVersions = new JsonSlurper().parse(new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"))
     for (Object mcver : mcVersions.versions) {
-        if ("1.14.4" == (mcver.id as String)) break
         // Don't go below 1.14.4, mostly because change in version formatting
+        if ("1.14.4" == (mcver.id as String)) break
 
         com.github.yuchi.semver.Range r = com.github.yuchi.semver.Range.from(project.range.replace("-", ".0-"), false)
 
@@ -258,7 +258,7 @@ ArrayList<String> getAcceptableMcVersions() {
  * @return the semver-compatible version for the given MC version.
  */
 static String genMcVersionString(String version, String metaURL) {
-    //From Fabric Loader https://github.com/FabricMC/fabric-loader/blob/master/src/main/java/net/fabricmc/loader/minecraft/McVersionLookup.java
+    // From Fabric Loader https://github.com/FabricMC/fabric-loader/blob/master/src/main/java/net/fabricmc/loader/minecraft/McVersionLookup.java
     Pattern RELEASE_PATTERN = Pattern.compile("\\d+\\.\\d+(\\.\\d+)?")
     Pattern PRE_RELEASE_PATTERN = Pattern.compile(".+(?:-pre| Pre-[Rr]elease )(\\d+)")
     Pattern RELEASE_CANDIDATE_PATTERN = Pattern.compile(".+(?:-rc| [Rr]elease Candidate )(\\d+)")
