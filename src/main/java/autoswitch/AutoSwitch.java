@@ -70,7 +70,7 @@ public class AutoSwitch implements ClientModInitializer {
             TickUtil.tickEventSchedule(e.player);
         });
 
-        //Notify when AS Loaded
+        // Notify when AS Loaded
         logger.info("AutoSwitch Loaded");
 
     }
