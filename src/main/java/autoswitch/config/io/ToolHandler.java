@@ -75,18 +75,7 @@ public class ToolHandler {
     }
 
     private String getTool(String t) {
-        switch (t) {
-            case "axe":
-            case "trident":
-            case "shovel":
-            case "pickaxe":
-            case "sword":
-            case "shears":
-            case "hoe":
-            case "any":
-            default:
-                return Identifier.tryParse(t) != null ? t : "";
-        }
+        return Identifier.tryParse(t) != null ? t : "";
 
     }
 
