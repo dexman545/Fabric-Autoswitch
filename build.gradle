@@ -14,7 +14,9 @@ plugins {
     id 'maven-publish'
     id 'musical-code' version '1.2' // Compare MC versions for changes
     id "com.modrinth.minotaur" version "1.1.0"
-    id "org.jetbrains.gradle.plugin.idea-ext" version "0.10" // To trigger musical code on project refresh
+
+    // To trigger musical code on project refresh and run processResources on project launch in Idea
+    id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
 }
 
 
@@ -42,24 +44,21 @@ musicalCode {
     to "${project.minecraft_version}"
 }
 
-idea.project.settings {
-    taskTriggers {
-        if (getOldMcVersion(true) != project.minecraft_version) {
-            afterSync musicalCodeTask
-        }
-    }
-}
-
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
+
+project.minecraft_version = getLatestMc(false) // Set to true for only release versions
+project.modmenu_version = getLatestModMenu()
+project.loader_version = getNewestLoaderVersion()
+project.yarn_mappings = getChosenYarnVersion(true) // Change to false for oldest Yarn of that MC version
 
 //noinspection SpellCheckingInspection
 dependencies {
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${getChosenYarnVersion(true)}:v2" // Change to false for oldest Yarn of that MC version
-    modImplementation "net.fabricmc:fabric-loader:${getNewestLoaderVersion()}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
@@ -74,7 +73,7 @@ dependencies {
     // Mod Compat
 
     // ModMenu
-    modCompileOnly("io.github.prospector:modmenu:${getLatestModMenu()}") {
+    modCompileOnly("io.github.prospector:modmenu:${project.modmenu_version}") {
         transitive = false
     }
     /*modRuntime("io.github.prospector:modmenu:${project.modmenu_version}") {
@@ -311,12 +310,20 @@ String getReleaseMonicker() {
 }
 
 // Fixes fabric.mod.template's variables not being replaced with Idea's run configs.
-// Add as prelaunch task, after build.
 task fixResourcesLaunch(type: Copy) {
     String name = project.name.replace(" ", "_") + ".main"
 
     destinationDir file("${projectDir}/out/production/${name}")
     from processResources
+}
+
+idea.project.settings {
+    taskTriggers {
+        if (getOldMcVersion(true) != project.minecraft_version) {
+            afterSync musicalCodeTask
+        }
+        afterBuild fixResourcesLaunch
+    }
 }
 
 /**
