@@ -23,6 +23,7 @@ plugins {
 import com.github.yuchi.semver.Version
 import com.modrinth.minotaur.TaskModrinthUpload
 import groovy.json.JsonSlurper
+import groovy.util.slurpersupport.GPathResult
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -52,6 +53,7 @@ project.minecraft_version = getLatestMc(false) // Set to true for only release v
 project.modmenu_version = getLatestModMenu()
 project.loader_version = getNewestLoaderVersion()
 project.yarn_mappings = getChosenYarnVersion(true) // Change to false for oldest Yarn of that MC version
+project.fabric_version = getLatestFapi() // Default returns version in properties if maven can't be found
 
 //noinspection SpellCheckingInspection
 dependencies {
@@ -214,6 +216,26 @@ static String getLatestModMenu() {
     // For some reason Groovy was not happy with accessing it as a map, so this nonsense exists
     def x = modMenuVersions.getProperty('versioning')
     return x['latest']
+}
+
+/**
+ * Get the latest FAPI version.
+ * Assumes latest is always added to bottom of maven pom.
+ * May not be the specific version needed for a given MC version.
+ *
+ * @return latest fapi version. If not found, returns the version in gradle.properties
+ */
+String getLatestFapi() {
+    def fapiVersions = new XmlSlurper().parseText(
+            new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text)
+    for (String version : (fapiVersions.versioning.versions.version.list() as List).reverse()) {
+        // Fragile version pulling
+        String majorMc = project.minecraft_version.substring(0, 4)
+        String target = version.split("\\+")[1]
+        if (target.contains("build")) break // These versions are old and have useless metadata
+        if (target.contains(majorMc)) return version
+    }
+    return project.fabric_version
 }
 
 
