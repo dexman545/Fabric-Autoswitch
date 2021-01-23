@@ -19,17 +19,19 @@ plugins {
     id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
 }
 
-
 import com.github.yuchi.semver.Version
 import com.modrinth.minotaur.TaskModrinthUpload
 import groovy.json.JsonSlurper
-import groovy.util.slurpersupport.GPathResult
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 repositories {
     mavenLocal()
+    maven {
+        url 'http://maven.terraformersmc.com/'
+        name 'TerraFormersMC'
+    }
     maven {
         url 'https://jitpack.io'
         content {
@@ -75,10 +77,10 @@ dependencies {
     // Mod Compat
 
     // ModMenu
-    modCompileOnly("io.github.prospector:modmenu:${project.modmenu_version}") {
+    modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}") {
         transitive = false
     }
-    /*modRuntime("io.github.prospector:modmenu:${project.modmenu_version}") {
+    /*modRuntime("com.terraformersmc:modmenu:${project.modmenu_version}") {
         transitive = false
     }*/
 
@@ -212,7 +214,7 @@ static String getLatestMc(boolean isStable) {
 // I got tired of having to find the right version, ok?
 static String getLatestModMenu() {
     def modMenuVersions = new XmlSlurper().parseText(
-            new URL("https://maven.fabricmc.net/io/github/prospector/modmenu/maven-metadata.xml").text)
+            new URL("http://maven.terraformersmc.com/com/terraformersmc/modmenu/maven-metadata.xml").text)
     // For some reason Groovy was not happy with accessing it as a map, so this nonsense exists
     def x = modMenuVersions.getProperty('versioning')
     return x['latest']
@@ -259,7 +261,7 @@ ArrayList<String> getAcceptableMcVersions() {
         Version v = Version.from(genMcVersionString(mcver.id as String, mcver.url as String), false)
 
         if (v == null || r == null) {
-            System.out.println(String.format("The version was null for : {}", mcver.id))
+            System.out.println(String.format("The version was null for : %s", mcver.id))
             break
         }
 
