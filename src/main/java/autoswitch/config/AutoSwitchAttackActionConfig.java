@@ -212,7 +212,7 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolHandler[] snow_block();
 
     @Separator(",")
-    @DefaultValue("pickaxe;minecraft:mending, pickaxe")
+    @DefaultValue("pickaxe;minecraft:efficiency, pickaxe;minecraft:mending, pickaxe")
     @Comment("A Material for anvils and grindstones")
     ToolHandler[] repair_station();
 
