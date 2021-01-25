@@ -230,9 +230,9 @@ static String getLatestModMenu() {
 String getLatestFapi() {
     def fapiVersions = new XmlSlurper().parseText(
             new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text)
+    def mcVersions = new JsonSlurper().parse(new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"))
+    String majorMc = getMajorMcVersion((mcVersions.versions as ArrayList<LinkedHashMap>).find {(it.id as String) == (project.minecraft_version as String)}.url as String)
     for (String version : (fapiVersions.versioning.versions.version.list() as List).reverse()) {
-        // Fragile version pulling
-        String majorMc = project.minecraft_version.substring(0, 4)
         String target = version.split("\\+")[1]
         if (target.contains("build")) break // These versions are old and have useless metadata
         if (target.contains(majorMc)) return version
