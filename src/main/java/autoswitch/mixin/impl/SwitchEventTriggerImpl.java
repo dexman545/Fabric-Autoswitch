@@ -39,6 +39,23 @@ public class SwitchEventTriggerImpl {
     }
 
     /**
+     * Logic for handling USE actions.
+     * <p>
+     * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doItemUse()}
+     *
+     * @param interactionManager the interaction manager
+     * @param player             the player
+     * @param crosshairTarget    the crosshair target
+     */
+    public static void interact(ClientPlayerInteractionManager interactionManager, ClientPlayerEntity player,
+                                HitResult crosshairTarget) {
+        if (interactionManager.isBreakingBlock() || player.isRiding() || crosshairTarget == null) return;
+
+        triggerSwitch(DesiredType.USE, crosshairTarget, player);
+
+    }
+
+    /**
      * Process type of action made and desired switch action.
      * <p>Tick scheduler clock to ensure immediate-mode actions are taken on time.</p>
      *
@@ -95,24 +112,6 @@ public class SwitchEventTriggerImpl {
         AutoSwitch.scheduler.execute(AutoSwitch.tickTime);
 
     }
-
-    /**
-     * Logic for handling USE actions.
-     * <p>
-     * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doItemUse()}
-     *
-     * @param interactionManager the interaction manager
-     * @param player             the player
-     * @param crosshairTarget    the crosshair target
-     */
-    public static void interact(ClientPlayerInteractionManager interactionManager, ClientPlayerEntity player,
-                                HitResult crosshairTarget) {
-        if (interactionManager.isBreakingBlock() || player.isRiding() || crosshairTarget == null) return;
-
-        triggerSwitch(DesiredType.USE, crosshairTarget, player);
-
-    }
-
 
     /**
      * Type used to control processing of user action for switching in a unified manor.
