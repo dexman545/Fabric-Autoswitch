@@ -52,7 +52,7 @@ version = project.mod_version
 group = project.maven_group
 
 project.minecraft_version = getLatestMc(false) // Set to true for only release versions
-project.modmenu_version = getLatestModMenu()
+project.modmenu_version = "1.16.6" //getLatestModMenu() Disabled as fetching the xml is somehow broken
 project.loader_version = getNewestLoaderVersion()
 project.yarn_mappings = getChosenYarnVersion(true) // Change to false for oldest Yarn of that MC version
 project.fabric_version = getLatestFapi() // Default returns version in properties if maven can't be found
