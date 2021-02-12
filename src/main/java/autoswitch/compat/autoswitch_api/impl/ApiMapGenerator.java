@@ -47,93 +47,93 @@ public class ApiMapGenerator {
 
     // Populate Targets map with default values
     private static void genTargetMap() {
-        AutoSwitch.switchData.targets.put("solid_organic", Material.SOLID_ORGANIC);
+        addTarget("solid_organic", Material.SOLID_ORGANIC);
 
-        AutoSwitch.switchData.targets.put("repair_station", Material.REPAIR_STATION);
+        addTarget("repair_station", Material.REPAIR_STATION);
 
-        AutoSwitch.switchData.targets.put("bamboo", Material.BAMBOO);
+        addTarget("bamboo", Material.BAMBOO);
 
-        AutoSwitch.switchData.targets.put("bamboo_sapling", Material.BAMBOO_SAPLING);
+        addTarget("bamboo_sapling", Material.BAMBOO_SAPLING);
 
-        AutoSwitch.switchData.targets.put("cactus", Material.CACTUS);
+        addTarget("cactus", Material.CACTUS);
 
-        AutoSwitch.switchData.targets.put("cake", Material.CAKE);
+        addTarget("cake", Material.CAKE);
 
-        AutoSwitch.switchData.targets.put("carpet", Material.CARPET);
+        addTarget("carpet", Material.CARPET);
 
-        AutoSwitch.switchData.targets.put("organic_product", Material.ORGANIC_PRODUCT);
+        addTarget("organic_product", Material.ORGANIC_PRODUCT);
 
-        AutoSwitch.switchData.targets.put("cobweb", Material.COBWEB);
+        addTarget("cobweb", Material.COBWEB);
 
-        AutoSwitch.switchData.targets.put("soil", Material.SOIL);
+        addTarget("soil", Material.SOIL);
 
-        AutoSwitch.switchData.targets.put("egg", Material.EGG);
+        addTarget("egg", Material.EGG);
 
-        AutoSwitch.switchData.targets.put("glass", Material.GLASS);
+        addTarget("glass", Material.GLASS);
 
-        AutoSwitch.switchData.targets.put("ice", Material.ICE);
+        addTarget("ice", Material.ICE);
 
-        AutoSwitch.switchData.targets.put("leaves", Material.LEAVES);
+        addTarget("leaves", Material.LEAVES);
 
-        AutoSwitch.switchData.targets.put("metal", Material.METAL);
+        addTarget("metal", Material.METAL);
 
-        AutoSwitch.switchData.targets.put("dense_ice", Material.DENSE_ICE);
+        addTarget("dense_ice", Material.DENSE_ICE);
 
-        AutoSwitch.switchData.targets.put("sub_block", Material.DECORATION);
+        addTarget("sub_block", Material.DECORATION);
 
-        AutoSwitch.switchData.targets.put("supported", Material.DECORATION);
+        addTarget("supported", Material.DECORATION);
 
-        AutoSwitch.switchData.targets.put("piston", Material.PISTON);
+        addTarget("piston", Material.PISTON);
 
-        AutoSwitch.switchData.targets.put("plant", Material.PLANT);
+        addTarget("plant", Material.PLANT);
 
-        AutoSwitch.switchData.targets.put("gourd", Material.GOURD);
+        addTarget("gourd", Material.GOURD);
 
-        AutoSwitch.switchData.targets.put("redstone_lamp", Material.REDSTONE_LAMP);
+        addTarget("redstone_lamp", Material.REDSTONE_LAMP);
 
-        AutoSwitch.switchData.targets.put("replaceable_plant", Material.REPLACEABLE_PLANT);
+        addTarget("replaceable_plant", Material.REPLACEABLE_PLANT);
 
-        AutoSwitch.switchData.targets.put("aggregate", Material.AGGREGATE);
+        addTarget("aggregate", Material.AGGREGATE);
 
-        AutoSwitch.switchData.targets.put("replaceable_underwater_plant", Material.REPLACEABLE_UNDERWATER_PLANT);
+        addTarget("replaceable_underwater_plant", Material.REPLACEABLE_UNDERWATER_PLANT);
 
-        AutoSwitch.switchData.targets.put("shulker_box", Material.SHULKER_BOX);
+        addTarget("shulker_box", Material.SHULKER_BOX);
 
-        AutoSwitch.switchData.targets.put("snow_layer", Material.SNOW_LAYER);
+        addTarget("snow_layer", Material.SNOW_LAYER);
 
-        AutoSwitch.switchData.targets.put("snow_block", Material.SNOW_BLOCK);
+        addTarget("snow_block", Material.SNOW_BLOCK);
 
-        AutoSwitch.switchData.targets.put("sponge", Material.SPONGE);
+        addTarget("sponge", Material.SPONGE);
 
-        AutoSwitch.switchData.targets.put("nether_wood", Material.NETHER_WOOD);
+        addTarget("nether_wood", Material.NETHER_WOOD);
 
-        AutoSwitch.switchData.targets.put("stone", Material.STONE);
+        addTarget("stone", Material.STONE);
 
-        AutoSwitch.switchData.targets.put("tnt", Material.TNT);
+        addTarget("tnt", Material.TNT);
 
-        AutoSwitch.switchData.targets.put("nether_shoots", Material.NETHER_SHOOTS);
+        addTarget("nether_shoots", Material.NETHER_SHOOTS);
 
-        AutoSwitch.switchData.targets.put("underwater_plant", Material.UNDERWATER_PLANT);
+        addTarget("underwater_plant", Material.UNDERWATER_PLANT);
 
-        AutoSwitch.switchData.targets.put("unused_plant", Material.UNUSED_PLANT);
+        addTarget("unused_plant", Material.UNUSED_PLANT);
 
-        AutoSwitch.switchData.targets.put("wood", Material.WOOD);
+        addTarget("wood", Material.WOOD);
 
-        AutoSwitch.switchData.targets.put("wool", Material.WOOL);
+        addTarget("wool", Material.WOOL);
 
-        AutoSwitch.switchData.targets.put("water", Material.WATER);
+        addTarget("water", Material.WATER);
 
-        AutoSwitch.switchData.targets.put("fire", Material.FIRE);
+        addTarget("fire", Material.FIRE);
 
-        AutoSwitch.switchData.targets.put("lava", Material.LAVA);
+        addTarget("lava", Material.LAVA);
 
-        AutoSwitch.switchData.targets.put("barrier", Material.BARRIER);
+        addTarget("barrier", Material.BARRIER);
 
-        AutoSwitch.switchData.targets.put("bubble_column", Material.BUBBLE_COLUMN);
+        addTarget("bubble_column", Material.BUBBLE_COLUMN);
 
-        AutoSwitch.switchData.targets.put("air", Material.AIR);
+        addTarget("air", Material.AIR);
 
-        AutoSwitch.switchData.targets.put("portal", Material.PORTAL);
+        addTarget("portal", Material.PORTAL);
 
         addTarget("structure_void", Material.STRUCTURE_VOID);
 
@@ -146,20 +146,20 @@ public class ApiMapGenerator {
         }
 
         // Entities
-        AutoSwitch.switchData.targets.put("aquaticEntity", EntityGroup.AQUATIC);
+        addTarget("aquaticEntity", EntityGroup.AQUATIC);
 
-        AutoSwitch.switchData.targets.put("arthropod", EntityGroup.ARTHROPOD);
+        addTarget("arthropod", EntityGroup.ARTHROPOD);
 
-        AutoSwitch.switchData.targets.put("defaultEntity", EntityGroup.DEFAULT);
+        addTarget("defaultEntity", EntityGroup.DEFAULT);
 
-        AutoSwitch.switchData.targets.put("illager", EntityGroup.ILLAGER);
+        addTarget("illager", EntityGroup.ILLAGER);
 
-        AutoSwitch.switchData.targets.put("undead", EntityGroup.UNDEAD);
+        addTarget("undead", EntityGroup.UNDEAD);
 
-        AutoSwitch.switchData.targets.put("boat", EntityType.BOAT);
+        addTarget("boat", EntityType.BOAT);
 
         // Item Use
-        AutoSwitch.switchData.targets.put("bow_action", SwitchData.itemTarget);
+        addTarget("bow_action", SwitchData.itemTarget);
     }
 
     // Populate maps with default values to be sent to mods
@@ -180,6 +180,21 @@ public class ApiMapGenerator {
             }
         }*/
 
+    }
+
+    private static void addTarget(String name, Object target) {
+        AutoSwitch.switchData.targets.put(name, target);
+    }
+
+    private static boolean isAcceptableVersion(String minVersion) {
+        try {
+            return SemanticVersion.parse(SwitchUtil.getMinecraftVersion())
+                                  .compareTo(SemanticVersion.parse(minVersion)) >= 0;
+        } catch (VersionParsingException e) {
+            AutoSwitch.logger.error(e);
+        }
+
+        return false;
     }
 
 }
