@@ -81,8 +81,6 @@ public class ApiMapGenerator {
 
         addTarget("sub_block", Material.DECORATION);
 
-        addTarget("supported", Material.DECORATION);
-
         addTarget("piston", Material.PISTON);
 
         addTarget("plant", Material.PLANT);
@@ -155,8 +153,6 @@ public class ApiMapGenerator {
         addTarget("illager", EntityGroup.ILLAGER);
 
         addTarget("undead", EntityGroup.UNDEAD);
-
-        addTarget("boat", EntityType.BOAT);
 
         // Item Use
         addTarget("bow_action", SwitchData.itemTarget);
