@@ -5,10 +5,13 @@ import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.util.SwitchData;
+import autoswitch.util.SwitchUtil;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.loader.api.SemanticVersion;
+import net.fabricmc.loader.api.VersionParsingException;
 
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityGroup;
@@ -132,13 +135,15 @@ public class ApiMapGenerator {
 
         AutoSwitch.switchData.targets.put("portal", Material.PORTAL);
 
-        AutoSwitch.switchData.targets.put("structure_void", Material.STRUCTURE_VOID);
+        addTarget("structure_void", Material.STRUCTURE_VOID);
 
-        AutoSwitch.switchData.targets.put("amethyst", Material.AMETHYST);
+        if (isAcceptableVersion("1.17-alpha.20.49.a")) {
+            addTarget("amethyst", Material.AMETHYST);
 
-        AutoSwitch.switchData.targets.put("passable_snow_block", Material.POWDER_SNOW);
+            addTarget("passable_snow_block", Material.POWDER_SNOW);
 
-        AutoSwitch.switchData.targets.put("sculk", Material.SCULK);
+            addTarget("sculk", Material.SCULK);
+        }
 
         // Entities
         AutoSwitch.switchData.targets.put("aquaticEntity", EntityGroup.AQUATIC);
