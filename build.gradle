@@ -19,6 +19,8 @@ plugins {
     id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
 }
 
+
+import com.github.yuchi.semver.Direction
 import com.github.yuchi.semver.Version
 import com.modrinth.minotaur.TaskModrinthUpload
 import groovy.json.JsonSlurper
@@ -155,7 +157,7 @@ task publishModrinth(type: TaskModrinthUpload, dependsOn: build) {
     versionName = "Autopublished (potentially) alpha build"
     changelog = "This is autopublished from github actions. Use at your own risk. See commit history or a release build for changes.\n\n<br />" +
             "This build may work on Minecraft versions not specified on modrinth. Release cadance at time of writing " +
-            "(12/27/2020):\n\n<br />" +
+            "(2/12/2021):\n\n<br />" +
             "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.x and 1.17.x (new config system)"
     releaseType = getReleaseMonicker()
 
@@ -265,7 +267,10 @@ ArrayList<String> getAcceptableMcVersions() {
             break
         }
 
-        if (r.test(v)) {
+        // isOutside check is to fix java version of npm-semver not having includePrerelease flag, as by default
+        // different prereleases form different minor versions will not match
+        // NOTE: May break things (*may*)
+        if (r.test(v) || r.isOutside(v, Direction.LOW)) {
             list.add(mcver.id as String)
         }
     }
