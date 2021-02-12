@@ -156,7 +156,7 @@ task publishModrinth(type: TaskModrinthUpload, dependsOn: build) {
     addLoader('fabric')
     versionName = "Autopublished (potentially) alpha build"
     changelog = "This is autopublished from github actions. Use at your own risk. See commit history or a release build for changes.\n\n<br />" +
-            "This build may work on Minecraft versions not specified on modrinth. Release cadance at time of writing " +
+            "This build may work on Minecraft versions not specified on modrinth. Release cadence at time of writing " +
             "(2/12/2021):\n\n<br />" +
             "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.x and 1.17.x (new config system)"
     releaseType = getReleaseMonicker()
