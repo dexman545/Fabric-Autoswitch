@@ -8,6 +8,7 @@ import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Mutable;
 import org.aeonbits.owner.Reloadable;
 
+@SuppressWarnings("SpellCheckingInspection")
 @Config.HotReload(type = Config.HotReloadType.ASYNC, value = 1) //set value = X for interval of X seconds. Default: 5
 @Config.Sources({"file:${configDirMats}"})
 // Note: Material/EntityGroups need to be added to the map to be recognized
@@ -262,6 +263,11 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @DefaultValue("any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, sword, axe")
     @Comment("An EntityGroup for mobs that were not assigned a different one, such as pigs.")
     ToolHandler[] defaultEntity();
+
+    @Separator(",")
+    @DefaultValue("any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, sword, axe")
+    @Comment("The Ender Dragon")
+    ToolHandler[] ender_dragon();
 
     @Separator(",")
     @DefaultValue("any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, sword, axe")

@@ -154,6 +154,8 @@ public class ApiMapGenerator {
 
         addTarget("undead", EntityGroup.UNDEAD);
 
+        addTarget("ender_dragon", EntityType.ENDER_DRAGON);
+
         // Item Use
         addTarget("bow_action", SwitchData.itemTarget);
     }
