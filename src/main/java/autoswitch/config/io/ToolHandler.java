@@ -27,7 +27,7 @@ public class ToolHandler {
         String[] cleanedInput = input.split(";");
         String tagStr = cleanedInput[0].toLowerCase(Locale.ENGLISH).trim().replace("!", ":");
         String enchantStr =
-                cleanedInput.length > 1 ? cleanedInput[1].toLowerCase(Locale.ENGLISH).trim().replace("-", ":") : "";
+                cleanedInput.length > 1 ? cleanedInput[1].toLowerCase(Locale.ENGLISH).trim().replace("!", ":") : "";
 
         ReferenceArrayList<Enchantment> enchants = new ReferenceArrayList<>();
         ReferenceArrayList<Identifier> enchantIdentifiers = new ReferenceArrayList<>();
