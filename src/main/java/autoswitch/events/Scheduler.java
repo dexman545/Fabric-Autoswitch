@@ -3,8 +3,6 @@ package autoswitch.events;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import autoswitch.AutoSwitch;
-
 public class Scheduler {
     private final Set<Task> schedule = new CopyOnWriteArraySet<>();
 
