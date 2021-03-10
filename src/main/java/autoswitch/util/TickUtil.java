@@ -47,9 +47,14 @@ public class TickUtil {
         // Schedule switchback iff it is needed
         EventUtil.eventHandler(tickTime, 0, SwitchEvent.SWITCHBACK.setPlayer(player));
 
-        // Tick event system clock
-        tickTime += 1;
-        AutoSwitch.scheduler.execute(tickTime);
+        if (AutoSwitch.doAS) {
+            // Tick event system clock
+            tickTime += 1;
+            AutoSwitch.scheduler.execute(tickTime);
+        } else {
+            // Clear event schedule when switching is disabled
+            AutoSwitch.scheduler.resetSchedule();
+        }
     }
 
 }

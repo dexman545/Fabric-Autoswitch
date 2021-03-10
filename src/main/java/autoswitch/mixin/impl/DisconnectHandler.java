@@ -4,6 +4,7 @@ import static autoswitch.AutoSwitch.doAS;
 import static autoswitch.AutoSwitch.featureCfg;
 import static autoswitch.AutoSwitch.switchState;
 
+import autoswitch.AutoSwitch;
 import autoswitch.util.SwitchState;
 
 public class DisconnectHandler {
@@ -22,6 +23,7 @@ public class DisconnectHandler {
 
     private static void resetSwitchState() {
         switchState = new SwitchState();
+        AutoSwitch.scheduler.resetSchedule();
     }
 
 }

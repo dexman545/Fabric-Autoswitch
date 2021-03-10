@@ -3,6 +3,8 @@ package autoswitch.events;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import autoswitch.AutoSwitch;
+
 public class Scheduler {
     private final Set<Task> schedule = new CopyOnWriteArraySet<>();
 
@@ -35,6 +37,13 @@ public class Scheduler {
     }
 
     /**
+     * Reset the event schedule.
+     */
+    public void resetSchedule() {
+        schedule.clear();
+    }
+
+    /**
      * Remove the specified event from the schedule.
      *
      * @param event event to remove
@@ -55,6 +64,11 @@ public class Scheduler {
         private Task(SwitchEvent event, int finalTickTime) {
             this.event = event;
             this.finalTickTime = finalTickTime;
+        }
+
+        @Override
+        public String toString() {
+            return "Task{" + "finalTickTime=" + finalTickTime + ", event=" + event + '}';
         }
 
     }
