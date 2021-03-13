@@ -1,10 +1,13 @@
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url 'https://jitpack.io'
+        }
         mavenCentral()
     }
     dependencies {
-        classpath "com.github.yuchi:npm-semver:1.0.0"
+        classpath 'com.github.dexman545:Outlet:master-SNAPSHOT'
     }
 }
 
@@ -18,15 +21,9 @@ plugins {
     // To trigger musical code on project refresh and run processResources on project launch in Idea
     id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
 }
+apply plugin: 'dex.plugins.outlet'
 
-
-import com.github.yuchi.semver.Direction
-import com.github.yuchi.semver.Version
 import com.modrinth.minotaur.TaskModrinthUpload
-import groovy.json.JsonSlurper
-
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 repositories {
     mavenLocal()
@@ -42,6 +39,8 @@ repositories {
     }
 }
 
+outlet.mcVersionRange = project.range
+
 musicalCode {
     config 'musical-config.txt'
     output 'musical-code-output.txt'
@@ -53,11 +52,11 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
-project.minecraft_version = getLatestMc(false) // Set to true for only release versions
+project.minecraft_version = outlet.latestMc()
 project.modmenu_version = "1.16.6" //getLatestModMenu() Disabled as fetching the xml is somehow broken
-project.loader_version = getNewestLoaderVersion()
-project.yarn_mappings = getChosenYarnVersion(true) // Change to false for oldest Yarn of that MC version
-project.fabric_version = getLatestFapi() // Default returns version in properties if maven can't be found
+project.loader_version = outlet.loaderVersion()
+project.yarn_mappings =  outlet.yarnVersion()
+project.fabric_version = outlet.fapiVersion()
 
 //noinspection SpellCheckingInspection
 dependencies {
@@ -161,51 +160,10 @@ task publishModrinth(type: TaskModrinthUpload, dependsOn: build) {
             "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.x and 1.17.x (new config system)"
     releaseType = getReleaseMonicker()
 
-    for (String ver : getAcceptableMcVersions()) {
+    for (String ver : outlet.mcVersions()) {
         addGameVersion(ver)
     }
 
-}
-
-/**
- * Get the newest available loader version.
- *
- * @return loader version.
- */
-static String getNewestLoaderVersion() {
-    def loaderVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/loader/"))
-    assert loaderVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
-    return loaderVersions.first().version
-}
-
-/**
- * Get correct Yarn version for project's MC version.
- *
- * @param newest whether to return the newest available Yarn version, or the oldest. Oldest may be preferred to avoid
- * invalidating genSources' output.
- * @return the correct Yarn version.
- */
-String getChosenYarnVersion(boolean newest) {
-    def yarnVersions = new JsonSlurper().parse(
-            new URL("https://meta.fabricmc.net/v2/versions/yarn/${project.minecraft_version}"))
-    assert yarnVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
-    return newest ? yarnVersions.first().version : yarnVersions.last().version
-}
-
-/**
- * Get the latest MC version.
- *
- * @param isStable if snapshots should be ignored or not.
- * @return the MC version.
- */
-static String getLatestMc(boolean isStable) {
-    def mcVersions = new JsonSlurper().parse(new URL("https://meta.fabricmc.net/v2/versions/game"))
-    assert mcVersions instanceof ArrayList<LinkedHashMap> // Type check to to remove visual errors
-    if (!isStable) return mcVersions.first().version
-    for (LinkedHashMap mcVer : mcVersions) {
-        if (mcVer.stable) return mcVer.version
-    }
-    return "" // No MC version was found
 }
 
 /**
@@ -220,109 +178,6 @@ static String getLatestModMenu() {
     // For some reason Groovy was not happy with accessing it as a map, so this nonsense exists
     def x = modMenuVersions.getProperty('versioning')
     return x['latest']
-}
-
-/**
- * Get the latest FAPI version.
- * Assumes latest is always added to bottom of maven pom.
- * May not be the specific version needed for a given MC version.
- *
- * @return latest fapi version. If not found, returns the version in gradle.properties
- */
-String getLatestFapi() {
-    def fapiVersions = new XmlSlurper().parseText(
-            new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text)
-    def mcVersions = new JsonSlurper().parse(new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"))
-    String majorMc = getMajorMcVersion((mcVersions.versions as ArrayList<LinkedHashMap>).find {(it.id as String) == (project.minecraft_version as String)}.url as String)
-    for (String version : (fapiVersions.versioning.versions.version.list() as List).reverse()) {
-        String target = version.split("\\+")[1]
-        if (target.contains("build")) break // These versions are old and have useless metadata
-        if (target.contains(majorMc)) return version
-    }
-    return project.fabric_version
-}
-
-
-/**
- * Return a list of acceptable MC versions based on the semver string in project.range.
- * Parsed from the official launcher metadata, could break at anytime.
- *
- * @return the list of acceptable MC versions
- */
-ArrayList<String> getAcceptableMcVersions() {
-    ArrayList<String> list = new ArrayList<String>()
-
-    // Fragile
-    def mcVersions = new JsonSlurper().parse(new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json"))
-    for (Object mcver : mcVersions.versions) {
-        // Don't go below 1.14.4, mostly because change in version formatting
-        if ("1.14.4" == (mcver.id as String)) break
-
-        com.github.yuchi.semver.Range r = com.github.yuchi.semver.Range.from(project.range.replace("-", ".0-"), false)
-
-        Version v = Version.from(genMcVersionString(mcver.id as String, mcver.url as String), false)
-
-        if (v == null || r == null) {
-            System.out.println(String.format("The version was null for : %s", mcver.id))
-            break
-        }
-
-        // isOutside check is to fix java version of npm-semver not having includePrerelease flag, as by default
-        // different prereleases form different minor versions will not match
-        // NOTE: May break things (*may*)
-        if (r.test(v) || r.isOutside(v, Direction.LOW)) {
-            list.add(mcver.id as String)
-        }
-    }
-
-    return list
-}
-
-/**
- * Converts a given MC version to its semver format.
- *
- * @param version the version to convert.
- * @param metaURL the metadata URL to pull the major MC version from.
- * @return the semver-compatible version for the given MC version.
- */
-static String genMcVersionString(String version, String metaURL) {
-    // From Fabric Loader https://github.com/FabricMC/fabric-loader/blob/master/src/main/java/net/fabricmc/loader/minecraft/McVersionLookup.java
-    Pattern RELEASE_PATTERN = Pattern.compile("\\d+\\.\\d+(\\.\\d+)?")
-    Pattern PRE_RELEASE_PATTERN = Pattern.compile(".+(?:-pre| Pre-[Rr]elease )(\\d+)")
-    Pattern RELEASE_CANDIDATE_PATTERN = Pattern.compile(".+(?:-rc| [Rr]elease Candidate )(\\d+)")
-    Pattern SNAPSHOT_PATTERN = Pattern.compile("(?:Snapshot )?(\\d+)w0?(0|[1-9]\\d*)([a-z])")
-
-    if (RELEASE_PATTERN.matcher(version).matches()) return version
-
-    String majorVersion = getMajorMcVersion(metaURL) + ".0" // fix for parser
-
-    Matcher snapshotMatcher = SNAPSHOT_PATTERN.matcher(version)
-    if (snapshotMatcher.matches()) {
-        return majorVersion + "-alpha." + snapshotMatcher.group(1) + "." + snapshotMatcher.group(2) + "." + snapshotMatcher.group(3)
-    }
-
-    Matcher rcMatcher = RELEASE_CANDIDATE_PATTERN.matcher(version)
-    if (rcMatcher.matches()) {
-        return majorVersion + "-rc." + rcMatcher.group(1)
-    }
-
-    Matcher preMatcher = PRE_RELEASE_PATTERN.matcher(version)
-    if (preMatcher.matches()) {
-        return majorVersion + "-beta." + preMatcher.group(1)
-    }
-
-    return ""
-}
-
-/**
- * Pulls the major game version from official launcher metadata's 'assets' key.
- *
- * @param metaURL the launcher meta URL for the version in question.
- * @return the major game version, such as '1.17'
- */
-static String getMajorMcVersion(String metaURL) {
-    def meta = new JsonSlurper().parse(new URL(metaURL))
-    return meta.assets
 }
 
 /**
