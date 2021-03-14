@@ -17,13 +17,18 @@ plugins {
     id 'maven-publish'
     id 'musical-code' version '1.2' // Compare MC versions for changes
     id "com.modrinth.minotaur" version "1.1.0"
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
 
     // To trigger musical code on project refresh and run processResources on project launch in Idea
     id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
 }
 apply plugin: 'dex.plugins.outlet'
 
+
+import com.matthewprenger.cursegradle.CurseUploadTask
 import com.modrinth.minotaur.TaskModrinthUpload
+
+import java.util.concurrent.TimeUnit
 
 repositories {
     mavenLocal()
@@ -147,23 +152,117 @@ publishing {
     }
 }
 
+static def getCheckedOutGitCommitHash() {
+    'git rev-parse --verify --short HEAD'.execute().text.trim()
+}
+
+def uniChangelog = "This is autopublished from Github Actions. Use at your own risk. See commit history or a release " +
+        "build for changes. Based on commit: ${getCheckedOutGitCommitHash()}\n\n<br />" +
+        "This build may work on Minecraft versions not specified for this version. Release cadence at time of writing " +
+        "(2/12/2021):\n\n<br />" +
+        "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.x and 1.17.x (new config system)"
+
+def tagPublishedCommit() {
+    def doWork = true
+    def tagName = "${getReleaseMonicker()}/${project.version}"
+
+    //def lastTag = "git describe --abbrev=0 --tags".execute() //this is latest tag. Ideally we get for only releases
+    def x = 'git tag'.execute()
+    x.waitFor(10, TimeUnit.SECONDS)
+    def lTag = ''
+    x.inputStream.eachLine {
+        if (tagName == it) {
+            logger.info('Previously used tag in use, cancelling')
+            doWork = false
+            return
+        }
+        if (it.contains(getReleaseMonicker())) lTag = it
+    }
+
+    if (!doWork) return ''
+
+    def changelog = "\n\n<br /><br />Commit history from previous " + getReleaseMonicker()
+
+    if (!lTag.empty) {
+        runCommands("git log --pretty=reference ${lTag}..${tagName}".split(' ')).eachLine {
+            changelog += '<br />' + it
+        }
+    } else {
+        changelog = '\n\n<br /><br />Could not automatically generate changelog.'
+    }
+
+    try {
+        runCommands('git', 'tag', '-a', tagName, '-m', '"Automated Tagging based on Modrinth autopublish"')
+    } catch (Exception e) {
+        logger.error("Failed to create automated tag!")
+        logger.error(e.getMessage())
+    }
+
+    return changelog
+}
+
+def log = ''
+
 task publishModrinth(type: TaskModrinthUpload, dependsOn: build) {
+    log = uniChangelog + tagPublishedCommit()
+
     token = System.getenv("MODRINTH")
     projectId = 'uSdcnlts'
     versionNumber = project.version
     uploadFile = jar.outputs.getFiles().asPath // This is the java jar task
     addLoader('fabric')
-    versionName = "Autopublished (potentially) alpha build"
-    changelog = "This is autopublished from github actions. Use at your own risk. See commit history or a release build for changes.\n\n<br />" +
-            "This build may work on Minecraft versions not specified on modrinth. Release cadence at time of writing " +
-            "(2/12/2021):\n\n<br />" +
-            "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.x and 1.17.x (new config system)"
+    versionName = "AutoSwitch $project.version (autopublished)"
+    changelog = log
     releaseType = getReleaseMonicker()
 
     for (String ver : outlet.mcVersions()) {
         addGameVersion(ver)
     }
 
+}
+
+curseforge {
+    if (System.getenv("CURSE")) {
+        apiKey = System.getenv("CURSE")
+    }
+
+    project {
+        id = '347405'
+        changelog = log
+        releaseType = getReleaseMonicker()
+
+        outlet.curseforgeMcVersions().each {
+            addGameVersion it.replace('1.17-Snapshot', '1.17') // Apparently curse is even more special
+        }
+        addGameVersion 'Fabric'
+
+        changelogType = 'html'
+
+        mainArtifact(remapJar) {
+            displayName = "AutoSwitch $project.version (autopublished)"
+        }
+
+        relations {
+            requiredDependency 'fabric'
+        }
+
+        afterEvaluate {
+            uploadTask.dependsOn("remapJar").mustRunAfter(publishModrinth)
+        }
+    }
+
+    options {
+        forgeGradleIntegration = false
+        //debug = true // Non-upload testing
+    }
+}
+
+// Only publish to Curseforge for releases
+// I intend for beta and alpha builds to be Modrinth exclusives
+tasks.withType(CurseUploadTask) {
+    onlyIf {
+        "release" == getReleaseMonicker()
+    }
 }
 
 /**
@@ -238,6 +337,20 @@ String getOldMcVersion(boolean getNewMc) {
     if (getNewMc) return props.get('currMC') as String
 
     return props.get('oldMC') as String
+}
+
+// From https://stackoverflow.com/a/42691104
+// Licensed under CC BY-SA 3.0
+private String runCommands(String... commands) {
+    def process = new ProcessBuilder(commands).redirectErrorStream(true).start()
+    process.waitFor()
+    def result = ''
+    process.inputStream.eachLine { result += it + '\n' }
+    def errorResult = process.exitValue() == 0
+    if (!errorResult) {
+        throw new IllegalStateException(result)
+    }
+    return result
 }
 
 publish.finalizedBy(publishModrinth)
