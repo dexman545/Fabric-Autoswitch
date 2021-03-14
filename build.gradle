@@ -58,7 +58,7 @@ version = project.mod_version
 group = project.maven_group
 
 project.minecraft_version = outlet.latestMc()
-project.modmenu_version = "1.16.6" //getLatestModMenu() Disabled as fetching the xml is somehow broken
+project.modmenu_version = getLatestModMenu()
 project.loader_version = outlet.loaderVersion()
 project.yarn_mappings =  outlet.yarnVersion()
 project.fabric_version = outlet.fapiVersion()
@@ -166,7 +166,6 @@ def tagPublishedCommit() {
     def doWork = true
     def tagName = "${getReleaseMonicker()}/${project.version}"
 
-    //def lastTag = "git describe --abbrev=0 --tags".execute() //this is latest tag. Ideally we get for only releases
     def x = 'git tag'.execute()
     x.waitFor(10, TimeUnit.SECONDS)
     def lTag = ''
@@ -174,9 +173,9 @@ def tagPublishedCommit() {
         if (tagName == it) {
             logger.info('Previously used tag in use, cancelling')
             doWork = false
-            return
         }
         if (it.contains(getReleaseMonicker())) lTag = it
+        return
     }
 
     if (!doWork) return ''
@@ -273,10 +272,8 @@ tasks.withType(CurseUploadTask) {
 // I got tired of having to find the right version, ok?
 static String getLatestModMenu() {
     def modMenuVersions = new XmlSlurper().parseText(
-            new URL("http://maven.terraformersmc.com/com/terraformersmc/modmenu/maven-metadata.xml").text)
-    // For some reason Groovy was not happy with accessing it as a map, so this nonsense exists
-    def x = modMenuVersions.getProperty('versioning')
-    return x['latest']
+            new URL("https://maven.terraformersmc.com/com/terraformersmc/modmenu/maven-metadata.xml").text)
+    return modMenuVersions.versioning.latest
 }
 
 /**
@@ -341,7 +338,7 @@ String getOldMcVersion(boolean getNewMc) {
 
 // From https://stackoverflow.com/a/42691104
 // Licensed under CC BY-SA 3.0
-private String runCommands(String... commands) {
+private static String runCommands(String... commands) {
     def process = new ProcessBuilder(commands).redirectErrorStream(true).start()
     process.waitFor()
     def result = ''
