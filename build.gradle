@@ -219,14 +219,7 @@ def tagPublishedCommit() {
 
     if (!doWork) return ''
 
-    def changelog = "\n\n<br /><br />Commit history from previous " + getReleaseMonicker()
-
-    try {
-        runCommands('git', 'tag', '-a', tagName, '-m', '"Automated Tagging based on Modrinth autopublish"')
-    } catch (Exception e) {
-        logger.error("Failed to create automated tag!")
-        logger.error(e.getMessage())
-    }
+    def changelog = "\n\n<br /><br />Commit history from previous " + getReleaseMonicker() + ":\n"
 
     if (!lTag.empty) {
         runCommands("git log --pretty=reference ${lTag}..${tagName}".split(' ')).eachLine {
