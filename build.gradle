@@ -221,19 +221,19 @@ def tagPublishedCommit() {
 
     def changelog = "\n\n<br /><br />Commit history from previous " + getReleaseMonicker()
 
+    try {
+        runCommands('git', 'tag', '-a', tagName, '-m', '"Automated Tagging based on Modrinth autopublish"')
+    } catch (Exception e) {
+        logger.error("Failed to create automated tag!")
+        logger.error(e.getMessage())
+    }
+
     if (!lTag.empty) {
         runCommands("git log --pretty=reference ${lTag}..${tagName}".split(' ')).eachLine {
             changelog += '<br />' + it
         }
     } else {
         changelog = '\n\n<br /><br />Could not automatically generate changelog.'
-    }
-
-    try {
-        runCommands('git', 'tag', '-a', tagName, '-m', '"Automated Tagging based on Modrinth autopublish"')
-    } catch (Exception e) {
-        logger.error("Failed to create automated tag!")
-        logger.error(e.getMessage())
     }
 
     return changelog
