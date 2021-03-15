@@ -43,5 +43,8 @@
     },
     "stopmodreposts:showToast": false,
     "stopmodreposts:showButton": false
+  },
+  "breaks": {
+    "modmenu": "<1.15.0"
   }
 }
