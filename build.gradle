@@ -239,7 +239,7 @@ curseforge {
         }
 
         relations {
-            requiredDependency 'fabric'
+            requiredDependency 'fabric-api'
         }
 
         afterEvaluate {
