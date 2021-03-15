@@ -27,11 +27,11 @@ apply plugin: 'dex.plugins.outlet'
 
 import com.matthewprenger.cursegradle.CurseUploadTask
 import com.modrinth.minotaur.TaskModrinthUpload
+import groovy.json.JsonSlurper
 
 import java.util.concurrent.TimeUnit
 
 repositories {
-    mavenLocal()
     maven {
         url 'http://maven.terraformersmc.com/'
         name 'TerraFormersMC'
@@ -63,34 +63,73 @@ project.loader_version = outlet.loaderVersion()
 project.yarn_mappings =  outlet.yarnVersion()
 project.fabric_version = outlet.fapiVersion()
 
+// Controls if optional deps. should be loaded at runtime via runClient
+def useCompileOnlyDeps = false
+
+configurations { //todo move into Outlet, change include to work differently
+    optional {
+        transitive = false
+    }
+    requiredModImpl {
+        transitive = false
+    }
+    requiredModApi {
+        transitive = false
+    }
+    requiredLib
+
+    // Natural hierarchy is inverted for Gradle
+    modCompileOnly.extendsFrom(optional)
+    if (useCompileOnlyDeps) modRuntime.extendsFrom(optional)
+    modImplementation.extendsFrom(requiredModImpl)
+    implementation.extendsFrom(requiredLib)
+    include.extendsFrom(requiredModApi, /*requiredModImpl,*/ requiredLib) // Disabled modImpl as modules depend on other modules
+    modApi.extendsFrom(requiredModApi)
+}
+
 //noinspection SpellCheckingInspection
 dependencies {
-    //to change the versions see the gradle.properties file
+    // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-    //OWNER library
-    implementation "org.aeonbits.owner:owner:1.0.10"
-    include "org.aeonbits.owner:owner:1.0.10"
-
-    modApi 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
-    include 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
-
-    // Mod Compat
-
-    // ModMenu
-    modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}") {
-        transitive = false
+    fapiModules().forEach {
+        requiredModImpl(fabricApi.module(it, project.fabric_version))
     }
-    /*modRuntime("com.terraformersmc:modmenu:${project.modmenu_version}") {
-        transitive = false
-    }*/
+
+    // OWNER library
+    requiredLib "org.aeonbits.owner:owner:1.0.10"
+
+    // Autoswitch API
+    requiredModApi 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
+
+    // Mod Compat ------------
+    // ModMenu
+    optional "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 }
+
+/**
+* Generate list of Fabric API modules based on fabric.mod.json
+*/
+Set<String> fapiModules() {
+    def out = []
+    project.sourceSets.main.resources.files.each {
+        if (it.name == 'fabric.mod.json') {
+            def modJson = new JsonSlurper().parse(it)
+            out = modJson.depends.keySet().findAll { id ->
+                (id as String).startsWith('fabric-')
+            }
+        }
+    }
+    return out
+}
+
+/*remapJar { //Disabled till loom 0.7 adds it. Planned for creating a standalone jar
+    include configurations.requiredLib
+}*/
 
 processResources {
     inputs.property "version", project.version
