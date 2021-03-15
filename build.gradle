@@ -201,49 +201,14 @@ def uniChangelog = "This is autopublished from Github Actions. Use at your own r
         "(2/12/2021):\n\n<br />" +
         "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.x and 1.17.x (new config system)"
 
-def tagPublishedCommit() {
-    def doWork = true
-    def tagName = "${getReleaseMonicker()}/${project.version}"
-
-    def x = 'git tag'.execute()
-    x.waitFor(10, TimeUnit.SECONDS)
-    def lTag = ''
-    x.inputStream.eachLine {
-        if (tagName == it) {
-            logger.info('Previously used tag in use, cancelling')
-            doWork = false
-        }
-        if (it.contains(getReleaseMonicker())) lTag = it
-        return
-    }
-
-    if (doWork) return ''
-
-    def changelog = "\n\n<br /><br />Commit history from previous " + getReleaseMonicker() + ":\n"
-
-    if (!lTag.empty) {
-        runCommands("git log --pretty=reference ${lTag}..${tagName}".split(' ')).eachLine {
-            changelog += '<br />' + it
-        }
-    } else {
-        changelog = '\n\n<br /><br />Could not automatically generate changelog.'
-    }
-
-    return changelog
-}
-
-def log = ''
-
 task publishModrinth(type: TaskModrinthUpload, dependsOn: build) {
-    log = uniChangelog + tagPublishedCommit()
-
     token = System.getenv("MODRINTH")
     projectId = 'uSdcnlts'
     versionNumber = project.version
     uploadFile = jar.outputs.getFiles().asPath // This is the java jar task
     addLoader('fabric')
     versionName = "AutoSwitch $project.version (autopublished)"
-    changelog = log
+    changelog = uniChangelog
     releaseType = getReleaseMonicker()
 
     for (String ver : outlet.mcVersions()) {
@@ -259,7 +224,7 @@ curseforge {
 
     project {
         id = '347405'
-        changelog = log
+        changelog = uniChangelog
         releaseType = getReleaseMonicker()
 
         outlet.curseforgeMcVersions().each {
