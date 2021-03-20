@@ -20,7 +20,6 @@ class ASConfigScreen extends Screen {
 
     private ButtonWidget openFolder;
     private ButtonWidget openConfigFiles;
-    private ButtonWidget question;
 
     ASConfigScreen(Text title) {
         super(title);
@@ -88,31 +87,6 @@ class ASConfigScreen extends Screen {
                     return new TranslatableText("button.autoswitch.openconfigs");
                 }
             });
-
-            this.question = this.addButton(new ButtonWidget(this.width / 2 - 150, this.height - 30, 300, 20,
-                                                            new TranslatableText("button.autoswitch.openwiki"),
-                                                            (buttonWidget) -> {
-                                                                try {
-                                                                    Util.getOperatingSystem().open(new URL(
-                                                                            "https://github" +
-                                                                            ".com/dexman545/Fabric-Autoswitch/wiki" +
-                                                                            "/Why-Does-AutoSwitch-Not-Include-an-In" +
-                                                                            "-Game-GUI-For-Editing-Configs%3F"));
-                                                                } catch (Throwable e) {
-                                                                    AutoSwitch.logger.error("Failed to open Wiki Page");
-                                                                    AutoSwitch.logger.error(e);
-                                                                }
-                                                            }) {
-
-                protected MutableText getNarrationMessage() {
-                    return new TranslatableText("button.autoswitch.openwiki");
-                }
-
-                public Text getMessage() {
-                    return new TranslatableText("button.autoswitch.openwiki");
-                }
-            });
-
 
         } catch (Throwable e) {
             AutoSwitch.logger.error("Failed to initialize screen!");
