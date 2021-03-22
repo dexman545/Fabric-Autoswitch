@@ -5,7 +5,6 @@ import static autoswitch.AutoSwitch.tickTime;
 
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
-import autoswitch.events.SwitchEvent;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.TranslatableText;
@@ -44,16 +43,10 @@ public class TickUtil {
     public static void tickEventSchedule(PlayerEntity player) {
         if (player == null) return; // Ensure nothing bad happens
 
-        // Schedule switchback iff it is needed
-        EventUtil.eventHandler(tickTime, 0, SwitchEvent.SWITCHBACK.setPlayer(player));
-
         if (AutoSwitch.doAS) {
             // Tick event system clock
             tickTime += 1;
             AutoSwitch.scheduler.execute(tickTime);
-        } else {
-            // Clear event schedule when switching is disabled
-            AutoSwitch.scheduler.resetSchedule();
         }
     }
 

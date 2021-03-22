@@ -2,7 +2,6 @@ package autoswitch.compat.modmenu;
 
 import java.awt.Color;
 import java.io.File;
-import java.net.URL;
 
 import autoswitch.AutoSwitch;
 

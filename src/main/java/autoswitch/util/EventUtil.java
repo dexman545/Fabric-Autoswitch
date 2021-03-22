@@ -7,8 +7,6 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class EventUtil {
 
-    private static boolean hasScheduledSwitchback = false;
-
     public static void scheduleEvent(SwitchEvent event, boolean doSwitch, PlayerEntity player, boolean doSwitchType,
                                      Object protoTarget) {
         schedulePrimaryEvent(event.setPlayer(player).setDoSwitch(doSwitch).setDoSwitchType(doSwitchType)
@@ -30,24 +28,9 @@ public class EventUtil {
      */
     public static void eventHandler(int currentTime, double deltaTime, SwitchEvent event) {
 
-        if (!event.handlePreSwitchTasks()) return;
+        if (!event.handlePreSwitchTasks() || !AutoSwitch.doAS /*Only schedule events when they can execute*/) return;
 
         if (AutoSwitch.switchState.getHasSwitched()) deltaTime += AutoSwitch.featureCfg.switchDelay();
-
-        //Fix switchback not being delayed
-        if (event == SwitchEvent.SWITCHBACK) {
-
-            // TODO improve so special case for switchback isn't needed
-            if (AutoSwitch.switchState.getHasSwitched() && !SwitchEvent.player.handSwinging &&
-                !hasScheduledSwitchback) {
-                AutoSwitch.scheduler.schedule(event, AutoSwitch.featureCfg.switchbackDelay(), currentTime);
-                hasScheduledSwitchback = true;
-            }
-
-            return;
-        }
-
-        hasScheduledSwitchback = false;
 
         // Normal handing of switches
         AutoSwitch.scheduler.schedule(event, deltaTime, currentTime);

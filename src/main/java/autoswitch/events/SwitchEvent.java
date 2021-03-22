@@ -27,11 +27,6 @@ public enum SwitchEvent {
      * Event for "attack" action of the player.
      */
     ATTACK {
-        @Override
-        public boolean handlePreSwitchTasks() {
-            return true;
-        }
-
         /**
          * Setup switchstate for switchback feature.
          *
@@ -40,17 +35,19 @@ public enum SwitchEvent {
         private void handlePostSwitchTasks(boolean hasSwitched) {
             boolean doSwitchBack = featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BOTH;
             // Handles switchback
-            if (protoTarget instanceof Entity) {
-                if (hasSwitched &&
-                    (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.MOBS)) {
-                    AutoSwitch.switchState.setHasSwitched(true);
-                    AutoSwitch.switchState.setAttackedEntity(true);
+            if (hasSwitched) {
+                if (protoTarget instanceof Entity) {
+                    if (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.MOBS) {
+                        AutoSwitch.switchState.setHasSwitched(true);
+                        AutoSwitch.switchState.setAttackedEntity(true);
+                    }
+                } else if (protoTarget instanceof BlockState) {
+                    if (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BLOCKS) {
+                        AutoSwitch.switchState.setHasSwitched(true);
+                    }
                 }
-            } else if (protoTarget instanceof BlockState) {
-                if (hasSwitched &&
-                    (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BLOCKS)) {
-                    AutoSwitch.switchState.setHasSwitched(true);
-                }
+
+                EventUtil.eventHandler(AutoSwitch.tickTime, AutoSwitch.featureCfg.switchbackDelay(), SWITCHBACK);
             }
         }
 
@@ -58,7 +55,6 @@ public enum SwitchEvent {
         public boolean invoke() {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
-            if (!handlePreSwitchTasks()) return false; // Mowing Control
             handlePrevSlot();
 
             AbstractTargetable targetable = AbstractTargetable.attack(protoTarget, player);
@@ -87,7 +83,10 @@ public enum SwitchEvent {
             temp.ifPresent(b -> {
                 doOffhandSwitch = doOffhand();
                 AutoSwitch.switchState.setHasSwitched(b);
-                if (b) AutoSwitch.scheduler.schedule(SwitchEvent.OFFHAND, 0.1, AutoSwitch.tickTime);
+                if (b) {
+                    EventUtil.eventHandler(AutoSwitch.tickTime, 0.1, OFFHAND);
+                    EventUtil.eventHandler(AutoSwitch.tickTime, featureCfg.switchbackDelay(), SWITCHBACK);
+                }
             });
 
             return true;
@@ -161,7 +160,7 @@ public enum SwitchEvent {
         public boolean invoke() {
             SwitchUtil.handleUseSwitchConsumer().accept(doOffhandSwitch);
             doOffhandSwitch = false;
-            AutoSwitch.scheduler.schedule(SwitchEvent.SWITCHBACK, 0.1, AutoSwitch.tickTime);
+            EventUtil.eventHandler(tickTime, 0.1, SWITCHBACK);
 
             return true;
 

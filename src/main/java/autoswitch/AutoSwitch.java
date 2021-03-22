@@ -63,6 +63,7 @@ public class AutoSwitch implements ClientModInitializer {
                 doAS = TickUtil.keybindingToggleAction(e.player, doAS,
                                                        !doAS && (e.isInSingleplayer() || featureCfg.switchInMP()),
                                                        "msg.autoswitch.toggle_true", "msg.autoswitch.toggle_false");
+                if (!doAS) scheduler.resetSchedule(); // Clear event schedule when switching is disabled
             }
             //Keybindings implementation END ---
 
