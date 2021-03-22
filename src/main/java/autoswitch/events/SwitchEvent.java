@@ -1,6 +1,8 @@
 package autoswitch.events;
 
 import static autoswitch.AutoSwitch.featureCfg;
+import static autoswitch.AutoSwitch.tickTime;
+import static autoswitch.util.SwitchState.preventBlockAttack;
 
 import java.util.Optional;
 
@@ -8,6 +10,8 @@ import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.mixin.mixins.PlayerEntityAccessor;
 import autoswitch.targetable.AbstractTargetable;
+import autoswitch.util.EventUtil;
+import autoswitch.util.SwitchState;
 import autoswitch.util.SwitchUtil;
 
 import net.minecraft.block.BlockState;
@@ -100,7 +104,8 @@ public enum SwitchEvent {
             if (AutoSwitch.switchState.getHasSwitched() && !player.handSwinging) {
                 // Uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
 
-                return (doBlockSwitchback() || doMobSwitchback()) && doSwitchback();
+                return ((doBlockSwitchback() || doMobSwitchback()) && doSwitchback())
+                       || SwitchState.preventBlockAttack;
             }
 
             return true;
@@ -160,6 +165,27 @@ public enum SwitchEvent {
 
             return true;
 
+        }
+    },
+    PREVENT_BLOCK_ATTACK {
+        @Override
+        public boolean invoke() {
+            float delay = featureCfg.preventBlockSwitchAfterEntityAttack();
+            if (delay == 0) return true;
+            SwitchState.preventBlockAttack = AutoSwitch.scheduler.isEventScheduled(PREVENT_BLOCK_ATTACK);
+
+            if (preventBlockAttack) {
+                AutoSwitch.scheduler.schedule(SwitchEvent.REMOVE_PREVENTION, delay, AutoSwitch.tickTime);
+            }
+            return true;
+        }
+    },
+    REMOVE_PREVENTION { // This is ugly. Todo make better
+        @Override
+        public boolean invoke() {
+            AutoSwitch.scheduler.remove(PREVENT_BLOCK_ATTACK);
+            SwitchState.preventBlockAttack = false;
+            return true;
         }
     };
 

@@ -5,6 +5,7 @@ package autoswitch.util;
  */
 public class SwitchState {
 
+    public static boolean preventBlockAttack;
     public TargetableCache switchActionCache;
     public TargetableCache switchInteractCache;
     private int prevSlot;
@@ -18,6 +19,7 @@ public class SwitchState {
         int maxCacheSize = 128;
         switchActionCache = new TargetableCache(maxCacheSize);
         switchInteractCache = new TargetableCache(maxCacheSize);
+        preventBlockAttack = false;
     }
 
     public boolean getHasSwitched() {

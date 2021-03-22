@@ -141,6 +141,11 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
              "Each time that slot is modified, it's cached data is thrown out. This can benefit performance.")
     Boolean cacheSwitchResults();
 
+    @DefaultValue("0.25")
+    @Comment("Prevents switching for 'attack' action on a block for the specified number of seconds after attacking " +
+             "an entity. Resolution on the order of ticks. " + "0.05 is 1 tick of delay.")
+    Float preventBlockSwitchAfterEntityAttack();
+
     enum TargetType { // Do not change order, SwitchUtil relies on the ordinals
         BOTH, MOBS, BLOCKS, NONE
     }

@@ -16,6 +16,9 @@ public class Scheduler {
     public void schedule(SwitchEvent event, double deltaTimeSec, int initTickTime) {
         int deltaTimeTicks = (int) Math.floor(deltaTimeSec * 20);
 
+        // Clean old event
+        remove(event);
+
         schedule.add(new Task(event, initTickTime + deltaTimeTicks));
 
     }
@@ -50,6 +53,10 @@ public class Scheduler {
         schedule.forEach(task -> {
             if (task.event.equals(event)) schedule.remove(task);
         });
+    }
+
+    public boolean isEventScheduled(SwitchEvent event) {
+        return schedule.stream().anyMatch(task -> task.event.equals(event));
     }
 
     /**

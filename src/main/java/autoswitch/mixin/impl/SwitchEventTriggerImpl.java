@@ -5,6 +5,7 @@ import autoswitch.config.AutoSwitchConfig;
 import autoswitch.events.SwitchEvent;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchData;
+import autoswitch.util.SwitchState;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -97,9 +98,11 @@ public class SwitchEventTriggerImpl {
             case ENTITY:
                 EntityHitResult entityHitResult = (EntityHitResult) crosshairTarget;
                 Entity entity = entityHitResult.getEntity();
+                EventUtil.schedulePrimaryEvent(SwitchEvent.PREVENT_BLOCK_ATTACK);
                 EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, entity);
                 break;
             case BLOCK:
+                if (desiredType == DesiredType.ACTION && SwitchState.preventBlockAttack) break;
                 BlockHitResult blockHitResult = ((BlockHitResult) crosshairTarget);
                 BlockPos blockPos = blockHitResult.getBlockPos();
                 BlockState blockState = player.clientWorld.getBlockState(blockPos);

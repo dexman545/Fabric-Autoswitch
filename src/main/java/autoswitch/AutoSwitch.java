@@ -34,9 +34,9 @@ public class AutoSwitch implements ClientModInitializer {
     public static AutoSwitchConfig featureCfg;
     public static AutoSwitchAttackActionConfig attackActionCfg;
     public static AutoSwitchUseActionConfig useActionCfg;
-
     public static int tickTime = 0;
     public static boolean doAS = true;
+
     //Keybindings
     private final KeyBinding autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(
             new KeyBinding("key.autoswitch.toggle", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R, "AutoSwitch"));
