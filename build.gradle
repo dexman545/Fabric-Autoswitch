@@ -24,12 +24,9 @@ plugins {
 }
 apply plugin: 'dex.plugins.outlet'
 
-
 import com.matthewprenger.cursegradle.CurseUploadTask
 import com.modrinth.minotaur.TaskModrinthUpload
 import groovy.json.JsonSlurper
-
-import java.util.concurrent.TimeUnit
 
 repositories {
     maven {
