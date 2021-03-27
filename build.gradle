@@ -225,7 +225,7 @@ curseforge {
         releaseType = getReleaseMonicker()
 
         outlet.curseforgeMcVersions().each {
-            addGameVersion it.replace('1.17-Snapshot', '1.17') // Apparently curse is even more special
+            addGameVersion it
         }
         addGameVersion 'Fabric'
 
