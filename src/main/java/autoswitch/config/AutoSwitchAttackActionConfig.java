@@ -228,9 +228,9 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolHandler[] piston();
 
     @Separator(",")
-    @DefaultValue("shears;minecraft:mending, shears")
-    @Comment("A Material Not in use by vanilla, but has the foliage color.")
-    ToolHandler[] unused_plant();
+    @DefaultValue("hoe;minecraft:efficiency, hoe;minecraft:mending, hoe")
+    @Comment("A Material for full sized moss blocks")
+    ToolHandler[] moss_block();
 
     @Separator(",")
     @DefaultValue("axe;minecraft:efficiency, axe;minecraft:mending, sword;minecraft:mending, axe, sword")
