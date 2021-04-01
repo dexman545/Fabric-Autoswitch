@@ -132,7 +132,7 @@ public class TargetableUtil {
      */
     public static boolean skipSlot(ItemStack itemStack) {
         AutoSwitch.logger.debug("Stack: {}; First: {}; Second: {}", itemStack,
-                                !(AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() &&
+                                !(AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() &&
                                   !itemStack.isDamageable()),
                                 isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
         // Skip energy items that are out of power
@@ -141,7 +141,7 @@ public class TargetableUtil {
             return true;
         }
         // First part: don't skip iff undamagable items are needed
-        return (!(AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && !itemStack.isDamageable()) &&
+        return (!(AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() && !itemStack.isDamageable()) &&
                 isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
 
     }
@@ -187,7 +187,7 @@ public class TargetableUtil {
     public static boolean isRightTool(ItemStack stack, Object target) {
         if (!AutoSwitch.featureCfg.miningLevelCheck()) return true;
 
-        if (AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
+        if (AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
 
         if (target instanceof BlockState) {
             return !((BlockState) target).isToolRequired() || stack.isSuitableFor((BlockState) target);
@@ -197,7 +197,7 @@ public class TargetableUtil {
     }
 
     public static boolean isCorrectAttackType(String tool, Item item) {
-        return (AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && item.getMaxDamage() == 0) ||
+        return (AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() && item.getMaxDamage() == 0) ||
                isCorrectTool(tool, item);
     }
 

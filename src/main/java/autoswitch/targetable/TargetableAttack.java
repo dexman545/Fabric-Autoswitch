@@ -44,7 +44,7 @@ class TargetableAttack extends AbstractTargetable {
 
     @Override
     protected boolean checkSpecialCase(Object target) {
-        return !AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() &&
+        return !AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() &&
                AutoSwitch.switchData.target2AttackActionToolSelectorsMap.get(target) == null;
     }
 

@@ -83,7 +83,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
 
     @DefaultValue("true")
     @Comment("Enable switching to items with no durability when no tool is found.")
-    Boolean useNoDurablityItemsWhenUnspecified();
+    Boolean useNoDurabilityItemsWhenUnspecified();
 
     @DefaultValue("true")
     @Comment("Enable to allow target list to stack enchantments. Disable for old behavior. " +
