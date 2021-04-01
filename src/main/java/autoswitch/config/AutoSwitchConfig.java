@@ -78,8 +78,8 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     Boolean checkSaddlableEntitiesForSaddle();
 
     @DefaultValue("true")
-    @Comment("Enable dumb check for tool harvestablity on the targeted block.")
-    Boolean dumbMiningLevelCheck();
+    @Comment("Enable check for tool's ability to harvest the targeted block via comparison of mining levels.")
+    Boolean miningLevelCheck();
 
     @DefaultValue("true")
     @Comment("Enable switching to items with no durability when no tool is found.")

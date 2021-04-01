@@ -185,7 +185,7 @@ public class TargetableUtil {
      * @return if the target will obtain drops from the block, returns true for entities
      */
     public static boolean isRightTool(ItemStack stack, Object target) {
-        if (!AutoSwitch.featureCfg.dumbMiningLevelCheck()) return true;
+        if (!AutoSwitch.featureCfg.miningLevelCheck()) return true;
 
         if (AutoSwitch.featureCfg.useNoDurablityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
 
