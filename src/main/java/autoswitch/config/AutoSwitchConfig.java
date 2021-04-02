@@ -2,6 +2,7 @@ package autoswitch.config;
 
 import autoswitch.config.util.CaseInsensitiveEnumConverter;
 import autoswitch.config.util.Comment;
+import autoswitch.config.util.Permission;
 
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
@@ -146,16 +147,28 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
              "an entity. Resolution on the order of ticks. " + "0.05 is 1 tick of delay.")
     Float preventBlockSwitchAfterEntityAttack();
 
-    enum TargetType { // Do not change order, SwitchUtil relies on the ordinals
-        BOTH, MOBS, BLOCKS, NONE
+    enum TargetType implements Permission {
+        BOTH, MOBS, BLOCKS,
+        NONE {
+            @Override
+            public boolean allowed() {
+                return false;
+            }
+        }
     }
 
     enum DisplayControl {
         DEFAULT, CHAT, OFF
     }
 
-    enum OffhandType { // Do not change order, SwitchUtil relies on the ordinals
-        SADDLE, ALL, OFF
+    enum OffhandType implements Permission {
+        SADDLE, ALL,
+        OFF {
+            @Override
+            public boolean allowed() {
+                return false;
+            }
+        }
     }
 
 }

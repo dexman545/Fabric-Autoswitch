@@ -71,7 +71,7 @@ public enum SwitchEvent {
             if (AutoSwitch.featureCfg.putUseActionToolInOffHand() == AutoSwitchConfig.OffhandType.SADDLE) {
                 return protoTarget instanceof Saddleable;
             }
-            return AutoSwitch.featureCfg.putUseActionToolInOffHand().ordinal() <= 1;
+            return AutoSwitch.featureCfg.putUseActionToolInOffHand().allowed();
         }
 
         @Override

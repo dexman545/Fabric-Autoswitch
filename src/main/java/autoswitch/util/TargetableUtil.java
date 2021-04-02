@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class TargetableUtil {
+    private static final int NONE = -1;
 
     public static double toolRatingChange(double oldValue, double newValue, ItemStack stack, boolean stackEnchant) {
         if (stackEnchant && AutoSwitch.featureCfg.toolEnchantmentsStack() &&
@@ -147,11 +148,11 @@ public class TargetableUtil {
     }
 
     private static boolean isAlmostBroken(ItemStack stack) {
-        return getDurability(stack) <= 3 && getDurability(stack) != -1;
+        return getDurability(stack) <= 3 && getDurability(stack) != NONE;
     }
 
     private static int getDurability(ItemStack stack) {
-        AtomicReference<Number> durability = new AtomicReference<>(-1);
+        AtomicReference<Number> durability = new AtomicReference<>(NONE);
 
         if (!stack.isDamageable()) {
             AutoSwitch.switchData.damageMap.forEach((clazz, durabilityGetter) -> {

@@ -24,7 +24,7 @@ public class SwitchUtil {
      */
     public static Consumer<Boolean> handleUseSwitchConsumer() {
         return b -> {
-            if (b && (AutoSwitch.featureCfg.switchbackAllowed().ordinal() <= 2)) {
+            if (b && (AutoSwitch.featureCfg.switchbackAllowed().allowed())) {
                 AutoSwitch.switchState.setHasSwitched(true);
             }
 
