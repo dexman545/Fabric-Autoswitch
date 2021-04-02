@@ -29,13 +29,13 @@ class TargetableAttack extends AbstractTargetable {
 
     @Override
     Boolean switchTypeAllowed() {
-        if (AutoSwitch.featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BOTH) return true;
+        if (AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.BOTH) return true;
 
         if (this.protoTarget instanceof BlockState) {
-            return AutoSwitch.featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BLOCKS;
+            return AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.BLOCKS;
         }
         if (this.protoTarget instanceof Entity) {
-            return AutoSwitch.featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.MOBS;
+            return AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.MOBS;
         }
 
         AutoSwitch.logger.error("Something strange tried to trigger a switch...");
