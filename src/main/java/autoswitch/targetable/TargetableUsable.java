@@ -18,7 +18,7 @@ class TargetableUsable extends AbstractTargetable {
     public TargetableUsable(PlayerEntity player, Object target) {
         super(player);
         this.protoTarget = target;
-        populateToolLists(player);
+        populateToolLists();
     }
 
     @Override

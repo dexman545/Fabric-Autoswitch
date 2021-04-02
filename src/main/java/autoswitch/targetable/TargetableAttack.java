@@ -18,7 +18,7 @@ class TargetableAttack extends AbstractTargetable {
         super(player);
         this.player = player;
         this.protoTarget = protoTarget;
-        populateToolLists(player);
+        populateToolLists();
     }
 
     @Override
