@@ -113,7 +113,7 @@ public class ApiMapGenerator {
 
         addTarget("underwater_plant", Material.UNDERWATER_PLANT);
 
-        addTarget("moss_block", Material.UNUSED_PLANT);
+        addTarget("moss_block", Material.MOSS_BLOCK);
 
         addTarget("wood", Material.WOOD);
 
