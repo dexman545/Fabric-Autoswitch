@@ -175,7 +175,7 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @Separator(",")
     @DefaultValue("shears;minecraft:mending, shears, hoe;minecraft:silk_touch, hoe;minecraft:mending, hoe, sword;" +
                   "minecraft:mending, sword")
-    @Comment("A Material leaves.")
+    @Comment("A Material for leaves.")
     ToolHandler[] leaves();
 
     @Separator(",")
