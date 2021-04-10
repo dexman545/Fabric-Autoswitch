@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        jcenter()
         maven {
             url 'https://jitpack.io'
         }
@@ -12,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '0.6-SNAPSHOT'
+    id 'fabric-loom' version '0.7-SNAPSHOT'
     id "com.github.fudge.forgedflowerloom" version "2.0.0"
     id 'maven-publish'
     id 'musical-code' version '1.2' // Compare MC versions for changes
@@ -30,7 +29,7 @@ import groovy.json.JsonSlurper
 
 repositories {
     maven {
-        url 'http://maven.terraformersmc.com/'
+        url 'https://maven.terraformersmc.com/'
         name 'TerraFormersMC'
     }
     maven {
@@ -97,7 +96,7 @@ dependencies {
     }
 
     // OWNER library
-    requiredLib "org.aeonbits.owner:owner:1.0.10"
+    requiredLib "org.aeonbits.owner:owner:1.0.12"
 
     // Autoswitch API
     requiredModApi 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
@@ -143,6 +142,8 @@ tasks.withType(JavaCompile).configureEach {
     // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
     // If Javadoc is generated, this must be specified in that task too.
     it.options.encoding = "UTF-8"
+
+    it.options.incremental = true
 
     // The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
     // JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
