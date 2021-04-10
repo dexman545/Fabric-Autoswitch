@@ -50,7 +50,7 @@ public class ConfigReflection {
     }
 
     // Get the config entry's key
-    private static String key(Method method) {
+    public static String key(Method method) {
         Config.Key key = method.getAnnotation(Config.Key.class);
         return (key == null) ? method.getName() : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
     }

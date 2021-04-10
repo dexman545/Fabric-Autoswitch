@@ -147,6 +147,11 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
              "an entity. Resolution on the order of ticks. " + "0.05 is 1 tick of delay.")
     Float preventBlockSwitchAfterEntityAttack();
 
+    @DefaultValue("true")
+    @Comment("Enable client-sided commands to modify options in this file, as well to toggle AS on/off during " +
+             "gameplay. Only effective on restart.")
+    Boolean enableConfigCommands();
+
     enum TargetType implements Permission {
         BOTH, MOBS, BLOCKS,
         NONE {

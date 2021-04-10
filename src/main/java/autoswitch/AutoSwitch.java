@@ -5,6 +5,7 @@ import autoswitch.compat.autoswitch_api.impl.ApiMapGenerator;
 import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
+import autoswitch.config.commands.CommandConductor;
 import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.events.Scheduler;
@@ -47,9 +48,10 @@ public class AutoSwitch implements ClientModInitializer {
         ApiMapGenerator.createApiMaps();
         ApiGenUtil.pullHookedMods();
 
-
         // Create config files and load them
         ConfigEstablishment.establishConfigs();
+
+        CommandConductor.registerAllCommands();
 
         // Pull value for delayed switching
         doAS = !featureCfg.disableSwitchingOnStartup();
