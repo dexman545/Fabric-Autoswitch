@@ -1,6 +1,8 @@
 package autoswitch.config.util;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.util.Map;
 import java.util.Properties;
 
@@ -50,23 +52,23 @@ public class ConfigReflection {
     }
 
     // Get the config entry's key
-    public static String key(Method method) {
-        Config.Key key = method.getAnnotation(Config.Key.class);
-        return (key == null) ? method.getName() : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
+    public static <T extends AccessibleObject & Member> String key(T accessibleMember) {
+        Key key = accessibleMember.getAnnotation(Key.class);
+        return (key == null) ? accessibleMember.getName() : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
     }
 
     // Get the config entry's value
-    private static String defaultValue(Method method) {
-        Config.DefaultValue defaultValue = method.getAnnotation(Config.DefaultValue.class);
+    private static String defaultValue(AccessibleObject accessibleObject) {
+        DefaultValue defaultValue = accessibleObject.getAnnotation(DefaultValue.class);
         return defaultValue != null ? defaultValue.value() : null;
     }
 
     // Populate provided properties object with the default values for the config
-    public static void defaults(Properties properties, Class<? extends Config> clazz) {
-        Method[] methods = clazz.getMethods();
-        for (Method method : methods) {
-            String key = key(method);
-            String value = defaultValue(method);
+    public static void defaults(Properties properties, Class<?> clazz) {
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            String key = key(field);
+            String value = defaultValue(field);
             if (value != null) {
                 properties.put(key, value);
             }
@@ -74,11 +76,11 @@ public class ConfigReflection {
     }
 
     // Populate provided properties object with the comments for the config entries
-    public static void comments(Properties properties, Class<? extends Config> clazz) {
-        Method[] methods = clazz.getMethods();
-        for (Method method : methods) {
-            String key = key(method);
-            String value = comment(method);
+    public static void comments(Properties properties, Class<?> clazz) {
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            String key = key(field);
+            String value = comment(field);
             if (value != null) {
                 properties.put(key, value);
             }
@@ -86,8 +88,8 @@ public class ConfigReflection {
     }
 
     // get the config entry's comment
-    private static String comment(Method method) {
-        Comment comment = method.getAnnotation(Comment.class);
+    private static String comment(AccessibleObject accessibleObject) {
+        Comment comment = accessibleObject.getAnnotation(Comment.class);
         return (comment != null) ? comment.value() : null;
     }
 
