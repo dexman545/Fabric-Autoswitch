@@ -3,6 +3,7 @@ package autoswitch.config.util;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Properties;
 
@@ -53,13 +54,13 @@ public class ConfigReflection {
 
     // Get the config entry's key
     public static <T extends AccessibleObject & Member> String key(T accessibleMember) {
-        Key key = accessibleMember.getAnnotation(Key.class);
+        Config.Key key = accessibleMember.getAnnotation(Config.Key.class);
         return (key == null) ? accessibleMember.getName() : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
     }
 
     // Get the config entry's value
     private static String defaultValue(AccessibleObject accessibleObject) {
-        DefaultValue defaultValue = accessibleObject.getAnnotation(DefaultValue.class);
+        Config.DefaultValue defaultValue = accessibleObject.getAnnotation(Config.DefaultValue.class);
         return defaultValue != null ? defaultValue.value() : null;
     }
 
