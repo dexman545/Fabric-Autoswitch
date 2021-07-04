@@ -9,7 +9,7 @@ import java.util.Optional;
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.mixin.mixins.PlayerEntityAccessor;
-import autoswitch.targetable.AbstractTargetable;
+import autoswitch.targetable.Targetable;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchState;
 import autoswitch.util.SwitchUtil;
@@ -57,7 +57,7 @@ public enum SwitchEvent {
 
             handlePrevSlot();
 
-            AbstractTargetable targetable = AbstractTargetable.attack(protoTarget, player);
+            Targetable targetable = Targetable.attack(protoTarget, player);
             targetable.changeTool().ifPresent(this::handlePostSwitchTasks);
 
             return true;
@@ -79,7 +79,7 @@ public enum SwitchEvent {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
             handlePrevSlot();
-            Optional<Boolean> temp = AbstractTargetable.use(protoTarget, player).changeTool();
+            Optional<Boolean> temp = Targetable.use(protoTarget, player).changeTool();
             temp.ifPresent(b -> {
                 doOffhandSwitch = doOffhand();
                 AutoSwitch.switchState.setHasSwitched(b);
@@ -146,8 +146,8 @@ public enum SwitchEvent {
         public boolean invoke() {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
-            AbstractTargetable.switchback(AutoSwitch.switchState.getPrevSlot(), player).changeTool()
-                              .ifPresent(this::handlePostSwitchTasks);
+            Targetable.switchback(AutoSwitch.switchState.getPrevSlot(), player).changeTool()
+                      .ifPresent(this::handlePostSwitchTasks);
 
             return true;
         }

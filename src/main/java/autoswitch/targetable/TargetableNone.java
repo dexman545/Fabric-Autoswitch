@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Implementation of Targetable when there is no target. Intended for switchback feature.
  */
-class TargetableNone extends AbstractTargetable {
+class TargetableNone extends Targetable {
     private final int prevSlot;
 
     public TargetableNone(int prevSlot, PlayerEntity player) {

@@ -36,7 +36,7 @@ import net.minecraft.item.ItemStack;
  * the player's selected slot.
  */
 @Environment(EnvType.CLIENT)
-public abstract class AbstractTargetable {
+public abstract class Targetable {
     /**
      * Maps a hotbar slot to the rating for tool effectiveness - ie. speed for blocks and/or enchantment level based on
      * user config
@@ -60,34 +60,34 @@ public abstract class AbstractTargetable {
      *
      * @param player player this will effect
      */
-    protected AbstractTargetable(PlayerEntity player) {
+    protected Targetable(PlayerEntity player) {
         this.player = player;
     }
 
     /**
      * Switch logic for 'use' action
      *
-     * @return returns the correct AbstractTargetable subclass to handle the operation
+     * @return returns the correct Targetable subclass to handle the operation
      */
-    public static AbstractTargetable use(Object protoTarget, PlayerEntity player) {
+    public static Targetable use(Object protoTarget, PlayerEntity player) {
         return new TargetableUsable(player, protoTarget);
     }
 
     /**
      * Switch logic for 'switchback' action
      *
-     * @return returns the correct AbstractTargetable subclass to handle the operation
+     * @return returns the correct Targetable subclass to handle the operation
      */
-    public static AbstractTargetable switchback(int prevSlot, PlayerEntity player) {
+    public static Targetable switchback(int prevSlot, PlayerEntity player) {
         return new TargetableNone(prevSlot, player);
     }
 
     /**
      * Switch logic for 'attack' action
      *
-     * @return returns the correct AbstractTargetable subclass to handle the operation
+     * @return returns the correct Targetable subclass to handle the operation
      */
-    public static AbstractTargetable attack(Object protoTarget, PlayerEntity player) {
+    public static Targetable attack(Object protoTarget, PlayerEntity player) {
         return new TargetableAttack(protoTarget, player);
     }
 
@@ -118,7 +118,7 @@ public abstract class AbstractTargetable {
     abstract void populateToolSelection(ItemStack stack, int slot);
 
     /**
-     * Change the players selected slot based on the results of {@link AbstractTargetable#findSlot}. Checks if there is
+     * Change the players selected slot based on the results of {@link Targetable#findSlot}. Checks if there is
      * a slot to change to first.
      *
      * @return If no slot to change to, returns empty. Otherwise returns true if the slot changed, false if it didn't.

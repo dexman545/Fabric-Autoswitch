@@ -7,7 +7,7 @@ import net.minecraft.entity.Saddleable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
-class TargetableUsable extends AbstractTargetable {
+class TargetableUsable extends Targetable {
 
     /**
      * Base constructor for Targetable, initializes the class parameters and fetches the target map and initial tool map

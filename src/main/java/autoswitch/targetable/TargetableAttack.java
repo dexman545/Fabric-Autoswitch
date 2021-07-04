@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Targetable instance for attacking a block or entity
  */
-class TargetableAttack extends AbstractTargetable {
+class TargetableAttack extends Targetable {
 
     public TargetableAttack(Object protoTarget, PlayerEntity player) {
         super(player);
