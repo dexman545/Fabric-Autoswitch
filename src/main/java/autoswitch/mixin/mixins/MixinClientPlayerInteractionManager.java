@@ -14,19 +14,30 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.util.hit.HitResult;
 
+@SuppressWarnings("JavadocReference")
 @Mixin(ClientPlayerInteractionManager.class)
 public abstract class MixinClientPlayerInteractionManager {
 
+    /**
+     * @see ClientPlayerInteractionManager#client
+     */
     @Shadow
     @Final
     private MinecraftClient client;
+
+    /**
+     * @see ClientPlayerInteractionManager#breakingBlock
+     */
     @Shadow
     private boolean breakingBlock;
+
     @Unique
     private HitResult prevTarget;
 
     /**
      * Trigger the switch events.
+     *
+     * @see ClientPlayerInteractionManager#syncSelectedSlot()
      */
     @Inject(at = @At("HEAD"), method = "syncSelectedSlot()V")
     private void autoswitch$triggerSwitchOnSlotSync(CallbackInfo ci) {

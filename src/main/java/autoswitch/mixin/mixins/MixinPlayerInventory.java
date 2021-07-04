@@ -21,17 +21,27 @@ import net.minecraft.util.collection.DefaultedList;
 @Mixin(PlayerInventory.class)
 public abstract class MixinPlayerInventory {
 
+    /**
+     * @see PlayerInventory#main
+     */
     @Shadow
     @Final
     public DefaultedList<ItemStack> main;
+
     @Unique
     private ReferenceArrayList<ItemStack> prevHotbar;
 
+    /**
+     * @see PlayerInventory#getHotbarSize()
+     */
     @Shadow
     public static int getHotbarSize() {
         return 0;
     }
 
+    /**
+     * @see PlayerInventory#setStack(int, ItemStack)
+     */
     @Inject(at = @At("RETURN"), method = "setStack(ILnet/minecraft/item/ItemStack;)V")
     private void autoswitch$setr(int slot, ItemStack stack, CallbackInfo ci) {
         handleHotbarUpdate(slot);
@@ -51,6 +61,9 @@ public abstract class MixinPlayerInventory {
         prevHotbar = new ReferenceArrayList<>(hb);
     }
 
+    /**
+     * @see PlayerInventory#removeStack(int)
+     */
     @Inject(at = @At("RETURN"), method = "removeStack(I)Lnet/minecraft/item/ItemStack;")
     private void autoswitch$rmvs(int slot, CallbackInfoReturnable<ItemStack> cir) {
         handleHotbarUpdate(slot);

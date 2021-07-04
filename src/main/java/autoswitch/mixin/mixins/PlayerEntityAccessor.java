@@ -13,6 +13,11 @@ import net.minecraft.entity.player.PlayerInventory;
 @SuppressWarnings("JavadocReference")
 @Mixin(PlayerEntity.class)
 public interface PlayerEntityAccessor {
+
+    /**
+     * @see PlayerEntity#inventory
+     * @see PlayerEntity#getInventory()
+     */
     @Accessor
     PlayerInventory getInventory();
 
