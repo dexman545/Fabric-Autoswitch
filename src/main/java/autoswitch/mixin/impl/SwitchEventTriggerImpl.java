@@ -9,7 +9,6 @@ import autoswitch.util.SwitchState;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -44,13 +43,13 @@ public class SwitchEventTriggerImpl {
      * <p>
      * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doItemUse()}
      *
-     * @param interactionManager the interaction manager
+     * @param isBreakingBlock    if the player is currently breaking a block
      * @param player             the player
      * @param crosshairTarget    the crosshair target
      */
-    public static void interact(ClientPlayerInteractionManager interactionManager, ClientPlayerEntity player,
+    public static void interact(boolean isBreakingBlock, ClientPlayerEntity player,
                                 HitResult crosshairTarget) {
-        if (interactionManager.isBreakingBlock() || player.isRiding() || crosshairTarget == null) return;
+        if (isBreakingBlock || player.isRiding() || crosshairTarget == null) return;
 
         triggerSwitch(DesiredType.USE, crosshairTarget, player);
 
@@ -83,7 +82,7 @@ public class SwitchEventTriggerImpl {
                 break;
             default:
                 throw new IllegalStateException("AutoSwitch encountered an unexpected enum value: " + desiredType +
-                                                "\nSome mod has fiddled with AS's internals!");
+                                                "\nSome mod has fiddled with AutoSwitch's internals!");
         }
 
         // Trigger switch

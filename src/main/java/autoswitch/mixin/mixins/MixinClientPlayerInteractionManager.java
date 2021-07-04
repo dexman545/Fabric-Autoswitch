@@ -15,12 +15,13 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.util.hit.HitResult;
 
 @Mixin(ClientPlayerInteractionManager.class)
-public class MixinClientPlayerInteractionManager {
+public abstract class MixinClientPlayerInteractionManager {
 
     @Shadow
     @Final
     private MinecraftClient client;
-
+    @Shadow
+    private boolean breakingBlock;
     @Unique
     private HitResult prevTarget;
 
@@ -36,7 +37,7 @@ public class MixinClientPlayerInteractionManager {
             SwitchEventTriggerImpl.attack(0, this.client.player, this.client.crosshairTarget);
             this.prevTarget = this.client.crosshairTarget;
         } else if (this.client.options.keyUse.isPressed() || this.client.options.keyUse.wasPressed()) {
-            SwitchEventTriggerImpl.interact((ClientPlayerInteractionManager) (Object) this, this.client.player,
+            SwitchEventTriggerImpl.interact(this.breakingBlock, this.client.player,
                                             this.client.crosshairTarget);
             this.prevTarget = this.client.crosshairTarget;
         }
