@@ -167,7 +167,7 @@ public enum SwitchEvent {
         }
     },
     /**
-     * When scheduled, block attack events are not run.
+     * When scheduled, block attack events are not run or scheduled.
      * For use during combat situations, where targeting a block soon after an entity will hinder combat.
      */
     PREVENT_BLOCK_ATTACK {
