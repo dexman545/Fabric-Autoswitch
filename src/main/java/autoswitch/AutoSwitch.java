@@ -13,6 +13,8 @@ import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 import autoswitch.util.TickUtil;
 
+import net.minecraft.block.Material;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -23,6 +25,8 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+
+import java.lang.reflect.Field;
 
 public class AutoSwitch implements ClientModInitializer {
 
@@ -77,6 +81,16 @@ public class AutoSwitch implements ClientModInitializer {
         logger.info("AutoSwitch Loaded");
 
     }
+
+    // Test if all Materials are configured
+    /*private void testMaterialList() {
+        for (Field field : Material.class.getDeclaredFields()) {
+            if (!field.getType().equals(Material.class)) continue;
+            assert switchData.targets.containsKey(field.getName().toLowerCase()) : "Failed to find a Material " +
+                                                                                   "in the targets: " + field.getName();
+
+        }
+    }*/
 
 }
 
