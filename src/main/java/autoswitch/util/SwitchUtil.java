@@ -23,15 +23,15 @@ public class SwitchUtil {
      * @return Consumer to handle mob switchback and moving of stack to offhand
      */
     public static Consumer<Boolean> handleUseSwitchConsumer() {
-        return b -> {
-            if (b && (AutoSwitch.featureCfg.switchbackAllowed().allowed())) {
+        return moveToOffhand -> {
+            if (moveToOffhand && (AutoSwitch.featureCfg.switchbackAllowed().allowed())) {
                 AutoSwitch.switchState.setHasSwitched(true);
             }
 
             assert MinecraftClient.getInstance().getNetworkHandler() !=
                    null : "Minecraft client was null when AutoSwitch wanted to sent a packet!";
 
-            if (b && doPutActionOffhandCheck()) {
+            if (moveToOffhand && doPutActionOffhandCheck()) {
                 MinecraftClient.getInstance().getNetworkHandler().sendPacket(
                         new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN,
                                                   Direction.DOWN));

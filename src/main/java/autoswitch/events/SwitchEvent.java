@@ -57,8 +57,7 @@ public enum SwitchEvent {
 
             handlePrevSlot();
 
-            Targetable targetable = Targetable.attack(protoTarget, player);
-            targetable.changeTool().ifPresent(this::handlePostSwitchTasks);
+            Targetable.attack(protoTarget, player).changeTool().ifPresent(this::handlePostSwitchTasks);
 
             return true;
         }
@@ -79,11 +78,10 @@ public enum SwitchEvent {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
             handlePrevSlot();
-            Optional<Boolean> temp = Targetable.use(protoTarget, player).changeTool();
-            temp.ifPresent(b -> {
+            Targetable.use(protoTarget, player).changeTool().ifPresent(slotChanged -> {
                 doOffhandSwitch = doOffhand();
-                AutoSwitch.switchState.setHasSwitched(b);
-                if (b) {
+                AutoSwitch.switchState.setHasSwitched(slotChanged);
+                if (slotChanged) {
                     EventUtil.eventHandler(AutoSwitch.tickTime, 0.1, OFFHAND);
                     EventUtil.eventHandler(AutoSwitch.tickTime, featureCfg.switchbackDelay(), SWITCHBACK);
                 }
