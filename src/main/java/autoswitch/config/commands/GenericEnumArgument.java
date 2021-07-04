@@ -7,7 +7,6 @@ import java.util.concurrent.CompletableFuture;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
@@ -24,13 +23,14 @@ public class GenericEnumArgument implements ArgumentType {
         clazz = yClass;
         if (!yClass.isEnum()) return;
         for (Object ec : yClass.getEnumConstants()) {
-            EXAMPLES.add(((Y)ec).name());
+            EXAMPLES.add(((Y) ec).name());
         }
     }
 
     @Override
-    public Object parse(StringReader reader) throws CommandSyntaxException {
-        return EnumUtils.getEnum((Class<? extends Enum>) clazz, reader.readUnquotedString().toUpperCase(Locale.ENGLISH));
+    public Object parse(StringReader reader) {
+        return EnumUtils
+                .getEnum((Class<? extends Enum>) clazz, reader.readUnquotedString().toUpperCase(Locale.ENGLISH));
     }
 
     @Override

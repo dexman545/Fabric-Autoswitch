@@ -27,6 +27,11 @@ public abstract class MixinPlayerInventory {
     @Unique
     private ReferenceArrayList<ItemStack> prevHotbar;
 
+    @Shadow
+    public static int getHotbarSize() {
+        return 0;
+    }
+
     @Inject(at = @At("RETURN"), method = "setStack(ILnet/minecraft/item/ItemStack;)V")
     private void autoswitch$setr(int slot, ItemStack stack, CallbackInfo ci) {
         handleHotbarUpdate(slot);
@@ -44,11 +49,6 @@ public abstract class MixinPlayerInventory {
         List<ItemStack> hb = this.main.subList(0, getHotbarSize());
         HotbarWatcher.handleSlotChange(prevHotbar, hb);
         prevHotbar = new ReferenceArrayList<>(hb);
-    }
-
-    @Shadow
-    public static int getHotbarSize() {
-        return 0;
     }
 
     @Inject(at = @At("RETURN"), method = "removeStack(I)Lnet/minecraft/item/ItemStack;")

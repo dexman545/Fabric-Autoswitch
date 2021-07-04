@@ -35,8 +35,8 @@ public class CommandGenerator {
     /**
      * Takes a class or interface and generates commands based on the methods declared within it.
      *
-     * @param maker converter of a command name, the method it is for, to a
-     * {@link Command<FabricClientCommandSource>} that executes when a command is run.
+     * @param maker converter of a command name, the method it is for, to a {@link Command<FabricClientCommandSource>}
+     *              that executes when a command is run.
      * @param clazz class to generate commands from.
      */
     public CommandGenerator(Class<?> clazz, BiFunction<String, Method, Command<FabricClientCommandSource>> maker) {
@@ -46,9 +46,10 @@ public class CommandGenerator {
     /**
      * Takes a class or interface and generates commands based on the methods declared within it.
      *
-     * @param clazz class to generate commands from.
-     * @param maker converter of a command name, the method it is for, to a
-     * {@link Command<FabricClientCommandSource>} that executes when a command is run.
+     * @param clazz      class to generate commands from.
+     * @param maker      converter of a command name, the method it is for, to a
+     * {@link Command<FabricClientCommandSource>}
+     *                   that executes when a command is run.
      * @param allMethods whether to use only declared methods or all methods including those inherited.
      */
     public CommandGenerator(Class<?> clazz, BiFunction<String, Method, Command<FabricClientCommandSource>> maker,

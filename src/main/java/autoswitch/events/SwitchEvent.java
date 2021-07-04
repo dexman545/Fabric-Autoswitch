@@ -166,6 +166,10 @@ public enum SwitchEvent {
 
         }
     },
+    /**
+     * When scheduled, block attack events are not run.
+     * For use during combat situations, where targeting a block soon after an entity will hinder combat.
+     */
     PREVENT_BLOCK_ATTACK {
         @Override
         public boolean invoke() {
@@ -179,6 +183,9 @@ public enum SwitchEvent {
             return true;
         }
     },
+    /**
+     * Remove {@link SwitchEvent#PREVENT_BLOCK_ATTACK} when run.
+     */
     REMOVE_PREVENTION { // This is ugly. Todo make better
         @Override
         public boolean invoke() {

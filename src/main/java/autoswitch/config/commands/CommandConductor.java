@@ -26,40 +26,39 @@ import net.minecraft.text.TranslatableText;
 public class CommandConductor {
     /**
      * Converts a config key and method into {@link Command<FabricClientCommandSource>} that modifies the config file.
-     *
+     * <p>
      * Only works for those that don't override {@link GenericCommand#paramater()}as it uses the default value.
      */
     private static final BiFunction<String, Method, Command<FabricClientCommandSource>> configCommandMaker =
             (name, method) -> (context) -> {
-        featureCfg.setProperty(name,
-                               context.getArgument("option" /*Default value of 'paramater' in GenericCommand*/,
-                                                   method.getReturnType()).toString());
-        try {
-            ConfigEstablishment.writeConfigFiles();
-            context.getSource().sendFeedback(new LiteralText("Config file updated."));
-        } catch (IOException e) {
-            context.getSource().sendError(new LiteralText("Failed to update config file."));
-            AutoSwitch.logger.error(e);
-            return 1;
-        }
-        return 0;
-    };
+                featureCfg.setProperty(name,
+                                       context.getArgument("option" /*Default value of 'paramater' in GenericCommand*/,
+                                                           method.getReturnType()).toString());
+                try {
+                    ConfigEstablishment.writeConfigFiles();
+                    context.getSource().sendFeedback(new LiteralText("Config file updated."));
+                } catch (IOException e) {
+                    context.getSource().sendError(new LiteralText("Failed to update config file."));
+                    AutoSwitch.logger.error(e);
+                    return 1;
+                }
+                return 0;
+            };
 
     public static void registerAllCommands() {
         if (!featureCfg.enableConfigCommands()) return;
 
         // Create and register toggle command
-        ClientCommandManager.DISPATCHER.register(ClientCommandManager.literal("autoswitch_toggle")
-                                                                     .executes(context -> changeASToggle(context, !doAS)));
+        ClientCommandManager.DISPATCHER.register(
+                ClientCommandManager.literal("autoswitch_toggle").executes(context -> changeASToggle(context, !doAS)));
 
         // Create command builder and add message for when it is run on its own
         LiteralArgumentBuilder<FabricClientCommandSource> autoswitchCommandBuilder =
                 ClientCommandManager.literal("autoswitch").executes(context -> {
-                    context.getSource().sendFeedback(new LiteralText("Commands for changing AutoSwitch's " +
-                                                                     "feature config options, except for the tool " +
-                                                                     "targets. Please see the config files for " +
-                                                                     "complete set of options and documentation. " +
-                                                                     "Rewrites the config files."));
+                    context.getSource().sendFeedback(new LiteralText(
+                            "Commands for changing AutoSwitch's " + "feature config options, except for the tool " +
+                            "targets. Please see the config files for " +
+                            "complete set of options and documentation. " + "Rewrites the config files."));
                     return 1;
                 });
 
