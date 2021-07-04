@@ -24,7 +24,7 @@ public class TickUtil {
      */
     public static boolean keybindingToggleAction(PlayerEntity player, boolean toggle, boolean keyChooser,
                                                  String tlKeyTruthy, String tlKeyFalsy) {
-        if (featureCfg.toggleMessageControl() != AutoSwitchConfig.DisplayControl.OFF) {
+        if (featureCfg.toggleMessageControl().allowed()) {
             //Toggle message
             TranslatableText msg = new TranslatableText(keyChooser ? tlKeyTruthy : tlKeyFalsy);
 

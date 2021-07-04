@@ -162,8 +162,14 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
         }
     }
 
-    enum DisplayControl {
-        DEFAULT, CHAT, OFF
+    enum DisplayControl implements Permission {
+        DEFAULT, CHAT,
+        OFF {
+            @Override
+            public boolean allowed() {
+                return false;
+            }
+        }
     }
 
     enum OffhandType implements Permission {
