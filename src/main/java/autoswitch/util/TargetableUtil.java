@@ -5,13 +5,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import autoswitch.AutoSwitch;
+import autoswitch.events.SwitchEvent;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -77,6 +80,11 @@ public class TargetableUtil {
         return null;
     }
 
+    /**
+     * Generates a target rating for the given stack.
+     *
+     * @see net.minecraft.entity.player.PlayerEntity#attack(Entity) for Entity case's damage calculation
+     */
     public static float getTargetRating(Object target, ItemStack stack) {
         if (target instanceof BlockState) { // TODO correct clamping for instabreak situations ie. swords on bamboo
             return clampToolRating(stack.getMiningSpeedMultiplier((BlockState) target));
@@ -85,23 +93,44 @@ public class TargetableUtil {
         if (target instanceof Entity) {
             if (!(stack.getItem() instanceof ToolItem)) return 0;
 
-            AtomicReference<Float> x = new AtomicReference<>((float) 0);
-            AtomicReference<Float> y = new AtomicReference<>((float) 0);
+            float damage;
+            float h = 0;
+            AtomicReference<Float> baseDamage = new AtomicReference<>((float) 0);
+
+            // Doesn't include enchants
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(
+                    entityAttributeModifier -> baseDamage
+                            .updateAndGet(v -> (float) (v + entityAttributeModifier.getValue())));
+
+            damage = baseDamage.get();
+
+            // Consider Enchantments
+            if (AutoSwitch.featureCfg.weaponRatingIncludesEnchants()) {
+                // Should group be passed? Config gives them their own entries
+                if (target instanceof LivingEntity) {
+                    h = EnchantmentHelper.getAttackDamage(stack, ((LivingEntity)target).getGroup());
+                } else {
+                    h = EnchantmentHelper.getAttackDamage(stack, EntityGroup.DEFAULT);
+                }
+                // Disabled as config can specify this anyways
+                /*int l = EnchantmentHelper.getLevel(Enchantments.FIRE_ASPECT, stack);
+                if (target instanceof LivingEntity &&
+                    (((LivingEntity)target).isOnFire() && ((LivingEntity)target).isFireImmune())) {
+                        damage += l;
+                }*/
+            }
+
+            damage += h;
+
+            AtomicReference<Float> attackSpeed = new AtomicReference<>((float) 0);
 
             // Get attack speed
             stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_SPEED).forEach(
-                    entityAttributeModifier -> y.updateAndGet(v -> (float) (v - entityAttributeModifier.getValue())));
+                    entityAttributeModifier -> attackSpeed.updateAndGet(v -> (float)
+                            (v + entityAttributeModifier.getValue())));
 
-            if (AutoSwitch.featureCfg.weaponRatingIncludesEnchants()) { // Evaluate attack damage based on enchantments
-                stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(
-                        entityAttributeModifier -> x
-                                .updateAndGet(v -> (float) (v + entityAttributeModifier.getValue())));
-
-                return x.get() * (3 - y.get());
-            } else { // No care for enchantments
-                return ((3 - y.get()) * ((ToolItem) stack.getItem()).getMaterial().getAttackDamage());
-            }
-
+            // The 3 is there to convert the attack speed to match item tooltips. attackSpeed can be negative
+            return damage * (3 + attackSpeed.get());
         }
 
         return 0;
