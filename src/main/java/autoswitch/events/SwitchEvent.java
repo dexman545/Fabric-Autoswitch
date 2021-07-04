@@ -4,15 +4,16 @@ import static autoswitch.AutoSwitch.featureCfg;
 import static autoswitch.AutoSwitch.tickTime;
 import static autoswitch.util.SwitchState.preventBlockAttack;
 
-import java.util.Optional;
-
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
+import autoswitch.config.AutoSwitchConfig.TargetType;
 import autoswitch.mixin.mixins.PlayerEntityAccessor;
 import autoswitch.targetable.Targetable;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchState;
 import autoswitch.util.SwitchUtil;
+
+import org.jetbrains.annotations.Contract;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -28,21 +29,20 @@ public enum SwitchEvent {
      */
     ATTACK {
         /**
-         * Setup switchstate for switchback feature.
+         * Setup SwitchState for switchback feature.
          *
          * @param hasSwitched whether a switch has occurred
          */
         private void handlePostSwitchTasks(boolean hasSwitched) {
-            boolean doSwitchBack = featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BOTH;
-            // Handles switchback
             if (hasSwitched) {
+                boolean doSwitchBack = featureCfg.switchbackAllowed() == TargetType.BOTH;
                 if (protoTarget instanceof Entity) {
-                    if (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.MOBS) {
+                    if (doSwitchBack || featureCfg.switchbackAllowed() == TargetType.MOBS) {
                         AutoSwitch.switchState.setHasSwitched(true);
                         AutoSwitch.switchState.setAttackedEntity(true);
                     }
                 } else if (protoTarget instanceof BlockState) {
-                    if (doSwitchBack || featureCfg.switchbackAllowed() == AutoSwitchConfig.TargetType.BLOCKS) {
+                    if (doSwitchBack || featureCfg.switchbackAllowed() == TargetType.BLOCKS) {
                         AutoSwitch.switchState.setHasSwitched(true);
                     }
                 }
@@ -99,10 +99,7 @@ public enum SwitchEvent {
         protected boolean canNotSwitch() {
             // Check if conditions are met for switchback
             if (AutoSwitch.switchState.getHasSwitched() && !player.handSwinging) {
-                // Uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
-
-                return ((doBlockSwitchback() || doMobSwitchback()) && doSwitchback())
-                       || SwitchState.preventBlockAttack;
+                return SwitchState.preventBlockAttack || ((doBlockSwitchback() || doMobSwitchback()) && doSwitchback());
             }
 
             return true;
@@ -111,20 +108,24 @@ public enum SwitchEvent {
         /**
          * @return if the attack cooldown has progressed enough.
          */
+        @Contract(pure = true)
         private boolean doSwitchback() {
+            // Uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
             return player.getAttackCooldownProgress(-20.0f) != 1.0f;
         }
 
+        @Contract(pure = true)
         private boolean doMobSwitchback() {
             return AutoSwitch.switchState.hasAttackedEntity() &&
-                   (featureCfg.switchbackWaits() == AutoSwitchConfig.TargetType.BOTH ||
-                    featureCfg.switchbackWaits() == AutoSwitchConfig.TargetType.MOBS);
+                   (featureCfg.switchbackWaits() == TargetType.BOTH ||
+                    featureCfg.switchbackWaits() == TargetType.MOBS);
         }
 
+        @Contract(pure = true)
         private boolean doBlockSwitchback() {
             return !AutoSwitch.switchState.hasAttackedEntity() &&
-                   (featureCfg.switchbackWaits() == AutoSwitchConfig.TargetType.BOTH ||
-                    featureCfg.switchbackWaits() == AutoSwitchConfig.TargetType.BLOCKS);
+                   (featureCfg.switchbackWaits() == TargetType.BOTH ||
+                    featureCfg.switchbackWaits() == TargetType.BLOCKS);
         }
 
         /**
