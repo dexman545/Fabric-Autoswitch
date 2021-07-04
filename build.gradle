@@ -26,10 +26,12 @@ import com.matthewprenger.cursegradle.CurseUploadTask
 import com.modrinth.minotaur.TaskModrinthUpload
 import groovy.json.JsonSlurper
 
+import java.nio.charset.StandardCharsets
+
 repositories {
     maven {
-        url 'https://maven.terraformersmc.com/'
-        name 'TerraFormersMC'
+        url 'https://api.modrinth.com/maven'
+        name 'Modrinth'
     }
     maven {
         url 'https://jitpack.io'
@@ -96,7 +98,7 @@ dependencies {
 
     // Mod Compat ------------
     // ModMenu
-    optional "com.terraformersmc:modmenu:${project.modmenu_version}"
+    optional "maven.modrinth:modmenu:${project.modmenu_version}"
 
 }
 
@@ -258,10 +260,27 @@ tasks.withType(CurseUploadTask) {
  * @return mod menu version.
  */
 // I got tired of having to find the right version, ok?
-static String getLatestModMenu() {
-    def modMenuVersions = new XmlSlurper().parseText(
-            new URL("https://maven.terraformersmc.com/com/terraformersmc/modmenu/maven-metadata.xml").text)
-    return modMenuVersions.versioning.latest
+String getLatestModMenu() {
+
+    // Build version list in format for url
+    def versionList = "["
+    boolean first = true
+    for (String ver : outlet.mcVersions()) {
+        if (first) {
+            versionList += '%22' + ver + '%22'
+            first = false
+        } else {
+            versionList += "," + '%22' + ver + '%22' // %22 = ", used to fix encoding issue
+        }
+    }
+    versionList += "]"
+    // End build version list format
+
+    // Uses Modmenu's project id
+    def url = "https://api.modrinth.com/api/v1/mod/mOgUt4GM/version?game_versions=${versionList}" as String
+    def modMenuVersions = new groovy.json.JsonSlurper().parseText(new URL(url).text) as ArrayList
+
+    return modMenuVersions.first().version_number
 }
 
 /**
