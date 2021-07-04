@@ -50,7 +50,7 @@ public class AutoSwitchMapsGenerator {
 
             IntArrayList list = new IntArrayList();
             for (String input : split) {
-                //Handle normal operation where input is tool and enchantment
+                // Handle normal operation where input is tool and enchantment
                 int x = (new ToolHandler(input)).getId();
                 if (x != 0) {
                     list.add(x);
@@ -59,7 +59,7 @@ public class AutoSwitchMapsGenerator {
 
             AutoSwitch.switchData.targets.computeIfAbsent(key, k -> (new MaterialHandler(k)).getMat());
 
-            //Populate target map with the list
+            // Populate target map with the list
             if (!list.isEmpty() && AutoSwitch.switchData.targets.containsKey(key)) {
                 map.put(AutoSwitch.switchData.targets.get(key), list);
             }

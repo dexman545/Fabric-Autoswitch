@@ -67,7 +67,7 @@ public final class ConfigEstablishment {
         mergeConfigs(AutoSwitch.switchData.attackConfig, AutoSwitch.attackActionCfg);
         mergeConfigs(AutoSwitch.switchData.usableConfig, AutoSwitch.useActionCfg);
 
-        //generate config file; removes incorrect values from existing one as well
+        // Generate config file; removes incorrect values from existing one as well
         try {
             // Pull mod version
             String currentVersion = SwitchUtil.getAutoSwitchVersion();

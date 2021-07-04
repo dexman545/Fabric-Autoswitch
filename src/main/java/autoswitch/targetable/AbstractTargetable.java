@@ -37,10 +37,22 @@ import net.minecraft.item.ItemStack;
  */
 @Environment(EnvType.CLIENT)
 public abstract class AbstractTargetable {
-    //Rating for tool effectiveness - ie. speed for blocks or enchantment level based on user config
+    /**
+     * Maps a hotbar slot to the rating for tool effectiveness - ie. speed for blocks and/or enchantment level based on
+     * user config
+     */
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
-    PlayerEntity player;
+
+    /**
+     * The initial Target brought in from the world, eg. a block or entity. This differs from the Target in that a
+     * {@link net.minecraft.block.Material} or {@link net.minecraft.entity.EntityGroup} may be targeted in the user
+     * config
+     * <p>
+     * Equals the actual Target iff it is a block or entity override
+     */
     Object protoTarget = null;
+
+    PlayerEntity player;
 
     /**
      * Base constructor for Targetable, initializes the class parameters and fetches the target map and initial tool map
@@ -82,7 +94,7 @@ public abstract class AbstractTargetable {
 
     /**
      * Pulls the list of ItemStacks from the player's hotbar and send the stack and slot number to populate the tool
-     * map. Sends an air item if the slot is empty.
+     * map. Sends an air item if the slot is empty
      */
     void populateToolLists() {
         List<ItemStack> hotbar =
@@ -106,18 +118,16 @@ public abstract class AbstractTargetable {
     abstract void populateToolSelection(ItemStack stack, int slot);
 
     /**
-     * Change the players selected slot based on the results of findSlot(). Checks if there is a slot to change to
-     * first.
+     * Change the players selected slot based on the results of {@link AbstractTargetable#findSlot}. Checks if there is
+     * a slot to change to first.
      *
-     * @return If no slot to change to, returns empty Otherwise returns true if the slot changed, false if it didn't
-     *
-     * @see AbstractTargetable#findSlot()
+     * @return If no slot to change to, returns empty. Otherwise returns true if the slot changed, false if it didn't.
      */
     public Optional<Boolean> changeTool() {
         return findSlot().map(slot -> {
             int currentSlot = ((PlayerEntityAccessor) this.player).getInventory().selectedSlot;
             if (slot == currentSlot) {
-                //No need to change slot!
+                // No need to change slot!
                 return false;
             }
 
@@ -205,7 +215,7 @@ public abstract class AbstractTargetable {
         toolSelectorMap.getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
             if (id == 0) return; // Check if no ID was assigned to the toolSelector.
 
-            counter.updateAndGet(v -> (float) (v - 0.75)); //tools later in the config list are not preferred
+            counter.updateAndGet(v -> (float) (v - 0.75)); // Tools later in the config list are not preferred
             String tool;
             ReferenceArrayList<Enchantment> enchants;
 
@@ -226,10 +236,6 @@ public abstract class AbstractTargetable {
 
     }
 
-    boolean checkSpecialCase(Object target) {
-        return false;
-    }
-
     /**
      * Generate the tool rating and add it to the tool rating map.
      */
@@ -241,8 +247,8 @@ public abstract class AbstractTargetable {
 
         // Evaluate enchantment
         if (enchants == null) {
-            rating += 1; //promote tool in ranking as it is the correct one
-            stackEnchants = false; // items without the enchant shouldn't stack with ones that do
+            rating += 1; // Promote tool in ranking as it is the correct one
+            stackEnchants = false; // Items without the enchant shouldn't stack with ones that do
         } else {
             double enchantRating = 0;
             for (Enchantment enchant : enchants) {
@@ -255,7 +261,7 @@ public abstract class AbstractTargetable {
 
         if (!isUse()) {
             if (AutoSwitch.featureCfg.preferMinimumViableTool() && rating != 0D) {
-                rating += -1 * Math.log10(rating); // reverse and clamp tool
+                rating += -1 * Math.log10(rating); // Reverse and clamp tool
             }
             rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
 
@@ -276,6 +282,10 @@ public abstract class AbstractTargetable {
                 .toolRatingChange(oldRating, finalRating, stack, finalStackEnchants));
         this.slot2ToolRating.putIfAbsent(slot, rating);
 
+    }
+
+    boolean checkSpecialCase(Object target) {
+        return false;
     }
 
     @FunctionalInterface

@@ -39,7 +39,7 @@ class TargetableUsable extends AbstractTargetable {
 
     @Override
     protected boolean checkSpecialCase(Object target) {
-        //Don't switch if the target isn't saddled. Assumes only use for saddleable entity would be to ride it
+        // Don't switch if the target isn't saddled. Assumes only use for saddleable entity would be to ride it
         return AutoSwitch.featureCfg.checkSaddlableEntitiesForSaddle() && this.protoTarget instanceof Saddleable &&
                !((Saddleable) protoTarget).isSaddled();
     }

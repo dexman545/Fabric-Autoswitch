@@ -35,14 +35,14 @@ public class AutoSwitch implements ClientModInitializer {
     public static final Scheduler scheduler = new Scheduler();
     // Create object to store player switch state and relevant data
     public static SwitchState switchState = new SwitchState();
-    //Init config
+    // Init config
     public static AutoSwitchConfig featureCfg;
     public static AutoSwitchAttackActionConfig attackActionCfg;
     public static AutoSwitchUseActionConfig useActionCfg;
     public static int tickTime = 0;
     public static boolean doAS = true;
 
-    //Keybindings
+    // Keybindings
     private final KeyBinding autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(
             new KeyBinding("key.autoswitch.toggle", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R, "AutoSwitch"));
 
@@ -64,14 +64,14 @@ public class AutoSwitch implements ClientModInitializer {
         AutoSwitchMapsGenerator.populateAutoSwitchMaps();
 
         ClientTickEvents.END_CLIENT_TICK.register(e -> {
-            //Keybindings implementation BEGIN ---
+            // Keybindings implementation BEGIN ---
             if (autoswitchToggleKeybinding.wasPressed()) {
                 doAS = TickUtil.keybindingToggleAction(e.player, doAS,
                                                        !doAS && (e.isInSingleplayer() || featureCfg.switchInMP()),
                                                        "msg.autoswitch.toggle_true", "msg.autoswitch.toggle_false");
                 if (!doAS) scheduler.resetSchedule(); // Clear event schedule when switching is disabled
             }
-            //Keybindings implementation END ---
+            // Keybindings implementation END ---
 
             // Tick event system and check if scheduling a switchback is needed via EventUtil
             TickUtil.tickEventSchedule(e.player);

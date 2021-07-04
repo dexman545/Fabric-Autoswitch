@@ -38,6 +38,10 @@ public class TargetableUtil {
         return getTarget(AutoSwitch.switchData.target2AttackActionToolSelectorsMap, protoTarget);
     }
 
+    public static Object getUseTarget(Object protoTarget) {
+        return getTarget(AutoSwitch.switchData.target2UseActionToolSelectorsMap, protoTarget);
+    }
+
     /**
      * Extract target from protoTarget, given a map of targets to examine.
      *
@@ -73,12 +77,8 @@ public class TargetableUtil {
         return null;
     }
 
-    public static Object getUseTarget(Object protoTarget) {
-        return getTarget(AutoSwitch.switchData.target2UseActionToolSelectorsMap, protoTarget);
-    }
-
     public static float getTargetRating(Object target, ItemStack stack) {
-        if (target instanceof BlockState) { //TODO correct clamping for instabreak situations ie. swords on bamboo
+        if (target instanceof BlockState) { // TODO correct clamping for instabreak situations ie. swords on bamboo
             return clampToolRating(stack.getMiningSpeedMultiplier((BlockState) target));
         }
 
@@ -92,7 +92,7 @@ public class TargetableUtil {
             stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_SPEED).forEach(
                     entityAttributeModifier -> y.updateAndGet(v -> (float) (v - entityAttributeModifier.getValue())));
 
-            if (AutoSwitch.featureCfg.weaponRatingIncludesEnchants()) { //Evaluate attack damage based on enchantments
+            if (AutoSwitch.featureCfg.weaponRatingIncludesEnchants()) { // Evaluate attack damage based on enchantments
                 stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(
                         entityAttributeModifier -> x
                                 .updateAndGet(v -> (float) (v + entityAttributeModifier.getValue())));
@@ -202,6 +202,10 @@ public class TargetableUtil {
                isCorrectTool(tool, item);
     }
 
+    public static boolean isCorrectUseType(String tool, Item item) {
+        return isCorrectTool(tool, item);
+    }
+
     /**
      * Checks if the tool is of the correct type or not
      *
@@ -226,10 +230,6 @@ public class TargetableUtil {
 
     private static boolean checkTagAndClass(Tag<Item> tag, Class<?> clazz, Item item) {
         return (tag != null && tag.contains(item)) || (clazz != null && clazz.isInstance(item));
-    }
-
-    public static boolean isCorrectUseType(String tool, Item item) {
-        return isCorrectTool(tool, item);
     }
 
 }
