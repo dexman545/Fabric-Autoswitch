@@ -53,11 +53,8 @@ public class HotbarWatcher {
     }
 
     private static boolean stacksSufficientlyDiffer(ItemStack o, ItemStack n) {
-        if (ItemStack.areEqual(o, n)) return false;
         if (o.isEmpty() || n.isEmpty()) return true;
-        if (AutoSwitch.featureCfg.tryPreserveDamagedTools() &&
-            (n.isDamaged() && n.getDamage() <= AutoSwitch.damageThreshold)) return true;
-
+        if (ItemStack.areEqual(o, n)) return false;
 
         return !ItemStack.areTagsEqual(o, n) || !ItemStack.areItemsEqual(o, n);
 
