@@ -13,8 +13,6 @@ import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 import autoswitch.util.TickUtil;
 
-import net.minecraft.block.Material;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
@@ -25,8 +23,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-
-import java.lang.reflect.Field;
 
 public class AutoSwitch implements ClientModInitializer {
 
@@ -41,6 +37,9 @@ public class AutoSwitch implements ClientModInitializer {
     public static AutoSwitchUseActionConfig useActionCfg;
     public static int tickTime = 0;
     public static boolean doAS = true;
+
+    // Constant damage threshold
+    public static final int damageThreshold = 3;
 
     // Keybindings
     private final KeyBinding autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(

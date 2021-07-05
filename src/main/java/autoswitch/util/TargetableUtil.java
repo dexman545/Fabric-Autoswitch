@@ -177,7 +177,7 @@ public class TargetableUtil {
     }
 
     private static boolean isAlmostBroken(ItemStack stack) {
-        return getDurability(stack) <= 3 && getDurability(stack) != NONE;
+        return getDurability(stack) <= AutoSwitch.damageThreshold && getDurability(stack) != NONE;
     }
 
     private static int getDurability(ItemStack stack) {
