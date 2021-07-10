@@ -73,19 +73,26 @@ public enum SwitchEvent {
             return AutoSwitch.featureCfg.putUseActionToolInOffHand().allowed();
         }
 
+        /**
+         * Setup SwitchState for switchback feature.
+         *
+         * @param hasSwitched whether a switch has occurred
+         */
+        private void handlePostSwitchTasks(boolean hasSwitched) {
+            doOffhandSwitch = doOffhand();
+            AutoSwitch.switchState.setHasSwitched(hasSwitched);
+            if (hasSwitched) {
+                EventUtil.eventHandler(AutoSwitch.tickTime, 0.1, OFFHAND);
+                EventUtil.eventHandler(AutoSwitch.tickTime, featureCfg.switchbackDelay(), SWITCHBACK);
+            }
+        }
+
         @Override
         public boolean invoke() {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
             handlePrevSlot();
-            Targetable.use(protoTarget, player).changeTool().ifPresent(slotChanged -> {
-                doOffhandSwitch = doOffhand();
-                AutoSwitch.switchState.setHasSwitched(slotChanged);
-                if (slotChanged) {
-                    EventUtil.eventHandler(AutoSwitch.tickTime, 0.1, OFFHAND);
-                    EventUtil.eventHandler(AutoSwitch.tickTime, featureCfg.switchbackDelay(), SWITCHBACK);
-                }
-            });
+            Targetable.use(protoTarget, player).changeTool().ifPresent(this::handlePostSwitchTasks);
 
             return true;
 
