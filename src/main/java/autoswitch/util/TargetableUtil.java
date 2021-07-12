@@ -167,7 +167,7 @@ public class TargetableUtil {
                                 isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
         // Skip energy items that are out of power
         if (AutoSwitch.featureCfg.skipDepletedItems() &&
-            AutoSwitch.switchData.damageMap.containsKey(itemStack.getClass()) && isAlmostBroken(itemStack)) {
+            AutoSwitch.switchData.damageMap.containsKey(itemStack.getItem().getClass()) && isAlmostBroken(itemStack)) {
             return true;
         }
         // First part: don't skip iff undamagable items are needed
