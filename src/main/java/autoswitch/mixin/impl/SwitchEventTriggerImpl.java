@@ -34,7 +34,7 @@ public class SwitchEventTriggerImpl {
     public static void attack(int attackCooldown, ClientPlayerEntity player, HitResult crosshairTarget) {
         if (attackCooldown > 0 || player.isRiding() || crosshairTarget == null) return;
 
-        triggerSwitch(DesiredType.ACTION, crosshairTarget, player);
+        triggerSwitch(DesiredType.ATTACK, crosshairTarget, player);
 
     }
 
@@ -73,7 +73,7 @@ public class SwitchEventTriggerImpl {
                 event = SwitchEvent.USE;
                 doSwitchType = AutoSwitch.featureCfg.switchUseActions();
                 break;
-            case ACTION:
+            case ATTACK:
                 event = SwitchEvent.ATTACK;
                 doSwitchType = AutoSwitch.featureCfg.switchAllowed() == AutoSwitchConfig.TargetType.BOTH ||
                                (crosshairTarget.getType() == HitResult.Type.ENTITY ?
@@ -101,7 +101,7 @@ public class SwitchEventTriggerImpl {
                 EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, entity);
                 break;
             case BLOCK:
-                if (desiredType == DesiredType.ACTION && SwitchState.preventBlockAttack) break;
+                if (desiredType == DesiredType.ATTACK && SwitchState.preventBlockAttack) break;
                 BlockHitResult blockHitResult = ((BlockHitResult) crosshairTarget);
                 BlockPos blockPos = blockHitResult.getBlockPos();
                 BlockState blockState = player.clientWorld.getBlockState(blockPos);
@@ -126,7 +126,7 @@ public class SwitchEventTriggerImpl {
         /**
          * Player "attack" actions.
          */
-        ACTION
+        ATTACK
     }
 
 }
