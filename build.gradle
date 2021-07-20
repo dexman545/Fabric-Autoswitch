@@ -227,6 +227,7 @@ curseforge {
         releaseType = getReleaseMonicker()
 
         outlet.curseforgeMcVersions().each {
+            if (it.endsWith(".0")) it = it.substring(0, it.length()-2)
             addGameVersion it
         }
         addGameVersion 'Fabric'
