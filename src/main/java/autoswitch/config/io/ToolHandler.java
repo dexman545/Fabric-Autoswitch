@@ -50,7 +50,7 @@ public class ToolHandler {
             // the following while loop should fix it. If not, revert this change to UUID or better hash.
             this.id = input.hashCode();
 
-            // Logic to ensure that hashcodes
+            // Logic to ensure that hashcodes are unique
             while (AutoSwitch.switchData.toolSelectorKeys.containsValue(this.id)) {
                 this.id += 1;
                 AutoSwitch.logger.error("Conflicting ID generated for toolselector: {}, attempting to fix...", input);
