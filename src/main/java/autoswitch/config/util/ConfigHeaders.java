@@ -6,7 +6,7 @@ public final class ConfigHeaders {
                                              "\nSee https://github.com/dexman545/Fabric-Autoswitch/wiki/Configuration" +
                                              " for more details." +
                                              "\nSetting an option to 'true' will enable it's stated behavior; using " +
-                                             "'false' wil disable it.";
+                                             "'false' will disable it.";
     private static final String format =
             "\nFormat is a comma separated list of 'tool selectors', which take the form of 'toolname[;enchantment " +
             "list]', " +
@@ -15,7 +15,7 @@ public final class ConfigHeaders {
             "\nEnchant list is optional. If present, it must be separated from the tool by a semicolon (';'). " +
             "Enchantment list is a list of `enchantment id`s separated by `&`, such as " +
             "'minecraft!fortune&minecraft!mending'. " +
-            "The list can have anywhere from 1 to infinite enchantments. If multiple enchantments are specified, only" +
+            "The list can have infinite enchantments. If multiple enchantments are specified, only" +
             " " +
             "tools with *all* of the enchantments will be selected. Use multiple tool selectors to specify optional " +
             "enchantments. See toolEnchantmentsStack in autoswitch.cfg. " +
