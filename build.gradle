@@ -11,8 +11,8 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '0.8.+'
-    id "com.github.fudge.forgedflowerloom" version "2.0.0"
+    id 'fabric-loom' version '0.10.+'
+    //id "com.github.fudge.forgedflowerloom" version "2.0.0"
     id 'maven-publish'
     id "com.modrinth.minotaur" version "1.1.+"
     id 'com.matthewprenger.cursegradle' version '1.4.+'

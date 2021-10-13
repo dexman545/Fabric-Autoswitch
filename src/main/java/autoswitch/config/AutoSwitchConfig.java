@@ -152,6 +152,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
              "gameplay. Only effective on restart.")
     Boolean enableConfigCommands();
 
+    @DefaultValue("false")
+    @Comment("When enabled, switching is disabled while the player is crouching/sneaking.")
+    Boolean disableSwitchingWhenCrouching();
+
     enum TargetType implements Permission {
         BOTH, MOBS, BLOCKS,
         NONE {

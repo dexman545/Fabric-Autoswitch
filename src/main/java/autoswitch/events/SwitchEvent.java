@@ -103,7 +103,7 @@ public enum SwitchEvent {
      */
     SWITCHBACK {
         @Override
-        protected boolean canNotSwitch() {
+        public boolean canNotSwitch() {
             // Check if conditions are met for switchback
             if (AutoSwitch.switchState.getHasSwitched() && !player.handSwinging) {
                 return SwitchState.preventBlockAttack || ((doBlockSwitchback() || doMobSwitchback()) && doSwitchback());
@@ -218,9 +218,9 @@ public enum SwitchEvent {
     /**
      * @return whether switching should NOT occur based on current conditions.
      */
-    boolean canNotSwitch() {
+    public boolean canNotSwitch() {
         // Client is checked to fix LAN worlds (Issue #18)
-        return !doSwitch || !doSwitchType;
+        return !doSwitch || !doSwitchType || (featureCfg.disableSwitchingWhenCrouching() && player.isSneaking());
     }
 
     /**

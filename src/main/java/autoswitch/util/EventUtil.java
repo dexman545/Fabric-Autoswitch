@@ -5,6 +5,8 @@ import autoswitch.events.SwitchEvent;
 
 import net.minecraft.entity.player.PlayerEntity;
 
+import static autoswitch.AutoSwitch.featureCfg;
+
 public class EventUtil {
 
     public static void scheduleEvent(SwitchEvent event, boolean doSwitch, PlayerEntity player, boolean doSwitchType,
@@ -28,7 +30,8 @@ public class EventUtil {
      */
     public static void eventHandler(int currentTime, double deltaTime, SwitchEvent event) {
 
-        if (!event.handlePreSwitchTasks() || !AutoSwitch.doAS /*Only schedule events when they can execute*/) return;
+        // Only schedule events when they can execute
+        if (!event.handlePreSwitchTasks() || !AutoSwitch.doAS || event.canNotSwitch()) return;
 
         if (AutoSwitch.switchState.getHasSwitched()) deltaTime += AutoSwitch.featureCfg.switchDelay();
 
