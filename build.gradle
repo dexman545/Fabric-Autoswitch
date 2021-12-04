@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.github.dexman545:Outlet:aee7fc2b05' // master-SNAPSHOT
+        classpath 'com.github.dexman545:Outlet:master-SNAPSHOT'
     }
 }
 
@@ -27,8 +27,6 @@ import com.matthewprenger.cursegradle.CurseUploadTask
 import com.modrinth.minotaur.TaskModrinthUpload
 import groovy.json.JsonSlurper
 
-import java.nio.charset.StandardCharsets
-
 repositories {
     maven {
         url 'https://api.modrinth.com/maven'
@@ -42,13 +40,15 @@ repositories {
     }
 }
 
+outlet.mcVersionRange = project.range
+
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(outlet.javaVersion()))
     }
 }
 
-outlet.mcVersionRange = project.range
+System.out.println("Using toolchain: " + outlet.javaVersion())
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -148,7 +148,8 @@ tasks.withType(JavaCompile).configureEach {
     // The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
     // JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
     // We'll use that if it's available, but otherwise we'll use the older option.
-    def targetVersion = 8
+    def targetVersion = outlet.javaLanguageCompatibility()
+    System.out.println("Using level: " + outlet.javaLanguageCompatibility())
     if (JavaVersion.current().isJava9Compatible()) {
         it.options.release.set(targetVersion)
     } else {
