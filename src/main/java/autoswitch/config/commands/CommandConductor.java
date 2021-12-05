@@ -12,6 +12,8 @@ import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.io.ConfigEstablishment;
 
+import autoswitch.mixin.impl.DisconnectHandler;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -77,6 +79,8 @@ public class CommandConductor {
                                               .then(ClientCommandManager.argument("allowed", BoolArgumentType.bool())
                                                                         .executes(CommandConductor::changeASToggle)));
 
+        autoswitchCommandBuilder.then(ClientCommandManager.literal("resetSwitchState").executes(CommandConductor::resetState));
+
         // Register commands
         ClientCommandManager.DISPATCHER.register(autoswitchCommandBuilder);
     }
@@ -102,6 +106,17 @@ public class CommandConductor {
         context.getSource().sendFeedback(new TranslatableText(newValue ? tlKeyTruthy : tlKeyFalsy));
 
         doAS = newValue;
+
+        return 0;
+    }
+
+    /**
+     * Change AutoSwitch toggle to the new value if the context allows it.
+     */
+    private static int resetState(CommandContext<FabricClientCommandSource> context) {
+        context.getSource().sendFeedback(new TranslatableText("msg.autoswitch.reset"));
+
+        DisconnectHandler.reset();
 
         return 0;
     }

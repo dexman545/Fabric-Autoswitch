@@ -20,6 +20,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.Saddleable;
 import net.minecraft.entity.player.PlayerEntity;
 
+import java.util.Optional;
+
 /**
  * Processing of switch events.
  */
@@ -35,6 +37,8 @@ public enum SwitchEvent {
          */
         private void handlePostSwitchTasks(boolean hasSwitched) {
             if (hasSwitched) {
+                boolean oldSwitchState = AutoSwitch.switchState.getHasSwitched();
+
                 boolean doSwitchBack = featureCfg.switchbackAllowed() == TargetType.BOTH;
                 if (protoTarget instanceof Entity) {
                     if (doSwitchBack || featureCfg.switchbackAllowed() == TargetType.MOBS) {
@@ -152,10 +156,10 @@ public enum SwitchEvent {
         public boolean invoke() {
             if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
 
-            Targetable.switchback(AutoSwitch.switchState.getPrevSlot(), player).changeTool()
-                      .ifPresent(this::handlePostSwitchTasks);
+            Optional<Boolean> x = Targetable.switchback(AutoSwitch.switchState.getPrevSlot(), player).changeTool();
+            x.ifPresent(this::handlePostSwitchTasks);
 
-            return true;
+            return x.orElse(true);
         }
     },
     /**

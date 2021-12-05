@@ -10,6 +10,7 @@
   "msg.autoswitch.config.3": "A quick way to get there is to go to Options, then Open Resource Pack Folder.",
   "msg.autoswitch.config.4": "Then go up a level so you're in your minecraft folder. You will see a config folder.",
   "msg.autoswitch.config.5": "In the config folder will be your configs.",
+  "msg.autoswitch.reset" : "Switch state has been reset",
   "button.autoswitch.openconfigs": "Open Config Files",
   "button.autoswitch.openfolder": "Open Config Folder",
   "screen.autoswitch.config": "AutoSwitch Config Screen",

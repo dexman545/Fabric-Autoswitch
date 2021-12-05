@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.github.dexman545:Outlet:master-SNAPSHOT'
+        classpath 'com.github.dexman545.Outlet:Outlet:1.2.1'//master-SNAPSHOT
     }
 }
 
