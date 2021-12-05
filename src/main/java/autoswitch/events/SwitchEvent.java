@@ -37,8 +37,6 @@ public enum SwitchEvent {
          */
         private void handlePostSwitchTasks(boolean hasSwitched) {
             if (hasSwitched) {
-                boolean oldSwitchState = AutoSwitch.switchState.getHasSwitched();
-
                 boolean doSwitchBack = featureCfg.switchbackAllowed() == TargetType.BOTH;
                 if (protoTarget instanceof Entity) {
                     if (doSwitchBack || featureCfg.switchbackAllowed() == TargetType.MOBS) {
