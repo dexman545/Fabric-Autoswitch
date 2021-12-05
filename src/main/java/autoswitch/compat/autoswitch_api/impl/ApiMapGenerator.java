@@ -181,7 +181,11 @@ public class ApiMapGenerator {
     }
 
     private static void addTarget(String name, Object target) {
-        AutoSwitch.switchData.targets.put(name, target);
+        try {
+            AutoSwitch.switchData.targets.put(name, target);
+        } catch (NoSuchFieldError e) {
+            AutoSwitch.logger.debug("Failed to add target - Name: {}, ID: {}", name, e.getMessage());
+        }
     }
 
     private static boolean isAcceptableVersion(String minVersion) {

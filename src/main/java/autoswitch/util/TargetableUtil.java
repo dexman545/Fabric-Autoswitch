@@ -5,12 +5,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import autoswitch.AutoSwitch;
-import autoswitch.events.SwitchEvent;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -56,12 +54,14 @@ public class TargetableUtil {
     private static Object getTarget(Object2ObjectOpenHashMap<Object, IntArrayList> map, Object protoTarget) {
         if (protoTarget instanceof ItemTarget) return protoTarget;
 
-        if (protoTarget instanceof AbstractBlock.AbstractBlockState) {
+        // These methods were moved to AbstractBlockState in 20w22a,
+        // so their intermediary name changed breaking compatibility
+        if (protoTarget instanceof BlockState) {
             // Block Override
-            if (map.containsKey(((AbstractBlock.AbstractBlockState) protoTarget).getBlock())) {
-                return ((AbstractBlock.AbstractBlockState) protoTarget).getBlock();
+            if (map.containsKey(((BlockState) protoTarget).getBlock())) {
+                return ((BlockState) protoTarget).getBlock();
             }
-            return ((AbstractBlock.AbstractBlockState) protoTarget).getMaterial();
+            return ((BlockState) protoTarget).getMaterial();
         }
 
         if (protoTarget instanceof Entity) {
