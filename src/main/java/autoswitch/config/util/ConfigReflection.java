@@ -1,9 +1,11 @@
 package autoswitch.config.util;
 
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -65,11 +67,15 @@ public class ConfigReflection {
     }
 
     // Populate provided properties object with the default values for the config
-    public static void defaults(Properties properties, Class<?> clazz) {
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            String key = key(field);
-            String value = defaultValue(field);
+    @SuppressWarnings("unchecked")
+    public static <T extends AccessibleObject & Member> void defaults(Properties properties,
+                                                                      Class<? extends Config> clazz) {
+        List<T> members = new ArrayList<>();
+        Collections.addAll(members, (T[]) clazz.getMethods());
+        Collections.addAll(members, (T[]) clazz.getDeclaredFields());
+        for (T member : members) {
+            String key = key(member);
+            String value = defaultValue(member);
             if (value != null) {
                 properties.put(key, value);
             }
@@ -77,11 +83,15 @@ public class ConfigReflection {
     }
 
     // Populate provided properties object with the comments for the config entries
-    public static void comments(Properties properties, Class<?> clazz) {
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            String key = key(field);
-            String value = comment(field);
+    @SuppressWarnings("unchecked")
+    public static <T extends AccessibleObject & Member> void comments(Properties properties,
+                                                                      Class<? extends Config> clazz) {
+        List<T> members = new ArrayList<>();
+        Collections.addAll(members, (T[]) clazz.getMethods());
+        Collections.addAll(members, (T[]) clazz.getDeclaredFields());
+        for (T member : members) {
+            String key = key(member);
+            String value = comment(member);
             if (value != null) {
                 properties.put(key, value);
             }
