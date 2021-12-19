@@ -40,6 +40,8 @@ public class ApiMapGenerator {
         // Targets
         genTargetMap();
         genConfigMaps();
+
+        TargetableGroup.validatePredicates();
     }
 
     // Populate Targets map with default values
