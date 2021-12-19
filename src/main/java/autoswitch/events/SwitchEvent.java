@@ -170,8 +170,11 @@ public enum SwitchEvent {
         }
     },
     /**
-     * When scheduled, block attack events are not run or scheduled. For use during combat situations, where targeting a
-     * block soon after an entity will hinder combat.
+     * When run sets {@link SwitchState#preventBlockAttack} to {@code true}, preventing block attack events from being
+     * scheduled or run, and preventing switchback from running. For use during combat situations, where targeting a
+     * block soon after an entity would hinder combat.
+     * <br>
+     * Schedules {@link SwitchEvent#REMOVE_PREVENTION}.
      */
     PREVENT_BLOCK_ATTACK {
         @Override
@@ -185,12 +188,14 @@ public enum SwitchEvent {
         }
     },
     /**
-     * Remove {@link SwitchEvent#PREVENT_BLOCK_ATTACK} when run.
+     * When run sets {@link SwitchState#preventBlockAttack} to {@code false}, allowing switchback and block attack
+     * events to resume.
+     * <br>
+     * Should only be scheduled by {@link SwitchEvent#PREVENT_BLOCK_ATTACK}.
      */
     REMOVE_PREVENTION {
         @Override
         public boolean invoke() {
-            AutoSwitch.scheduler.remove(PREVENT_BLOCK_ATTACK);
             SwitchState.preventBlockAttack = false;
             return true;
         }
