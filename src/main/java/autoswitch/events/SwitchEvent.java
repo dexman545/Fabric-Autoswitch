@@ -18,7 +18,6 @@ import java.util.Optional;
 
 import static autoswitch.AutoSwitch.featureCfg;
 import static autoswitch.AutoSwitch.tickTime;
-import static autoswitch.util.SwitchState.preventBlockAttack;
 
 /**
  * Processing of switch events.
@@ -189,7 +188,6 @@ public enum SwitchEvent {
      * Remove {@link SwitchEvent#PREVENT_BLOCK_ATTACK} when run.
      */
     REMOVE_PREVENTION {
-
         @Override
         public boolean invoke() {
             AutoSwitch.scheduler.remove(PREVENT_BLOCK_ATTACK);

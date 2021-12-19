@@ -50,9 +50,7 @@ public class Scheduler {
      * @param event event to remove
      */
     protected void remove(SwitchEvent event) {
-        schedule.forEach(task -> {
-            if (task.event.equals(event)) schedule.remove(task);
-        });
+        schedule.removeIf(task -> task.event.equals(event));
     }
 
     public boolean isEventScheduled(SwitchEvent event) {
