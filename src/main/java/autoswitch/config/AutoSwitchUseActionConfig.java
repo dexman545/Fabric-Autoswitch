@@ -20,7 +20,7 @@ public interface AutoSwitchUseActionConfig extends Config, Reloadable, Accessibl
 
     @Separator(",")
     @DefaultValue("minecraft:carrot_on_a_stick")
-    @Key("minecraft:pig")
+    @Key("minecraft!pig")
     @Comment("Switch when getting on a pig so you are ready to steer it.")
     ToolHandler[] pig();
 
