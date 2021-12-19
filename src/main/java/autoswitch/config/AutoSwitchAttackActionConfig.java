@@ -284,8 +284,14 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @DefaultValue("axe;minecraft:mending, sword;minecraft:mending, axe, sword")
     @Key("minecraft!boat")
     @Comment("An Entity, specifically a boat. This is here so that an axe will be used to break it so that any mobs " +
-             "in the boat aren't accidently hit.")
+             "in the boat aren't accidentally hit.")
     ToolHandler[] boat();
+
+    @Separator(",")
+    @DefaultValue("axe;minecraft:mending, sword;minecraft:mending, axe, sword")
+    @Comment("All minecarts. This is here so that an axe will be used to break it so that any " +
+             "mobs in the minecart aren't accidentally hit.")
+    ToolHandler[] minecart();
 
     // Hoe's special breaking since solid_organic will like enchants more than hoes
 
@@ -353,6 +359,13 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @Key("minecraft!ender_chest")
     @Comment("A default-provided override for ender chests to prefer silk touch.")
     ToolHandler[] enderChestSpecial();
+
+    @Separator(",")
+    @DefaultValue("any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, " +
+                  "sword,axe")
+    @Key("minecraft!player")
+    @Comment("A default-provided override for players.")
+    ToolHandler[] playerSpecial();
 
 
 }

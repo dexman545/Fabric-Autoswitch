@@ -4,25 +4,22 @@ import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
+import autoswitch.targetable.custom.TargetableGroup;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.loader.api.SemanticVersion;
+import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 
 import net.minecraft.block.Material;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.PickaxeItem;
-import net.minecraft.item.ShearsItem;
-import net.minecraft.item.ShovelItem;
-import net.minecraft.item.SwordItem;
-import net.minecraft.item.TridentItem;
+import net.minecraft.item.*;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 public class ApiMapGenerator {
     public static void createApiMaps() {
@@ -156,6 +153,14 @@ public class ApiMapGenerator {
 
         addTarget("ender_dragon", EntityType.ENDER_DRAGON);
 
+        addTarget("minecart", new TargetableGroup<EntityType<? extends Entity>>(EntityType.MINECART,
+                                                                                EntityType.CHEST_MINECART,
+                                                                                EntityType.HOPPER_MINECART,
+                                                                                EntityType.TNT_MINECART,
+                                                                                EntityType.FURNACE_MINECART,
+                                                                                EntityType.COMMAND_BLOCK_MINECART,
+                                                                                EntityType.SPAWNER_MINECART));
+
         // Item Use
         addTarget("bow_action", SwitchData.itemTarget);
     }
@@ -191,7 +196,7 @@ public class ApiMapGenerator {
     private static boolean isAcceptableVersion(String minVersion) {
         try {
             return SemanticVersion.parse(SwitchUtil.getMinecraftVersion())
-                                  .compareTo(SemanticVersion.parse(minVersion)) >= 0;
+                                  .compareTo((Version) SemanticVersion.parse(minVersion)) >= 0;
         } catch (VersionParsingException e) {
             AutoSwitch.logger.error(e);
         }

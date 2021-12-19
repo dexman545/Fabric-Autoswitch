@@ -3,6 +3,8 @@ package autoswitch.util;
 import autoswitch.api.AutoSwitchMap;
 import autoswitch.api.DurabilityGetter;
 
+import autoswitch.targetable.custom.ItemTarget;
+
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;

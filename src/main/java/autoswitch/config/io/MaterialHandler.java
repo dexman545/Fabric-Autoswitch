@@ -28,6 +28,8 @@ public class MaterialHandler {
             } else {
                 AutoSwitch.logger.warn("AutoSwitch was not given a real id: " + str + " -> ignoring it");
             }
+        } else {
+            mat1 = AutoSwitch.switchData.targets.get(str);
         }
         if (mat1 == null) {
             AutoSwitch.logger

@@ -1,18 +1,25 @@
 package autoswitch.util;
 
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import autoswitch.AutoSwitch;
 
+import autoswitch.targetable.custom.ItemTarget;
+
+import autoswitch.targetable.custom.TargetableGroup;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -58,23 +65,25 @@ public class TargetableUtil {
         // so their intermediary name changed breaking compatibility
         if (protoTarget instanceof BlockState) {
             // Block Override
-            if (map.containsKey(((BlockState) protoTarget).getBlock())) {
-                return ((BlockState) protoTarget).getBlock();
+            Block block = ((BlockState) protoTarget).getBlock();
+            if (map.containsKey(block)) {
+                return block;
             }
-            return ((BlockState) protoTarget).getMaterial();
+            return TargetableGroup.maybeGetTarget(block).orElse(((BlockState) protoTarget).getMaterial());
         }
 
         if (protoTarget instanceof Entity) {
             // Entity Override
-            if (map.containsKey(((Entity) protoTarget).getType())) {
-                return ((Entity) protoTarget).getType();
+            EntityType<?> entity = ((Entity) protoTarget).getType();
+            if (map.containsKey(entity)) {
+                return entity;
             }
 
             if (protoTarget instanceof LivingEntity) {
                 return ((LivingEntity) protoTarget).getGroup();
             }
 
-            return ((Entity) protoTarget).getType();
+            return TargetableGroup.maybeGetTarget(entity).orElse(((Entity) protoTarget).getType());
         }
 
         return null;

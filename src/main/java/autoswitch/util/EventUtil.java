@@ -5,8 +5,6 @@ import autoswitch.events.SwitchEvent;
 
 import net.minecraft.entity.player.PlayerEntity;
 
-import static autoswitch.AutoSwitch.featureCfg;
-
 public class EventUtil {
 
     public static void scheduleEvent(SwitchEvent event, boolean doSwitch, PlayerEntity player, boolean doSwitchType,
