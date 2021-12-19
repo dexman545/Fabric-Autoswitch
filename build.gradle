@@ -171,22 +171,20 @@ jar {
     }
 }
 
+// configure the maven publication
 publishing {
     publications {
-        //noinspection GroovyAssignabilityCheck
         mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-            //noinspection GroovyAssignabilityCheck
-            artifact(remapJar) {
-                //noinspection GroovyAssignabilityCheck
-                builtBy remapJar
-            }
-            //noinspection GroovyAssignabilityCheck
-            artifact(sourcesJar) {
-                //noinspection GroovyAssignabilityCheck
-                builtBy remapSourcesJar
-            }
+            from components.java
         }
+    }
+
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
     }
 }
 
@@ -198,7 +196,7 @@ def uniChangelog = "This is autopublished from Github Actions. Use at your own r
         "build for changes. Based on commit: ${getCheckedOutGitCommitHash()}\n\n<br />" +
         "This build may work on Minecraft versions not specified for this version. Release cadence at time of writing " +
         "(2/12/2021):\n\n<br />" +
-        "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.x, 1.17.x, and 1.18.x"
+        "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.2 - 1.18.x (and possibly beyond)\n\n<br />"
 
 task publishModrinth(type: TaskModrinthUpload, dependsOn: build) {
     token = System.getenv("MODRINTH")
