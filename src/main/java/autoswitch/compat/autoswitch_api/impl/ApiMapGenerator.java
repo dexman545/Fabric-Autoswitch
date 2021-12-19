@@ -153,13 +153,14 @@ public class ApiMapGenerator {
 
         addTarget("ender_dragon", EntityType.ENDER_DRAGON);
 
-        addTarget("minecart", new TargetableGroup<EntityType<? extends Entity>>(EntityType.MINECART,
-                                                                                EntityType.CHEST_MINECART,
-                                                                                EntityType.HOPPER_MINECART,
-                                                                                EntityType.TNT_MINECART,
-                                                                                EntityType.FURNACE_MINECART,
-                                                                                EntityType.COMMAND_BLOCK_MINECART,
-                                                                                EntityType.SPAWNER_MINECART));
+        addTarget(new TargetableGroup<>("minecart",
+                                        EntityType.MINECART,
+                                        EntityType.CHEST_MINECART,
+                                        EntityType.HOPPER_MINECART,
+                                        EntityType.TNT_MINECART,
+                                        EntityType.FURNACE_MINECART,
+                                        EntityType.COMMAND_BLOCK_MINECART,
+                                        EntityType.SPAWNER_MINECART));
 
         // Item Use
         addTarget("bow_action", SwitchData.itemTarget);
@@ -183,6 +184,10 @@ public class ApiMapGenerator {
             }
         }*/
 
+    }
+
+    private static void addTarget(TargetableGroup<?> target) {
+        addTarget(target.getGroupName(), target);
     }
 
     private static void addTarget(String name, Object target) {
