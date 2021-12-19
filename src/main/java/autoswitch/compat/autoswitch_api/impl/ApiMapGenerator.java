@@ -8,13 +8,11 @@ import autoswitch.targetable.custom.TargetableGroup;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 
+import autoswitch.util.TargetableUtil;
+
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
 
 import net.minecraft.block.Material;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.*;
@@ -102,13 +100,9 @@ public class ApiMapGenerator {
 
         addTarget("sponge", Material.SPONGE);
 
-        addTarget("nether_wood", Material.NETHER_WOOD);
-
         addTarget("stone", Material.STONE);
 
         addTarget("tnt", Material.TNT);
-
-        addTarget("nether_shoots", Material.NETHER_SHOOTS);
 
         addTarget("underwater_plant", Material.UNDERWATER_PLANT);
 
@@ -134,11 +128,23 @@ public class ApiMapGenerator {
 
         addTarget("structure_void", Material.STRUCTURE_VOID);
 
-        if (isAcceptableVersion("1.17-alpha.20.49.a")) {
+        if (SwitchUtil.isAcceptableVersion("1.16-alpha.20.6.a")) {
+            addTarget("nether_wood", Material.NETHER_WOOD);
+        }
+
+        if (SwitchUtil.isAcceptableVersion("1.16.2-beta.2")) {
+            addTarget("nether_shoots", Material.NETHER_SHOOTS);
+        }
+
+        if (SwitchUtil.isAcceptableVersion("1.17-alpha.20.45.a")) {
             addTarget("amethyst", Material.AMETHYST);
+        }
 
+        if (SwitchUtil.isAcceptableVersion("1.17-alpha.20.46.a")) {
             addTarget("passable_snow_block", Material.POWDER_SNOW);
+        }
 
+        if (SwitchUtil.isAcceptableVersion("1.17-alpha.20.49.a")) {
             addTarget("sculk", Material.SCULK);
         }
 
@@ -198,17 +204,6 @@ public class ApiMapGenerator {
         } catch (NoSuchFieldError e) {
             AutoSwitch.logger.debug("Failed to add target - Name: {}, ID: {}", name, e.getMessage());
         }
-    }
-
-    private static boolean isAcceptableVersion(String minVersion) {
-        try {
-            return SemanticVersion.parse(SwitchUtil.getMinecraftVersion())
-                                  .compareTo((Version) SemanticVersion.parse(minVersion)) >= 0;
-        } catch (VersionParsingException e) {
-            AutoSwitch.logger.error(e);
-        }
-
-        return false;
     }
 
 }

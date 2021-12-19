@@ -10,6 +10,10 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
+import net.fabricmc.loader.api.SemanticVersion;
+import net.fabricmc.loader.api.Version;
+import net.fabricmc.loader.api.VersionParsingException;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
@@ -59,6 +63,17 @@ public class SwitchUtil {
 
     public static String getAutoSwitchVersion() {
         return getVersion("autoswitch");
+    }
+
+    public static boolean isAcceptableVersion(String minVersion) {
+        try {
+            return SemanticVersion.parse(getMinecraftVersion())
+                                  .compareTo((Version) SemanticVersion.parse(minVersion)) >= 0;
+        } catch (VersionParsingException e) {
+            AutoSwitch.logger.error(e);
+        }
+
+        return false;
     }
 
 }

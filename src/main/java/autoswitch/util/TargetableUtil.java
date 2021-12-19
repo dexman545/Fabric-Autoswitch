@@ -58,7 +58,7 @@ public class TargetableUtil {
     private static Object getTarget(Object2ObjectOpenHashMap<Object, IntArrayList> map, Object protoTarget) {
         if (protoTarget instanceof ItemTarget) return protoTarget;
 
-        // These methods were moved to AbstractBlockState in 20w22a,
+        // These methods were moved to AbstractBlockState in 20w12a,
         // so their intermediary name changed breaking compatibility
         if (protoTarget instanceof BlockState) {
             // Block Override
