@@ -138,8 +138,10 @@ public class TargetableUtil {
                     entityAttributeModifier -> attackSpeed.updateAndGet(v -> (float)
                             (v + entityAttributeModifier.getValue())));
 
-            // The 3 is there to convert the attack speed to match item tooltips. attackSpeed can be negative
-            return damage * (3 + attackSpeed.get());
+            if (attackSpeed.get() == 0 || damage == 0) return 0;
+
+            // Inverse as the close to 0, the faster the attack
+            return (damage * (Math.abs(1/attackSpeed.get())));
         }
 
         return 0;
