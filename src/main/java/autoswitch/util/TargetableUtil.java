@@ -1,14 +1,11 @@
 package autoswitch.util;
 
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import autoswitch.AutoSwitch;
-
 import autoswitch.targetable.custom.ItemTarget;
-
 import autoswitch.targetable.custom.TargetableGroup;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -121,7 +118,7 @@ public class TargetableUtil {
                 } else {
                     h = EnchantmentHelper.getAttackDamage(stack, EntityGroup.DEFAULT);
                 }
-                // Disabled as config can specify this anyways
+                // Disabled as config can specify this anyway
                 /*int l = EnchantmentHelper.getLevel(Enchantments.FIRE_ASPECT, stack);
                 if (target instanceof LivingEntity &&
                     (((LivingEntity)target).isOnFire() && ((LivingEntity)target).isFireImmune())) {
@@ -169,7 +166,7 @@ public class TargetableUtil {
     /**
      * @param itemStack stack to evaluate
      *
-     * @return whether or not this stack should be skipped for consideration as a tool
+     * @return whether this stack should be skipped for consideration as a tool
      */
     public static boolean skipSlot(ItemStack itemStack) {
         AutoSwitch.logger.debug("Stack: {}; First: {}; Second: {}", itemStack,
@@ -181,7 +178,7 @@ public class TargetableUtil {
             AutoSwitch.switchData.damageMap.containsKey(itemStack.getItem().getClass()) && isAlmostBroken(itemStack)) {
             return true;
         }
-        // First part: don't skip iff undamagable items are needed
+        // First part: don't skip iff items w/o durability (non-tools) are needed
         return (!(AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() && !itemStack.isDamageable()) &&
                 isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
 

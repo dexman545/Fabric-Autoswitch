@@ -170,7 +170,7 @@ public class ApiMapGenerator {
         ConfigReflection.defaults(AutoSwitch.switchData.attackConfig, AutoSwitchAttackActionConfig.class);
         ConfigReflection.defaults(AutoSwitch.switchData.usableConfig, AutoSwitchUseActionConfig.class);
 
-        // PoC for ensuring empty values don't get passed allowing mods to override
+        // PoC for ensuring empty values don't get passed to mods via the API, allowing mods to override
         /*for (String key : matCfg.propertyNames()) {
             if (!matCfg.getProperty(key, "").equals("")) {
                 AutoSwitch.data.actionConfig.put(key, matCfg.getProperty(key));

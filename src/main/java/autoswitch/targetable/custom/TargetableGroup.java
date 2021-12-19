@@ -38,7 +38,7 @@ public final class TargetableGroup<T> {
      *
      * @return the target group if it is present
      */
-    // Uses Optional<Object> to make working with it easier, we don't actually need the garget group elsewhere
+    // Uses Optional<Object> to make working with it easier, we don't actually need the target group elsewhere
     public static Optional<Object> maybeGetTarget(Object targetEntry) {
         return Optional.ofNullable(ALL_TARGETABLES.get(targetEntry));
     }
