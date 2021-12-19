@@ -106,12 +106,8 @@ public enum SwitchEvent {
     SWITCHBACK {
         @Override
         public boolean canNotSwitch() {
-            // Check if conditions are met for switchback
-            if (AutoSwitch.switchState.getHasSwitched() && !player.handSwinging) {
-                return SwitchState.preventBlockAttack || ((doBlockSwitchback() || doMobSwitchback()) && doSwitchback());
-            }
-
-            return true;
+            // False to prevent switchback from not being scheduled
+            return false;
         }
 
         /**
@@ -137,6 +133,14 @@ public enum SwitchEvent {
                     featureCfg.switchbackWaits() == TargetType.BLOCKS);
         }
 
+        private boolean disallowSwitchback() {
+            // Check if conditions are met for switchback
+            if (AutoSwitch.switchState.getHasSwitched() && !player.handSwinging) {
+                return SwitchState.preventBlockAttack || ((doBlockSwitchback() || doMobSwitchback()) && doSwitchback());
+            }
+            return true;
+        }
+
         /**
          * Cleanup switchstate after switching back.
          *
@@ -147,12 +151,11 @@ public enum SwitchEvent {
                 AutoSwitch.switchState.setHasSwitched(false);
                 AutoSwitch.switchState.setAttackedEntity(false);
             }
-
         }
 
         @Override
         public boolean invoke() {
-            if (canNotSwitch()) return false; // Shortcircuit to make it easier to read
+            if (disallowSwitchback()) return false; // Shortcircuit to make it easier to read
 
             Optional<Boolean> x = Targetable.switchback(AutoSwitch.switchState.getPrevSlot(), player).changeTool();
             x.ifPresent(this::handlePostSwitchTasks);

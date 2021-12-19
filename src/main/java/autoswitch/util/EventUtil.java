@@ -31,8 +31,7 @@ public class EventUtil {
     public static void eventHandler(int currentTime, double deltaTime, SwitchEvent event) {
 
         // Only schedule events when they can execute
-        if (!event.handlePreSwitchTasks() || !AutoSwitch.doAS ||
-            (event != SwitchEvent.SWITCHBACK && event.canNotSwitch())) return;
+        if (!event.handlePreSwitchTasks() || !AutoSwitch.doAS || event.canNotSwitch()) return;
 
         if (AutoSwitch.switchState.getHasSwitched()) deltaTime += AutoSwitch.featureCfg.switchDelay();
 
