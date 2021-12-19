@@ -1,9 +1,5 @@
 package autoswitch.events;
 
-import static autoswitch.AutoSwitch.featureCfg;
-import static autoswitch.AutoSwitch.tickTime;
-import static autoswitch.util.SwitchState.preventBlockAttack;
-
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchConfig.TargetType;
@@ -13,14 +9,16 @@ import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchState;
 import autoswitch.util.SwitchUtil;
 
-import org.jetbrains.annotations.Contract;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Saddleable;
 import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.Optional;
+
+import static autoswitch.AutoSwitch.featureCfg;
+import static autoswitch.AutoSwitch.tickTime;
+import static autoswitch.util.SwitchState.preventBlockAttack;
 
 /**
  * Processing of switch events.
@@ -113,24 +111,19 @@ public enum SwitchEvent {
         /**
          * @return if the attack cooldown has progressed enough.
          */
-        @Contract(pure = true)
         private boolean doSwitchback() {
             // Uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
             return player.getAttackCooldownProgress(-20.0f) != 1.0f;
         }
 
-        @Contract(pure = true)
         private boolean doMobSwitchback() {
             return AutoSwitch.switchState.hasAttackedEntity() &&
-                   (featureCfg.switchbackWaits() == TargetType.BOTH ||
-                    featureCfg.switchbackWaits() == TargetType.MOBS);
+                   (featureCfg.switchbackWaits() == TargetType.BOTH || featureCfg.switchbackWaits() == TargetType.MOBS);
         }
 
-        @Contract(pure = true)
         private boolean doBlockSwitchback() {
-            return !AutoSwitch.switchState.hasAttackedEntity() &&
-                   (featureCfg.switchbackWaits() == TargetType.BOTH ||
-                    featureCfg.switchbackWaits() == TargetType.BLOCKS);
+            return !AutoSwitch.switchState.hasAttackedEntity() && (featureCfg.switchbackWaits() == TargetType.BOTH ||
+                                                                   featureCfg.switchbackWaits() == TargetType.BLOCKS);
         }
 
         private boolean disallowSwitchback() {
@@ -178,26 +171,25 @@ public enum SwitchEvent {
         }
     },
     /**
-     * When scheduled, block attack events are not run or scheduled.
-     * For use during combat situations, where targeting a block soon after an entity will hinder combat.
+     * When scheduled, block attack events are not run or scheduled. For use during combat situations, where targeting a
+     * block soon after an entity will hinder combat.
      */
     PREVENT_BLOCK_ATTACK {
         @Override
         public boolean invoke() {
             float delay = featureCfg.preventBlockSwitchAfterEntityAttack();
             if (delay == 0) return true;
-            SwitchState.preventBlockAttack = AutoSwitch.scheduler.isEventScheduled(PREVENT_BLOCK_ATTACK);
+            SwitchState.preventBlockAttack = true;
 
-            if (preventBlockAttack) {
-                AutoSwitch.scheduler.schedule(SwitchEvent.REMOVE_PREVENTION, delay, AutoSwitch.tickTime);
-            }
+            AutoSwitch.scheduler.schedule(SwitchEvent.REMOVE_PREVENTION, delay, AutoSwitch.tickTime);
             return true;
         }
     },
     /**
      * Remove {@link SwitchEvent#PREVENT_BLOCK_ATTACK} when run.
      */
-    REMOVE_PREVENTION { // This is ugly. Todo make better
+    REMOVE_PREVENTION {
+
         @Override
         public boolean invoke() {
             AutoSwitch.scheduler.remove(PREVENT_BLOCK_ATTACK);
