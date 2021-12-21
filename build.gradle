@@ -60,6 +60,7 @@ project.modmenu_version = getLatestModMenu()
 project.loader_version = outlet.loaderVersion()
 project.yarn_mappings =  outlet.yarnVersion()
 project.fabric_version = outlet.fapiVersion()
+project.java = outlet.javaLanguageCompatibility()
 
 // Controls if optional deps. should be loaded at runtime via runClient
 def useCompileOnlyDeps = false
@@ -130,9 +131,10 @@ Set<String> fapiModules() {
 processResources {
     inputs.property "version", project.version
     inputs.property "range", project.range
+    inputs.property "java", project.java
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.version, "range": project.range
+        expand "version": project.version, "range": project.range, "java": project.java
     }
 }
 
@@ -148,8 +150,8 @@ tasks.withType(JavaCompile).configureEach {
     // The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
     // JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
     // We'll use that if it's available, but otherwise we'll use the older option.
-    def targetVersion = outlet.javaLanguageCompatibility()
-    System.out.println("Using level: " + outlet.javaLanguageCompatibility())
+    def targetVersion = project.java as int
+    System.out.println("Using level: " + targetVersion)
     if (JavaVersion.current().isJava9Compatible()) {
         it.options.release.set(targetVersion)
     } else {

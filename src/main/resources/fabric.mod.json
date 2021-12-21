@@ -33,7 +33,7 @@
     "fabric-resource-loader-v0": "*",
     "minecraft": "${range}",
     "autoswitch-api": "^1.0.0",
-    "java": ">=8"
+    "java": ">=${java}"
   },
   "mixins": [
     "autoswitch.mixins.json"
