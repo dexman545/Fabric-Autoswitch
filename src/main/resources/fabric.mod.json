@@ -19,9 +19,6 @@
   "entrypoints": {
     "client": [
       "autoswitch.AutoSwitch"
-    ],
-    "modmenu": [
-      "autoswitch.compat.modmenu.ModMenuImpl"
     ]
   },
   "depends": {
@@ -45,8 +42,5 @@
     },
     "stopmodreposts:showToast": false,
     "stopmodreposts:showButton": false
-  },
-  "breaks": {
-    "modmenu": "<1.15.0"
   }
 }
