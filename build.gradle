@@ -55,12 +55,17 @@ version = project.mod_version
 group = project.maven_group
 
 logger.lifecycle(outlet.latestMc())
-project.minecraft_version = outlet.latestMc()
-project.modmenu_version = getLatestModMenu()
-project.loader_version = outlet.loaderVersion()
-project.yarn_mappings =  outlet.yarnVersion()
-project.fabric_version = outlet.fapiVersion()
-project.java = outlet.javaLanguageCompatibility()
+
+boolean useLatestMc = false
+
+if (useLatestMc) {
+    project.minecraft_version = outlet.latestMc()
+    project.modmenu_version = getLatestModMenu()
+    project.loader_version = outlet.loaderVersion()
+    project.yarn_mappings =  outlet.yarnVersion()
+    project.fabric_version = outlet.fapiVersion()
+    project.java = outlet.javaLanguageCompatibility()
+}
 
 // Controls if optional deps. should be loaded at runtime via runClient
 def useCompileOnlyDeps = false
@@ -104,7 +109,7 @@ dependencies {
 
     // Mod Compat ------------
     // ModMenu
-    optional "maven.modrinth:modmenu:${project.modmenu_version}"
+    //optional "maven.modrinth:modmenu:${project.modmenu_version}"
 
 }
 
