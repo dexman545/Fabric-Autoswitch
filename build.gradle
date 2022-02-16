@@ -114,7 +114,7 @@ dependencies {
     requiredLib "org.aeonbits.owner:owner:1.0.12"
 
     // Autoswitch API
-    requiredModApi 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
+    requiredModApi files('api/autoswitch-api-1.1.0.jar')//'com.github.dexman545:autoswitch-api:-SNAPSHOT'
 
     // Mod Compat ------------
     // ModMenu

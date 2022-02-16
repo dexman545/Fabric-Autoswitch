@@ -13,8 +13,6 @@ import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 import autoswitch.util.TickUtil;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -24,9 +22,12 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AutoSwitch implements ClientModInitializer {
 
-    public static final Logger logger = LogManager.getLogger("AutoSwitch");
+    public static final Logger logger = LoggerFactory.getLogger("AutoSwitch");
     public static final SwitchData switchData = new SwitchData();
     public static final Scheduler scheduler = new Scheduler();
     // Create object to store player switch state and relevant data

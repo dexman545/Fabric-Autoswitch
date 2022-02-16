@@ -41,7 +41,7 @@ public class CommandConductor {
                     context.getSource().sendFeedback(new LiteralText("Config file updated."));
                 } catch (IOException e) {
                     context.getSource().sendError(new LiteralText("Failed to update config file."));
-                    AutoSwitch.logger.error(e);
+                    AutoSwitch.logger.error("Failed to update config file", e);
                     return 1;
                 }
                 return 0;

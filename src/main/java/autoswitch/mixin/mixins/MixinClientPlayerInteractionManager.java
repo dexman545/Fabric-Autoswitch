@@ -44,10 +44,10 @@ public abstract class MixinClientPlayerInteractionManager {
         assert this.client.player != null;
         assert this.client.crosshairTarget != null;
         if (this.client.crosshairTarget.equals(this.prevTarget)) return;
-        if (this.client.options.keyAttack.isPressed() || this.client.options.keyAttack.wasPressed()) {
+        if (this.client.options.attackKey.isPressed() || this.client.options.attackKey.wasPressed()) {
             SwitchEventTriggerImpl.attack(0, this.client.player, this.client.crosshairTarget);
             this.prevTarget = this.client.crosshairTarget;
-        } else if (this.client.options.keyUse.isPressed() || this.client.options.keyUse.wasPressed()) {
+        } else if (this.client.options.useKey.isPressed() || this.client.options.useKey.wasPressed()) {
             SwitchEventTriggerImpl.interact(this.breakingBlock, this.client.player,
                                             this.client.crosshairTarget);
             this.prevTarget = this.client.crosshairTarget;

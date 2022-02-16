@@ -23,6 +23,7 @@ public class ApiGenUtil {
             AutoSwitchApi api = entrypoint.getEntrypoint();
             api.customDamageSystems(AutoSwitch.switchData.damageMap);
             api.moddedToolGroups(AutoSwitch.switchData.toolGroupings);
+            api.moddedToolGroupPredicates(AutoSwitch.switchData.toolPredicates);
             final AutoSwitchMap<String, String> baseAction = duplicateMap(AutoSwitch.switchData.attackConfig);
             final AutoSwitchMap<String, String> baseUseAction = duplicateMap(AutoSwitch.switchData.usableConfig);
             api.moddedTargets(AutoSwitch.switchData.targets, AutoSwitch.switchData.attackConfig,

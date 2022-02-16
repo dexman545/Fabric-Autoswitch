@@ -146,7 +146,7 @@ public abstract class Targetable {
             return Optional.empty();
         }
 
-        AutoSwitch.logger.debug(slot2ToolRating);
+        AutoSwitch.logger.debug(String.valueOf(slot2ToolRating));
         if (!this.slot2ToolRating.isEmpty()) {
             int slot = Collections
                     .max(this.slot2ToolRating.int2DoubleEntrySet(), Comparator.comparingDouble(Map.Entry::getValue))

@@ -1,5 +1,7 @@
 package autoswitch.compat.autoswitch_api.impl;
 
+import java.util.function.Predicate;
+
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
@@ -8,16 +10,25 @@ import autoswitch.targetable.custom.TargetableGroup;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 
-import autoswitch.util.TargetableUtil;
+import net.minecraft.tag.Tag;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Material;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.*;
-
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ShearsItem;
+import net.minecraft.item.ShovelItem;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.TridentItem;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class ApiMapGenerator {
     public static void createApiMaps() {
@@ -27,19 +38,37 @@ public class ApiMapGenerator {
         //AutoSwitch.data.damageMap.put(Item.class, ItemStack::getDamage);
 
         // Tool Groups
-        AutoSwitch.switchData.toolGroupings.put("pickaxe", Pair.of(FabricToolTags.PICKAXES, PickaxeItem.class));
-        AutoSwitch.switchData.toolGroupings.put("shovel", Pair.of(FabricToolTags.SHOVELS, ShovelItem.class));
-        AutoSwitch.switchData.toolGroupings.put("hoe", Pair.of(FabricToolTags.HOES, HoeItem.class));
-        AutoSwitch.switchData.toolGroupings.put("shears", Pair.of(FabricToolTags.SHEARS, ShearsItem.class));
+        /*AutoSwitch.switchData.toolGroupings.put("pickaxe", Pair.of(null, PickaxeItem.class));
+        AutoSwitch.switchData.toolGroupings.put("shovel", Pair.of(null, ShovelItem.class));
+        AutoSwitch.switchData.toolGroupings.put("hoe", Pair.of(null, HoeItem.class));
+        AutoSwitch.switchData.toolGroupings.put("shears", Pair.of(null, ShearsItem.class));
         AutoSwitch.switchData.toolGroupings.put("trident", Pair.of(null, TridentItem.class));
-        AutoSwitch.switchData.toolGroupings.put("axe", Pair.of(FabricToolTags.AXES, AxeItem.class));
-        AutoSwitch.switchData.toolGroupings.put("sword", Pair.of(FabricToolTags.SWORDS, SwordItem.class));
+        AutoSwitch.switchData.toolGroupings.put("axe", Pair.of(null, AxeItem.class));
+        AutoSwitch.switchData.toolGroupings.put("sword", Pair.of(null, SwordItem.class));*/
+
+        // Tool Groups via Predicate
+        AutoSwitch.switchData.toolPredicates.computeIfAbsent("pickaxe", s -> makeToolPredicate(s, PickaxeItem.class));
+        AutoSwitch.switchData.toolPredicates.computeIfAbsent("shovel", s -> makeToolPredicate(s, ShovelItem.class));
+        AutoSwitch.switchData.toolPredicates.computeIfAbsent("hoe", s -> makeToolPredicate(s, HoeItem.class));
+        AutoSwitch.switchData.toolPredicates.computeIfAbsent("shears", s -> makeToolPredicate(s, ShearsItem.class));
+        AutoSwitch.switchData.toolPredicates.computeIfAbsent("trident", s -> makeToolPredicate(s, TridentItem.class));
+        AutoSwitch.switchData.toolPredicates.computeIfAbsent("axe", s -> makeToolPredicate(s, AxeItem.class));
+        AutoSwitch.switchData.toolPredicates.computeIfAbsent("sword", s -> makeToolPredicate(s, SwordItem.class));
 
         // Targets
         genTargetMap();
         genConfigMaps();
 
         TargetableGroup.validatePredicates();
+    }
+
+    private static Predicate<Item> makeToolPredicate(String toolName, @NotNull Class<? extends Item> itemClass) {
+        var pluralName = toolName + "s";
+        var fabricTag = TagKey.intern(Registry.ITEM_KEY, new Identifier("fabric", pluralName));
+        var commonTag = TagKey.intern(Registry.ITEM_KEY, new Identifier("c", pluralName));
+
+        return item -> itemClass.isInstance(item) || item.getRegistryEntry().isIn(fabricTag) ||
+                       item.getRegistryEntry().isIn(commonTag);
     }
 
     // Populate Targets map with default values

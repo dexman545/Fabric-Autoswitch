@@ -70,7 +70,7 @@ public class SwitchUtil {
             return SemanticVersion.parse(getMinecraftVersion())
                                   .compareTo((Version) SemanticVersion.parse(minVersion)) >= 0;
         } catch (VersionParsingException e) {
-            AutoSwitch.logger.error(e);
+            AutoSwitch.logger.error("Failed to compare MC versions for Material registration", e);
         }
 
         return false;

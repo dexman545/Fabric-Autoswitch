@@ -23,7 +23,6 @@ import org.aeonbits.owner.Config;
 import org.aeonbits.owner.ConfigFactory;
 import org.aeonbits.owner.Mutable;
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.Level;
 
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -82,8 +81,7 @@ public final class ConfigEstablishment {
             }
 
         } catch (IOException e) {
-            AutoSwitch.logger.error("AutoSwitch failed to obtain the configs during writing!");
-            AutoSwitch.logger.error(e);
+            AutoSwitch.logger.error("AutoSwitch failed to obtain the configs during writing", e);
         }
 
         // Clear data and recreate it based on new config
@@ -117,7 +115,7 @@ public final class ConfigEstablishment {
             updateOldConfigFormat(attackActionPath.toFile());
             updateOldConfigFormat(useActionPath.toFile());
         } catch (IOException e) {
-            AutoSwitch.logger.catching(Level.DEBUG, e);
+            AutoSwitch.logger.debug("Error migrating config files", e);
         }
     }
 

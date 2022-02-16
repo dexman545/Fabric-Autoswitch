@@ -24,12 +24,11 @@
   "depends": {
     "fabricloader": ">=0.11.3",
     "fabric-key-binding-api-v1": ">=1.0.0",
-    "fabric-tool-attribute-api-v1": "^1.0.2",
     "fabric-lifecycle-events-v1": ">=1.0.0",
     "fabric-command-api-v1": ">=1.1.0",
     "fabric-resource-loader-v0": "*",
     "minecraft": "${range}",
-    "autoswitch-api": "^1.0.0",
+    "autoswitch-api": "^1.1.0",
     "java": ">=${java}"
   },
   "mixins": [

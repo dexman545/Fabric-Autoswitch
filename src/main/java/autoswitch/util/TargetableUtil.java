@@ -29,6 +29,7 @@ import net.minecraft.util.registry.Registry;
 
 public class TargetableUtil {
     private static final int NONE = -1;
+    private static boolean TAG_CHECK_FAILURE = false;
 
     public static double toolRatingChange(double oldValue, double newValue, ItemStack stack, boolean stackEnchant) {
         if (stackEnchant && AutoSwitch.featureCfg.toolEnchantmentsStack() &&
@@ -266,19 +267,41 @@ public class TargetableUtil {
     private static boolean isCorrectTool(String tool, Item item) {
         AtomicBoolean matches = new AtomicBoolean(false);
 
-        AutoSwitch.switchData.toolGroupings.forEach((toolKey, tagClassPair) -> {
-            if (tool.equals(toolKey) || tool.equals("any")) {
-                if (checkTagAndClass(tagClassPair.getLeft(), tagClassPair.getRight(), item)) {
-                    matches.set(true);
-                }
+        if (!TAG_CHECK_FAILURE) {
+            try {
+                AutoSwitch.switchData.toolGroupings.forEach((toolKey, tagClassPair) -> {
+                    if (tool.equals(toolKey) || tool.equals("any")) {
+                        if (checkTagAndClass(tagClassPair.getLeft(), tagClassPair.getRight(), item)) {
+                            matches.set(true);
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                AutoSwitch.logger.debug("Failed to use old tool grouping check, subsequent checks will use the new " +
+                                        "method.", e);
+                TAG_CHECK_FAILURE = true;
             }
-        });
+        }
+
+        if (!matches.get()) {
+            AutoSwitch.switchData.toolPredicates.forEach((toolKey, predicate) -> {
+                if (tool.equals(toolKey) || tool.equals("any")) {
+                    if (predicate.test(item)) {
+                        matches.set(true);
+                    }
+                }
+            });
+        }
 
         return matches.get() || (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
     }
 
+    /**
+     * @deprecated to be removed when this tag check is no longer feasible
+     */
+    @Deprecated(since = "AS 4, MC 22w06a (1.18.2)", forRemoval = true)
     private static boolean checkTagAndClass(Tag<Item> tag, Class<?> clazz, Item item) {
-        return (tag != null && tag.contains(item)) || (clazz != null && clazz.isInstance(item));
+        return (tag != null && tag.values().contains(item)) || (clazz != null && clazz.isInstance(item));
     }
 
 }
