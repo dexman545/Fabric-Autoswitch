@@ -7,6 +7,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.dexman545.Outlet:Outlet:1.2.3'//master-SNAPSHOT
+        classpath 'org.apache.commons:commons-configuration2:2.4'
     }
 }
 
@@ -26,6 +27,9 @@ apply plugin: 'dex.plugins.outlet'
 import com.matthewprenger.cursegradle.CurseUploadTask
 import com.modrinth.minotaur.TaskModrinthUpload
 import groovy.json.JsonSlurper
+import org.apache.commons.configuration2.io.FileHandler
+import org.apache.commons.configuration2.PropertiesConfiguration
+import org.apache.commons.configuration2.PropertiesConfigurationLayout
 
 repositories {
     maven {
@@ -57,7 +61,8 @@ group = project.maven_group
 logger.lifecycle(outlet.latestMc())
 
 boolean useLatestMc = true
-if (useLatestMc) {
+if (useLatestMc || file('asdev.txt').exists()) {
+    logger.lifecycle('Using latest versions')
     project.minecraft_version = outlet.latestMc()
     //project.modmenu_version = getLatestModMenu()
     project.loader_version = outlet.loaderVersion()
@@ -211,7 +216,7 @@ def uniChangelog = "This is autopublished from Github Actions. Use at your own r
         "build for changes. Based on commit: ${getCheckedOutGitCommitHash()}\n\n<br />" +
         "This build may work on Minecraft versions not specified for this version. Release cadence at time of writing " +
         "(2/12/2021):\n\n<br />" +
-        "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.2 - 1.18.1 | 4.x.x -> 1.18.2 - current (and possibly beyond)\n\n<br />"
+        "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.2 - 1.18.1 | 4.x.x -> 1.18.2 (22w06a) - current (and possibly beyond)\n\n<br />"
 
 task publishModrinth(type: TaskModrinthUpload, dependsOn: build) {
     token = System.getenv("MODRINTH")
@@ -272,6 +277,39 @@ tasks.withType(CurseUploadTask) {
     onlyIf {
         "release" == getReleaseMonicker()
     }
+}
+
+// Only update properties file if in dev environment (file 'asdev.txt' is present in project directory)
+task updateVersions(dependsOn: build) {
+    onlyIf {
+        file('asdev.txt').exists()
+    }
+
+    doFirst {
+        logger.lifecycle('Updating properties file versions')
+        updateProperties()
+    }
+}
+
+/**
+ * Updates the property files with the latest versions the project is using
+ */
+def updateProperties() {
+    def versionPropsFile = file('gradle.properties')
+
+    def config = new PropertiesConfiguration()
+    def fileHandler = new FileHandler(config)
+    fileHandler.file = versionPropsFile
+    fileHandler.load()
+
+    config.setProperty('minecraft_version', project.minecraft_version)
+    config.setProperty('modmenu_version', project.modmenu_version)
+    config.setProperty('loader_version', project.loader_version)
+    config.setProperty('yarn_mappings', project.yarn_mappings)
+    config.setProperty('fabric_version', project.fabric_version)
+    config.setProperty('java', project.java)
+
+    fileHandler.save()
 }
 
 /**
@@ -376,3 +414,5 @@ private static String runCommands(String... commands) {
 
 publish.finalizedBy(publishModrinth)
 tasks.runClient.dependsOn(tasks.processResources)
+tasks.build.finalizedBy(tasks.updateVersions)
+tasks.classes.finalizedBy(tasks.updateVersions) // client run config uses this
