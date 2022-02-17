@@ -116,7 +116,7 @@ public class SwitchEventTriggerImpl {
     }
 
     /**
-     * Type used to control processing of user action for switching in a unified manor.
+     * Type used to control processing of user action for switching in a unified manner.
      */
     enum DesiredType {
         /**

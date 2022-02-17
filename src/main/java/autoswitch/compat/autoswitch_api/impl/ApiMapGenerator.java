@@ -10,9 +10,6 @@ import autoswitch.targetable.custom.TargetableGroup;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 
-import net.minecraft.tag.Tag;
-
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Material;

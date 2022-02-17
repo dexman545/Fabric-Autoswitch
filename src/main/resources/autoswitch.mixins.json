@@ -4,7 +4,6 @@
   "package": "autoswitch.mixin.mixins",
   "compatibilityLevel": "JAVA_${java}",
   "mixins": [
-    "PlayerEntityAccessor"
   ],
   "client": [
     "MixinClientPlayerInteractionManager",

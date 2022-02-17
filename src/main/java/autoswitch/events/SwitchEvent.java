@@ -3,7 +3,6 @@ package autoswitch.events;
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchConfig.TargetType;
-import autoswitch.mixin.mixins.PlayerEntityAccessor;
 import autoswitch.targetable.Targetable;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchState;
@@ -228,7 +227,7 @@ public enum SwitchEvent {
      */
     void handlePrevSlot() {
         if (!AutoSwitch.switchState.getHasSwitched()) {
-            AutoSwitch.switchState.setPrevSlot(((PlayerEntityAccessor) player).getInventory().selectedSlot);
+            AutoSwitch.switchState.setPrevSlot(player.getInventory().selectedSlot);
         }
     }
 
