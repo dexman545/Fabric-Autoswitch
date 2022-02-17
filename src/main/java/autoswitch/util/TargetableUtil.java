@@ -29,7 +29,6 @@ import net.minecraft.util.registry.Registry;
 
 public class TargetableUtil {
     private static final int NONE = -1;
-    private static boolean TAG_CHECK_FAILURE = false;
 
     public static double toolRatingChange(double oldValue, double newValue, ItemStack stack, boolean stackEnchant) {
         if (stackEnchant && AutoSwitch.featureCfg.toolEnchantmentsStack() &&
@@ -267,22 +266,6 @@ public class TargetableUtil {
     private static boolean isCorrectTool(String tool, Item item) {
         AtomicBoolean matches = new AtomicBoolean(false);
 
-        if (!TAG_CHECK_FAILURE) {
-            try {
-                AutoSwitch.switchData.toolGroupings.forEach((toolKey, tagClassPair) -> {
-                    if (tool.equals(toolKey) || tool.equals("any")) {
-                        if (checkTagAndClass(tagClassPair.getLeft(), tagClassPair.getRight(), item)) {
-                            matches.set(true);
-                        }
-                    }
-                });
-            } catch (Exception e) {
-                AutoSwitch.logger.debug("Failed to use old tool grouping check, subsequent checks will use the new " +
-                                        "method.", e);
-                TAG_CHECK_FAILURE = true;
-            }
-        }
-
         if (!matches.get()) {
             AutoSwitch.switchData.toolPredicates.forEach((toolKey, predicate) -> {
                 if (tool.equals(toolKey) || tool.equals("any")) {
@@ -302,6 +285,18 @@ public class TargetableUtil {
     @Deprecated(since = "AS 4, MC 22w06a (1.18.2)", forRemoval = true)
     private static boolean checkTagAndClass(Tag<Item> tag, Class<?> clazz, Item item) {
         return (tag != null && tag.values().contains(item)) || (clazz != null && clazz.isInstance(item));
+    }
+
+    //todo Remove when this begins to fail
+    static {// Ports legacy groups to modern method
+        try {
+            AutoSwitch.switchData.toolGroupings.forEach((group, pair) ->
+                                                                AutoSwitch.switchData.toolPredicates.computeIfAbsent(group, s ->
+                                                                        (item) -> checkTagAndClass(pair.getLeft(), pair.getRight(), item)));
+        } catch (Exception e) {
+            AutoSwitch.logger.debug("Failed to use old tool grouping check, subsequent checks will use the new " +
+                                    "method.", e);
+        }
     }
 
 }
