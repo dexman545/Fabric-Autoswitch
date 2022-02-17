@@ -1,6 +1,7 @@
 package autoswitch.config.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 
 import autoswitch.AutoSwitch;
@@ -144,7 +145,12 @@ public class ConfigTemplates {
      */
     public static String toolGroupings() {
         StringBuilder keys = new StringBuilder();
-        Enumeration<String> enumKeys = AutoSwitch.switchData.toolGroupings.keys();
+        Enumeration<String> enumKeys = AutoSwitch.switchData.toolPredicates.keys();
+
+        //todo remove when old groupings break
+        var tempList = Collections.list(enumKeys);
+        tempList.addAll(Collections.list(AutoSwitch.switchData.toolGroupings.keys()));
+        enumKeys = Collections.enumeration(tempList);
 
         while (enumKeys.hasMoreElements()) {
             keys.append(keys.length() > 0 ? ", " : "").append(enumKeys.nextElement());
