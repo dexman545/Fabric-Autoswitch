@@ -60,27 +60,28 @@ public class TargetableUtil {
 
         // These methods were moved to AbstractBlockState in 20w12a,
         // so their intermediary name changed breaking compatibility
-        if (protoTarget instanceof BlockState) {
+        if (protoTarget instanceof BlockState state) {
             // Block Override
-            Block block = ((BlockState) protoTarget).getBlock();
+            Block block = state.getBlock();
             if (map.containsKey(block)) {
                 return block;
             }
-            return TargetableGroup.maybeGetTarget(block).orElse(((BlockState) protoTarget).getMaterial());
+            return TargetableGroup.maybeGetTarget(protoTarget)
+                                  .orElse(TargetableGroup.maybeGetTarget(block).orElse(state.getMaterial()));
         }
 
-        if (protoTarget instanceof Entity) {
+        if (protoTarget instanceof Entity e) {
             // Entity Override
-            EntityType<?> entity = ((Entity) protoTarget).getType();
+            EntityType<?> entity = e.getType();
             if (map.containsKey(entity)) {
                 return entity;
             }
 
-            if (protoTarget instanceof LivingEntity) {
-                return ((LivingEntity) protoTarget).getGroup();
-            }
-
-            return TargetableGroup.maybeGetTarget(entity).orElse(((Entity) protoTarget).getType());
+            return TargetableGroup.maybeGetTarget(protoTarget)
+                                  .orElse(TargetableGroup.maybeGetTarget(entity)
+                                                         .orElse(protoTarget instanceof LivingEntity ?
+                                                                 ((LivingEntity) protoTarget).getGroup() :
+                                                                 e.getType()));
         }
 
         return null;

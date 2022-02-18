@@ -31,6 +31,55 @@ public interface AutoSwitchUseActionConfig extends Config, Reloadable, Accessibl
     ToolHandler[] strider();
 
     @Separator(",")
+    @DefaultValue("minecraft:bowl, minecraft:bucket")
+    @Key("minecraft!mooshroom")
+    @Comment("Milk mooshrooms with a bowl to get suspicious stew, or a bucket to get milk. Shears can turn them into " +
+             "a cow.")
+    ToolHandler[] mooshroom();
+
+    @Separator(",")
+    @DefaultValue("minecraft:bucket")
+    @Key("minecraft!cow")
+    @Comment("Milk a cow to get milk.")
+    ToolHandler[] cow();
+
+    @Separator(",")
+    @DefaultValue("minecraft:bucket")
+    @Key("minecraft!goat")
+    @Comment("Milk a goat to get milk.")
+    ToolHandler[] goat();
+
+    @Separator(",")
+    @DefaultValue("minecraft:iron_ingot")
+    @Key("minecraft!iron_golem")
+    @Comment("Heal an iron golem")
+    ToolHandler[] ironGolem();
+
+    @Separator(",")
+    @DefaultValue("minecraft:shears")
+    @Key("minecraft!sheep")
+    @Comment("Shear a sheep.")
+    ToolHandler[] sheep();
+
+    @Separator(",")
+    @DefaultValue("")
+    @Key("minecraft!beehive")
+    @Comment("Get honeycomb or honey from the hive with shears or a bottle, respectively.")
+    ToolHandler[] beehive();
+
+    @Separator(",")
+    @DefaultValue("")
+    @Key("minecraft!bee_nest")
+    @Comment("Get honeycomb or honey from the hive with shears or a bottle, respectively.")
+    ToolHandler[] beeNest();
+
+    @Separator(",")
+    @DefaultValue("minecraft:water_bucket")
+    @Key("bucketable_swimmer")
+    @Comment("Catch an aquatic creature in a bucket.")
+    ToolHandler[] bucketableSwimmer();
+
+    @Separator(",")
     @DefaultValue("")
     @Comment("For 'item use' action, ie right clicking an item into the empty air, such as for a bow.")
     ToolHandler[] bow_action();

@@ -7,8 +7,13 @@ import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.targetable.custom.TargetableGroup;
+import autoswitch.targetable.custom.TargetableGroup.TargetPredicate;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
+
+import net.minecraft.entity.Bucketable;
+
+import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -188,13 +193,12 @@ public class ApiMapGenerator {
         addTarget("ender_dragon", EntityType.ENDER_DRAGON);
 
         addTarget(new TargetableGroup<>("minecart",
-                                        EntityType.MINECART,
-                                        EntityType.CHEST_MINECART,
-                                        EntityType.HOPPER_MINECART,
-                                        EntityType.TNT_MINECART,
-                                        EntityType.FURNACE_MINECART,
-                                        EntityType.COMMAND_BLOCK_MINECART,
-                                        EntityType.SPAWNER_MINECART));
+                                        new TargetPredicate("minecrarts",
+                                                            e -> e instanceof AbstractMinecartEntity)));
+
+        addTarget(new TargetableGroup<>("bucketable_swimmer",
+                                new TargetPredicate("things that extend the Bucketable interface",
+                                                    e -> e instanceof Bucketable)));
 
         // Item Use
         addTarget("bow_action", SwitchData.itemTarget);
