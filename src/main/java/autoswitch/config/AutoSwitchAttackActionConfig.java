@@ -367,5 +367,15 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @Comment("A default-provided override for players.")
     ToolHandler[] playerSpecial();
 
+    @Separator(",")
+    @DefaultValue("axe;minecraft:efficiency, axe;minecraft:mending, axe")
+    @Key("minecraft!cocoa")
+    @Comment("A default-provided override for cocoa beans.")
+    ToolHandler[] cocoaSpecial();
 
+    @Separator(",")
+    @DefaultValue("")
+    @Key("minecraft!sugar_cane")
+    @Comment("A default-provided override for sugar cane.")
+    ToolHandler[] reedsSpecial();
 }
