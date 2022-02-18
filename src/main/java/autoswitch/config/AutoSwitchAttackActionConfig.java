@@ -332,7 +332,7 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolHandler[] hoeSpecial6();
 
     @Separator(",")
-    @DefaultValue("hoe;minecraft:efficiency, hoe;minecraft:mending, hoe")
+    @DefaultValue("hoe;minecraft:silk_touch, hoe;minecraft:efficiency, hoe;minecraft:mending, hoe")
     @Comment("A Material for sculk blocks.")
     ToolHandler[] sculk();
 
