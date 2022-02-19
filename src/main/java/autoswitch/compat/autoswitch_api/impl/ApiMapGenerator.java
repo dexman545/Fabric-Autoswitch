@@ -66,8 +66,8 @@ public class ApiMapGenerator {
 
     private static Predicate<Item> makeToolPredicate(String toolName, @NotNull Class<? extends Item> itemClass) {
         var pluralName = toolName + "s";
-        var fabricTag = TagKey.intern(Registry.ITEM_KEY, new Identifier("fabric", pluralName));
-        var commonTag = TagKey.intern(Registry.ITEM_KEY, new Identifier("c", pluralName));
+        var fabricTag = TagKey.of(Registry.ITEM_KEY, new Identifier("fabric", pluralName));
+        var commonTag = TagKey.of(Registry.ITEM_KEY, new Identifier("c", pluralName));
 
         return item -> itemClass.isInstance(item) || item.getRegistryEntry().isIn(fabricTag) ||
                        item.getRegistryEntry().isIn(commonTag);
