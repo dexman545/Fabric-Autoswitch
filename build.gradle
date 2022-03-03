@@ -119,8 +119,7 @@ dependencies {
     requiredLib "org.aeonbits.owner:owner:1.0.12"
 
     // Autoswitch API
-    requiredModApi files('api/autoswitch-api-1.1.0.jar')//'com.github.dexman545:autoswitch-api:-SNAPSHOT'
-    include files('api/autoswitch-api-1.1.0.jar')
+    requiredModApi 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
 
     // Mod Compat ------------
     // ModMenu
@@ -264,7 +263,7 @@ curseforge {
         }
 
         afterEvaluate {
-            uploadTask.dependsOn("remapJar").mustRunAfter(modrinth)
+            uploadTask.dependsOn("remapJar")
         }
     }
 
