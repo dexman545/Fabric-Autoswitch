@@ -23,4 +23,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         MODRINTH: ${{ secrets.MODRINTH }}
         CURSE: ${{ secrets.CURSE }}
-      run: ./gradlew publishModrinth curseforge
+      run: ./gradlew modrinth curseforge
