@@ -17,6 +17,9 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+
+import net.minecraft.text.Text;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,8 +114,8 @@ public class CommandGenerator {
     public static Consumer<GenericCommand> createGeneric2RealCommandConverter(
             LiteralArgumentBuilder<FabricClientCommandSource> builder) {
         return (c) -> builder.then(ClientCommandManager.literal(c.name()).executes(context -> {
-            context.getSource().sendError(new LiteralText("Please specify an option."));
-            context.getSource().sendError(new LiteralText(c.failureMessage()));
+            context.getSource().sendError(Text.of("Please specify an option."));
+            context.getSource().sendError(Text.of(c.failureMessage()));
             return 1;
         }).then(ClientCommandManager.argument(c.paramater(), c.argumentType()).executes(c.command())));
     }

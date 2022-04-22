@@ -11,6 +11,8 @@ import autoswitch.targetable.custom.TargetableGroup.TargetPredicate;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
+
 import net.minecraft.entity.Bucketable;
 
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
@@ -69,6 +71,7 @@ public class ApiMapGenerator {
         var fabricTag = TagKey.of(Registry.ITEM_KEY, new Identifier("fabric", pluralName));
         var commonTag = TagKey.of(Registry.ITEM_KEY, new Identifier("c", pluralName));
 
+        // todo move to using itemstack rather than item itself - api change?
         return item -> itemClass.isInstance(item) || item.getRegistryEntry().isIn(fabricTag) ||
                        item.getRegistryEntry().isIn(commonTag);
     }

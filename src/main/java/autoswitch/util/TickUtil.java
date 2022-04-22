@@ -7,6 +7,7 @@ import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 public class TickUtil {
@@ -26,7 +27,7 @@ public class TickUtil {
                                                  String tlKeyTruthy, String tlKeyFalsy) {
         if (featureCfg.toggleMessageControl().allowed()) {
             // Toggle message
-            TranslatableText msg = new TranslatableText(keyChooser ? tlKeyTruthy : tlKeyFalsy);
+            var msg = Text.translatable(keyChooser ? tlKeyTruthy : tlKeyFalsy);
 
             // Display msg above hotbar, set false to display in text chat
             player.sendMessage(msg, featureCfg.toggleMessageControl() == AutoSwitchConfig.DisplayControl.DEFAULT);

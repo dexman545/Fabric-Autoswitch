@@ -23,6 +23,7 @@ import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 public class CommandConductor {
@@ -38,9 +39,9 @@ public class CommandConductor {
                                                            method.getReturnType()).toString());
                 try {
                     ConfigEstablishment.writeConfigFiles();
-                    context.getSource().sendFeedback(new LiteralText("Config file updated."));
+                    context.getSource().sendFeedback(Text.of("Config file updated."));
                 } catch (IOException e) {
-                    context.getSource().sendError(new LiteralText("Failed to update config file."));
+                    context.getSource().sendError(Text.of("Failed to update config file."));
                     AutoSwitch.logger.error("Failed to update config file", e);
                     return 1;
                 }
@@ -57,10 +58,10 @@ public class CommandConductor {
         // Create command builder and add message for when it is run on its own
         LiteralArgumentBuilder<FabricClientCommandSource> autoswitchCommandBuilder =
                 ClientCommandManager.literal("autoswitch").executes(context -> {
-                    context.getSource().sendFeedback(new LiteralText(
-                            "Commands for changing AutoSwitch's " + "feature config options, except for the tool " +
-                            "targets. Please see the config files for " +
-                            "complete set of options and documentation. " + "Rewrites the config files."));
+                    context.getSource().sendFeedback(
+                            Text.translatable("Commands for changing AutoSwitch's feature config options, " +
+                                              "except for the tool targets. Please see the config files for " +
+                                              "complete set of options and documentation. Rewrites the config files."));
                     return 1;
                 });
 
@@ -96,14 +97,14 @@ public class CommandConductor {
         boolean allowed = context.getSource().getClient().isInSingleplayer() || featureCfg.switchInMP();
 
         if (!allowed) {
-            context.getSource().sendError(new LiteralText("Switching is disabled on servers!"));
+            context.getSource().sendError(Text.of("Switching is disabled on servers!"));
             return 1;
         }
 
         String tlKeyTruthy = "msg.autoswitch.toggle_true";
         String tlKeyFalsy = "msg.autoswitch.toggle_false";
 
-        context.getSource().sendFeedback(new TranslatableText(newValue ? tlKeyTruthy : tlKeyFalsy));
+        context.getSource().sendFeedback(Text.translatable(newValue ? tlKeyTruthy : tlKeyFalsy));
 
         doAS = newValue;
 
@@ -114,7 +115,8 @@ public class CommandConductor {
      * Change AutoSwitch toggle to the new value if the context allows it.
      */
     private static int resetState(CommandContext<FabricClientCommandSource> context) {
-        context.getSource().sendFeedback(new TranslatableText("msg.autoswitch.reset"));
+
+        context.getSource().sendFeedback(Text.translatable("msg.autoswitch.reset"));
 
         DisconnectHandler.reset();
 
