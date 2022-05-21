@@ -8,7 +8,6 @@ import autoswitch.config.AutoSwitchConfig;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 public class TickUtil {
 

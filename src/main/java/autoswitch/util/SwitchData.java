@@ -15,7 +15,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
-import net.minecraft.tag.Tag;
 
 import java.util.function.Predicate;
 
@@ -54,17 +53,6 @@ public class SwitchData {
             new Int2ObjectOpenHashMap<>();
 
     // API Maps
-    /**
-     * API Map - this map is passed to interfacing mods for them to add to it.
-     * <p>
-     * Map of tool grouping's key (eg. "pickaxe") -> the Tag and/or Class to match the item against for determining if
-     * the item is in the toolGrouping.
-     *
-     * @deprecated to be removed when this tag check is no longer feasible. Use {@link SwitchData#toolPredicates}
-     * instead.
-     */
-    @Deprecated(since = "AS 4, MC 22w06a (1.18.2)", forRemoval = true)
-    public final AutoSwitchMap<String, Pair<Tag<Item>, Class<?>>> toolGroupings = new AutoSwitchMap<>();
 
     /**
      * API Map - this map is passed to interfacing mods for them to add to it.

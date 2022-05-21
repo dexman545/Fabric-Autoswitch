@@ -149,7 +149,7 @@ public class ConfigTemplates {
 
         //todo remove when old groupings break
         var tempList = Collections.list(enumKeys);
-        tempList.addAll(Collections.list(AutoSwitch.switchData.toolGroupings.keys()));
+        //tempList.addAll(Collections.list(AutoSwitch.switchData.toolGroupings.keys()));
         enumKeys = Collections.enumeration(tempList);
 
         while (enumKeys.hasMoreElements()) {

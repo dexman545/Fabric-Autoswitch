@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '0.11.+'
+    id 'fabric-loom' version '0.12.+'
     //id "com.github.fudge.forgedflowerloom" version "2.0.0"
     //id("io.github.juuxel.loom-quiltflower-mini") version "+"
     id 'maven-publish'

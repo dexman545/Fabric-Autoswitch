@@ -23,7 +23,6 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -278,26 +277,6 @@ public class TargetableUtil {
         }
 
         return matches.get() || (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
-    }
-
-    /**
-     * @deprecated to be removed when this tag check is no longer feasible
-     */
-    @Deprecated(since = "AS 4, MC 22w06a (1.18.2)", forRemoval = true)
-    private static boolean checkTagAndClass(Tag<Item> tag, Class<?> clazz, Item item) {
-        return (tag != null && tag.values().contains(item)) || (clazz != null && clazz.isInstance(item));
-    }
-
-    //todo Remove when this begins to fail
-    static {// Ports legacy groups to modern method
-        try {
-            AutoSwitch.switchData.toolGroupings.forEach((group, pair) ->
-                                                                AutoSwitch.switchData.toolPredicates.computeIfAbsent(group, s ->
-                                                                        (item) -> checkTagAndClass(pair.getLeft(), pair.getRight(), item)));
-        } catch (Exception e) {
-            AutoSwitch.logger.debug("Failed to use old tool grouping check, subsequent checks will use the new " +
-                                    "method.", e);
-        }
     }
 
 }
