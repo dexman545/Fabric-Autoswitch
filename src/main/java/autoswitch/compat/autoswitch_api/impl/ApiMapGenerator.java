@@ -69,7 +69,7 @@ public class ApiMapGenerator {
     }
 
     private static Predicate<Item> makeToolPredicate(String toolName, @NotNull Class<? extends Item> itemClass) {
-        var pluralName = toolName + "s";
+        var pluralName = toolName.endsWith("s") ? toolName : toolName + "s";
         var fabricTag = TagKey.of(Registry.ITEM_KEY, new Identifier("fabric", pluralName));
         var commonTag = TagKey.of(Registry.ITEM_KEY, new Identifier("c", pluralName));
 
