@@ -17,6 +17,8 @@ import net.minecraft.entity.Bucketable;
 
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 
+import net.minecraft.entity.vehicle.BoatEntity;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Material;
@@ -182,6 +184,11 @@ public class ApiMapGenerator {
             addTarget("sculk", Material.SCULK);
         }
 
+        if (SwitchUtil.isAcceptableVersion("1.19-alpha.22.19.a")) {
+            addTarget("froglight", Material.FROGLIGHT);
+            addTarget("frogspawn", Material.FROGSPAWN);
+        }
+
         // Entities
         addTarget("aquaticEntity", EntityGroup.AQUATIC);
 
@@ -196,12 +203,18 @@ public class ApiMapGenerator {
         addTarget("ender_dragon", EntityType.ENDER_DRAGON);
 
         addTarget(new TargetableGroup<>("minecart",
-                                        new TargetPredicate("minecrarts",
+                                        new TargetPredicate("minecarts",
                                                             e -> e instanceof AbstractMinecartEntity)));
 
         addTarget(new TargetableGroup<>("bucketable_swimmer",
                                 new TargetPredicate("things that extend the Bucketable interface",
                                                     e -> e instanceof Bucketable)));
+
+        if (SwitchUtil.isAcceptableVersion("1.19-alpha.22.19.a")) {
+            addTarget(new TargetableGroup<>("boat",
+                                            new TargetPredicate("boats",
+                                                                e -> e instanceof BoatEntity)));
+        }
 
         // Item Use
         addTarget("bow_action", SwitchData.itemTarget);

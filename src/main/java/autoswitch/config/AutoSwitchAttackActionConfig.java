@@ -282,8 +282,7 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
 
     @Separator(",")
     @DefaultValue("axe;minecraft:mending, sword;minecraft:mending, axe, sword")
-    @Key("minecraft!boat")
-    @Comment("An Entity, specifically a boat. This is here so that an axe will be used to break it so that any mobs " +
+    @Comment("An Entity, specifically boats. This is here so that an axe will be used to break it so that any mobs " +
              "in the boat aren't accidentally hit.")
     ToolHandler[] boat();
 
@@ -337,6 +336,16 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolHandler[] sculk();
 
     @Separator(",")
+    @DefaultValue("")
+    @Comment("A Material for frog spawn.")
+    ToolHandler[] frogspawn();
+
+    @Separator(",")
+    @DefaultValue("pickaxe")
+    @Comment("A Material for froglights.")
+    ToolHandler[] froglight();
+
+    @Separator(",")
     @DefaultValue("shears;minecraft:mending, shears")
     @Key("minecraft!nether_sprouts")
     @Comment("A default-provided override for nether sprouts, which require shears to drop as an item.")
@@ -378,4 +387,10 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @Key("minecraft!sugar_cane")
     @Comment("A default-provided override for sugar cane.")
     ToolHandler[] reedsSpecial();
+
+    @Separator(",")
+    @DefaultValue("shears, axe")
+    @Key("minecraft!glow_lichen")
+    @Comment("A default-provided override for glow lichen.")
+    ToolHandler[] lichenSpecial();
 }
