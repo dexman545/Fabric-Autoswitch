@@ -61,6 +61,17 @@ public class ApiMapGenerator {
         AutoSwitch.switchData.toolPredicates.computeIfAbsent("axe", s -> makeToolPredicate(s, AxeItem.class));
         AutoSwitch.switchData.toolPredicates.computeIfAbsent("sword", s -> makeToolPredicate(s, SwordItem.class));
 
+        // Any tool
+        Predicate<Item> anyTool = null;
+        for (Predicate<Item> tp : AutoSwitch.switchData.toolPredicates.values()) {
+            if (anyTool == null) {
+                anyTool = tp;
+                continue;
+            }
+            anyTool = anyTool.or(tp);
+        }
+        AutoSwitch.switchData.toolPredicates.put("any", anyTool);
+
         // Targets
         genTargetMap();
         genConfigMaps();

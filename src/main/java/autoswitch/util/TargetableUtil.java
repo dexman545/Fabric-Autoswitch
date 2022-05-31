@@ -252,19 +252,9 @@ public class TargetableUtil {
      * @return true if tool name and item match
      */
     private static boolean isCorrectTool(String tool, Item item) {
-        AtomicBoolean matches = new AtomicBoolean(false);
+        var matches = AutoSwitch.switchData.toolPredicates.getOrDefault(tool, i -> false).test(item);
 
-        if (!matches.get()) {
-            AutoSwitch.switchData.toolPredicates.forEach((toolKey, predicate) -> {
-                if (tool.equals(toolKey) || tool.equals("any")) {
-                    if (predicate.test(item)) {
-                        matches.set(true);
-                    }
-                }
-            });
-        }
-
-        return matches.get() || (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
+        return matches || (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
     }
 
 }
