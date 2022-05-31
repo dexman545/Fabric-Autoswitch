@@ -71,16 +71,16 @@ public class TargetableUtil {
 
         if (protoTarget instanceof Entity e) {
             // Entity Override
-            EntityType<?> entity = e.getType();
-            if (map.containsKey(entity)) {
-                return entity;
+            EntityType<?> entityType = e.getType();
+            if (map.containsKey(entityType)) {
+                return entityType;
             }
 
             return TargetableGroup.maybeGetTarget(protoTarget)
-                                  .orElse(TargetableGroup.maybeGetTarget(entity)
+                                  .orElse(TargetableGroup.maybeGetTarget(entityType)
                                                          .orElse(protoTarget instanceof LivingEntity ?
                                                                  ((LivingEntity) protoTarget).getGroup() :
-                                                                 e.getType()));
+                                                                 entityType));
         }
 
         return null;
