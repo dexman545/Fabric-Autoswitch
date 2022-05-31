@@ -186,11 +186,11 @@ public abstract class Targetable {
      * @param stack           item in hotbar slot to check for usage
      * @param slot            hotbar slot number
      * @param targetGetter    lookup protoTarget in the correct map
-     * @param toolSelector    check ToolType for correct case
+     * @param toolValidator    check ToolType for correct case
      * @param toolSelectorMap ToolSelectors relevant to the case
      */
     void processToolSelectors(ItemStack stack, int slot, Object2ObjectOpenHashMap<Object, IntArrayList> toolSelectorMap,
-                              TargetGetter targetGetter, ToolSelector toolSelector) {
+                              TargetGetter targetGetter, ToolValidator toolValidator) {
         if (!switchAllowed()) return; // Short-circuit to not evaluate tools when cannot switch
 
         // Check cache
@@ -226,7 +226,7 @@ public abstract class Targetable {
                 enchants = null;
             }
 
-            if (toolSelector.correctType(tool, item) && (isUse() || TargetableUtil.isRightTool(stack, protoTarget))) {
+            if (toolValidator.correctType(tool, item) && (isUse() || TargetableUtil.isRightTool(stack, protoTarget))) {
                 updateToolListsAndRatings(stack, tool, enchants, slot, counter);
             }
 
@@ -294,7 +294,7 @@ public abstract class Targetable {
 
 
     @FunctionalInterface
-    interface ToolSelector {
+    interface ToolValidator {
         boolean correctType(String tool, Item item);
 
     }
