@@ -19,6 +19,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import net.minecraft.text.Text;
@@ -48,39 +49,44 @@ public class CommandConductor {
     public static void registerAllCommands() {
         if (!featureCfg.enableConfigCommands()) return;
 
-        // Create and register toggle command
-        ClientCommandManager.DISPATCHER.register(
-                ClientCommandManager.literal("autoswitch_toggle").executes(context -> changeASToggle(context, !doAS)));
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            dispatcher
+                    .register(ClientCommandManager.literal("autoswitch_toggle")
+                                                  .executes(context -> changeASToggle(context, !doAS)));
 
-        // Create command builder and add message for when it is run on its own
-        LiteralArgumentBuilder<FabricClientCommandSource> autoswitchCommandBuilder =
-                ClientCommandManager.literal("autoswitch").executes(context -> {
-                    context.getSource().sendFeedback(
-                            Text.translatable("Commands for changing AutoSwitch's feature config options, " +
-                                              "except for the tool targets. Please see the config files for " +
-                                              "complete set of options and documentation. Rewrites the config files."));
-                    return 1;
-                });
+            // Create command builder and add message for when it is run on its own
+            LiteralArgumentBuilder<FabricClientCommandSource> autoswitchCommandBuilder =
+                    ClientCommandManager.literal("autoswitch").executes(context -> {
+                        context.getSource().sendFeedback(
+                                Text.translatable("Commands for changing AutoSwitch's feature config options, " +
+                                                  "except for the tool targets. Please see the config files for " +
+                                                  "complete set of options and documentation. Rewrites the config files."));
+                        return 1;
+                    });
 
-        // Create consumer for adding a GenericCommand to the builder
-        Consumer<GenericCommand> genericCommandConsumer =
-                CommandGenerator.createGeneric2RealCommandConverter(autoswitchCommandBuilder);
+            // Create consumer for adding a GenericCommand to the builder
+            Consumer<GenericCommand> genericCommandConsumer =
+                    CommandGenerator.createGeneric2RealCommandConverter(autoswitchCommandBuilder);
 
-        // Build config commands
-        (new CommandGenerator(AutoSwitchConfig.class, configCommandMaker)).getCommands().stream()
-                                                                          .filter(GenericCommand::wasGenerated)
-                                                                          .forEach(genericCommandConsumer);
+            // Build config commands
+            (new CommandGenerator(AutoSwitchConfig.class, configCommandMaker)).getCommands().stream()
+                                                                              .filter(GenericCommand::wasGenerated)
+                                                                              .forEach(genericCommandConsumer);
 
-        // Add toggle command
-        autoswitchCommandBuilder.then(ClientCommandManager
-                                              .literal("toggleSwitchEnabled")
-                                              .then(ClientCommandManager.argument("allowed", BoolArgumentType.bool())
-                                                                        .executes(CommandConductor::changeASToggle)));
+            // Add toggle command
+            autoswitchCommandBuilder
+                    .then(ClientCommandManager
+                                  .literal("toggleSwitchEnabled")
+                                  .then(ClientCommandManager.argument("allowed", BoolArgumentType.bool())
+                                                            .executes(CommandConductor::changeASToggle)));
 
-        autoswitchCommandBuilder.then(ClientCommandManager.literal("resetSwitchState").executes(CommandConductor::resetState));
+            autoswitchCommandBuilder
+                    .then(ClientCommandManager.literal("resetSwitchState")
+                                              .executes(CommandConductor::resetState));
 
-        // Register commands
-        ClientCommandManager.DISPATCHER.register(autoswitchCommandBuilder);
+            // Register commands
+            dispatcher.register(autoswitchCommandBuilder);
+        });
     }
 
     private static int changeASToggle(CommandContext<FabricClientCommandSource> context) {
