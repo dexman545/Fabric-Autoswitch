@@ -243,18 +243,6 @@ public class TargetableUtil {
         return isCorrectTool(tool, item);
     }
 
-    public static String getTargetId(Object target) {
-        if (target instanceof EntityType<?>) {
-            return EntityType.getId((EntityType<?>) target).toString();
-        }
-
-        if (target instanceof Block) {
-            return Registry.BLOCK.getId((Block) target).toString();
-        }
-
-        return "LocalizationNotFound["+target+"]";
-    }
-
     /**
      * Checks if the tool is of the correct type or not
      *

@@ -1,11 +1,19 @@
 package autoswitch.targetable.custom;
 
-import autoswitch.AutoSwitch;
-import autoswitch.util.TargetableUtil;
-
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import autoswitch.AutoSwitch;
+
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityType;
+import net.minecraft.util.registry.Registry;
 
 /**
  * Create custom targets that capture a group of similar entries. Favors the narrower entries. Targets should only be of
@@ -34,8 +42,8 @@ public final class TargetableGroup<T> {
 
         for (T target : targets) {
             if (!set.add(target)) {
-                AutoSwitch.logger.error("Attempted to add {} to TargetGroup {}, but it was already in a group {} - " +
-                                        "ignoring the new addition", TargetableUtil.getTargetId(target), groupName,
+                AutoSwitch.logger.error("Attempted to add {} to TargetGroup {}, but it was already in group {} - " +
+                                        "ignoring the new addition", getTargetId(target), groupName,
                                         ALL_TARGETABLES.get(target).getGroupName());
             }
         }
@@ -69,6 +77,18 @@ public final class TargetableGroup<T> {
         }
 
         return Optional.empty();
+    }
+
+    private static String getTargetId(Object target) {
+        if (target instanceof EntityType<?>) {
+            return EntityType.getId((EntityType<?>) target).toString();
+        }
+
+        if (target instanceof Block) {
+            return Registry.BLOCK.getId((Block) target).toString();
+        }
+
+        return "LocalizationNotFound["+target+"]";
     }
 
     /**

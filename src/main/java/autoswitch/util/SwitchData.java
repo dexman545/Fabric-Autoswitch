@@ -41,7 +41,7 @@ public class SwitchData {
             new Object2ObjectOpenHashMap<>();
 
     /**
-     * Map of toolSelector input from the config -> it's int id. Used o ensure uniqueness of toolSelectors and avoid
+     * Map of toolSelector input from the config -> it's int id. Used to ensure uniqueness of toolSelectors and avoid
      * processing duplicates.
      */
     public final Object2IntOpenHashMap<String> toolSelectorKeys = new Object2IntOpenHashMap<>();
@@ -58,8 +58,7 @@ public class SwitchData {
      * API Map - this map is passed to interfacing mods for them to add to it.
      * <p>
      * Map of tool grouping's key (eg. "pickaxe") -> the predicate accepting Item to match the item against for
-     * determining if
-     * the item is in the toolGrouping.
+     * determining if the item is in the toolGrouping.
      */
     public final AutoSwitchMap<String, Predicate<Item>> toolPredicates = new AutoSwitchMap<>();
 
