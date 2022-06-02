@@ -1,8 +1,10 @@
 package autoswitch.util;
 
+import java.util.function.Predicate;
+
 import autoswitch.api.AutoSwitchMap;
 import autoswitch.api.DurabilityGetter;
-
+import autoswitch.selectors.ToolSelector;
 import autoswitch.targetable.custom.ItemTarget;
 
 import com.google.common.primitives.Ints;
@@ -10,13 +12,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
-import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
-
-import java.util.function.Predicate;
 
 public class SwitchData {
     /**
@@ -49,7 +46,7 @@ public class SwitchData {
     /**
      * Map of toolSelector id -> toolSelector object (string toolId, list of Enchantments).
      */
-    public final Int2ObjectOpenHashMap<Pair<String, ReferenceArrayList<Enchantment>>> toolSelectors =
+    public final Int2ObjectOpenHashMap<ToolSelector> toolSelectors =
             new Int2ObjectOpenHashMap<>();
 
     // API Maps

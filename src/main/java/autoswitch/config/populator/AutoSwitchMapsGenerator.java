@@ -2,7 +2,7 @@ package autoswitch.config.populator;
 
 import autoswitch.AutoSwitch;
 import autoswitch.config.io.MaterialHandler;
-import autoswitch.config.io.ToolHandler;
+import autoswitch.selectors.ToolSelector;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -50,8 +50,9 @@ public class AutoSwitchMapsGenerator {
 
             IntArrayList toolIdList = new IntArrayList();
             for (String input : split) {
+                if ("".equals(input)) continue;
                 // Handle normal operation where input is tool and enchantment
-                int x = (new ToolHandler(input)).getId();
+                int x = (new ToolSelector(input)).getId();
                 if (x != 0) {
                     toolIdList.add(x);
                 }

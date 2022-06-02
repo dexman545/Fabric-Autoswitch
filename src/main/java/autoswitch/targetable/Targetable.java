@@ -10,24 +10,22 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntConsumer;
 
 import autoswitch.AutoSwitch;
+import autoswitch.selectors.ItemSelector;
+import autoswitch.selectors.Selector;
+import autoswitch.selectors.ToolSelector;
 import autoswitch.util.SwitchData;
 import autoswitch.util.TargetableUtil;
 
 import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
-import org.apache.commons.lang3.tuple.Pair;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -41,6 +39,7 @@ public abstract class Targetable {
      * user config
      */
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
+    protected final ToolSelector blankToolSelector = new ToolSelector(new ItemSelector(item -> item.getMaxDamage() == 0));
 
     /**
      * The initial Target brought in from the world, eg. a block or entity. This differs from the Target in that a
@@ -186,11 +185,10 @@ public abstract class Targetable {
      * @param stack           item in hotbar slot to check for usage
      * @param slot            hotbar slot number
      * @param targetGetter    lookup protoTarget in the correct map
-     * @param toolValidator    check ToolType for correct case
      * @param toolSelectorMap ToolSelectors relevant to the case
      */
     void processToolSelectors(ItemStack stack, int slot, Object2ObjectOpenHashMap<Object, IntArrayList> toolSelectorMap,
-                              TargetGetter targetGetter, ToolValidator toolValidator) {
+                              TargetGetter targetGetter) {
         if (!switchAllowed()) return; // Short-circuit to not evaluate tools when cannot switch
 
         // Check cache
@@ -200,34 +198,29 @@ public abstract class Targetable {
             return;
         }
 
-        Item item = stack.getItem();
-
         // Establish base value to add to the tool rating,
         // promoting higher priority tools from the config in the selection
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize() * 10);
 
         Object target = targetGetter.getTarget(protoTarget);
 
-        if (target == null || checkSpecialCase(target)) return;
+        if (target == null || stopProcessingSlot(target)) return;
 
         toolSelectorMap.getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
             if (id == 0) return; // Check if no ID was assigned to the toolSelector.
 
             counter.updateAndGet(v -> (float) (v - 0.75)); // Tools later in the config list are not preferred
-            String tool;
-            ReferenceArrayList<Enchantment> enchants;
+            ToolSelector toolSelector;
 
             if (id != SwitchData.blank.getInt(0)) {
-                Pair<String, ReferenceArrayList<Enchantment>> pair = AutoSwitch.switchData.toolSelectors.get(id);
-                tool = pair.getLeft();
-                enchants = pair.getRight();
+                toolSelector = AutoSwitch.switchData.toolSelectors.get(id);
             } else { // Handle case of no target but user desires fallback to items
-                tool = "blank";
-                enchants = null;
+                toolSelector = blankToolSelector;
             }
 
-            if (toolValidator.correctType(tool, item) && (isUse() || TargetableUtil.isRightTool(stack, protoTarget))) {
-                updateToolListsAndRatings(stack, tool, enchants, slot, counter);
+            if (modifyToolSelector(toolSelector).matches(stack) &&
+                (isUse() || TargetableUtil.isRightTool(stack, protoTarget))) {
+                updateToolListsAndRatings(stack, toolSelector, slot, counter);
             }
 
         });
@@ -238,24 +231,13 @@ public abstract class Targetable {
      * Generate the tool rating and add it to the tool rating map.
      */
     // Moves some core logic out of the main processing method to increase clarity
-    private void updateToolListsAndRatings(ItemStack stack, String tool, ReferenceArrayList<Enchantment> enchants,
+    private void updateToolListsAndRatings(ItemStack stack, ToolSelector toolSelector,
                                            int slot, AtomicReference<Float> counter) {
-        double rating = 0;
-        boolean stackEnchants = true;
+        // Evaluate enchantments
+        var stackEnchants = !toolSelector.enchantmentsRequired();
+        var rating = toolSelector.getRating(stack);
 
-        // Evaluate enchantment
-        if (enchants == null) {
-            rating += 1; // Promote tool in ranking as it is the correct one
-            stackEnchants = false; // Items without the enchant shouldn't stack with ones that do
-        } else {
-            double enchantRating = 0;
-            for (Enchantment enchant : enchants) {
-                // Increase enchantRating if enchantment level > 0, otherwise stop processing this tool
-                if ((enchantRating += 1.1 * EnchantmentHelper.getLevel(enchant, stack)) <= 0) return;
-            }
-            rating += enchantRating;
-            AutoSwitch.logger.debug("Slot: {}; EnchantRating: {}", slot, enchantRating);
-        }
+        AutoSwitch.logger.debug("Slot: {}; Initial Rating: {}", slot, rating);
 
         if (!isUse()) {
             if (AutoSwitch.featureCfg.preferMinimumViableTool() && rating != 0D) {
@@ -263,7 +245,8 @@ public abstract class Targetable {
             }
             rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
 
-            if (!tool.equals("blank") && ((stack.getItem().getMaxDamage() == 0))) { // Fix ignore overrides
+            // Fix ignoring overrides and over-favoring current selected slot
+            if (blankToolSelector.matches(stack)) {
                 rating = 0.1;
             }
         }
@@ -273,29 +256,25 @@ public abstract class Targetable {
             rating += 0.1;
         }
         double finalRating = rating;
-        boolean finalStackEnchants = stackEnchants;
         AutoSwitch.logger.debug("Rating: {}; Slot: {}", rating, slot);
 
         this.slot2ToolRating.computeIfPresent(slot, (iSlot, oldRating) -> TargetableUtil
-                .toolRatingChange(oldRating, finalRating, stack, finalStackEnchants));
+                .toolRatingChange(oldRating, finalRating, stack, stackEnchants));
         this.slot2ToolRating.putIfAbsent(slot, rating);
 
     }
 
-    boolean checkSpecialCase(Object target) {
+    protected Selector<ItemStack> modifyToolSelector(ToolSelector selector) {
+        return selector;
+    }
+
+    boolean stopProcessingSlot(Object target) {
         return false;
     }
 
     @FunctionalInterface
     interface TargetGetter {
         Object getTarget(Object protoTarget);
-
-    }
-
-
-    @FunctionalInterface
-    interface ToolValidator {
-        boolean correctType(String tool, Item item);
 
     }
 

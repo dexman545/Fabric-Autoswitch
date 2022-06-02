@@ -1,7 +1,6 @@
 package autoswitch.util;
 
 import java.util.OptionalInt;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import autoswitch.AutoSwitch;
@@ -20,11 +19,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class TargetableUtil {
     private static final int NONE = -1;
@@ -232,29 +228,6 @@ public class TargetableUtil {
         }
 
         return true;
-    }
-
-    public static boolean isCorrectAttackType(String tool, Item item) {
-        return (AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() && item.getMaxDamage() == 0) ||
-               isCorrectTool(tool, item);
-    }
-
-    public static boolean isCorrectUseType(String tool, Item item) {
-        return isCorrectTool(tool, item);
-    }
-
-    /**
-     * Checks if the tool is of the correct type or not
-     *
-     * @param tool tool name from config
-     * @param item item from hotbar
-     *
-     * @return true if tool name and item match
-     */
-    private static boolean isCorrectTool(String tool, Item item) {
-        var matches = AutoSwitch.switchData.toolPredicates.getOrDefault(tool, i -> false).test(item);
-
-        return matches || (Registry.ITEM.getId(item).equals(Identifier.tryParse(tool)));
     }
 
 }

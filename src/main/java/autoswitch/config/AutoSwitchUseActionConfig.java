@@ -1,7 +1,7 @@
 package autoswitch.config;
 
-import autoswitch.config.io.ToolHandler;
 import autoswitch.config.util.Comment;
+import autoswitch.selectors.ToolSelector;
 
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
@@ -16,73 +16,73 @@ public interface AutoSwitchUseActionConfig extends Config, Reloadable, Accessibl
     @DefaultValue("minecraft:flint_and_steel")
     @Key("minecraft!creeper")
     @Comment("Using flint & steel on a creeper triggers it to immediately explode.")
-    ToolHandler[] creeper();
+    ToolSelector[] creeper();
 
     @Separator(",")
     @DefaultValue("minecraft:carrot_on_a_stick")
     @Key("minecraft!pig")
     @Comment("Switch when getting on a pig so you are ready to steer it.")
-    ToolHandler[] pig();
+    ToolSelector[] pig();
 
     @Separator(",")
     @DefaultValue("minecraft:warped_fungus_on_a_stick")
     @Key("minecraft!strider")
     @Comment("Switch when getting on a strider so you are ready to steer it.")
-    ToolHandler[] strider();
+    ToolSelector[] strider();
 
     @Separator(",")
     @DefaultValue("minecraft:bowl, minecraft:bucket")
     @Key("minecraft!mooshroom")
     @Comment("Milk mooshrooms with a bowl to get suspicious stew, or a bucket to get milk. Shears can turn them into " +
              "a cow.")
-    ToolHandler[] mooshroom();
+    ToolSelector[] mooshroom();
 
     @Separator(",")
     @DefaultValue("minecraft:bucket")
     @Key("minecraft!cow")
     @Comment("Milk a cow to get milk.")
-    ToolHandler[] cow();
+    ToolSelector[] cow();
 
     @Separator(",")
     @DefaultValue("minecraft:bucket")
     @Key("minecraft!goat")
     @Comment("Milk a goat to get milk.")
-    ToolHandler[] goat();
+    ToolSelector[] goat();
 
     @Separator(",")
     @DefaultValue("minecraft:iron_ingot")
     @Key("minecraft!iron_golem")
     @Comment("Heal an iron golem")
-    ToolHandler[] ironGolem();
+    ToolSelector[] ironGolem();
 
     @Separator(",")
     @DefaultValue("minecraft:shears")
     @Key("minecraft!sheep")
     @Comment("Shear a sheep.")
-    ToolHandler[] sheep();
+    ToolSelector[] sheep();
 
     @Separator(",")
     @DefaultValue("")
     @Key("minecraft!beehive")
     @Comment("Get honeycomb or honey from the hive with shears or a bottle, respectively.")
-    ToolHandler[] beehive();
+    ToolSelector[] beehive();
 
     @Separator(",")
     @DefaultValue("")
     @Key("minecraft!bee_nest")
     @Comment("Get honeycomb or honey from the hive with shears or a bottle, respectively.")
-    ToolHandler[] beeNest();
+    ToolSelector[] beeNest();
 
     @Separator(",")
     @DefaultValue("minecraft:water_bucket")
     @Key("bucketable_swimmer")
     @Comment("Catch an aquatic creature in a bucket.")
-    ToolHandler[] bucketableSwimmer();
+    ToolSelector[] bucketableSwimmer();
 
     @Separator(",")
     @DefaultValue("")
     @Comment("For 'item use' action, ie right clicking an item into the empty air, such as for a bow.")
-    ToolHandler[] bow_action();
+    ToolSelector[] bow_action();
 
 
 }

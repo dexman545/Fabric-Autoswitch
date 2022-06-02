@@ -24,7 +24,7 @@ class TargetableUsable extends Targetable {
     @Override
     protected void populateToolSelection(ItemStack stack, int slot) {
         processToolSelectors(stack, slot, AutoSwitch.switchData.target2UseActionToolSelectorsMap,
-                             TargetableUtil::getUseTarget, TargetableUtil::isCorrectUseType);
+                             TargetableUtil::getUseTarget);
     }
 
     @Override
@@ -38,7 +38,7 @@ class TargetableUsable extends Targetable {
     }
 
     @Override
-    protected boolean checkSpecialCase(Object target) {
+    protected boolean stopProcessingSlot(Object target) {
         // Don't switch if the target isn't saddled. Assumes only use for saddleable entity would be to ride it
         return AutoSwitch.featureCfg.checkSaddlableEntitiesForSaddle() && this.protoTarget instanceof Saddleable &&
                !((Saddleable) protoTarget).isSaddled();
