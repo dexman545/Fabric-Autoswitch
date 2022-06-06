@@ -91,6 +91,7 @@ public class ApiMapGenerator {
 
     // Populate Targets map with default values
     private static void genTargetMap() {
+        // Blocks
         addTarget("solid_organic", Material.SOLID_ORGANIC);
 
         addTarget("repair_station", Material.REPAIR_STATION);

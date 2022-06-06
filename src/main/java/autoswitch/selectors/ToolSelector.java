@@ -1,20 +1,17 @@
 package autoswitch.selectors;
 
-import autoswitch.AutoSwitch;
-
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
-
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.ItemStack;
-
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Arrays;
 import java.util.Locale;
+
+import autoswitch.AutoSwitch;
+import autoswitch.config.io.TagHandler;
+
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class ToolSelector implements Selector<ItemStack> {
     private final ItemSelector itemSelector;
@@ -49,9 +46,14 @@ public class ToolSelector implements Selector<ItemStack> {
             var multiEnch = enchantmentsStr.split("&");
 
             for (String ench : multiEnch) {
-                var eId = Identifier.tryParse(ench);
-                if (eId != null) {
-                    enchantmentSelectors.add(new EnchantmentSelector(eId));//todo handle tag case
+                var tagSelector = TagHandler.getEnchantmentSelector(itemSelectorStr);
+                if (tagSelector != null) {
+                    enchantmentSelectors.add(tagSelector);
+                } else {
+                    var eId = Identifier.tryParse(ench);
+                    if (eId != null) {
+                        enchantmentSelectors.add(new EnchantmentSelector(eId));
+                    }
                 }
             }
         }
@@ -59,11 +61,16 @@ public class ToolSelector implements Selector<ItemStack> {
         if (AutoSwitch.switchData.toolPredicates.containsKey(itemSelectorStr)) {
             itemSelector = new ItemSelector(AutoSwitch.switchData.toolPredicates.get(itemSelectorStr));
         } else {
-            var item = Identifier.tryParse(itemSelectorStr); //todo handle tag case
-            if (item != null) {
-                itemSelector = new ItemSelector(item);
+            var tagSelector = TagHandler.getItemSelector(itemSelectorStr);
+            if (tagSelector != null) {
+                itemSelector = tagSelector;
             } else {
-                itemSelector = null;
+                var item = Identifier.tryParse(itemSelectorStr);
+                if (item != null) {
+                    itemSelector = new ItemSelector(item);
+                } else {
+                    itemSelector = null;
+                }
             }
         }
 
