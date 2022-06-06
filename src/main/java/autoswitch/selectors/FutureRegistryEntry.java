@@ -27,9 +27,10 @@ public class FutureRegistryEntry<T> {
         if (entry == null) {
             if (registry.containsId(id)) {//todo defaultEntry check
                 entry = registry.get(id);
-                return entry != null && entry.equals(comparator);
             }
         }
+
+        if (entry == null) return false;
 
         return entry.equals(comparator);
     }
