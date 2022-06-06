@@ -284,7 +284,7 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @DefaultValue("axe;minecraft:mending, sword;minecraft:mending, axe, sword")
     @Comment("An Entity, specifically boats. This is here so that an axe will be used to break it so that any mobs " +
              "in the boat aren't accidentally hit.")
-    ToolSelector[] boat();
+    ToolSelector[] boats();
 
     @Separator(",")
     @DefaultValue("axe;minecraft:mending, sword;minecraft:mending, axe, sword")

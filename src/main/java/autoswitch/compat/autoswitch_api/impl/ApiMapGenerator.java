@@ -222,7 +222,7 @@ public class ApiMapGenerator {
                                                     e -> e instanceof Bucketable)));
 
         if (SwitchUtil.isAcceptableVersion("1.19-alpha.22.19.a")) {
-            addTarget(new TargetableGroup<>("boat",
+            addTarget(new TargetableGroup<>("boats",
                                             new TargetPredicate("boats",
                                                                 e -> e instanceof BoatEntity)));
         }
