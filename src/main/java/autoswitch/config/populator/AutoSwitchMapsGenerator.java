@@ -1,7 +1,7 @@
 package autoswitch.config.populator;
 
 import autoswitch.AutoSwitch;
-import autoswitch.config.io.MaterialHandler;
+import autoswitch.config.io.TargetHandler;
 import autoswitch.selectors.ToolSelector;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -58,7 +58,7 @@ public class AutoSwitchMapsGenerator {
                 }
             }
 
-            AutoSwitch.switchData.targets.computeIfAbsent(key, k -> (new MaterialHandler(k)).getMat());
+            AutoSwitch.switchData.targets.computeIfAbsent(key, TargetHandler::getTarget);
 
             // Populate target map with the toolIdList
             if (AutoSwitch.switchData.targets.containsKey(key)) {

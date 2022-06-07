@@ -35,6 +35,7 @@ public class TagHandler {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public static ItemSelector getItemSelector(String str) {
         if (isTagGroup(str)) {
             var tagType = TagType.getType(str);

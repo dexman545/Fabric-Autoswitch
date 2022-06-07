@@ -15,49 +15,49 @@ import net.minecraft.util.registry.Registry;
  * materials or entity type or group
  */
 @Environment(EnvType.CLIENT)
-public class MaterialHandler {
-    private final Object mat;
+public class TargetHandler {
 
-    public MaterialHandler(String str) {
-        Object mat1 = null;
+    /**
+     * @return returns target, may be Material, Block, EntityGroup, EntityType, or TargetGroup.
+     * {@code null} if no target found.
+     */
+    public static Object getTarget(String str) {
+        Object target = null;
         str = str.toLowerCase(Locale.ENGLISH).replace("!", ":");
         if (!AutoSwitch.switchData.targets.containsKey(str)) {
             var group = TagHandler.getTargetableTagGroup(str);
             if (group != null) {
-                this.mat = group;
-                return;
+                return group;
             }
 
             if (Identifier.tryParse(str) != null) {
-                mat1 = locateMat(Registry.ENTITY_TYPE, str) != null ? locateMat(Registry.ENTITY_TYPE, str)
-                                                                    : locateMat(Registry.BLOCK, str);
+                //todo use FutureRegistryEntry? how to handle entity/block
+                // difference? make FRE have two registries to look at and pick one? what to do about conflicting
+                // entries
+                target = locateRegistryReference(Registry.ENTITY_TYPE, str) != null ?
+                         locateRegistryReference(Registry.ENTITY_TYPE, str) :
+                         locateRegistryReference(Registry.BLOCK, str);
             } else {
                 AutoSwitch.logger.warn("AutoSwitch was not given a real id: " + str + " -> ignoring it");
             }
         } else {
-            mat1 = AutoSwitch.switchData.targets.get(str);
+            target = AutoSwitch.switchData.targets.get(str);
         }
-        if (mat1 == null) {
+        if (target == null) {
             AutoSwitch.logger
                     .warn("AutoSwitch could not find a block, entity, entity group, or material " + "by this id: " +
                           str + " -> ignoring it");
         }
-        this.mat = mat1;
-    }
 
-    private Object locateMat(Registry<?> registry, String str) {
-        if (registry.containsId(Identifier.tryParse(str))) {
-            return registry.get(Identifier.tryParse(str));
+        return target;
+    }
+    private static Object locateRegistryReference(Registry<?> registry, String str) {
+        var id = Identifier.tryParse(str);
+        if (registry.containsId(id)) {
+            return registry.get(id);
         }
 
         return null;
-    }
-
-    /**
-     * @return returns target, may be Material, Block, EntityGroup, or EntityType. Null if no material found
-     */
-    public Object getMat() {
-        return this.mat;
     }
 
 }
