@@ -23,10 +23,11 @@ public class FutureRegistryEntry<T> {
         this.id = registry.getId(entry);
     }
 
-    public boolean matches(T comparator) {
+    public boolean matches(T comparator) {//todo replace with equals?
         if (entry == null) {
-            if (registry.containsId(id)) {//todo defaultEntry check
-                entry = registry.get(id);
+            if (registry.containsId(id)) {
+                var e = registry.get(id);
+                if (!isDefaultEntry(e)) entry = e;
             }
         }
 
@@ -51,6 +52,15 @@ public class FutureRegistryEntry<T> {
                 entry = registry.get(id);
             }
         }
+    }
+
+    private boolean isDefaultEntry(T entry) {
+        if (entry != null) return false;
+        if (registry instanceof DefaultedRegistry<T> defaultedRegistry) {
+            return registry.get(id).equals(registry.get(defaultedRegistry.getDefaultId()));
+        }
+
+        return false;
     }
 
 }
