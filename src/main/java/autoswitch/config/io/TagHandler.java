@@ -49,6 +49,7 @@ public class TagHandler {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public static EnchantmentSelector getEnchantmentSelector(String str) {
         if (isTagGroup(str)) {
             var tagType = TagType.getType(str);
