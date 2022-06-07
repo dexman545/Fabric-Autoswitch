@@ -218,8 +218,7 @@ public abstract class Targetable {
                 toolSelector = blankToolSelector;
             }
 
-            if (modifyToolSelector(toolSelector).matches(stack) &&
-                (isUse() || TargetableUtil.isRightTool(stack, protoTarget))) {
+            if ((isUse() || TargetableUtil.isRightTool(stack, protoTarget))) {
                 updateToolListsAndRatings(stack, toolSelector, slot, counter);
             }
 
@@ -240,16 +239,20 @@ public abstract class Targetable {
         AutoSwitch.logger.debug("Slot: {}; Initial Rating: {}", slot, rating);
 
         if (!isUse()) {
-            if (AutoSwitch.featureCfg.preferMinimumViableTool() && rating != 0D) {
-                rating += -1 * Math.log10(rating); // Reverse and clamp tool
+            if (rating != 0) {
+                if (AutoSwitch.featureCfg.preferMinimumViableTool()) {
+                    rating += -1 * Math.log10(rating); // Reverse and clamp tool
+                }
+                rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
             }
-            rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
 
             // Fix ignoring overrides and over-favoring current selected slot
-            if (blankToolSelector.matches(stack)) {
+            if (rating == 0 && blankToolSelector.matches(stack)) {
                 rating = 0.1;
             }
         }
+
+        if (rating == 0) return;
 
         // Prefer current slot. Has outcome of making undamageable item fallback not switch if it can help it
         if (player.getInventory().selectedSlot == slot) {
@@ -262,10 +265,6 @@ public abstract class Targetable {
                 .toolRatingChange(oldRating, finalRating, stack, stackEnchants));
         this.slot2ToolRating.putIfAbsent(slot, rating);
 
-    }
-
-    protected Selector<ItemStack> modifyToolSelector(ToolSelector selector) {
-        return selector;
     }
 
     boolean stopProcessingSlot(Object target) {

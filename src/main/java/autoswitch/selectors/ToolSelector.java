@@ -100,7 +100,7 @@ public class ToolSelector implements Selector<ItemStack> {
 
     public double getRating(ItemStack stack) {
         if (!matches(stack)) return 0;
-        if (enchantmentsRequired()) {//todo remove explicit toolselector check in TUtil, skip if rating = 0?
+        if (enchantmentsRequired()) {
             var enchantmentRating = 0D;
             for (EnchantmentSelector selector : enchantmentSelectors) {
                 enchantmentRating += selector.getRating(stack);

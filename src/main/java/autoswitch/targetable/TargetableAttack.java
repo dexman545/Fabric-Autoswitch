@@ -50,9 +50,4 @@ class TargetableAttack extends Targetable {
                AutoSwitch.switchData.target2AttackActionToolSelectorsMap.get(target) == null;
     }
 
-    @Override
-    protected Selector<ItemStack> modifyToolSelector(ToolSelector selector) {
-        return selector.or(blankToolSelector);
-    }
-
 }
