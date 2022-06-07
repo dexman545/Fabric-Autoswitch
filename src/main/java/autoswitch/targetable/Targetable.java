@@ -245,7 +245,7 @@ public abstract class Targetable {
                 rating += TargetableUtil.getTargetRating(protoTarget, stack) + counter.get();
             }
 
-            // Fix ignoring overrides and over-favoring current selected slot
+            // Allow fallback to non-tool items
             if (rating == 0 && blankToolSelector.matches(stack)) {
                 rating = 0.1;
             }
