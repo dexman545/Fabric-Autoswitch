@@ -22,6 +22,12 @@ public class MaterialHandler {
         Object mat1 = null;
         str = str.toLowerCase(Locale.ENGLISH).replace("!", ":");
         if (!AutoSwitch.switchData.targets.containsKey(str)) {
+            var group = TagHandler.getTargetableTagGroup(str);
+            if (group != null) {
+                this.mat = group;
+                return;
+            }
+
             if (Identifier.tryParse(str) != null) {
                 mat1 = locateMat(Registry.ENTITY_TYPE, str) != null ? locateMat(Registry.ENTITY_TYPE, str)
                                                                     : locateMat(Registry.BLOCK, str);
