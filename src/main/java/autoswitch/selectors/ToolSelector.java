@@ -46,7 +46,7 @@ public class ToolSelector implements Selector<ItemStack> {
             var multiEnch = enchantmentsStr.split("&");
 
             for (String ench : multiEnch) {
-                var tagSelector = TagHandler.getEnchantmentSelector(itemSelectorStr);
+                var tagSelector = TagHandler.getEnchantmentSelector(ench);
                 if (tagSelector != null) {
                     enchantmentSelectors.add(tagSelector);
                 } else {
