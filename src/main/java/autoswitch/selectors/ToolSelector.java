@@ -16,7 +16,7 @@ import net.minecraft.util.registry.Registry;
 public class ToolSelector implements Selector<ItemStack> {
     private final ItemSelector itemSelector;
     private final EnchantmentSelector[] enchantmentSelectors;
-    private int id = 0;
+    private final int id;
 
     public ToolSelector(ItemSelector itemSelector, @Nullable EnchantmentSelector... enchantmentSelectors) {
         this.itemSelector = itemSelector;
