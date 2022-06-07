@@ -27,13 +27,13 @@ public class ToolSelector implements Selector<ItemStack> {
     public ToolSelector(String input) {
         input = input.toLowerCase(Locale.ENGLISH).trim().replace("!", ":");
 
-        // Skip the rest of the evaluation as the toolselector has already been handled
+        // Skip the rest of the evaluation as the ToolSelector has already been handled
         if (AutoSwitch.switchData.toolSelectorKeys.containsKey(input)) {
-            /*var old = AutoSwitch.switchData.toolSelectors.get(AutoSwitch.switchData.toolSelectorKeys.getInt(input));
+            var old = AutoSwitch.switchData.toolSelectors.get(AutoSwitch.switchData.toolSelectorKeys.getInt(input));
             this.itemSelector = old.itemSelector;
             this.enchantmentSelectors = old.enchantmentSelectors;
-            return;*/
-            //todo fix, this is broken
+            this.id = old.id;
+            return;
         }
 
         String[] cleanedInput = input.split(";");
