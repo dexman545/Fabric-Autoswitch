@@ -11,7 +11,6 @@ import java.util.function.IntConsumer;
 
 import autoswitch.AutoSwitch;
 import autoswitch.selectors.ItemSelector;
-import autoswitch.selectors.Selector;
 import autoswitch.selectors.ToolSelector;
 import autoswitch.util.SwitchData;
 import autoswitch.util.TargetableUtil;

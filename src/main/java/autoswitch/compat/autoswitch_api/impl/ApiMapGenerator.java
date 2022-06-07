@@ -11,19 +11,14 @@ import autoswitch.targetable.custom.TargetableGroup.TargetPredicate;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
-
-import net.minecraft.entity.Bucketable;
-
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-
-import net.minecraft.entity.vehicle.BoatEntity;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Material;
+import net.minecraft.entity.Bucketable;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.vehicle.AbstractMinecartEntity;
+import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
