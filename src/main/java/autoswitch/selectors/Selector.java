@@ -12,7 +12,8 @@ public interface Selector<T> {
     Registry<T> getRegistry();
 
     default Predicate<T> makeFutureRegistryEntryPredicate(Identifier id) {
-        return entry -> new FutureRegistryEntry<>(getRegistry(), id).matches(entry);
+        var fre = new FutureRegistryEntry<>(getRegistry(), id);
+        return fre::matches;
     }
 
     default Selector<T> or(Selector<T> other) {
