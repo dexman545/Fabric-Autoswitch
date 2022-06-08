@@ -1,6 +1,5 @@
 package autoswitch.selectors;
 
-import java.util.Objects;
 import java.util.function.Predicate;
 
 import net.minecraft.enchantment.Enchantment;
@@ -18,12 +17,7 @@ public class EnchantmentSelector implements Selector<Enchantment> {
     }
 
     public EnchantmentSelector(TagKey<Enchantment> tagKey) {
-        this(enchantment -> {
-            var maybeKey = Registry.ENCHANTMENT.getKey(enchantment);//todo cache entry?
-            return maybeKey.filter(enchantmentRegistryKey ->
-                                           Registry.ENCHANTMENT.entryOf(enchantmentRegistryKey).isIn(tagKey))
-                           .isPresent();
-        });
+        this.predicate = makeIsInTagPredicate(tagKey);
     }
 
     public EnchantmentSelector(Enchantment enchantment) {

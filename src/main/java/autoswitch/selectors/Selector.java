@@ -3,6 +3,9 @@ package autoswitch.selectors;
 
 import java.util.function.Predicate;
 
+import autoswitch.selectors.util.RegistryHelper;
+
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -14,6 +17,10 @@ public interface Selector<T> {
     default Predicate<T> makeFutureRegistryEntryPredicate(Identifier id, Class<T> clazz) {
         var fre = new FutureRegistryEntry<>(getRegistry(), id, clazz);
         return fre::matches;
+    }
+
+    default Predicate<T> makeIsInTagPredicate(TagKey<T> tagKey) {
+        return obj -> RegistryHelper.isInTag(getRegistry(), tagKey, obj);
     }
 
     default Selector<T> or(Selector<T> other) {
