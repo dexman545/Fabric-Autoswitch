@@ -44,7 +44,7 @@ public class SwitchData {
     public final Object2IntOpenHashMap<String> toolSelectorKeys = new Object2IntOpenHashMap<>();
 
     /**
-     * Map of toolSelector id -> toolSelector object (string toolId, list of Enchantments).
+     * Map of toolSelector id -> ToolSelector object.
      */
     public final Int2ObjectOpenHashMap<ToolSelector> toolSelectors =
             new Int2ObjectOpenHashMap<>();
