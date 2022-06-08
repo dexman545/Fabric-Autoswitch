@@ -30,9 +30,8 @@ public class FutureRegistryEntry<T> {
 
     public boolean matches(T comparator) {
         if (entry == null) {
-            if (registry.containsId(id)) {
-                var e = registry.get(id);
-                if (!RegistryHelper.isDefaultEntry(registry, comparator)) entry = e;
+            if (!RegistryHelper.isDefaultEntry(registry, comparator) && id.equals(registry.getId(comparator))) {
+                entry = comparator;
             }
         }
 
