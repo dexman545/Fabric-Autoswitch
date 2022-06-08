@@ -1,12 +1,12 @@
 package autoswitch.selectors;
 
+import java.util.Objects;
+
 import autoswitch.AutoSwitch;
+import autoswitch.selectors.util.RegistryHelper;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
-
-import java.util.Objects;
 
 public class FutureRegistryEntry<T> {
     private final Registry<T> registry;
@@ -32,7 +32,7 @@ public class FutureRegistryEntry<T> {
         if (entry == null) {
             if (registry.containsId(id)) {
                 var e = registry.get(id);
-                if (!isDefaultEntry(e)) entry = e;
+                if (!RegistryHelper.isDefaultEntry(registry, comparator)) entry = e;
             }
         }
 
@@ -46,11 +46,9 @@ public class FutureRegistryEntry<T> {
     //todo store instances somewhere and validate these on config/world load
     public void validateEntry() {
         if (entry != null) return;
-        if (registry instanceof DefaultedRegistry<T> defaultedRegistry) {
-            if (registry.get(id).equals(registry.get(defaultedRegistry.getDefaultId()))) {
-                AutoSwitch.logger.warn(String.format("Could not find entry in registry: %s for id: %s",
-                                                     registry, id.toString()));
-            }
+        if (RegistryHelper.isDefaultEntry(registry, registry.get(id))) {
+            AutoSwitch.logger.warn(String.format("Could not find entry in registry: %s for id: %s",
+                                                 registry, id.toString()));
         } else {
             if (!registry.containsId(id)) {
                 AutoSwitch.logger.warn(String.format("Could not find entry in registry: %s for id: %s",
@@ -59,15 +57,6 @@ public class FutureRegistryEntry<T> {
                 entry = registry.get(id);
             }
         }
-    }
-
-    private boolean isDefaultEntry(T entry) {
-        if (entry != null) return false;
-        if (registry instanceof DefaultedRegistry<T> defaultedRegistry) {
-            return registry.get(id).equals(registry.get(defaultedRegistry.getDefaultId()));
-        }
-
-        return false;
     }
 
     @Override
