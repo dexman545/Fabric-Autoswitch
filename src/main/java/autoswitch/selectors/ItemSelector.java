@@ -12,7 +12,7 @@ public class ItemSelector implements Selector<Item> {
     private final Predicate<Item> predicate;
 
     public ItemSelector(Identifier id) {
-        predicate = makeFutureRegistryEntryPredicate(id);
+        predicate = makeFutureRegistryEntryPredicate(id, Item.class);
     }
 
     public ItemSelector(Item item) {

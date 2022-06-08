@@ -14,7 +14,7 @@ public class EnchantmentSelector implements Selector<Enchantment> {
     private final Predicate<Enchantment> predicate;
 
     public EnchantmentSelector(Identifier id) {
-        predicate = makeFutureRegistryEntryPredicate(id);
+        predicate = makeFutureRegistryEntryPredicate(id, Enchantment.class);
     }
 
     public EnchantmentSelector(TagKey<Enchantment> tagKey) {
