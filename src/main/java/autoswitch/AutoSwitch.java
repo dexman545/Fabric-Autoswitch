@@ -54,7 +54,11 @@ public class AutoSwitch implements ClientModInitializer {
         // Create config files and load them
         ConfigEstablishment.establishConfigs();
 
-        CommandConductor.registerAllCommands();
+        try {
+            CommandConductor.registerAllCommands();
+        } catch (Exception e) {
+            logger.error("Failed to register client commands.", e);
+        }
 
         // Pull value for delayed switching
         doAS = !featureCfg.disableSwitchingOnStartup();
