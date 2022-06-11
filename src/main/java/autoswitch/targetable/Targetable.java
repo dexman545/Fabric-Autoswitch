@@ -39,6 +39,7 @@ public abstract class Targetable {
      */
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
     protected final ToolSelector blankToolSelector = new ToolSelector(new ItemSelector(item -> item.getMaxDamage() == 0));
+    protected final ToolSelector nullToolSelector = new ToolSelector(new ItemSelector(item -> false));
 
     /**
      * The initial Target brought in from the world, eg. a block or entity. This differs from the Target in that a
@@ -214,7 +215,7 @@ public abstract class Targetable {
             if (id != SwitchData.blank.getInt(0)) {
                 toolSelector = AutoSwitch.switchData.toolSelectors.get(id);
             } else { // Handle case of no target but user desires fallback to items
-                toolSelector = blankToolSelector;
+                toolSelector = isUse() ? nullToolSelector : blankToolSelector;
             }
 
             if ((isUse() || TargetableUtil.isRightTool(stack, protoTarget))) {
