@@ -13,6 +13,10 @@ import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 import autoswitch.util.TickUtil;
 
+import net.minecraft.block.Material;
+
+import net.minecraft.entity.EntityGroup;
+
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +27,8 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+
+import java.lang.reflect.Field;
 
 public class AutoSwitch implements ClientModInitializer {
 
@@ -83,17 +89,31 @@ public class AutoSwitch implements ClientModInitializer {
         // Notify when AS Loaded
         logger.info("AutoSwitch Loaded");
 
+        // Test if all Materials are configured
+        if ("true".equals(System.getenv("as-dev"))) {
+            logger.info("Checking code-only targets...");
+            assert (testTargetsForCompletion(Material.class) | testTargetsForCompletion(EntityGroup.class)) :
+                    "Missing target found!";
+        }
+
     }
 
-    // Test if all Materials are configured
-    /*private void testMaterialList() {
-        for (Field field : Material.class.getDeclaredFields()) {
-            if (!field.getType().equals(Material.class)) continue;
-            assert switchData.targets.containsKey(field.getName().toLowerCase()) : "Failed to find a Material " +
-                                                                                   "in the targets: " + field.getName();
+    private boolean testTargetsForCompletion(Class<?> clazz) {
+        var hasMissingTarget = false;
+        for (Field field : clazz.getDeclaredFields()) {
+            if (!field.getType().equals(clazz)) continue;
 
+            try {
+                if (!switchData.targets.containsValue(field.get(null))) {
+                    logger.error("Found missing target: {}", field.getName());
+                    hasMissingTarget = true;
+                }
+            } catch (IllegalAccessException ignored) {
+            }
         }
-    }*/
+
+        return hasMissingTarget;
+    }
 
 }
 
