@@ -1,10 +1,10 @@
 package autoswitch.events;
 
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Scheduler {
-    private final Set<Task> schedule = new CopyOnWriteArraySet<>();
+    private final Queue<Task> schedule = new LinkedBlockingQueue<>(10);
 
     /**
      * Add an event to the schedule to take place X seconds after the provided tick time.
