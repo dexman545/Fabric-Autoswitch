@@ -32,6 +32,7 @@ public class Scheduler {
 
         schedule.forEach(task -> {
             if (task.finalTickTime <= currentTick && task.event.handlePreSwitchTasks()) {
+                // Failure to invoke is an important part of switchback operation
                 if (task.event.invoke()) schedule.remove(task);
             }
         });
