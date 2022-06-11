@@ -13,7 +13,7 @@ buildscript {
 plugins {
     id 'fabric-loom' version '0.12.+'
     //id "com.github.fudge.forgedflowerloom" version "2.0.0"
-    //id("io.github.juuxel.loom-quiltflower-mini") version "+"
+    id 'io.github.juuxel.loom-quiltflower' version '1.+'
     id 'maven-publish'
     id "com.modrinth.minotaur" version "2.+"
     id 'com.matthewprenger.cursegradle' version '1.4.+'

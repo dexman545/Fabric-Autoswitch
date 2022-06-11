@@ -5,6 +5,8 @@ import java.util.Objects;
 import autoswitch.AutoSwitch;
 import autoswitch.selectors.util.RegistryHelper;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -14,18 +16,30 @@ public class FutureRegistryEntry<T> {
     private final Identifier id;
     private final Class<T> clazz;
 
-    public FutureRegistryEntry(Registry<T> registry, Identifier id, Class<T> clazz) {
+    public static final ObjectOpenHashSet<FutureRegistryEntry<?>> INSTANCES = new ObjectOpenHashSet<>();
+
+    protected FutureRegistryEntry(Registry<T> registry, Identifier id, Class<T> clazz) {
         this.registry = registry;
         this.id = id;
         this.clazz = clazz;
         entry = null;
     }
 
-    public FutureRegistryEntry(Registry<T> registry, T entry, Class<T> clazz) {
+    protected FutureRegistryEntry(Registry<T> registry, T entry, Class<T> clazz) {
         this.registry = registry;
         this.entry = entry;
         this.clazz = clazz;
         this.id = registry.getId(entry);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> FutureRegistryEntry<T> getOrCreateEntry(Registry<T> registry, Identifier id, Class<T> clazz) {
+        return (FutureRegistryEntry<T>) INSTANCES.addOrGet(new FutureRegistryEntry<>(registry, id, clazz));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> FutureRegistryEntry<T> getOrCreateEntry(Registry<T> registry, T entry, Class<T> clazz) {
+        return (FutureRegistryEntry<T>) INSTANCES.addOrGet(new FutureRegistryEntry<>(registry, entry, clazz));
     }
 
     public boolean matches(T comparator) {
@@ -58,6 +72,10 @@ public class FutureRegistryEntry<T> {
         }
     }
 
+    public static void validateEntries() {
+        INSTANCES.forEach(FutureRegistryEntry::validateEntry);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,7 +92,6 @@ public class FutureRegistryEntry<T> {
     @Override
     public int hashCode() {
         int result = registry != null ? registry.hashCode() : 0;
-        result = 31 * result + (entry != null ? entry.hashCode() : 0);
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
     }
