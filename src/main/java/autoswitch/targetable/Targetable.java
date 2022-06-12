@@ -216,6 +216,8 @@ public abstract class Targetable {
                 toolSelector = AutoSwitch.switchData.toolSelectors.get(id);
             } else { // Handle case of no target but user desires fallback to items
                 toolSelector = isUse() ? nullToolSelector : blankToolSelector;
+                //todo just stop processing instead of
+                // null selector?
             }
 
             if ((isUse() || TargetableUtil.isRightTool(stack, protoTarget))) {
