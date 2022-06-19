@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import autoswitch.selectors.EnchantmentSelector;
 import autoswitch.selectors.ItemSelector;
-import autoswitch.targetable.custom.TargetableGroup;
+import autoswitch.selectors.TargetableGroup;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

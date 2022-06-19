@@ -5,13 +5,14 @@ import java.util.function.Predicate;
 import autoswitch.api.AutoSwitchMap;
 import autoswitch.api.DurabilityGetter;
 import autoswitch.selectors.ToolSelector;
-import autoswitch.targetable.custom.ItemTarget;
+import autoswitch.selectors.futures.FutureTargetEntry;
+import autoswitch.selectors.ItemTarget;
 
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 
 import net.minecraft.item.Item;
 
@@ -29,13 +30,13 @@ public class SwitchData {
     /**
      * Map of target object to list of toolSelector IDs for the 'use' action.
      */
-    public final Object2ObjectOpenHashMap<Object, IntArrayList> target2UseActionToolSelectorsMap =
-            new Object2ObjectOpenHashMap<>();
+    public final Object2ObjectOpenCustomHashMap<Object, IntArrayList> target2UseActionToolSelectorsMap =
+            new Object2ObjectOpenCustomHashMap<>(new FutureTargetEntry.TargetHashingStrategy());
     /**
      * Map of target object to list of toolSelector IDs for the 'attack' action.
      */
-    public final Object2ObjectOpenHashMap<Object, IntArrayList> target2AttackActionToolSelectorsMap =
-            new Object2ObjectOpenHashMap<>();
+    public final Object2ObjectOpenCustomHashMap<Object, IntArrayList> target2AttackActionToolSelectorsMap =
+            new Object2ObjectOpenCustomHashMap<>(new FutureTargetEntry.TargetHashingStrategy());
 
     /**
      * Map of toolSelector input from the config -> it's int id. Used to ensure uniqueness of toolSelectors and avoid

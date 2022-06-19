@@ -3,6 +3,7 @@ package autoswitch.selectors;
 
 import java.util.function.Predicate;
 
+import autoswitch.selectors.futures.FutureRegistryEntry;
 import autoswitch.selectors.util.RegistryHelper;
 
 import net.minecraft.tag.TagKey;

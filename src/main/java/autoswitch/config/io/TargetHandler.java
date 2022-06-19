@@ -3,12 +3,12 @@ package autoswitch.config.io;
 import java.util.Locale;
 
 import autoswitch.AutoSwitch;
+import autoswitch.selectors.futures.FutureTargetEntry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 /**
  * Custom type for use of parsing the materials config into something meaningful for AutoSwitch matches strings to
@@ -30,13 +30,9 @@ public class TargetHandler {
                 return group;
             }
 
-            if (Identifier.tryParse(str) != null) {
-                //todo use FutureRegistryEntry? how to handle entity/block
-                // difference? make FRE have two registries to look at and pick one? what to do about conflicting
-                // entries
-                target = locateRegistryReference(Registry.ENTITY_TYPE, str) != null ?
-                         locateRegistryReference(Registry.ENTITY_TYPE, str) :
-                         locateRegistryReference(Registry.BLOCK, str);
+            Identifier id;
+            if ((id = Identifier.tryParse(str)) != null) {
+                target = FutureTargetEntry.getOrCreate(id);
             } else {
                 AutoSwitch.logger.warn("AutoSwitch was not given a real id: " + str + " -> ignoring it");
             }
@@ -50,14 +46,6 @@ public class TargetHandler {
         }
 
         return target;
-    }
-    private static Object locateRegistryReference(Registry<?> registry, String str) {
-        var id = Identifier.tryParse(str);
-        if (registry.containsId(id)) {
-            return registry.get(id);
-        }
-
-        return null;
     }
 
 }

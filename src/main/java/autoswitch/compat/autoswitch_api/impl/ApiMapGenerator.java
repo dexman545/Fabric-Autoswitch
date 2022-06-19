@@ -6,8 +6,8 @@ import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
-import autoswitch.targetable.custom.TargetableGroup;
-import autoswitch.targetable.custom.TargetableGroup.TargetPredicate;
+import autoswitch.selectors.TargetableGroup;
+import autoswitch.selectors.TargetableGroup.TargetPredicate;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 

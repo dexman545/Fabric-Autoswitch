@@ -1,14 +1,14 @@
 package autoswitch.util;
 
+import java.util.Map;
 import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicReference;
 
 import autoswitch.AutoSwitch;
-import autoswitch.targetable.custom.ItemTarget;
-import autoswitch.targetable.custom.TargetableGroup;
+import autoswitch.selectors.ItemTarget;
+import autoswitch.selectors.TargetableGroup;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -50,7 +50,7 @@ public class TargetableUtil {
      *
      * @return target
      */
-    private static Object getTarget(Object2ObjectOpenHashMap<Object, IntArrayList> map, Object protoTarget) {
+    private static Object getTarget(Map<Object, IntArrayList> map, Object protoTarget) {
         if (protoTarget instanceof ItemTarget) return protoTarget;
 
         // These methods were moved to AbstractBlockState in 20w12a,

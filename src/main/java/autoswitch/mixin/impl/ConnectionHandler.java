@@ -7,7 +7,7 @@ import static autoswitch.AutoSwitch.switchState;
 import autoswitch.AutoSwitch;
 import autoswitch.util.SwitchState;
 
-public class DisconnectHandler {
+public class ConnectionHandler {
 
     /**
      * Reset switch state and toggle state to their values as if they were newly inited.

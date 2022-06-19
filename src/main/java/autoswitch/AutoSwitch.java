@@ -1,5 +1,7 @@
 package autoswitch;
 
+import java.lang.reflect.Field;
+
 import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.compat.autoswitch_api.impl.ApiMapGenerator;
 import autoswitch.config.AutoSwitchAttackActionConfig;
@@ -13,10 +15,6 @@ import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 import autoswitch.util.TickUtil;
 
-import net.minecraft.block.Material;
-
-import net.minecraft.entity.EntityGroup;
-
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +23,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
+import net.minecraft.block.Material;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-
-import java.lang.reflect.Field;
+import net.minecraft.entity.EntityGroup;
 
 public class AutoSwitch implements ClientModInitializer {
 

@@ -17,7 +17,6 @@ import autoswitch.util.TargetableUtil;
 
 import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -187,7 +186,7 @@ public abstract class Targetable {
      * @param targetGetter    lookup protoTarget in the correct map
      * @param toolSelectorMap ToolSelectors relevant to the case
      */
-    void processToolSelectors(ItemStack stack, int slot, Object2ObjectOpenHashMap<Object, IntArrayList> toolSelectorMap,
+    void processToolSelectors(ItemStack stack, int slot, Map<Object, IntArrayList> toolSelectorMap,
                               TargetGetter targetGetter) {
         if (!switchAllowed()) return; // Short-circuit to not evaluate tools when cannot switch
 

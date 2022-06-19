@@ -1,11 +1,12 @@
 package autoswitch.config.populator;
 
+import java.util.Map;
+
 import autoswitch.AutoSwitch;
 import autoswitch.config.io.TargetHandler;
 import autoswitch.selectors.ToolSelector;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.aeonbits.owner.Accessible;
 
 import net.fabricmc.api.EnvType;
@@ -43,7 +44,7 @@ public class AutoSwitchMapsGenerator {
      * @param map Map to populate.
      * @param cfg Config to pull data from.
      */
-    private static void populateMap(Object2ObjectOpenHashMap<Object, IntArrayList> map, Accessible cfg) {
+    private static void populateMap(Map<Object, IntArrayList> map, Accessible cfg) {
         for (String key : cfg.propertyNames()) {
             String raw = cfg.getProperty(key);
             String[] split = raw.split(",");

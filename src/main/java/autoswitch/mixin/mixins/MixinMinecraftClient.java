@@ -1,6 +1,6 @@
 package autoswitch.mixin.mixins;
 
-import autoswitch.mixin.impl.DisconnectHandler;
+import autoswitch.mixin.impl.ConnectionHandler;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +20,7 @@ public abstract class MixinMinecraftClient {
      */
     @Inject(at = @At("HEAD"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")
     private void autoswitch$disconnectEvent(Screen screen, CallbackInfo ci) {
-        DisconnectHandler.reset();
+        ConnectionHandler.reset();
 
     }
 

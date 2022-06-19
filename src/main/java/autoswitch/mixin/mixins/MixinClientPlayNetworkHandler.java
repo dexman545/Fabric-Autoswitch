@@ -1,6 +1,8 @@
 package autoswitch.mixin.mixins;
 
-import autoswitch.mixin.impl.DisconnectHandler;
+import autoswitch.mixin.impl.ConnectionHandler;
+
+import autoswitch.selectors.util.RegistryHelper;
 
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 
@@ -23,7 +25,8 @@ public abstract class MixinClientPlayNetworkHandler {
      */
     @Inject(method = "onGameJoin(Lnet/minecraft/network/packet/s2c/play/GameJoinS2CPacket;)V", at = @At("HEAD"))
     private void resetOnServerJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-        DisconnectHandler.reset();
+        ConnectionHandler.reset();
+        RegistryHelper.revalidateFutureEntries();
     }
 
 }

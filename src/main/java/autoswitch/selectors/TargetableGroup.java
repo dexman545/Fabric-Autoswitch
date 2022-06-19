@@ -1,4 +1,4 @@
-package autoswitch.targetable.custom;
+package autoswitch.selectors;
 
 import java.util.Collections;
 import java.util.HashSet;

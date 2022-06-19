@@ -1,4 +1,4 @@
-package autoswitch.selectors;
+package autoswitch.selectors.futures;
 
 import java.util.Objects;
 
@@ -10,7 +10,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class FutureRegistryEntry<T> {
+public class FutureRegistryEntry<T> extends FutureStateHolder {
     private final Registry<T> registry;
     private T entry;
     private final Identifier id;
@@ -30,6 +30,7 @@ public class FutureRegistryEntry<T> {
         this.entry = entry;
         this.clazz = clazz;
         this.id = registry.getId(entry);
+        state = FutureStateHolder.FutureState.VALID;
     }
 
     @SuppressWarnings("unchecked")
@@ -43,37 +44,46 @@ public class FutureRegistryEntry<T> {
     }
 
     public boolean matches(T comparator) {
-        if (entry == null) {
-            if (!RegistryHelper.isDefaultEntry(registry, comparator) && id.equals(registry.getId(comparator))) {
-                entry = comparator;
-            }
-        }
+        validateEntry();
 
-        if (entry == null) return false;
-        //todo store failed lookup and skip subsequent checks until world
-        // reload/registry modification
+        if (entry == null || state == FutureStateHolder.FutureState.INVALID) {
+            state = FutureStateHolder.FutureState.INVALID;
+            return false;
+        }
 
         return entry.equals(comparator);
     }
 
     //todo store instances somewhere and validate these on config/world load
+    @Override
     public void validateEntry() {
-        if (entry != null) return;
-        if (RegistryHelper.isDefaultEntry(registry, registry.get(id))) {
+        validateEntry(false);
+    }
+
+    public void validateEntry(boolean force) {
+        if (!force && state != FutureStateHolder.FutureState.AWAITING_VALIDATION) return;
+        if (RegistryHelper.isDefaultEntry(registry, registry.get(id), id)) {
+            state = FutureStateHolder.FutureState.INVALID;
             AutoSwitch.logger.warn(String.format("Could not find entry in registry: %s for id: %s",
                                                  registry, id.toString()));
         } else {
             if (!registry.containsId(id)) {
+                state = FutureStateHolder.FutureState.INVALID;
                 AutoSwitch.logger.warn(String.format("Could not find entry in registry: %s for id: %s",
                                                      registry, id.toString()));
             } else {
+                state = FutureStateHolder.FutureState.VALID;
                 entry = registry.get(id);
             }
         }
     }
 
-    public static void validateEntries() {
-        INSTANCES.forEach(FutureRegistryEntry::validateEntry);
+    public static void forceRevalidateEntries() {
+        INSTANCES.forEach(f -> f.validateEntry(true));
+    }
+
+    public boolean isOfType(Object o) {
+        return clazz.isInstance(o);
     }
 
     @Override
@@ -91,8 +101,52 @@ public class FutureRegistryEntry<T> {
 
     @Override
     public int hashCode() {
+        if (isValid()) return entry.hashCode();
         int result = registry != null ? registry.hashCode() : 0;
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
+    }
+
+    public static class NoneEntry extends FutureRegistryEntry<Void> {
+        public static final FutureRegistryEntry<?> NULL = new NoneEntry();
+
+        private NoneEntry() {
+            this(null, null, null);
+            state = FutureState.VALID;
+        }
+
+        private NoneEntry(Registry<Void> registry, Identifier id, Class<Void> clazz) {
+            super(registry, id, clazz);
+        }
+
+        @Override
+        public boolean matches(Void comparator) {
+            return false;
+        }
+
+        @Override
+        public void validateEntry() {
+            // NO-OP
+        }
+
+        @Override
+        public boolean isOfType(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean isValid() {
+            return true;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
     }
 }

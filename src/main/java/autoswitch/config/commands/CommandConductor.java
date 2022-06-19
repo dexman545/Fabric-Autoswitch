@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.io.ConfigEstablishment;
-import autoswitch.mixin.impl.DisconnectHandler;
+import autoswitch.mixin.impl.ConnectionHandler;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -121,7 +121,7 @@ public class CommandConductor {
 
         context.getSource().sendFeedback(Text.translatable("msg.autoswitch.reset"));
 
-        DisconnectHandler.reset();
+        ConnectionHandler.reset();
 
         return 0;
     }
