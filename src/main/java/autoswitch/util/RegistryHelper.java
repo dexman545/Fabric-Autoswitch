@@ -1,4 +1,4 @@
-package autoswitch.selectors.util;
+package autoswitch.util;
 
 import autoswitch.AutoSwitch;
 import autoswitch.selectors.futures.FutureRegistryEntry;
@@ -14,7 +14,7 @@ public final class RegistryHelper {
     }
 
     public static void revalidateFutureEntries() {
-        //todo don't revalidate them, just make them all invalid?
+        //todo don't revalidate them, just make them all invalid to be handled as they are checked?
         // would likely work better with polymer
         FutureRegistryEntry.forceRevalidateEntries();
         FutureTargetEntry.forceRevalidateEntries();

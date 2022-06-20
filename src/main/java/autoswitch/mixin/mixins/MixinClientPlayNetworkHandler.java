@@ -2,7 +2,7 @@ package autoswitch.mixin.mixins;
 
 import autoswitch.mixin.impl.ConnectionHandler;
 
-import autoswitch.selectors.util.RegistryHelper;
+import autoswitch.util.RegistryHelper;
 
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 

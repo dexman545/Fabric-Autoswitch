@@ -3,7 +3,7 @@ package autoswitch.selectors.futures;
 import java.util.Objects;
 
 import autoswitch.AutoSwitch;
-import autoswitch.selectors.util.RegistryHelper;
+import autoswitch.util.RegistryHelper;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
