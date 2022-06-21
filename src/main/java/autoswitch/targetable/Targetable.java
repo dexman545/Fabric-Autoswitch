@@ -208,7 +208,7 @@ public abstract class Targetable {
         toolSelectorMap.getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
             if (id == 0) return; // Check if no ID was assigned to the toolSelector.
 
-            counter.updateAndGet(v -> (float) (v - 0.75)); // Tools later in the config list are not preferred
+            counter.updateAndGet(v -> v - 2); // Tools later in the config list are not preferred
             ToolSelector toolSelector;
 
             if (id != SwitchData.blank.getInt(0)) {
