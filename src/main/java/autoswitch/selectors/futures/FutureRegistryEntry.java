@@ -1,152 +1,162 @@
 package autoswitch.selectors.futures;
 
+import java.util.LinkedList;
 import java.util.Objects;
 
 import autoswitch.AutoSwitch;
 import autoswitch.util.RegistryHelper;
 
+import it.unimi.dsi.fastutil.Function;
+import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
+import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.IndexedIterable;
 import net.minecraft.util.registry.Registry;
 
-public class FutureRegistryEntry<T> extends FutureStateHolder {
-    private final Registry<T> registry;
-    private T entry;
+@SuppressWarnings("unchecked")
+public class FutureRegistryEntry extends FutureStateHolder {
+    private Object entry;
+    private RegistryHolder<?, ?> holder;
     private final Identifier id;
-    private final Class<T> clazz;
+    private RegistryType type;
+    private static final LinkedList<RegistryHolder<?, ?>> REGISTRY_HOLDERS = new LinkedList<>();
 
-    public static final ObjectOpenHashSet<FutureRegistryEntry<?>> INSTANCES = new ObjectOpenHashSet<>();
+    private static final ObjectOpenHashSet<FutureRegistryEntry> INSTANCES = new ObjectOpenHashSet<>();
 
-    protected FutureRegistryEntry(Registry<T> registry, Identifier id, Class<T> clazz) {
-        this.registry = registry;
+    static {
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.BLOCK, Block.class, RegistryType.BLOCK));
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.ENTITY_TYPE, (Class<EntityType<?>>)(Class<?>)EntityType.class, RegistryType.ENTITY));
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.ITEM, Item.class, RegistryType.ITEM));
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.ENCHANTMENT, Enchantment.class, RegistryType.ENCHANTMENT));
+    }
+
+    protected FutureRegistryEntry(RegistryType type, Identifier id) {
         this.id = id;
-        this.clazz = clazz;
+        this.type = type;
         entry = null;
+        holder = null;
+        INSTANCES.add(this);
     }
 
-    protected FutureRegistryEntry(Registry<T> registry, T entry, Class<T> clazz) {
-        this.registry = registry;
-        this.entry = entry;
-        this.clazz = clazz;
-        this.id = registry.getId(entry);
-        state = FutureStateHolder.FutureState.VALID;
+    //todo use w/ polymer
+    public static void prependRegistryHolder(RegistryHolder<?, ?> registryHolder) {
+        REGISTRY_HOLDERS.addFirst(registryHolder);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> FutureRegistryEntry<T> getOrCreateEntry(Registry<T> registry, Identifier id, Class<T> clazz) {
-        return (FutureRegistryEntry<T>) INSTANCES.addOrGet(new FutureRegistryEntry<>(registry, id, clazz));
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> FutureRegistryEntry<T> getOrCreateEntry(Registry<T> registry, T entry, Class<T> clazz) {
-        return (FutureRegistryEntry<T>) INSTANCES.addOrGet(new FutureRegistryEntry<>(registry, entry, clazz));
-    }
-
-    public boolean matches(T comparator) {
-        validateEntry();
-
-        if (entry == null || state == FutureStateHolder.FutureState.INVALID) {
-            state = FutureStateHolder.FutureState.INVALID;
-            return false;
-        }
-
-        return entry.equals(comparator);
-    }
-
-    //todo store instances somewhere and validate these on config/world load
-    @Override
-    public void validateEntry() {
-        validateEntry(false);
-    }
-
-    public void validateEntry(boolean force) {
-        if (!force && state != FutureStateHolder.FutureState.AWAITING_VALIDATION) return;
-        if (RegistryHelper.isDefaultEntry(registry, registry.get(id), id)) {
-            state = FutureStateHolder.FutureState.INVALID;
-            AutoSwitch.logger.warn(String.format("Could not find entry in registry: %s for id: %s",
-                                                 registry, id.toString()));
-        } else {
-            if (!registry.containsId(id)) {
-                state = FutureStateHolder.FutureState.INVALID;
-                AutoSwitch.logger.warn(String.format("Could not find entry in registry: %s for id: %s",
-                                                     registry, id.toString()));
-            } else {
-                state = FutureStateHolder.FutureState.VALID;
-                entry = registry.get(id);
-            }
-        }
+    public static FutureRegistryEntry getOrCreate(RegistryType type, Identifier id) {
+        return INSTANCES.addOrGet(new FutureRegistryEntry(type, id));
     }
 
     public static void forceRevalidateEntries() {
         INSTANCES.forEach(f -> f.validateEntry(true));
     }
 
-    public boolean isOfType(Object o) {
-        return clazz.isInstance(o);
+    @Override
+    public void validateEntry(boolean force) {
+        if (!force && state != FutureState.AWAITING_VALIDATION) return;
+        // Reset type to undetermined
+        if (RegistryType.BLOCK_OR_ENTITY.matches(type)) type = RegistryType.BLOCK_OR_ENTITY;
+        // Find entry
+        for (RegistryHolder<?, ?> registryHolder : REGISTRY_HOLDERS) {//todo flag for multiple registry match
+            if (type.matches(registryHolder.type)) {
+                entry = registryHolder.id2EntryFunction.apply(id);
+                if (entry != null) {
+                    type = registryHolder.type;
+                    state = FutureState.VALID;
+                    holder = registryHolder;
+                    return;
+                }
+            }
+        }
+
+        state = FutureState.INVALID;
+        AutoSwitch.logger.warn(String.format("Could not find entry in registries of type: %s for id: %s",
+                                             type, id.toString()));
+    }
+
+    public boolean matches(Object comparator) {
+        validateEntry();
+
+        if (entry == null || state == FutureState.INVALID) {
+            state = FutureState.INVALID;
+            return false;
+        }
+
+        return entry.equals(comparator);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
-        if (clazz.isInstance(o)) return matches(clazz.cast(o));
+        if (state != FutureState.INVALID) return matches(o);
         if (getClass() != o.getClass()) return false;
 
-        FutureRegistryEntry<?> that = (FutureRegistryEntry<?>) o;
+        FutureRegistryEntry that = (FutureRegistryEntry) o;
 
-        if (!Objects.equals(registry, that.registry)) return false;
+        if (!Objects.equals(type, that.type)) return false;
         return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
         if (isValid()) return entry.hashCode();
-        int result = registry != null ? registry.hashCode() : 0;
+        int result = holder != null ? holder.hashCode() : 0;
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
     }
 
-    public static class NoneEntry extends FutureRegistryEntry<Void> {
-        public static final FutureRegistryEntry<?> NULL = new NoneEntry();
-
-        private NoneEntry() {
-            this(null, null, null);
-            state = FutureState.VALID;
-        }
-
-        private NoneEntry(Registry<Void> registry, Identifier id, Class<Void> clazz) {
-            super(registry, id, clazz);
+    public static class TargetHashingStrategy implements Hash.Strategy<Object> {
+        public TargetHashingStrategy() {
         }
 
         @Override
-        public boolean matches(Void comparator) {
-            return false;
-        }
+        public int hashCode(Object o) {
+            if (o != null) {
+                if (o instanceof FutureRegistryEntry targetEntry) {
+                    if (!targetEntry.isValid()) {
+                        targetEntry.validateEntry();
+                    }
+                    return targetEntry.hashCode();
+                }
+                return o.hashCode();
+            }
 
-        @Override
-        public void validateEntry() {
-            // NO-OP
-        }
-
-        @Override
-        public boolean isOfType(Object o) {
-            return false;
-        }
-
-        @Override
-        public boolean isValid() {
-            return true;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
             return 0;
+        }
+
+        @Override
+        public boolean equals(Object a, Object b) {
+            if (a instanceof FutureRegistryEntry targetEntry) {
+                return targetEntry.equals(b);
+            }
+
+            if (b instanceof FutureRegistryEntry targetEntry) {
+                return targetEntry.equals(a);
+            }
+
+            if (a != null) {
+                return a.equals(b);
+            }
+
+            return false;
+        }
+
+    }
+
+    public record RegistryHolder<T extends IndexedIterable<U>, U>(T registry, Class<U> clazz, RegistryType type,
+                                                                   Function<Identifier, U> id2EntryFunction) {
+        public RegistryHolder(Registry<U> registry, Class<U> clazz, RegistryType type) {
+            this((T) registry, clazz, type, id -> RegistryHelper.getEntry(registry, ((Identifier)id)));
+        }
+
+        public boolean canHold(Object o) {
+            return clazz.isInstance(o);
         }
     }
 }

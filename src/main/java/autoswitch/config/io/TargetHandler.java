@@ -3,7 +3,9 @@ package autoswitch.config.io;
 import java.util.Locale;
 
 import autoswitch.AutoSwitch;
-import autoswitch.selectors.futures.FutureTargetEntry;
+import autoswitch.selectors.futures.FutureRegistryEntry;
+
+import autoswitch.selectors.futures.RegistryType;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -32,7 +34,7 @@ public class TargetHandler {
 
             Identifier id;
             if ((id = Identifier.tryParse(str)) != null) {
-                target = FutureTargetEntry.getOrCreate(id);
+                target = FutureRegistryEntry.getOrCreate(RegistryType.BLOCK_OR_ENTITY, id);
             } else {
                 AutoSwitch.logger.warn("AutoSwitch was not given a real id: " + str + " -> ignoring it");
             }

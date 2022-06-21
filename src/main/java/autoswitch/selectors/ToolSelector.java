@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class ToolSelector implements Selector<ItemStack> {
     private final ItemSelector itemSelector;
@@ -84,7 +83,7 @@ public class ToolSelector implements Selector<ItemStack> {
 
     @Override
     public boolean matches(ItemStack compare) {
-        if (itemSelector.matches(compare.getItem())) {
+        if (itemSelector.matches(compare.getItem())) {//todo handle polymer
             if (enchantmentsRequired()) {
                 for (EnchantmentSelector selector : enchantmentSelectors) {
                     if (!selector.matches(compare)) {
@@ -117,11 +116,6 @@ public class ToolSelector implements Selector<ItemStack> {
 
     public int getId() {
         return id;
-    }
-
-    @Override
-    public Registry<ItemStack> getRegistry() {
-        return null;
     }
 
     @Override

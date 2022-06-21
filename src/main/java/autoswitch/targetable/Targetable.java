@@ -12,6 +12,7 @@ import java.util.function.IntConsumer;
 import autoswitch.AutoSwitch;
 import autoswitch.selectors.ItemSelector;
 import autoswitch.selectors.ToolSelector;
+import autoswitch.selectors.selectable.Selectables;
 import autoswitch.util.SwitchData;
 import autoswitch.util.TargetableUtil;
 
@@ -37,7 +38,11 @@ public abstract class Targetable {
      * user config
      */
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
-    protected final ToolSelector blankToolSelector = new ToolSelector(new ItemSelector(item -> item.getMaxDamage() == 0));
+    protected final ToolSelector blankToolSelector = new ToolSelector(new ItemSelector(o -> {
+        var m = Selectables.getSelectableItem(o);
+        return m.filter(selectableItem -> selectableItem.getMaxDamage().apply(selectableItem.safety(o)) == 0)
+                .isPresent();
+    }));
     protected final ToolSelector nullToolSelector = new ToolSelector(new ItemSelector(item -> false));
 
     /**

@@ -1,40 +1,37 @@
 package autoswitch.selectors;
 
+import autoswitch.selectors.futures.RegistryType;
+
+import autoswitch.selectors.selectable.Selectables;
 import net.minecraft.item.Item;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.function.Predicate;
 
-public class ItemSelector implements Selector<Item> {
+public class ItemSelector implements Selector<Object> {
 
-    private final Predicate<Item> predicate;
+    private final Predicate<Object> predicate;
 
     public ItemSelector(Identifier id) {
-        predicate = makeFutureRegistryEntryPredicate(id, Item.class);
-    }
-
-    public ItemSelector(Item item) {
-        this(item::equals);
+        predicate = makeFutureRegistryEntryPredicate(RegistryType.ITEM, id);
     }
 
     public ItemSelector(TagKey<Item> tagKey) {
-        this(item -> item.getRegistryEntry().isIn(tagKey));
+        this(o -> {
+            var m = Selectables.getSelectableItem(o);
+            return m.filter(selectableItem -> selectableItem.isIn().apply(selectableItem.safety(o), tagKey))
+                    .isPresent();
+        });
     }
 
-    public ItemSelector(Predicate<Item> predicate) {
+    public ItemSelector(Predicate<Object> predicate) {
         this.predicate = predicate;
     }
 
     @Override
-    public boolean matches(Item compare) {
+    public boolean matches(Object compare) {
         return predicate.test(compare);
-    }
-
-    @Override
-    public Registry<Item> getRegistry() {
-        return Registry.ITEM;
     }
 
     @Override

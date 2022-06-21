@@ -7,15 +7,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import autoswitch.AutoSwitch;
 import autoswitch.selectors.ItemTarget;
 import autoswitch.selectors.TargetableGroup;
+import autoswitch.selectors.selectable.Selectables;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -53,30 +52,19 @@ public class TargetableUtil {
     private static Object getTarget(Map<Object, IntArrayList> map, Object protoTarget) {
         if (protoTarget instanceof ItemTarget) return protoTarget;
 
-        // These methods were moved to AbstractBlockState in 20w12a,
-        // so their intermediary name changed breaking compatibility
-        if (protoTarget instanceof BlockState state) {
-            // Block Override
-            Block block = state.getBlock();
-            if (map.containsKey(block)) {
-                return block;
-            }
-            return TargetableGroup.maybeGetTarget(protoTarget)
-                                  .orElse(TargetableGroup.maybeGetTarget(block).orElse(state.getMaterial()));
-        }
+        var maybeSelectable = Selectables.getSelectableTarget(protoTarget);
 
-        if (protoTarget instanceof Entity e) {
-            // Entity Override
-            EntityType<?> entityType = e.getType();
-            if (map.containsKey(entityType)) {
-                return entityType;
+        if (maybeSelectable.isPresent()) {
+            var selectable = maybeSelectable.get();
+            // Overrides
+            var override = selectable.getSpecific().apply(protoTarget);
+            if (map.containsKey(override)) {
+                return override;
             }
 
             return TargetableGroup.maybeGetTarget(protoTarget)
-                                  .orElse(TargetableGroup.maybeGetTarget(entityType)
-                                                         .orElse(protoTarget instanceof LivingEntity ?
-                                                                 ((LivingEntity) protoTarget).getGroup() :
-                                                                 entityType));
+                                  .orElse(TargetableGroup.maybeGetTarget(override)
+                                                         .orElse(selectable.getGroup().apply(protoTarget)));
         }
 
         return null;
@@ -223,8 +211,10 @@ public class TargetableUtil {
 
         if (AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
 
-        if (target instanceof BlockState) {
-            return !((BlockState) target).isToolRequired() || stack.isSuitableFor((BlockState) target);
+        var maybeSelectable = Selectables.getSelectableBlock(target);
+        if (maybeSelectable.isPresent()) {
+            var selectable = maybeSelectable.get();
+            return !selectable.requiresTool().apply(target) || selectable.isSuitableFor().apply(stack, target);
         }
 
         return true;

@@ -19,7 +19,11 @@ public abstract class FutureStateHolder {
         state = FutureState.AWAITING_VALIDATION;
     }
 
-    public abstract void validateEntry();
+    public abstract void validateEntry(boolean force);
+
+    public void validateEntry() {
+        validateEntry(false);
+    }
 
     public enum FutureState {
         AWAITING_VALIDATION,
