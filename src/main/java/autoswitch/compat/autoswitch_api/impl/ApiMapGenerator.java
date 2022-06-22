@@ -8,6 +8,7 @@ import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.selectors.TargetableGroup;
 import autoswitch.selectors.TargetableGroup.TargetPredicate;
+import autoswitch.selectors.selectable.Selectables;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 
@@ -57,8 +58,8 @@ public class ApiMapGenerator {
         AutoSwitch.switchData.toolPredicates.computeIfAbsent("sword", s -> makeToolPredicate(s, SwordItem.class));
 
         // Any tool
-        Predicate<Item> anyTool = null;
-        for (Predicate<Item> tp : AutoSwitch.switchData.toolPredicates.values()) {
+        Predicate<Object> anyTool = null;
+        for (Predicate<Object> tp : AutoSwitch.switchData.toolPredicates.values()) {
             if (anyTool == null) {
                 anyTool = tp;
                 continue;
@@ -74,14 +75,19 @@ public class ApiMapGenerator {
         TargetableGroup.validatePredicates();
     }
 
-    private static Predicate<Item> makeToolPredicate(String toolName, @NotNull Class<? extends Item> itemClass) {
+    private static Predicate<Object> makeToolPredicate(String toolName, @NotNull Class<? extends Item> itemClass) {
         var pluralName = toolName.endsWith("s") ? toolName : toolName + "s";
         var fabricTag = TagKey.of(Registry.ITEM_KEY, new Identifier("fabric", pluralName));
         var commonTag = TagKey.of(Registry.ITEM_KEY, new Identifier("c", pluralName));
 
         // todo move to using itemstack rather than item itself - api change?
-        return item -> itemClass.isInstance(item) || item.getRegistryEntry().isIn(fabricTag) ||
-                       item.getRegistryEntry().isIn(commonTag);
+        return o -> {
+            var m = Selectables.getSelectableItem(o);
+            return itemClass.isInstance(o) || m.filter(objectSelectableItem ->
+                                    objectSelectableItem.isIn().apply(objectSelectableItem.safety(o), fabricTag) ||
+                                    objectSelectableItem.isIn().apply(objectSelectableItem.safety(o), commonTag))
+                                               .isPresent();
+        };
     }
 
     // Populate Targets map with default values

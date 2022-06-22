@@ -11,7 +11,6 @@ import autoswitch.selectors.selectable.Selectables;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
@@ -76,12 +75,13 @@ public class TargetableUtil {
      * @see net.minecraft.entity.player.PlayerEntity#attack(Entity) for Entity case's damage calculation
      */
     public static float getTargetRating(Object target, ItemStack stack) {
-        if (target instanceof BlockState) { // TODO correct clamping for instabreak situations ie. swords on bamboo
-            return clampToolRating(stack.getMiningSpeedMultiplier((BlockState) target));
+        var maybeSelectable = Selectables.getSelectableBlock(target);
+        if (maybeSelectable.isPresent()) {
+            return clampToolRating(maybeSelectable.get().miningSpeedFactor().apply(stack, target));
         }
 
         if (target instanceof Entity) {
-            if (!(stack.getItem() instanceof ToolItem)) return 0;
+            if (!(stack.getItem() instanceof ToolItem)) return 0;//todo is this fine for polymer? nope
 
             float damage;
             float h = 0;

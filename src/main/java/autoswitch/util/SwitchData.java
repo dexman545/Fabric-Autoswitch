@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import autoswitch.api.AutoSwitchMap;
 import autoswitch.api.DurabilityGetter;
 import autoswitch.selectors.ToolSelector;
-import autoswitch.selectors.futures.FutureTargetEntry;
+import autoswitch.selectors.futures.FutureRegistryEntry;
 import autoswitch.selectors.ItemTarget;
 
 import com.google.common.primitives.Ints;
@@ -13,8 +13,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
-
-import net.minecraft.item.Item;
 
 public class SwitchData {
     /**
@@ -31,12 +29,12 @@ public class SwitchData {
      * Map of target object to list of toolSelector IDs for the 'use' action.
      */
     public final Object2ObjectOpenCustomHashMap<Object, IntArrayList> target2UseActionToolSelectorsMap =
-            new Object2ObjectOpenCustomHashMap<>(new FutureTargetEntry.TargetHashingStrategy());
+            new Object2ObjectOpenCustomHashMap<>(new FutureRegistryEntry.TargetHashingStrategy());
     /**
      * Map of target object to list of toolSelector IDs for the 'attack' action.
      */
     public final Object2ObjectOpenCustomHashMap<Object, IntArrayList> target2AttackActionToolSelectorsMap =
-            new Object2ObjectOpenCustomHashMap<>(new FutureTargetEntry.TargetHashingStrategy());
+            new Object2ObjectOpenCustomHashMap<>(new FutureRegistryEntry.TargetHashingStrategy());
 
     /**
      * Map of toolSelector input from the config -> it's int id. Used to ensure uniqueness of toolSelectors and avoid
@@ -58,7 +56,7 @@ public class SwitchData {
      * Map of tool grouping's key (eg. "pickaxe") -> the predicate accepting Item to match the item against for
      * determining if the item is in the toolGrouping.
      */
-    public final AutoSwitchMap<String, Predicate<Item>> toolPredicates = new AutoSwitchMap<>();
+    public final AutoSwitchMap<String, Predicate<Object>> toolPredicates = new AutoSwitchMap<>();
 
     /**
      * API Map - this map is passed to interfacing mods for them to add to it.

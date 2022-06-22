@@ -3,11 +3,11 @@ package autoswitch.mixin.impl;
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.events.SwitchEvent;
+import autoswitch.selectors.selectable.WorldInterfaces;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.BlockHitResult;
@@ -98,15 +98,15 @@ public class SwitchEventTriggerImpl {
                 EntityHitResult entityHitResult = (EntityHitResult) crosshairTarget;
                 Entity entity = entityHitResult.getEntity();
                 EventUtil.schedulePrimaryEvent(SwitchEvent.PREVENT_BLOCK_ATTACK);
-                EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, entity);
+                EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType,
+                                        WorldInterfaces.getEntityObject(entity));
                 break;
             case BLOCK:
                 if (desiredType == DesiredType.ATTACK && SwitchState.preventBlockAttack) break;
                 BlockHitResult blockHitResult = ((BlockHitResult) crosshairTarget);
                 BlockPos blockPos = blockHitResult.getBlockPos();
-                BlockState blockState = player.clientWorld.getBlockState(blockPos);
-                if (blockState.isAir()) break;
-                EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, blockState);
+                Object state = WorldInterfaces.getState(player.clientWorld, blockPos);
+                EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, state);
                 break;
         }
 
