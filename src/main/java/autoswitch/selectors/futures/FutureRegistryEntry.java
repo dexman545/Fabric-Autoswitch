@@ -24,6 +24,7 @@ public class FutureRegistryEntry extends FutureStateHolder {
     private RegistryHolder<?, ?> holder;
     private final Identifier id;
     private RegistryType type;
+    private boolean typeLocked = false;
     private static final LinkedList<RegistryHolder<?, ?>> REGISTRY_HOLDERS = new LinkedList<>();
 
     private static final ObjectOpenHashSet<FutureRegistryEntry> INSTANCES = new ObjectOpenHashSet<>();
@@ -60,7 +61,7 @@ public class FutureRegistryEntry extends FutureStateHolder {
     public void validateEntry(boolean force) {
         if (!force && state != FutureState.AWAITING_VALIDATION) return;
         // Reset type to undetermined
-        if (RegistryType.BLOCK_OR_ENTITY.matches(type)) type = RegistryType.BLOCK_OR_ENTITY;
+        if (!typeLocked && RegistryType.BLOCK_OR_ENTITY.matches(type)) type = RegistryType.BLOCK_OR_ENTITY;
         // Find entry
         for (RegistryHolder<?, ?> registryHolder : REGISTRY_HOLDERS) {//todo flag for multiple registry match
             if (type.matches(registryHolder.type)) {
@@ -109,6 +110,10 @@ public class FutureRegistryEntry extends FutureStateHolder {
         int result = holder != null ? holder.hashCode() : 0;
         result = 31 * result + (id != null ? id.hashCode() : 0);
         return result;
+    }
+
+    public void setTypeLocked(boolean typeLocked) {
+        this.typeLocked = typeLocked;
     }
 
     public static class TargetHashingStrategy implements Hash.Strategy<Object> {
