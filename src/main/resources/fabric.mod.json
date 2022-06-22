@@ -28,7 +28,7 @@
     "fabric-command-api-v2": ">=2.0.0",
     "fabric-resource-loader-v0": "*",
     "minecraft": "${range}",
-    "autoswitch-api": "^2.0.0",
+    "autoswitch-api": "^3.0.0",
     "java": ">=${java}"
   },
   "mixins": [

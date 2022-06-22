@@ -119,7 +119,7 @@ dependencies {
     requiredLib "org.aeonbits.owner:owner:1.0.12"
 
     // Autoswitch API
-    requiredModApi 'com.github.dexman545:autoswitch-api:-SNAPSHOT'
+    requiredModApi 'com.github.dexman545:autoswitch-api:3.0.0'//-SNAPSHOT
 
     // Mod Compat ------------
     // ModMenu
