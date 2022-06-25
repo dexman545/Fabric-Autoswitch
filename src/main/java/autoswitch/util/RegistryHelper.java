@@ -3,6 +3,8 @@ package autoswitch.util;
 import autoswitch.AutoSwitch;
 import autoswitch.selectors.futures.FutureRegistryEntry;
 
+import autoswitch.selectors.futures.IdentifiedTag;
+
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
@@ -18,6 +20,7 @@ public final class RegistryHelper {
         //todo don't revalidate them, just make them all invalid to be handled as they are checked?
         // would likely work better with polymer
         FutureRegistryEntry.forceRevalidateEntries();
+        IdentifiedTag.refreshIdentifiers();
         // Rehashes the maps to allow for the new entries to behave well
         AutoSwitch.switchData.target2AttackActionToolSelectorsMap.trim();
         AutoSwitch.switchData.target2UseActionToolSelectorsMap.trim();

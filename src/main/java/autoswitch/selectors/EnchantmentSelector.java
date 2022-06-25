@@ -2,6 +2,11 @@ package autoswitch.selectors;
 
 import java.util.function.Predicate;
 
+import autoswitch.selectors.futures.RegistryType;
+
+import autoswitch.selectors.selectable.Selectables;
+import autoswitch.util.RegistryHelper;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
@@ -13,11 +18,15 @@ public class EnchantmentSelector implements Selector<Enchantment> {
     private final Predicate<Enchantment> predicate;
 
     public EnchantmentSelector(Identifier id) {
-        predicate = makeFutureRegistryEntryPredicate(id, Enchantment.class);
+        predicate = makeFutureRegistryEntryPredicate(RegistryType.ENCHANTMENT, id);
     }
 
     public EnchantmentSelector(TagKey<Enchantment> tagKey) {
-        this.predicate = makeIsInTagPredicate(tagKey);
+        this(o -> {
+            var m = Selectables.getSelectableEnchant(o);
+            return m.filter(selectableEnchant -> selectableEnchant.isIn().apply(selectableEnchant.safety(o), tagKey))
+                    .isPresent();
+        });
     }
 
     public EnchantmentSelector(Enchantment enchantment) {
@@ -60,11 +69,6 @@ public class EnchantmentSelector implements Selector<Enchantment> {
     @Override
     public boolean matches(Enchantment compare) {
         return predicate.test(compare);
-    }
-
-    @Override
-    public Registry<Enchantment> getRegistry() {
-        return Registry.ENCHANTMENT;
     }
 
     @Override

@@ -5,11 +5,10 @@ import java.util.regex.Pattern;
 import autoswitch.selectors.EnchantmentSelector;
 import autoswitch.selectors.ItemSelector;
 import autoswitch.selectors.TargetableGroup;
+import autoswitch.selectors.futures.IdentifiedTag;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.tag.TagKey;
@@ -91,12 +90,8 @@ public class TagHandler {
                 var tagKey = makeTagKey(tagId);
 
                 return new TargetableGroup<>(tagGroup,
-                                             new TargetableGroup.TargetPredicate("Matches tag group:" + tagGroup, o -> {
-                                                 if (o instanceof BlockState state) {
-                                                     return state.isIn(tagKey);
-                                                 }
-                                                 return false;
-                                             }));
+                                             new TargetableGroup.TargetPredicate("Matches tag group:" + tagGroup,
+                                                                                 IdentifiedTag.makeBlockPredicate(tagKey)));
             }
         }),
         ENTITY_TYPE(new TagTypeHandler<EntityType<?>>() {
@@ -115,12 +110,9 @@ public class TagHandler {
                 var tagKey = makeTagKey(tagId);
 
                 return new TargetableGroup<>(tagGroup,
-                                             new TargetableGroup.TargetPredicate("Matches tag group:" + tagGroup, o -> {
-                                                 if (o instanceof Entity e) {
-                                                     return e.getType().isIn(tagKey);
-                                                 }
-                                                 return false;
-                                             }));
+                                             new TargetableGroup
+                                                     .TargetPredicate("Matches tag group:" + tagGroup,
+                                                                      IdentifiedTag.makeEntityPredicate(tagKey)));
             }
         }),
         ITEM(new TagTypeHandler<Item>() {
