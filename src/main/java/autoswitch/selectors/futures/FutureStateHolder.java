@@ -26,8 +26,7 @@ public abstract class FutureStateHolder {
     }
 
     public enum FutureState {
-        AWAITING_VALIDATION,
-        VALID,
-        INVALID;
+        AWAITING_VALIDATION, VALID, INVALID
     }
+
 }

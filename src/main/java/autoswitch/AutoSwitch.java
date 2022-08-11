@@ -33,6 +33,8 @@ public class AutoSwitch implements ClientModInitializer {
     public static final Logger logger = LoggerFactory.getLogger("AutoSwitch");
     public static final SwitchData switchData = new SwitchData();
     public static final Scheduler scheduler = new Scheduler();
+    // Constant damage threshold
+    public static final int damageThreshold = 3;
     // Create object to store player switch state and relevant data
     public static SwitchState switchState = new SwitchState();
     // Init config
@@ -41,10 +43,6 @@ public class AutoSwitch implements ClientModInitializer {
     public static AutoSwitchUseActionConfig useActionCfg;
     public static int tickTime = 0;
     public static boolean doAS = true;
-
-    // Constant damage threshold
-    public static final int damageThreshold = 3;
-
     // Keybindings
     private final KeyBinding autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(
             new KeyBinding("key.autoswitch.toggle", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R, "AutoSwitch"));
@@ -90,8 +88,8 @@ public class AutoSwitch implements ClientModInitializer {
         // Test if all Materials are configured
         if ("true".equals(System.getenv("as-dev"))) {
             logger.info("Checking code-only targets...");
-            assert (testTargetsForCompletion(Material.class) | testTargetsForCompletion(EntityGroup.class)) :
-                    "Missing target found!";
+            assert (testTargetsForCompletion(Material.class) |
+                    testTargetsForCompletion(EntityGroup.class)) : "Missing target found!";
         }
 
     }

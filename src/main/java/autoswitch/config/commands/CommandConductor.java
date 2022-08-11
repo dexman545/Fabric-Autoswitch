@@ -50,17 +50,16 @@ public class CommandConductor {
         if (!featureCfg.enableConfigCommands()) return;
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher
-                    .register(ClientCommandManager.literal("autoswitch_toggle")
-                                                  .executes(context -> changeASToggle(context, !doAS)));
+            dispatcher.register(ClientCommandManager.literal("autoswitch_toggle")
+                                                    .executes(context -> changeASToggle(context, !doAS)));
 
             // Create command builder and add message for when it is run on its own
             LiteralArgumentBuilder<FabricClientCommandSource> autoswitchCommandBuilder =
                     ClientCommandManager.literal("autoswitch").executes(context -> {
-                        context.getSource().sendFeedback(
-                                Text.translatable("Commands for changing AutoSwitch's feature config options, " +
-                                                  "except for the tool targets. Please see the config files for " +
-                                                  "complete set of options and documentation. Rewrites the config files."));
+                        context.getSource().sendFeedback(Text.translatable(
+                                "Commands for changing AutoSwitch's feature config options, " +
+                                "except for the tool targets. Please see the config files for " +
+                                "complete set of options and documentation. Rewrites the config files."));
                         return 1;
                     });
 

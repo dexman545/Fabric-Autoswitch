@@ -15,4 +15,5 @@ public interface Selector<T> {
         var fre = FutureRegistryEntry.getOrCreate(type, id);
         return fre::matches;
     }
+
 }

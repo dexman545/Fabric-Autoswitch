@@ -56,8 +56,7 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
     }
 
     public static <U> Predicate<U> makeEntityPredicate(TagKey<EntityType<?>> tagKey) {
-        return t -> IdentifiedTag.getOrCreate(tagKey,
-                                              (Class<EntityType<?>>)(Class<?>)EntityType.class,
+        return t -> IdentifiedTag.getOrCreate(tagKey, (Class<EntityType<?>>) (Class<?>) EntityType.class,
                                               RegistryType.ENTITY, o -> {
                     if (o instanceof Entity e) {
                         return ClientTags.isInWithLocalFallback(tagKey, e.getType());

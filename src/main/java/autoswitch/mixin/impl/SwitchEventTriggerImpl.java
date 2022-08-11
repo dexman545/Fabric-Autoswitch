@@ -43,12 +43,11 @@ public class SwitchEventTriggerImpl {
      * <p>
      * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doItemUse()}
      *
-     * @param isBreakingBlock    if the player is currently breaking a block
-     * @param player             the player
-     * @param crosshairTarget    the crosshair target
+     * @param isBreakingBlock if the player is currently breaking a block
+     * @param player          the player
+     * @param crosshairTarget the crosshair target
      */
-    public static void interact(boolean isBreakingBlock, ClientPlayerEntity player,
-                                HitResult crosshairTarget) {
+    public static void interact(boolean isBreakingBlock, ClientPlayerEntity player, HitResult crosshairTarget) {
         if (isBreakingBlock || player.isRiding() || crosshairTarget == null) return;
 
         triggerSwitch(DesiredType.USE, crosshairTarget, player);

@@ -17,9 +17,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
-
-import net.minecraft.command.argument.EnumArgumentType;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,8 +48,7 @@ public class CommandGenerator {
      *
      * @param clazz      class to generate commands from.
      * @param maker      converter of a command name, the method it is for, to a
-     * {@link Command<FabricClientCommandSource>}
-     *                   that executes when a command is run.
+     *                   {@link Command<FabricClientCommandSource>} that executes when a command is run.
      * @param allMethods whether to use only declared methods or all methods including those inherited.
      */
     public CommandGenerator(Class<?> clazz, BiFunction<String, Method, Command<FabricClientCommandSource>> maker,
@@ -67,16 +63,8 @@ public class CommandGenerator {
 
     }
 
-    public Set<GenericCommand> getCommands() {
-        Set<GenericCommand> out = new ObjectArraySet<>();
-        for (Method method : methods) {
-            out.add(buildCommandOption(method, maker));
-        }
-        return out;
-    }
-
-    private static GenericCommand buildCommandOption(
-            final Method method, BiFunction<String, Method, Command<FabricClientCommandSource>> maker) {
+    private static GenericCommand buildCommandOption(final Method method,
+                                                     BiFunction<String, Method, Command<FabricClientCommandSource>> maker) {
         return new GenericCommand() {
             @Override
             public ArgumentType<?> argumentType() {
@@ -136,6 +124,14 @@ public class CommandGenerator {
         if (clazz.equals(Integer.class)) return IntegerArgumentType.integer();
         if (clazz.equals(String.class)) return StringArgumentType.greedyString();
         return null;
+    }
+
+    public Set<GenericCommand> getCommands() {
+        Set<GenericCommand> out = new ObjectArraySet<>();
+        for (Method method : methods) {
+            out.add(buildCommandOption(method, maker));
+        }
+        return out;
     }
 
 }

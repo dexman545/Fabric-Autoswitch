@@ -91,7 +91,8 @@ public class TagHandler {
 
                 return new TargetableGroup<>(tagGroup,
                                              new TargetableGroup.TargetPredicate("Matches tag group:" + tagGroup,
-                                                                                 IdentifiedTag.makeBlockPredicate(tagKey)));
+                                                                                 IdentifiedTag.makeBlockPredicate(
+                                                                                         tagKey)));
             }
         }),
         ENTITY_TYPE(new TagTypeHandler<EntityType<?>>() {

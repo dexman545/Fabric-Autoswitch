@@ -4,9 +4,9 @@ import java.util.function.Predicate;
 
 import autoswitch.api.AutoSwitchMap;
 import autoswitch.api.DurabilityGetter;
+import autoswitch.selectors.ItemTarget;
 import autoswitch.selectors.ToolSelector;
 import autoswitch.selectors.futures.FutureRegistryEntry;
-import autoswitch.selectors.ItemTarget;
 
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -45,8 +45,7 @@ public class SwitchData {
     /**
      * Map of toolSelector id -> ToolSelector object.
      */
-    public final Int2ObjectOpenHashMap<ToolSelector> toolSelectors =
-            new Int2ObjectOpenHashMap<>();
+    public final Int2ObjectOpenHashMap<ToolSelector> toolSelectors = new Int2ObjectOpenHashMap<>();
 
     // API Maps
 

@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import autoswitch.AutoSwitch;
 import autoswitch.selectors.futures.FutureRegistryEntry;
-
 import autoswitch.selectors.futures.RegistryType;
 
 import net.fabricmc.api.EnvType;
@@ -20,8 +19,8 @@ import net.minecraft.util.Identifier;
 public class TargetHandler {
 
     /**
-     * @return returns target, may be Material, Block, EntityGroup, EntityType, or TargetGroup.
-     * {@code null} if no target found.
+     * @return returns target, may be Material, Block, EntityGroup, EntityType, or TargetGroup. {@code null} if no
+     * target found.
      */
     public static Object getTarget(String str) {
         Object target = null;
@@ -42,9 +41,9 @@ public class TargetHandler {
             target = AutoSwitch.switchData.targets.get(str);
         }
         if (target == null) {
-            AutoSwitch.logger
-                    .warn("AutoSwitch could not find a block, entity, entity group, or material " + "by this id: " +
-                          str + " -> ignoring it");
+            AutoSwitch.logger.warn(
+                    "AutoSwitch could not find a block, entity, entity group, or material " + "by this id: " + str +
+                    " -> ignoring it");
         }
 
         return target;

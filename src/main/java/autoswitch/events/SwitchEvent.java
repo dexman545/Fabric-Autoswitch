@@ -1,5 +1,10 @@
 package autoswitch.events;
 
+import static autoswitch.AutoSwitch.featureCfg;
+import static autoswitch.AutoSwitch.tickTime;
+
+import java.util.Optional;
+
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.AutoSwitchConfig.TargetType;
@@ -12,11 +17,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.Saddleable;
 import net.minecraft.entity.player.PlayerEntity;
-
-import java.util.Optional;
-
-import static autoswitch.AutoSwitch.featureCfg;
-import static autoswitch.AutoSwitch.tickTime;
 
 /**
  * Processing of switch events.

@@ -2,8 +2,6 @@ package autoswitch.targetable;
 
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
-import autoswitch.selectors.Selector;
-import autoswitch.selectors.ToolSelector;
 import autoswitch.util.TargetableUtil;
 
 import net.minecraft.block.BlockState;

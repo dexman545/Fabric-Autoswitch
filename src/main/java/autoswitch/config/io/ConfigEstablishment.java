@@ -29,11 +29,11 @@ import net.fabricmc.loader.api.FabricLoader;
 public final class ConfigEstablishment {
     private static final Path configDir = FabricLoader.getInstance().getConfigDir();
     private static final Path featurePath = configDir.resolve("autoswitch.cfg");
-    private static final Path useActionPath = configDir.resolve("autoswitchUseAction.cfg");
-    private static final Path attackActionPath = configDir.resolve("autoswitchAttackAction.cfg");
     private static final String configFeature = featurePath.toString();
-    private static final String configAttackAction = attackActionPath.toString();
+    private static final Path useActionPath = configDir.resolve("autoswitchUseAction.cfg");
     private static final String configUseAction = useActionPath.toString();
+    private static final Path attackActionPath = configDir.resolve("autoswitchAttackAction.cfg");
+    private static final String configAttackAction = attackActionPath.toString();
 
     // AutoSwitch has 3 config files - basic, material, and usable.
     // Each can be represented by a map of key -> value pairs.

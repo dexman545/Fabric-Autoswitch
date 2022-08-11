@@ -370,8 +370,7 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolSelector[] enderChestSpecial();
 
     @Separator(",")
-    @DefaultValue("any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, " +
-                  "sword,axe")
+    @DefaultValue("any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, " + "sword,axe")
     @Key("minecraft!player")
     @Comment("A default-provided override for players.")
     ToolSelector[] playerSpecial();
@@ -393,4 +392,5 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @Key("minecraft!glow_lichen")
     @Comment("A default-provided override for glow lichen.")
     ToolSelector[] lichenSpecial();
+
 }

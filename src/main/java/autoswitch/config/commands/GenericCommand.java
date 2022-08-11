@@ -8,8 +8,16 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 public interface GenericCommand {
 
-    @Nullable
-    ArgumentType<?> argumentType();
+    /**
+     * This method exists to function as a predicate.
+     *
+     * @return if the argument type is null.
+     */
+    static boolean wasGenerated(GenericCommand c) {
+        return c.argumentType() != null;
+    }
+
+    @Nullable ArgumentType<?> argumentType();
 
     String name();
 
@@ -20,14 +28,5 @@ public interface GenericCommand {
     Command<FabricClientCommandSource> command();
 
     String failureMessage();
-
-    /**
-     * This method exists to function as a predicate.
-     *
-     * @return if the argument type is null.
-     */
-    static boolean wasGenerated(GenericCommand c) {
-        return c.argumentType() != null;
-    }
 
 }

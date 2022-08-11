@@ -20,21 +20,23 @@ import net.minecraft.util.registry.Registry;
 
 @SuppressWarnings("unchecked")
 public class FutureRegistryEntry extends FutureStateHolder {
-    private Object entry;
-    private RegistryHolder<?, ?> holder;
-    private final Identifier id;
-    private RegistryType type;
-    private boolean typeLocked = false;
     private static final LinkedList<RegistryHolder<?, ?>> REGISTRY_HOLDERS = new LinkedList<>();
-
     private static final ObjectOpenHashSet<FutureRegistryEntry> INSTANCES = new ObjectOpenHashSet<>();
 
     static {
         REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.BLOCK, Block.class, RegistryType.BLOCK));
-        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.ENTITY_TYPE, (Class<EntityType<?>>)(Class<?>)EntityType.class, RegistryType.ENTITY));
+        REGISTRY_HOLDERS.add(
+                new RegistryHolder<>(Registry.ENTITY_TYPE, (Class<EntityType<?>>) (Class<?>) EntityType.class,
+                                     RegistryType.ENTITY));
         REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.ITEM, Item.class, RegistryType.ITEM));
         REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.ENCHANTMENT, Enchantment.class, RegistryType.ENCHANTMENT));
     }
+
+    private final Identifier id;
+    private Object entry;
+    private RegistryHolder<?, ?> holder;
+    private RegistryType type;
+    private boolean typeLocked = false;
 
     protected FutureRegistryEntry(RegistryType type, Identifier id) {
         this.id = id;
@@ -75,8 +77,8 @@ public class FutureRegistryEntry extends FutureStateHolder {
         }
 
         state = FutureState.INVALID;
-        AutoSwitch.logger.warn(String.format("Could not find entry in registries of type: %s for id: %s",
-                                             type, id.toString()));
+        AutoSwitch.logger.warn(
+                String.format("Could not find entry in registries of type: %s for id: %s", type, id.toString()));
     }
 
     public boolean matches(Object comparator) {
@@ -154,13 +156,15 @@ public class FutureRegistryEntry extends FutureStateHolder {
     }
 
     public record RegistryHolder<T extends IndexedIterable<U>, U>(T registry, Class<U> clazz, RegistryType type,
-                                                                   Function<Identifier, U> id2EntryFunction) {
+                                                                  Function<Identifier, U> id2EntryFunction) {
         public RegistryHolder(Registry<U> registry, Class<U> clazz, RegistryType type) {
-            this((T) registry, clazz, type, id -> RegistryHelper.getEntry(registry, ((Identifier)id)));
+            this((T) registry, clazz, type, id -> RegistryHelper.getEntry(registry, ((Identifier) id)));
         }
 
         public boolean canHold(Object o) {
             return clazz.isInstance(o);
         }
+
     }
+
 }

@@ -33,20 +33,18 @@ import net.minecraft.item.ItemStack;
  */
 @Environment(EnvType.CLIENT)
 public abstract class Targetable {
+    protected static final ToolSelector blankToolSelector = new ToolSelector(new ItemSelector(o -> {
+        if (o instanceof Item item) {
+            return item.getMaxDamage() == 0;
+        }
+        return false;
+    }));
+    protected static final ToolSelector nullToolSelector = new ToolSelector(new ItemSelector(item -> false));
     /**
      * Maps a hotbar slot to the rating for tool effectiveness - ie. speed for blocks and/or enchantment level based on
      * user config
      */
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
-    protected static final ToolSelector blankToolSelector =
-            new ToolSelector(new ItemSelector(o -> {
-                if (o instanceof Item item) {
-                    return item.getMaxDamage() == 0;
-                }
-                return false;
-            }));
-    protected static final ToolSelector nullToolSelector = new ToolSelector(new ItemSelector(item -> false));
-
     /**
      * The initial Target brought in from the world, eg. a block or entity. This differs from the Target in that a
      * {@link net.minecraft.block.Material} or {@link net.minecraft.entity.EntityGroup} may be targeted in the user
@@ -121,8 +119,8 @@ public abstract class Targetable {
     abstract void populateToolSelection(ItemStack stack, int slot);
 
     /**
-     * Change the players selected slot based on the results of {@link Targetable#findSlot}. Checks if there is
-     * a slot to change to first.
+     * Change the players selected slot based on the results of {@link Targetable#findSlot}. Checks if there is a slot
+     * to change to first.
      *
      * @return If no slot to change to, returns empty. Otherwise returns true if the slot changed, false if it didn't.
      */

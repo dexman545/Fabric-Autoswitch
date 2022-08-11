@@ -23,8 +23,7 @@ public final class ConfigHeaders {
 
     public static final String usableConfig = "AutoSwitch Usable Configuration File" +
                                               "\nThis file defines tool switching targets for the 'use/interact' " +
-                                              "action (right" +
-                                              " clicking) on a mob or block. " +
+                                              "action (right clicking) on a mob or block. " +
                                               "\nSame format as the Material Config:" + format;
 
 

@@ -2,15 +2,13 @@ package autoswitch.util;
 
 import autoswitch.AutoSwitch;
 import autoswitch.selectors.futures.FutureRegistryEntry;
-
 import autoswitch.selectors.futures.IdentifiedTag;
 
-import net.minecraft.tag.TagKey;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
-
-import org.jetbrains.annotations.Nullable;
 
 public final class RegistryHelper {
     private RegistryHelper() {

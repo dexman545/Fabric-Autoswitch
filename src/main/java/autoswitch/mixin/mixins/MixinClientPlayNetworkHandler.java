@@ -1,11 +1,9 @@
 package autoswitch.mixin.mixins;
 
 import autoswitch.mixin.impl.ConnectionHandler;
-
 import autoswitch.util.RegistryHelper;
 
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,6 +19,7 @@ public abstract class MixinClientPlayNetworkHandler {
 
     /**
      * For GH-35
+     *
      * @see ClientPlayNetworkHandler#onGameJoin(GameJoinS2CPacket)
      */
     @Inject(method = "onGameJoin(Lnet/minecraft/network/packet/s2c/play/GameJoinS2CPacket;)V", at = @At("HEAD"))

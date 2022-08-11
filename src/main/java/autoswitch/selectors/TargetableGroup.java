@@ -88,7 +88,7 @@ public final class TargetableGroup<T> {
             return Registry.BLOCK.getId((Block) target).toString();
         }
 
-        return "LocalizationNotFound["+target+"]";
+        return "IdentifierNotFound[" + target + "]";
     }
 
     /**

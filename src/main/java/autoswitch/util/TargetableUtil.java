@@ -110,7 +110,7 @@ public class TargetableUtil {
             if (AutoSwitch.featureCfg.weaponRatingIncludesEnchants()) {
                 // Should group be passed? Config gives them their own entries
                 if (target instanceof LivingEntity) {
-                    h = EnchantmentHelper.getAttackDamage(stack, ((LivingEntity)target).getGroup());
+                    h = EnchantmentHelper.getAttackDamage(stack, ((LivingEntity) target).getGroup());
                 } else {
                     h = EnchantmentHelper.getAttackDamage(stack, EntityGroup.DEFAULT);
                 }
@@ -134,7 +134,7 @@ public class TargetableUtil {
             if (attackSpeed.get() == 0 || damage == 0) return 0;
 
             // Inverse as the close to 0, the faster the attack
-            return (damage * (Math.abs(1/attackSpeed.get())));
+            return (damage * (Math.abs(1 / attackSpeed.get())));
         }
 
         return 0;
