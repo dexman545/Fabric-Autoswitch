@@ -18,7 +18,6 @@ public final class RegistryHelper {
 
     public static void revalidateFutureEntries() {
         //todo don't revalidate them, just make them all invalid to be handled as they are checked?
-        // would likely work better with polymer
         FutureRegistryEntry.forceRevalidateEntries();
         IdentifiedTag.refreshIdentifiers();
         // Rehashes the maps to allow for the new entries to behave well

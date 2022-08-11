@@ -8,7 +8,7 @@ import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.selectors.TargetableGroup;
 import autoswitch.selectors.TargetableGroup.TargetPredicate;
-import autoswitch.selectors.selectable.Selectables;
+import autoswitch.util.RegistryHelper;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 
@@ -82,11 +82,11 @@ public class ApiMapGenerator {
 
         // todo move to using itemstack rather than item itself - api change?
         return o -> {
-            var m = Selectables.getSelectableItem(o);
-            return itemClass.isInstance(o) || m.filter(objectSelectableItem ->
-                                    objectSelectableItem.isIn().apply(objectSelectableItem.safety(o), fabricTag) ||
-                                    objectSelectableItem.isIn().apply(objectSelectableItem.safety(o), commonTag))
-                                               .isPresent();
+            if (o instanceof Item item) {
+                return itemClass.isInstance(item) || RegistryHelper.isInTag(Registry.ITEM, fabricTag, item) ||
+                       RegistryHelper.isInTag(Registry.ITEM, commonTag, item);
+            }
+            return false;
         };
     }
 

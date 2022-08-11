@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier;
 public interface Selector<T> {
     boolean matches(T compare);
 
-    default Predicate<T> makeFutureRegistryEntryPredicate(RegistryType type, Identifier id) {
+    default Predicate<Object> makeFutureRegistryEntryPredicate(RegistryType type, Identifier id) {
         var fre = FutureRegistryEntry.getOrCreate(type, id);
         return fre::matches;
     }

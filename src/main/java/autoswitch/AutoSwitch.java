@@ -11,8 +11,6 @@ import autoswitch.config.commands.CommandConductor;
 import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.events.Scheduler;
-import autoswitch.selectors.selectable.Selectables;
-import autoswitch.selectors.selectable.WorldInterfaces;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 import autoswitch.util.TickUtil;
@@ -65,9 +63,6 @@ public class AutoSwitch implements ClientModInitializer {
         } catch (Exception e) {
             logger.error("Failed to register client commands.", e);
         }
-
-        WorldInterfaces.registerVanilla();
-        Selectables.registerVanilla();
 
         // Pull value for delayed switching
         doAS = !featureCfg.disableSwitchingOnStartup();

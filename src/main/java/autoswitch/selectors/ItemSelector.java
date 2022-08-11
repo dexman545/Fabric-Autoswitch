@@ -1,15 +1,15 @@
 package autoswitch.selectors;
 
+import java.util.function.Predicate;
+
+import autoswitch.selectors.futures.IdentifiedTag;
 import autoswitch.selectors.futures.RegistryType;
 
-import autoswitch.selectors.selectable.Selectables;
 import net.minecraft.item.Item;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 
-import java.util.function.Predicate;
-
-public class ItemSelector implements Selector<Object> {
+public class ItemSelector implements Selector<Item> {
 
     private final Predicate<Object> predicate;
 
@@ -18,11 +18,7 @@ public class ItemSelector implements Selector<Object> {
     }
 
     public ItemSelector(TagKey<Item> tagKey) {
-        this(o -> {
-            var m = Selectables.getSelectableItem(o);
-            return m.filter(selectableItem -> selectableItem.isIn().apply(selectableItem.safety(o), tagKey))
-                    .isPresent();
-        });
+        this(IdentifiedTag.makeItemPredicate(tagKey));
     }
 
     public ItemSelector(Predicate<Object> predicate) {
@@ -30,7 +26,7 @@ public class ItemSelector implements Selector<Object> {
     }
 
     @Override
-    public boolean matches(Object compare) {
+    public boolean matches(Item compare) {
         return predicate.test(compare);
     }
 

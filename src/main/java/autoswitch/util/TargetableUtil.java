@@ -7,13 +7,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import autoswitch.AutoSwitch;
 import autoswitch.selectors.ItemTarget;
 import autoswitch.selectors.TargetableGroup;
-import autoswitch.selectors.selectable.Selectables;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -51,19 +53,30 @@ public class TargetableUtil {
     private static Object getTarget(Map<Object, IntArrayList> map, Object protoTarget) {
         if (protoTarget instanceof ItemTarget) return protoTarget;
 
-        var maybeSelectable = Selectables.getSelectableTarget(protoTarget);
+        // These methods were moved to AbstractBlockState in 20w12a,
+        // so their intermediary name changed breaking compatibility
+        if (protoTarget instanceof BlockState state) {
+            // Block Override
+            Block block = state.getBlock();
+            if (map.containsKey(block)) {
+                return block;
+            }
+            return TargetableGroup.maybeGetTarget(protoTarget)
+                                  .orElse(TargetableGroup.maybeGetTarget(block).orElse(state.getMaterial()));
+        }
 
-        if (maybeSelectable.isPresent()) {
-            var selectable = maybeSelectable.get();
-            // Overrides
-            var override = selectable.getSpecific().apply(protoTarget);
-            if (map.containsKey(override)) {
-                return override;
+        if (protoTarget instanceof Entity e) {
+            // Entity Override
+            EntityType<?> entityType = e.getType();
+            if (map.containsKey(entityType)) {
+                return entityType;
             }
 
             return TargetableGroup.maybeGetTarget(protoTarget)
-                                  .orElse(TargetableGroup.maybeGetTarget(override)
-                                                         .orElse(selectable.getGroup().apply(protoTarget)));
+                                  .orElse(TargetableGroup.maybeGetTarget(entityType)
+                                                         .orElse(protoTarget instanceof LivingEntity ?
+                                                                 ((LivingEntity) protoTarget).getGroup() :
+                                                                 entityType));
         }
 
         return null;
@@ -75,13 +88,12 @@ public class TargetableUtil {
      * @see net.minecraft.entity.player.PlayerEntity#attack(Entity) for Entity case's damage calculation
      */
     public static float getTargetRating(Object target, ItemStack stack) {
-        var maybeSelectable = Selectables.getSelectableBlock(target);
-        if (maybeSelectable.isPresent()) {
-            return clampToolRating(maybeSelectable.get().miningSpeedFactor().apply(stack, target));
+        if (target instanceof BlockState) { // TODO correct clamping for instabreak situations ie. swords on bamboo
+            return clampToolRating(stack.getMiningSpeedMultiplier((BlockState) target));
         }
 
         if (target instanceof Entity) {
-            if (!(stack.getItem() instanceof ToolItem)) return 0;//todo is this fine for polymer? nope
+            if (!(stack.getItem() instanceof ToolItem)) return 0;
 
             float damage;
             float h = 0;
@@ -211,10 +223,8 @@ public class TargetableUtil {
 
         if (AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
 
-        var maybeSelectable = Selectables.getSelectableBlock(target);
-        if (maybeSelectable.isPresent()) {
-            var selectable = maybeSelectable.get();
-            return !selectable.requiresTool().apply(target) || selectable.isSuitableFor().apply(stack, target);
+        if (target instanceof BlockState) {
+            return !((BlockState) target).isToolRequired() || stack.isSuitableFor((BlockState) target);
         }
 
         return true;

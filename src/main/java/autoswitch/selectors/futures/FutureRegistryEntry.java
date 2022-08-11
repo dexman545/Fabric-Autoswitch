@@ -44,7 +44,6 @@ public class FutureRegistryEntry extends FutureStateHolder {
         INSTANCES.add(this);
     }
 
-    //todo use w/ polymer
     public static void prependRegistryHolder(RegistryHolder<?, ?> registryHolder) {
         REGISTRY_HOLDERS.addFirst(registryHolder);
     }

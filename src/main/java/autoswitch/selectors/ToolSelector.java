@@ -6,8 +6,6 @@ import java.util.Locale;
 import autoswitch.AutoSwitch;
 import autoswitch.config.io.TagHandler;
 
-import autoswitch.selectors.selectable.Selectables;
-
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,7 +83,7 @@ public class ToolSelector implements Selector<ItemStack> {
 
     @Override
     public boolean matches(ItemStack compare) {
-        if (itemSelector.matches(Selectables.getStackProcessor(compare).processStack().apply(compare))) {
+        if (itemSelector.matches(compare.getItem())) {
             if (enchantmentsRequired()) {
                 for (EnchantmentSelector selector : enchantmentSelectors) {
                     if (!selector.matches(compare)) {

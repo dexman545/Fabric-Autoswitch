@@ -41,7 +41,7 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
     public static <U> Predicate<U> makeItemPredicate(TagKey<Item> tagKey) {
         return t -> getOrCreate(tagKey, Item.class, RegistryType.ITEM, o -> {
             if (o instanceof Item i) {
-                return i.getRegistryEntry().isIn(tagKey);
+                return RegistryHelper.isInTag(Registry.ITEM, tagKey, i);
             }
             return false;
         }).contains(t);
@@ -77,7 +77,6 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
     }
 
     // To be called only after FREs are refreshed
-    //todo test
     public static void refreshIdentifiers() {
         IDENTIFIED_TAGS.trim();
     }
@@ -87,7 +86,6 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
             fallbackEntries.add(FutureRegistryEntry.getOrCreate(type, id));
         }
     }
-    //todo need way to remove just polymer entries - another set?
 
     public boolean contains(Object o) {
         if (clazz.isInstance(o)) {

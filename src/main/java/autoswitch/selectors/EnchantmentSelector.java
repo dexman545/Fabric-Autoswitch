@@ -2,38 +2,31 @@ package autoswitch.selectors;
 
 import java.util.function.Predicate;
 
+import autoswitch.selectors.futures.IdentifiedTag;
 import autoswitch.selectors.futures.RegistryType;
-
-import autoswitch.selectors.selectable.Selectables;
-import autoswitch.util.RegistryHelper;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class EnchantmentSelector implements Selector<Enchantment> {
-    private final Predicate<Enchantment> predicate;
+    private final Predicate<Object> predicate;
 
     public EnchantmentSelector(Identifier id) {
         predicate = makeFutureRegistryEntryPredicate(RegistryType.ENCHANTMENT, id);
     }
 
     public EnchantmentSelector(TagKey<Enchantment> tagKey) {
-        this(o -> {
-            var m = Selectables.getSelectableEnchant(o);
-            return m.filter(selectableEnchant -> selectableEnchant.isIn().apply(selectableEnchant.safety(o), tagKey))
-                    .isPresent();
-        });
+        this.predicate = IdentifiedTag.makeEnchantmentPredicate(tagKey);
     }
 
     public EnchantmentSelector(Enchantment enchantment) {
         this(enchantment::equals);
     }
 
-    public EnchantmentSelector(Predicate<Enchantment> predicate) {
+    public EnchantmentSelector(Predicate<Object> predicate) {
         this.predicate = predicate;
     }
 
