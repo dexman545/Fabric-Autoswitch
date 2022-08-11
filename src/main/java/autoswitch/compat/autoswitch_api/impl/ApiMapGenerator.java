@@ -8,11 +8,12 @@ import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.selectors.TargetableGroup;
 import autoswitch.selectors.TargetableGroup.TargetPredicate;
-import autoswitch.util.RegistryHelper;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 
 import org.jetbrains.annotations.NotNull;
+
+import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 
 import net.minecraft.block.Material;
 import net.minecraft.entity.Bucketable;
@@ -83,8 +84,8 @@ public class ApiMapGenerator {
         // todo move to using itemstack rather than item itself - api change?
         return o -> {
             if (o instanceof Item item) {
-                return itemClass.isInstance(item) || RegistryHelper.isInTag(Registry.ITEM, fabricTag, item) ||
-                       RegistryHelper.isInTag(Registry.ITEM, commonTag, item);
+                return itemClass.isInstance(item) || ClientTags.isInWithLocalFallback(fabricTag, item) ||
+                       ClientTags.isInWithLocalFallback(commonTag, item);
             }
             return false;
         };

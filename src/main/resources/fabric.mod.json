@@ -25,6 +25,7 @@
     "fabricloader": ">=0.11.3",
     "fabric-key-binding-api-v1": ">=1.0.0",
     "fabric-lifecycle-events-v1": ">=1.0.0",
+    "fabric-client-tags-api-v1": ">=1.0.0",
     "fabric-command-api-v2": ">=2.0.0",
     "fabric-resource-loader-v0": "*",
     "minecraft": "${range}",

@@ -25,12 +25,6 @@ public final class RegistryHelper {
         AutoSwitch.switchData.target2UseActionToolSelectorsMap.trim();
     }
 
-    public static <T> boolean isInTag(Registry<T> registry, TagKey<T> tagKey, T entry) {
-        var maybeKey = registry.getKey(entry);
-        return maybeKey.filter(registryKey -> registry.entryOf(registryKey).isIn(tagKey))
-                       .isPresent();
-    }
-
     @Nullable
     public static <T> T getEntry(Registry<T> registry, Identifier id) {
         var entry = registry.get(id);

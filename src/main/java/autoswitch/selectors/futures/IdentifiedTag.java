@@ -3,10 +3,10 @@ package autoswitch.selectors.futures;
 import java.util.Collection;
 import java.util.function.Predicate;
 
-import autoswitch.util.RegistryHelper;
-
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
+import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -16,7 +16,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType type,
                                ObjectOpenCustomHashSet<FutureRegistryEntry> fallbackEntries,
@@ -40,8 +39,8 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
 
     public static <U> Predicate<U> makeItemPredicate(TagKey<Item> tagKey) {
         return t -> getOrCreate(tagKey, Item.class, RegistryType.ITEM, o -> {
-            if (o instanceof Item i) {
-                return RegistryHelper.isInTag(Registry.ITEM, tagKey, i);
+            if (o instanceof Item item) {
+                return ClientTags.isInWithLocalFallback(tagKey, item);
             }
             return false;
         }).contains(t);
@@ -50,7 +49,7 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
     public static <U> Predicate<U> makeBlockPredicate(TagKey<Block> tagKey) {
         return t -> IdentifiedTag.getOrCreate(tagKey, Block.class, RegistryType.BLOCK, o -> {
             if (o instanceof BlockState state) {
-                return state.isIn(tagKey);
+                return ClientTags.isInWithLocalFallback(tagKey, state.getBlock());
             }
             return false;
         }).contains(t);
@@ -61,7 +60,7 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
                                               (Class<EntityType<?>>)(Class<?>)EntityType.class,
                                               RegistryType.ENTITY, o -> {
                     if (o instanceof Entity e) {
-                        return e.getType().isIn(tagKey);
+                        return ClientTags.isInWithLocalFallback(tagKey, e.getType());
                     }
                     return false;
                 }).contains(t);
@@ -69,8 +68,8 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
 
     public static <U> Predicate<U> makeEnchantmentPredicate(TagKey<Enchantment> tagKey) {
         return t -> getOrCreate(tagKey, Enchantment.class, RegistryType.ENCHANTMENT, o -> {
-            if (o instanceof Enchantment e) {
-                return RegistryHelper.isInTag(Registry.ENCHANTMENT, tagKey, e);
+            if (o instanceof Enchantment enchantment) {
+                return ClientTags.isInWithLocalFallback(tagKey, enchantment);
             }
             return false;
         }).contains(t);
