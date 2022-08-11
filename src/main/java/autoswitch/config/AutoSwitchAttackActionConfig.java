@@ -393,4 +393,10 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @Comment("A default-provided override for glow lichen.")
     ToolSelector[] lichenSpecial();
 
+    @Separator(",")
+    @DefaultValue("pickaxe")
+    @Key("block@minecraft:rails")
+    @Comment("A tag for rails.")
+    ToolSelector[] rails();
+
 }
