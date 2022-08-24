@@ -3,6 +3,7 @@ package autoswitch.mixin.impl;
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.events.SwitchEvent;
+import autoswitch.selectors.ItemTarget;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
@@ -91,7 +92,7 @@ public class SwitchEventTriggerImpl {
                 if (AutoSwitch.useActionCfg.bow_action().length == 0) {
                     return; // guard to help prevent lag when rclicking into empty space
                 }
-                EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, SwitchData.itemTarget);
+                EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, ItemTarget.INSTANCE);
                 break;
             case ENTITY:
                 EntityHitResult entityHitResult = (EntityHitResult) crosshairTarget;

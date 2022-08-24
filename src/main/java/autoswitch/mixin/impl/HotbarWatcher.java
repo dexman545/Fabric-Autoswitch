@@ -3,7 +3,7 @@ package autoswitch.mixin.impl;
 import java.util.List;
 import java.util.function.IntConsumer;
 
-import autoswitch.AutoSwitch;
+import autoswitch.actions.Action;
 import autoswitch.util.TargetableCache;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -20,8 +20,8 @@ public class HotbarWatcher {
 
     public static void updateCaches(IntArrayList changedSlots) {
         changedSlots.forEach((IntConsumer) slot -> {
-            updateCache(AutoSwitch.switchState.switchActionCache, slot);
-            updateCache(AutoSwitch.switchState.switchInteractCache, slot);
+            updateCache(Action.INTERACT.getActionCache(), slot);
+            updateCache(Action.ATTACK.getActionCache(), slot);
         });
     }
 

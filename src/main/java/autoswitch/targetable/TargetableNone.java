@@ -2,6 +2,8 @@ package autoswitch.targetable;
 
 import java.util.Optional;
 
+import autoswitch.actions.Action;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
@@ -29,6 +31,11 @@ class TargetableNone extends Targetable {
     @Override
     Boolean switchTypeAllowed() {
         return true;
+    }
+
+    @Override
+    Action getAction() {
+        return null;
     }
 
 }

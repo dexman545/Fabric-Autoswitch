@@ -34,54 +34,6 @@ public class TargetableUtil {
         return Math.max(oldValue, newValue);
     }
 
-    public static Object getAttackTarget(Object protoTarget) {
-        return getTarget(AutoSwitch.switchData.target2AttackActionToolSelectorsMap, protoTarget);
-    }
-
-    public static Object getUseTarget(Object protoTarget) {
-        return getTarget(AutoSwitch.switchData.target2UseActionToolSelectorsMap, protoTarget);
-    }
-
-    /**
-     * Extract target from protoTarget, given a map of targets to examine.
-     *
-     * @param map         map of targets to compare protoTarget to
-     * @param protoTarget object to extract target data from
-     *
-     * @return target
-     */
-    private static Object getTarget(Map<Object, IntArrayList> map, Object protoTarget) {
-        if (protoTarget instanceof ItemTarget) return protoTarget;
-
-        // These methods were moved to AbstractBlockState in 20w12a,
-        // so their intermediary name changed breaking compatibility
-        if (protoTarget instanceof BlockState state) {
-            // Block Override
-            Block block = state.getBlock();
-            if (map.containsKey(block)) {
-                return block;
-            }
-            return TargetableGroup.maybeGetTarget(protoTarget)
-                                  .orElse(TargetableGroup.maybeGetTarget(block).orElse(state.getMaterial()));
-        }
-
-        if (protoTarget instanceof Entity e) {
-            // Entity Override
-            EntityType<?> entityType = e.getType();
-            if (map.containsKey(entityType)) {
-                return entityType;
-            }
-
-            return TargetableGroup.maybeGetTarget(protoTarget)
-                                  .orElse(TargetableGroup.maybeGetTarget(entityType)
-                                                         .orElse(protoTarget instanceof LivingEntity ?
-                                                                 ((LivingEntity) protoTarget).getGroup() :
-                                                                 entityType));
-        }
-
-        return null;
-    }
-
     /**
      * Generates a target rating for the given stack.
      *
@@ -198,16 +150,6 @@ public class TargetableUtil {
         }
 
         return durability.get().intValue();
-    }
-
-    public static OptionalInt getCachedSlot(Object target, SwitchState state, boolean isUseAction) {
-        return getTargetableCache(state, isUseAction).containsKey(target) ? OptionalInt
-                .of(getTargetableCache(state, isUseAction).getInt(target)) : OptionalInt.empty();
-    }
-
-    public static TargetableCache getTargetableCache(SwitchState state, boolean isUseAction) {
-        if (isUseAction) return state.switchInteractCache;
-        return state.switchActionCache;
     }
 
     /**

@@ -1,8 +1,8 @@
 package autoswitch.targetable;
 
 import autoswitch.AutoSwitch;
+import autoswitch.actions.Action;
 import autoswitch.config.AutoSwitchConfig;
-import autoswitch.util.TargetableUtil;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -23,8 +23,12 @@ class TargetableAttack extends Targetable {
 
     @Override
     void populateToolSelection(ItemStack stack, int slot) {
-        processToolSelectors(stack, slot, AutoSwitch.switchData.target2AttackActionToolSelectorsMap,
-                             TargetableUtil::getAttackTarget);
+        processToolSelectors(stack, slot);
+    }
+
+    @Override
+    Action getAction() {
+        return Action.ATTACK;
     }
 
     @Override
@@ -45,7 +49,7 @@ class TargetableAttack extends Targetable {
     @Override
     protected boolean stopProcessingSlot(Object target) {
         return !AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() &&
-               AutoSwitch.switchData.target2AttackActionToolSelectorsMap.get(target) == null;
+               getAction().getTarget2ToolSelectorsMap().get(target) == null;
     }
 
 }

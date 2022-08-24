@@ -3,9 +3,11 @@ package autoswitch.compat.autoswitch_api.impl;
 import java.util.function.Predicate;
 
 import autoswitch.AutoSwitch;
+import autoswitch.actions.Action;
 import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
+import autoswitch.selectors.ItemTarget;
 import autoswitch.selectors.TargetableGroup;
 import autoswitch.selectors.TargetableGroup.TargetPredicate;
 import autoswitch.util.SwitchData;
@@ -231,13 +233,13 @@ public class ApiMapGenerator {
         }
 
         // Item Use
-        addTarget("bow_action", SwitchData.itemTarget);
+        addTarget("bow_action", ItemTarget.INSTANCE);
     }
 
     // Populate maps with default values to be sent to mods
     private static void genConfigMaps() {
-        ConfigReflection.defaults(AutoSwitch.switchData.attackConfig, AutoSwitchAttackActionConfig.class);
-        ConfigReflection.defaults(AutoSwitch.switchData.usableConfig, AutoSwitchUseActionConfig.class);
+        ConfigReflection.defaults(Action.ATTACK.getConfigMap(), AutoSwitchAttackActionConfig.class);
+        ConfigReflection.defaults(Action.INTERACT.getConfigMap(), AutoSwitchUseActionConfig.class);
 
         // PoC for ensuring empty values don't get passed to mods via the API, allowing mods to override
         /*for (String key : matCfg.propertyNames()) {

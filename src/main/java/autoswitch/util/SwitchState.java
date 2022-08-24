@@ -1,13 +1,13 @@
 package autoswitch.util;
 
+import autoswitch.actions.Action;
+
 /**
  * Store the switch state of the player and relevant maps
  */
 public class SwitchState {
 
     public static boolean preventBlockAttack;
-    public TargetableCache switchActionCache;
-    public TargetableCache switchInteractCache;
     private int prevSlot;
     private boolean hasSwitched;
     private boolean attackedEntity;
@@ -16,9 +16,7 @@ public class SwitchState {
         prevSlot = -1;
         hasSwitched = false;
         attackedEntity = false;
-        int maxCacheSize = 128;
-        switchActionCache = new TargetableCache(maxCacheSize);
-        switchInteractCache = new TargetableCache(maxCacheSize);
+        Action.resetAllActionStates();
         preventBlockAttack = false;
     }
 

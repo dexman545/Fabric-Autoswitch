@@ -3,6 +3,7 @@ package autoswitch.compat.autoswitch_api.impl;
 import java.util.Set;
 
 import autoswitch.AutoSwitch;
+import autoswitch.actions.Action;
 import autoswitch.api.AutoSwitchApi;
 import autoswitch.api.AutoSwitchMap;
 
@@ -24,10 +25,10 @@ public class ApiGenUtil {
             api.customDamageSystems(AutoSwitch.switchData.damageMap);
             //api.moddedToolGroups(AutoSwitch.switchData.toolGroupings);
             api.moddedToolGroupPredicates(AutoSwitch.switchData.toolPredicates);
-            final AutoSwitchMap<String, String> baseAction = duplicateMap(AutoSwitch.switchData.attackConfig);
-            final AutoSwitchMap<String, String> baseUseAction = duplicateMap(AutoSwitch.switchData.usableConfig);
-            api.moddedTargets(AutoSwitch.switchData.targets, AutoSwitch.switchData.attackConfig,
-                              AutoSwitch.switchData.usableConfig);
+            final AutoSwitchMap<String, String> baseAction = duplicateMap(Action.ATTACK.getConfigMap());
+            final AutoSwitchMap<String, String> baseUseAction = duplicateMap(Action.INTERACT.getConfigMap());
+            api.moddedTargets(AutoSwitch.switchData.targets, Action.ATTACK.getConfigMap(),
+                              Action.INTERACT.getConfigMap());
 
             final String name = entrypoint.getProvider().getMetadata().getName();
 
@@ -44,11 +45,11 @@ public class ApiGenUtil {
     }
 
     private static void processActionDif(String mod, AutoSwitchMap<String, String> base) {
-        processMapDiff(mod, base, AutoSwitch.switchData.attackConfig, modActionConfigs);
+        processMapDiff(mod, base, Action.ATTACK.getConfigMap(), modActionConfigs);
     }
 
     private static void processUseDif(String mod, AutoSwitchMap<String, String> base) {
-        processMapDiff(mod, base, AutoSwitch.switchData.usableConfig, modUseConfigs);
+        processMapDiff(mod, base, Action.INTERACT.getConfigMap(), modUseConfigs);
     }
 
     private static void processMapDiff(String mod, AutoSwitchMap<String, String> base,

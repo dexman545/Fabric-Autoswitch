@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.Set;
 
 import autoswitch.AutoSwitch;
+import autoswitch.actions.Action;
 import autoswitch.api.AutoSwitchMap;
 import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.config.AutoSwitchAttackActionConfig;
@@ -63,8 +64,9 @@ public final class ConfigEstablishment {
         AutoSwitch.attackActionCfg = ConfigFactory.create(AutoSwitchAttackActionConfig.class);
         AutoSwitch.useActionCfg = ConfigFactory.create(AutoSwitchUseActionConfig.class);
 
-        mergeConfigs(AutoSwitch.switchData.attackConfig, AutoSwitch.attackActionCfg);
-        mergeConfigs(AutoSwitch.switchData.usableConfig, AutoSwitch.useActionCfg);
+        for (Action action : Action.values()) {
+            mergeConfigs(action.getConfigMap(), action.getActionConfig());
+        }
 
         // Generate config file; removes incorrect values from existing one as well
         try {
@@ -87,22 +89,19 @@ public final class ConfigEstablishment {
         // Clear data and recreate it based on new config
 
         AutoSwitch.attackActionCfg.addReloadListener(event -> {
-            AutoSwitch.switchState.switchActionCache.clear();
-            AutoSwitch.switchData.target2AttackActionToolSelectorsMap.clear();
+            Action.ATTACK.clearSelectors();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
             AutoSwitch.logger.info("Attack Config Reloaded");
         });
 
         AutoSwitch.useActionCfg.addReloadListener(event -> {
-            AutoSwitch.switchState.switchInteractCache.clear();
-            AutoSwitch.switchData.target2UseActionToolSelectorsMap.clear();
+            Action.ATTACK.clearSelectors();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
             AutoSwitch.logger.info("Interact Config Reloaded");
         });
 
         AutoSwitch.featureCfg.addReloadListener(event -> {
-            AutoSwitch.switchState.switchInteractCache.clear();
-            AutoSwitch.switchState.switchActionCache.clear();
+            Action.resetAllActionStates();
             AutoSwitch.logger.info("Feature Config Reloaded");
         });
     }

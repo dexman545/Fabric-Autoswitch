@@ -1,6 +1,7 @@
 package autoswitch.util;
 
 import autoswitch.AutoSwitch;
+import autoswitch.actions.Action;
 import autoswitch.selectors.futures.FutureRegistryEntry;
 import autoswitch.selectors.futures.IdentifiedTag;
 
@@ -19,8 +20,9 @@ public final class RegistryHelper {
         FutureRegistryEntry.forceRevalidateEntries();
         IdentifiedTag.refreshIdentifiers();
         // Rehashes the maps to allow for the new entries to behave well
-        AutoSwitch.switchData.target2AttackActionToolSelectorsMap.trim();
-        AutoSwitch.switchData.target2UseActionToolSelectorsMap.trim();
+        for (Action action : Action.values()) {
+            action.getTarget2ToolSelectorsMap().trim();
+        }
     }
 
     @Nullable

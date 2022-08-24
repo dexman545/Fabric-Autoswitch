@@ -10,13 +10,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntConsumer;
 
 import autoswitch.AutoSwitch;
+import autoswitch.actions.Action;
 import autoswitch.selectors.ItemSelector;
 import autoswitch.selectors.ToolSelector;
 import autoswitch.util.SwitchData;
 import autoswitch.util.TargetableUtil;
 
 import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -153,7 +153,7 @@ public abstract class Targetable {
                     .max(this.slot2ToolRating.int2DoubleEntrySet(), Comparator.comparingDouble(Map.Entry::getValue))
                     .getIntKey();
             if (AutoSwitch.featureCfg.cacheSwitchResults()) {
-                TargetableUtil.getTargetableCache(AutoSwitch.switchState, isUse()).put(this.protoTarget, slot);
+                getAction().getActionCache().put(this.protoTarget, slot);
             }
             return Optional.of(slot);
         }
@@ -172,9 +172,7 @@ public abstract class Targetable {
                                          AutoSwitch.featureCfg.switchInMP())));
     }
 
-    boolean isUse() {
-        return false;
-    }
+    abstract Action getAction();
 
     /**
      * Determine config value for switching for mobs/blocks
@@ -188,15 +186,12 @@ public abstract class Targetable {
      *
      * @param stack           item in hotbar slot to check for usage
      * @param slot            hotbar slot number
-     * @param targetGetter    lookup protoTarget in the correct map
-     * @param toolSelectorMap ToolSelectors relevant to the case
      */
-    void processToolSelectors(ItemStack stack, int slot, Map<Object, IntArrayList> toolSelectorMap,
-                              TargetGetter targetGetter) {
+    void processToolSelectors(ItemStack stack, int slot) {
         if (!switchAllowed()) return; // Short-circuit to not evaluate tools when cannot switch
 
         // Check cache
-        OptionalInt cachedSlot = TargetableUtil.getCachedSlot(protoTarget, AutoSwitch.switchState, isUse());
+        OptionalInt cachedSlot = getAction().getCachedSlot(protoTarget);
         if (cachedSlot.isPresent()) {
             this.slot2ToolRating.put(cachedSlot.getAsInt(), 100D);
             return;
@@ -206,11 +201,12 @@ public abstract class Targetable {
         // promoting higher priority tools from the config in the selection
         AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize() * 10);
 
-        Object target = targetGetter.getTarget(protoTarget);
+        Object target = getAction().getTarget(protoTarget);
 
         if (target == null || stopProcessingSlot(target)) return;
 
-        toolSelectorMap.getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
+        getAction().getTarget2ToolSelectorsMap()
+                        .getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
             if (id == 0) return; // Check if no ID was assigned to the toolSelector.
 
             counter.updateAndGet(v -> v - 2); // Tools later in the config list are not preferred
@@ -219,12 +215,12 @@ public abstract class Targetable {
             if (id != SwitchData.blank.getInt(0)) {
                 toolSelector = AutoSwitch.switchData.toolSelectors.get(id);
             } else { // Handle case of no target but user desires fallback to items
-                toolSelector = isUse() ? nullToolSelector : blankToolSelector;
+                toolSelector = !getAction().allowNullItemFallback() ? nullToolSelector : blankToolSelector;
                 //todo just stop processing instead of
                 // null selector?
             }
 
-            if ((isUse() || TargetableUtil.isRightTool(stack, protoTarget))) {
+            if ((!getAction().allowNullItemFallback() || TargetableUtil.isRightTool(stack, protoTarget))) {
                 updateToolListsAndRatings(stack, toolSelector, slot, counter);
             }
 
@@ -244,7 +240,7 @@ public abstract class Targetable {
 
         AutoSwitch.logger.debug("Slot: {}; Initial Rating: {}", slot, rating);
 
-        if (!isUse()) {
+        if (getAction().allowNullItemFallback()) {
             if (rating != 0) {
                 if (AutoSwitch.featureCfg.preferMinimumViableTool()) {
                     rating += -1 * Math.log10(rating); // Reverse and clamp tool
@@ -275,12 +271,6 @@ public abstract class Targetable {
 
     boolean stopProcessingSlot(Object target) {
         return false;
-    }
-
-    @FunctionalInterface
-    interface TargetGetter {
-        Object getTarget(Object protoTarget);
-
     }
 
 }

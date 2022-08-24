@@ -1,7 +1,7 @@
 package autoswitch.targetable;
 
 import autoswitch.AutoSwitch;
-import autoswitch.util.TargetableUtil;
+import autoswitch.actions.Action;
 
 import net.minecraft.entity.Saddleable;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,13 +23,12 @@ class TargetableUsable extends Targetable {
 
     @Override
     protected void populateToolSelection(ItemStack stack, int slot) {
-        processToolSelectors(stack, slot, AutoSwitch.switchData.target2UseActionToolSelectorsMap,
-                             TargetableUtil::getUseTarget);
+        processToolSelectors(stack, slot);
     }
 
     @Override
-    protected boolean isUse() {
-        return true;
+    Action getAction() {
+        return Action.INTERACT;
     }
 
     @Override

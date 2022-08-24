@@ -3,6 +3,7 @@ package autoswitch.config.populator;
 import java.util.Map;
 
 import autoswitch.AutoSwitch;
+import autoswitch.actions.Action;
 import autoswitch.config.io.TargetHandler;
 import autoswitch.selectors.ToolSelector;
 
@@ -20,20 +21,23 @@ public class AutoSwitchMapsGenerator {
      * ToolTargetLists
      */
     public static void populateAutoSwitchMaps() {
-        populateToolTargetMaps();
+        populateTarget2ToolSelectorMap();
 
         // Trim the maps
         AutoSwitch.switchData.toolSelectors.trim();
-        AutoSwitch.switchData.target2UseActionToolSelectorsMap.trim();
-        AutoSwitch.switchData.target2AttackActionToolSelectorsMap.trim();
+
+        for (Action action : Action.values()) {
+            action.getTarget2ToolSelectorsMap().trim();
+        }
     }
 
     /**
-     * Populate Target maps (toolTargetLists and useMap).
+     * Populate tool selector maps for each action.
      */
-    private static void populateToolTargetMaps() {
-        populateMap(AutoSwitch.switchData.target2AttackActionToolSelectorsMap, AutoSwitch.attackActionCfg);
-        populateMap(AutoSwitch.switchData.target2UseActionToolSelectorsMap, AutoSwitch.useActionCfg);
+    private static void populateTarget2ToolSelectorMap() {
+        for (Action action : Action.values()) {
+            populateMap(action.getTarget2ToolSelectorsMap(), action.getActionConfig());
+        }
 
     }
 

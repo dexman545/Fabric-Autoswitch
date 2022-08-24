@@ -16,25 +16,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 
 public class SwitchData {
     /**
-     * Target object for use with `bow_action`
-     */
-    public final static ItemTarget itemTarget = new ItemTarget();
-
-    /**
      * Used to process hotbar even when no target is selected. For cases where users want to use nondamageable items.
      */
     public final static IntArrayList blank = new IntArrayList();
-
-    /**
-     * Map of target object to list of toolSelector IDs for the 'use' action.
-     */
-    public final Object2ObjectOpenCustomHashMap<Object, IntArrayList> target2UseActionToolSelectorsMap =
-            new Object2ObjectOpenCustomHashMap<>(new FutureRegistryEntry.TargetHashingStrategy());
-    /**
-     * Map of target object to list of toolSelector IDs for the 'attack' action.
-     */
-    public final Object2ObjectOpenCustomHashMap<Object, IntArrayList> target2AttackActionToolSelectorsMap =
-            new Object2ObjectOpenCustomHashMap<>(new FutureRegistryEntry.TargetHashingStrategy());
 
     /**
      * Map of toolSelector input from the config -> it's int id. Used to ensure uniqueness of toolSelectors and avoid
@@ -71,20 +55,6 @@ public class SwitchData {
      * Map of target's key from the config -> the Object it represents.
      */
     public final AutoSwitchMap<String, Object> targets = new AutoSwitchMap<>();
-
-    /**
-     * API Map - this map is passed to interfacing mods for them to add to it.
-     * <p>
-     * A map of config key -> config value for the "attack" action.
-     */
-    public final AutoSwitchMap<String, String> attackConfig = new AutoSwitchMap<>();
-
-    /**
-     * API Map - this map is passed to interfacing mods for them to add to it.
-     * <p>
-     * A map of config key -> config value for the "use" action.
-     */
-    public final AutoSwitchMap<String, String> usableConfig = new AutoSwitchMap<>();
 
     public SwitchData() {
         // Add a dummy entry for when the list of toolSelector IDs does not contain a target,
