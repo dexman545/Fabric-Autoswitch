@@ -156,6 +156,10 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("When enabled, switching is disabled while the player is crouching/sneaking.")
     Boolean disableSwitchingWhenCrouching();
 
+    @DefaultValue("3")
+    @Comment("The amount of remaining durability needed to trigger tool preservation.")
+    Integer damageThreshold();
+
     enum TargetType implements Permission {
         BOTH, MOBS, BLOCKS,
         NONE {

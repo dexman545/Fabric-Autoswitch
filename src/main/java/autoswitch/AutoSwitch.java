@@ -33,8 +33,6 @@ public class AutoSwitch implements ClientModInitializer {
     public static final Logger logger = LoggerFactory.getLogger("AutoSwitch");
     public static final SwitchData switchData = new SwitchData();
     public static final Scheduler scheduler = new Scheduler();
-    // Constant damage threshold
-    public static final int damageThreshold = 3;
     // Create object to store player switch state and relevant data
     public static SwitchState switchState = new SwitchState();
     // Init config
