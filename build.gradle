@@ -125,6 +125,8 @@ dependencies {
     // ModMenu
     //optional "maven.modrinth:modmenu:${project.modmenu_version}"
 
+    //todo remove when we bump MC requirement to >=1.19.2
+    include fabricApi.module("fabric-client-tags-api-v1", project.fabric_version)
 }
 
 /**
