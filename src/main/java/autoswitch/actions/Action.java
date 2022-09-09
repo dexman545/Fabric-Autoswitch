@@ -2,6 +2,7 @@ package autoswitch.actions;
 
 import java.util.Map;
 import java.util.OptionalInt;
+import java.util.function.Supplier;
 
 import autoswitch.AutoSwitch;
 import autoswitch.api.AutoSwitchMap;
@@ -22,8 +23,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 
 public enum Action {
-    ATTACK(true, AutoSwitch.attackActionCfg),
-    INTERACT(false, AutoSwitch.useActionCfg);
+    ATTACK(true, () -> AutoSwitch.attackActionCfg),
+    INTERACT(false, () -> AutoSwitch.useActionCfg);
 
     private static final int MAX_CACHE_SIZE = 128;
     /**
@@ -40,9 +41,9 @@ public enum Action {
     private final TargetableCache actionCache;
     private final boolean allowNullItemFallback;
 
-    private final Accessible actionConfig;
+    private final Supplier<Accessible> actionConfig;
 
-    <T extends Mutable & Accessible> Action(boolean allowNullItemFallback, T actionConfig) {
+    Action(boolean allowNullItemFallback, Supplier<Accessible> actionConfig) {
         this.allowNullItemFallback = allowNullItemFallback;
         this.actionConfig = actionConfig;
         target2ToolSelectorsMap = new Object2ObjectOpenCustomHashMap<>(new FutureRegistryEntry.TargetHashingStrategy());
@@ -139,6 +140,6 @@ public enum Action {
 
     @SuppressWarnings("unchecked")
     public <T extends Mutable & Accessible> T getActionConfig() {
-        return (T) actionConfig;
+        return (T) actionConfig.get();
     }
 }
