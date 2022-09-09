@@ -100,13 +100,12 @@ public enum Action {
     }
 
     public void clearSelectors() {
-        actionCache.clear();
-        //target2ToolSelectorsMap.clear();
+        target2ToolSelectorsMap.clear();
     }
 
     public static void resetAllActionStates() {
         for (Action action : values()) {
-            action.clearSelectors();
+            action.resetCache();
         }
     }
 
