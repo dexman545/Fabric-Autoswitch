@@ -1,6 +1,7 @@
 package autoswitch.config.util;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.Locale;
 
 import autoswitch.AutoSwitch;
@@ -25,8 +26,16 @@ public class CaseInsensitiveEnumConverter<X extends Enum<X>> implements Converte
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public X convert(Method method, String input) {
-        @SuppressWarnings("unchecked") Class<X> t = (Class<X>) method.getReturnType();
+        Class<X> t = (Class<X>) method.getReturnType();
+
+        if (!t.isEnum()) {
+            if (method.getGenericReturnType() instanceof ParameterizedType parameterizedType) {
+                t = (Class<X>) parameterizedType.getActualTypeArguments()[0];
+            }
+        }
+
         X e;
         if ((e = searchEnum(t, input.toUpperCase(Locale.ENGLISH))) == null) {
             AutoSwitch.logger.error("Could not parse value: {} on {}; Defaulting to another.", input, method.getName());
