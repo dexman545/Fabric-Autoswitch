@@ -93,6 +93,15 @@ public abstract class Targetable {
         return new TargetableAttack(protoTarget, player);
     }
 
+    /**
+     * Switch logic for 'event' action
+     *
+     * @return returns the correct Targetable subclass to handle the operation
+     */
+    public static Targetable event(Object protoTarget, PlayerEntity player) {
+        return new TargetableEvent(protoTarget, player);
+    }
+
 
     /**
      * Pulls the list of ItemStacks from the player's hotbar and send the stack and slot number to populate the tool

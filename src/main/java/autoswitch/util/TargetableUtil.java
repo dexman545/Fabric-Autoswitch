@@ -1,21 +1,13 @@
 package autoswitch.util;
 
-import java.util.Map;
-import java.util.OptionalInt;
 import java.util.concurrent.atomic.AtomicReference;
 
 import autoswitch.AutoSwitch;
-import autoswitch.selectors.ItemTarget;
-import autoswitch.selectors.TargetableGroup;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;

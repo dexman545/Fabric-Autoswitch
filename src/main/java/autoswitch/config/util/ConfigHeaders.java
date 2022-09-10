@@ -26,6 +26,8 @@ public final class ConfigHeaders {
                                               "action (right clicking) on a mob or block. " +
                                               "\nSame format as the Material Config:" + format;
 
+    public static final String eventConfig = format; //todo adapt for events
+
 
     private ConfigHeaders() {
     }

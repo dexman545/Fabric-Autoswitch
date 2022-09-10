@@ -8,6 +8,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import autoswitch.config.AutoSwitchAttackActionConfig;
+import autoswitch.config.AutoSwitchEventActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.config.util.ConfigTemplates;
@@ -48,7 +49,9 @@ public class GenerateConfigTemplate {
         sanitize(defaults);
         sanitize(comments);
 
-        if (cfg instanceof AutoSwitchUseActionConfig || cfg instanceof AutoSwitchAttackActionConfig) {
+        if (cfg instanceof AutoSwitchUseActionConfig ||
+            cfg instanceof AutoSwitchAttackActionConfig ||
+            cfg instanceof AutoSwitchEventActionConfig) {
             config.append(ConfigTemplates.toolGroupings());
             config.append("\n");
         }

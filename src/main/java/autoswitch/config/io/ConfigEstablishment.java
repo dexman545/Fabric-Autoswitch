@@ -13,6 +13,7 @@ import autoswitch.api.AutoSwitchMap;
 import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchConfig;
+import autoswitch.config.AutoSwitchEventActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.populator.AutoSwitchMapsGenerator;
 import autoswitch.config.util.ConfigHeaders;
@@ -35,6 +36,8 @@ public final class ConfigEstablishment {
     private static final String configUseAction = useActionPath.toString();
     private static final Path attackActionPath = configDir.resolve("autoswitchAttackAction.cfg");
     private static final String configAttackAction = attackActionPath.toString();
+    private static final Path eventActionPath = configDir.resolve("autoswitchEventAction.cfg");
+    private static final String configEventAction = eventActionPath.toString();
 
     // AutoSwitch has 3 config files - basic, material, and usable.
     // Each can be represented by a map of key -> value pairs.
@@ -53,16 +56,16 @@ public final class ConfigEstablishment {
 
     public static void establishConfigs() {
         // Update old config files
-        if (!useActionPath.toFile().exists() || !attackActionPath.toFile().exists()) {
-            updateOldConfigFiles();
-        }
+        updateOldConfigFiles();
 
         ConfigFactory.setProperty("configDir", configFeature);
         ConfigFactory.setProperty("configDirMats", configAttackAction);
+        ConfigFactory.setProperty("configDirEvents", configEventAction);
         ConfigFactory.setProperty("configUsable", configUseAction);
         AutoSwitch.featureCfg = ConfigFactory.create(AutoSwitchConfig.class);
         AutoSwitch.attackActionCfg = ConfigFactory.create(AutoSwitchAttackActionConfig.class);
         AutoSwitch.useActionCfg = ConfigFactory.create(AutoSwitchUseActionConfig.class);
+        AutoSwitch.eventActionConfig = ConfigFactory.create(AutoSwitchEventActionConfig.class);
 
         for (Action action : Action.values()) {
             mergeConfigs(action.getConfigMap(), action.getActionConfig());
@@ -100,6 +103,12 @@ public final class ConfigEstablishment {
             AutoSwitch.logger.info("Interact Config Reloaded");
         });
 
+        AutoSwitch.eventActionConfig.addReloadListener(event -> {
+            Action.EVENT.clearSelectors();
+            AutoSwitchMapsGenerator.populateAutoSwitchMaps();
+            AutoSwitch.logger.info("Interact Config Reloaded");
+        });
+
         AutoSwitch.featureCfg.addReloadListener(event -> {
             Action.resetAllActionStates();
             AutoSwitch.logger.info("Feature Config Reloaded");
@@ -108,11 +117,9 @@ public final class ConfigEstablishment {
 
     private static void updateOldConfigFiles() {
         try {
-            FileUtils.moveFile(useActionPath.resolveSibling("autoswitchUsable.cfg").toFile(), useActionPath.toFile());
-            FileUtils.moveFile(attackActionPath.resolveSibling("autoswitchMaterials.cfg").toFile(),
-                               attackActionPath.toFile());
-            updateOldConfigFormat(attackActionPath.toFile());
-            updateOldConfigFormat(useActionPath.toFile());
+            //updateOldConfigFormat(attackActionPath.toFile());
+            //updateOldConfigFormat(useActionPath.toFile());
+            updateOldConfigFormat(featurePath.toFile());
         } catch (IOException e) {
             AutoSwitch.logger.debug("Error migrating config files", e);
         }
@@ -139,6 +146,7 @@ public final class ConfigEstablishment {
         genFile(configAttackAction, AutoSwitch.attackActionCfg, ConfigHeaders.attackConfig,
                 ApiGenUtil.modActionConfigs);
         genFile(configUseAction, AutoSwitch.useActionCfg, ConfigHeaders.usableConfig, ApiGenUtil.modUseConfigs);
+        genFile(configEventAction, AutoSwitch.eventActionConfig, ConfigHeaders.eventConfig, null);
     }
 
     private static void updateOldConfigFormat(File file) throws IOException {

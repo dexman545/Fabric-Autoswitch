@@ -6,6 +6,7 @@ import autoswitch.compat.autoswitch_api.impl.ApiGenUtil;
 import autoswitch.compat.autoswitch_api.impl.ApiMapGenerator;
 import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchConfig;
+import autoswitch.config.AutoSwitchEventActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.commands.CommandConductor;
 import autoswitch.config.io.ConfigEstablishment;
@@ -39,6 +40,7 @@ public class AutoSwitch implements ClientModInitializer {
     public static AutoSwitchConfig featureCfg;
     public static AutoSwitchAttackActionConfig attackActionCfg;
     public static AutoSwitchUseActionConfig useActionCfg;
+    public static AutoSwitchEventActionConfig eventActionConfig;
     public static int tickTime = 0;
     public static boolean doAS = true;
     // Keybindings

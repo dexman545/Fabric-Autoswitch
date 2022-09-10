@@ -12,6 +12,7 @@ import java.util.Properties;
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchAttackActionConfig;
 import autoswitch.config.AutoSwitchConfig;
+import autoswitch.config.AutoSwitchEventActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -30,6 +31,7 @@ public class ConfigReflection {
         configClasses.add(AutoSwitchAttackActionConfig.class);
         configClasses.add(AutoSwitchConfig.class);
         configClasses.add(AutoSwitchUseActionConfig.class);
+        configClasses.add(AutoSwitchEventActionConfig.class);
     }
 
     // Fix returning wrong class

@@ -24,7 +24,8 @@ import net.minecraft.entity.LivingEntity;
 
 public enum Action {
     ATTACK(true, () -> AutoSwitch.attackActionCfg),
-    INTERACT(false, () -> AutoSwitch.useActionCfg);
+    INTERACT(false, () -> AutoSwitch.useActionCfg),
+    EVENT(false, () -> AutoSwitch.eventActionConfig);
 
     private static final int MAX_CACHE_SIZE = 128;
     /**

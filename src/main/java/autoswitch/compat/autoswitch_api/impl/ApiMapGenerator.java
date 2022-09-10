@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 import autoswitch.AutoSwitch;
 import autoswitch.actions.Action;
 import autoswitch.config.AutoSwitchAttackActionConfig;
+import autoswitch.config.AutoSwitchEventActionConfig;
 import autoswitch.config.AutoSwitchUseActionConfig;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.selectors.ItemTarget;
@@ -240,6 +241,7 @@ public class ApiMapGenerator {
     private static void genConfigMaps() {
         ConfigReflection.defaults(Action.ATTACK.getConfigMap(), AutoSwitchAttackActionConfig.class);
         ConfigReflection.defaults(Action.INTERACT.getConfigMap(), AutoSwitchUseActionConfig.class);
+        ConfigReflection.defaults(Action.EVENT.getConfigMap(), AutoSwitchEventActionConfig.class);
 
         // PoC for ensuring empty values don't get passed to mods via the API, allowing mods to override
         /*for (String key : matCfg.propertyNames()) {
