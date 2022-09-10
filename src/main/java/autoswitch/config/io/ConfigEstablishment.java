@@ -150,7 +150,8 @@ public final class ConfigEstablishment {
     }
 
     private static void updateOldConfigFormat(File file) throws IOException {
-        String s = FileUtils.readFileToString(file, StandardCharsets.UTF_8).replaceAll("minecraft-", "minecraft!");
+        String s = FileUtils.readFileToString(file, StandardCharsets.UTF_8).replaceAll("BOTH", "BLOCKS, MOBS");
+        s = s.replaceAll("NONE", "");
         FileUtils.writeStringToFile(file, s, StandardCharsets.UTF_8, false);
     }
 

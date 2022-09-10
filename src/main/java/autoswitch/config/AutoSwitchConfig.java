@@ -9,6 +9,8 @@ import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Mutable;
 import org.aeonbits.owner.Reloadable;
 
+import java.util.EnumSet;
+
 @Config.HotReload(type = Config.HotReloadType.ASYNC, value = 1) //set value = X for interval of X seconds. Default: 5
 @Config.Sources({"file:${configDir}"})
 public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutable {
@@ -24,31 +26,32 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("AutoSwitch functionality in creative mode.")
     Boolean switchInCreative();
 
-    @DefaultValue("BOTH")
+    @DefaultValue("BLOCKS, MOBS")
+    @Separator(",")
     @Key("switchAllowedFor")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
-    @Comment("Allow switching on the specified type, eg. only switch for blocks by specifying 'BLOCKS'. Set to 'NONE'" +
-             " to disable this behavior entirely." + "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
-    TargetType switchAllowed();
+    @Comment("Allow switching on the specified type, eg. only switch for blocks by specifying 'BLOCKS'. Leave blank" +
+             " to disable this behavior entirely." + "\nAcceptable values: MOBS, BLOCKS")
+    EnumSet<TargetType> switchAllowed();
 
     @DefaultValue("true")
     @Comment("Allow AutoSwitch when in multiplayer.")
     Boolean switchInMP();
 
-    @DefaultValue("BOTH")
+    @DefaultValue("BLOCKS, MOBS")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Key("switchbackAllowedFor")
-    @Comment("Return to the previous slot when no longer performing the action on the specified type. Set to 'NONE'" +
-             " to disable this behavior entirely." + "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
-    TargetType switchbackAllowed();
+    @Comment("Return to the previous slot when no longer performing the action on the specified type. Leave blank" +
+             " to disable this behavior entirely." + "\nAcceptable values: MOBS, BLOCKS")
+    EnumSet<TargetType> switchbackAllowed();
 
     @DefaultValue("MOBS")
     @Key("switchbackWaitsForCooldown")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Comment("Before switching back when using the 'attack' action, wait for the attack cooldown to finish. " +
              "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks visually smoother. " +
-             "\nAcceptable values: BOTH, MOBS, BLOCKS, NONE")
-    TargetType switchbackWaits();
+             "\nAcceptable values: MOBS, BLOCKS")
+    EnumSet<TargetType> switchbackWaits();
 
     @DefaultValue("true")
     @Comment("Will ignore tools that are about to break when considering which tool to switch to.")
@@ -160,14 +163,11 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("The amount of remaining durability needed to trigger tool preservation.")
     Integer damageThreshold();
 
-    enum TargetType implements Permission {
-        BOTH, MOBS, BLOCKS,
-        NONE {
-            @Override
-            public boolean allowed() {
-                return false;
-            }
-        }
+    enum TargetType {
+        MOBS, BLOCKS, EVENTS;
+
+        public static final EnumSet<TargetType> MOB_BLOCK = EnumSet.of(AutoSwitchConfig.TargetType.MOBS,
+                                                                       AutoSwitchConfig.TargetType.BLOCKS);
     }
 
     enum DisplayControl implements Permission {

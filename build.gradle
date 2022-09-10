@@ -116,7 +116,8 @@ dependencies {
     requiredModImpl "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // OWNER library
-    requiredLib "org.aeonbits.owner:owner:1.0.12"
+    //requiredLib "org.aeonbits.owner:owner:1.0.12"
+    requiredLib files('api/owner-1.0.13-SNAPSHOT.jar') // Custom version allowing EnumSets to be used
 
     // Autoswitch API
     requiredModApi 'com.github.dexman545:autoswitch-api:3.0.0'//-SNAPSHOT

@@ -27,7 +27,7 @@ public class SwitchUtil {
      */
     public static Consumer<Boolean> handleUseSwitchConsumer() {
         return moveToOffhand -> {
-            if (moveToOffhand && (AutoSwitch.featureCfg.switchbackAllowed().allowed())) {
+            if (moveToOffhand && (!AutoSwitch.featureCfg.switchbackAllowed().isEmpty())) {
                 AutoSwitch.switchState.setHasSwitched(true);
             }
 

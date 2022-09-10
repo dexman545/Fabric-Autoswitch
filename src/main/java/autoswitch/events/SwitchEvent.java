@@ -33,14 +33,13 @@ public enum SwitchEvent {
          */
         private void handlePostSwitchTasks(boolean hasSwitched) {
             if (hasSwitched) {
-                boolean doSwitchBack = featureCfg.switchbackAllowed() == TargetType.BOTH;
                 if (protoTarget instanceof Entity) {
-                    if (doSwitchBack || featureCfg.switchbackAllowed() == TargetType.MOBS) {
+                    if (featureCfg.switchbackAllowed().contains(TargetType.MOBS)) {
                         AutoSwitch.switchState.setHasSwitched(true);
                         AutoSwitch.switchState.setAttackedEntity(true);
                     }
                 } else if (protoTarget instanceof BlockState) {
-                    if (doSwitchBack || featureCfg.switchbackAllowed() == TargetType.BLOCKS) {
+                    if (featureCfg.switchbackAllowed().contains(TargetType.BLOCKS)) {
                         AutoSwitch.switchState.setHasSwitched(true);
                     }
                 }
@@ -115,13 +114,11 @@ public enum SwitchEvent {
         }
 
         private boolean doMobSwitchback() {
-            return AutoSwitch.switchState.hasAttackedEntity() &&
-                   (featureCfg.switchbackWaits() == TargetType.BOTH || featureCfg.switchbackWaits() == TargetType.MOBS);
+            return AutoSwitch.switchState.hasAttackedEntity() && featureCfg.switchbackWaits().contains(TargetType.MOBS);
         }
 
         private boolean doBlockSwitchback() {
-            return !AutoSwitch.switchState.hasAttackedEntity() && (featureCfg.switchbackWaits() == TargetType.BOTH ||
-                                                                   featureCfg.switchbackWaits() == TargetType.BLOCKS);
+            return !AutoSwitch.switchState.hasAttackedEntity() && featureCfg.switchbackWaits().contains(TargetType.BLOCKS);
         }
 
         private boolean disallowSwitchback() {
