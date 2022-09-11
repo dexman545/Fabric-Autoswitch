@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
-public class TagHandler {
+public class TagTargetHandler {
     private static final Pattern tagGroupPattern = Pattern.compile("(\\w+@\\w+:\\w+)");
 
     private static boolean isTagGroup(String str) {

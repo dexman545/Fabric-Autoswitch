@@ -26,7 +26,7 @@ public class TargetHandler {
         Object target = null;
         str = str.toLowerCase(Locale.ENGLISH).replace("!", ":");
         if (!AutoSwitch.switchData.targets.containsKey(str)) {
-            var group = TagHandler.getTargetableTagGroup(str);
+            var group = TagTargetHandler.getTargetableTagGroup(str);
             if (group != null) {
                 return group;
             }
