@@ -19,10 +19,9 @@ public class HotbarWatcher {
     }
 
     public static void updateCaches(IntArrayList changedSlots) {
-        changedSlots.forEach((IntConsumer) slot -> {
-            updateCache(Action.INTERACT.getActionCache(), slot);
-            updateCache(Action.ATTACK.getActionCache(), slot);
-        });
+        for (Action action : Action.values()) {
+            changedSlots.forEach((IntConsumer) slot -> updateCache(action.getActionCache(), slot));
+        }
     }
 
     public static IntArrayList compareHotbars(List<ItemStack> prev, List<ItemStack> current) {
