@@ -40,9 +40,10 @@ public class TargetHandler {
         } else {
             target = AutoSwitch.switchData.targets.get(str);
         }
+
         if (target == null) {
             AutoSwitch.logger.warn(
-                    "AutoSwitch could not find a block, entity, entity group, or material " + "by this id: " + str +
+                    "AutoSwitch could not find a block, entity, entity group, or material by this id: " + str +
                     " -> ignoring it");
         }
 
