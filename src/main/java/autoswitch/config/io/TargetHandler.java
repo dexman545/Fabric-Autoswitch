@@ -36,6 +36,11 @@ public class TargetHandler {
                 return event;
             }
 
+            var state = BlockStateTargetHandler.getBlockState(str);
+            if (state != null) {
+                return state;
+            }
+
             Identifier id;
             if ((id = Identifier.tryParse(str)) != null) {
                 target = FutureRegistryEntry.getOrCreate(RegistryType.BLOCK_OR_ENTITY, id);

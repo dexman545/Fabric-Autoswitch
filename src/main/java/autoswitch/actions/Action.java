@@ -74,6 +74,11 @@ public enum Action {
         // These methods were moved to AbstractBlockState in 20w12a,
         // so their intermediary name changed breaking compatibility
         if (protoTarget instanceof BlockState state) {
+            // BlockState Override
+            if (map.containsKey(state)) {
+                return state;
+            }
+
             // Block Override
             Block block = state.getBlock();
             if (map.containsKey(block)) {
