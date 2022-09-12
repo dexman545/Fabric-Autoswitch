@@ -19,18 +19,6 @@ public interface AutoSwitchUseActionConfig extends Config, Reloadable, Accessibl
     ToolSelector[] creeper();
 
     @Separator(",")
-    @DefaultValue("minecraft:carrot_on_a_stick")
-    @Key("minecraft!pig")
-    @Comment("Switch when getting on a pig so you are ready to steer it.")
-    ToolSelector[] pig();
-
-    @Separator(",")
-    @DefaultValue("minecraft:warped_fungus_on_a_stick")
-    @Key("minecraft!strider")
-    @Comment("Switch when getting on a strider so you are ready to steer it.")
-    ToolSelector[] strider();
-
-    @Separator(",")
     @DefaultValue("minecraft:bowl, minecraft:bucket")
     @Key("minecraft!mooshroom")
     @Comment("Milk mooshrooms with a bowl to get suspicious stew, or a bucket to get milk. Shears can turn them into " +

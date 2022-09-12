@@ -37,7 +37,7 @@ class TargetableUsable extends Targetable {
     }
 
     @Override
-    protected boolean stopProcessingSlot(Object target) {
+    protected boolean stopProcessingSlot(Object target, int slot) {
         // Don't switch if the target isn't saddled. Assumes only use for saddleable entity would be to ride it
         return AutoSwitch.featureCfg.checkSaddlableEntitiesForSaddle() && this.protoTarget instanceof Saddleable &&
                !((Saddleable) protoTarget).isSaddled();

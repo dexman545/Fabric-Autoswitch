@@ -1,16 +1,17 @@
 package autoswitch.mixin.impl;
 
 import autoswitch.AutoSwitch;
-import autoswitch.config.AutoSwitchConfig;
+import autoswitch.config.AutoSwitchConfig.TargetType;
 import autoswitch.events.SwitchEvent;
 import autoswitch.selectors.ItemTarget;
 import autoswitch.util.EventUtil;
-import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.stat.Stat;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -55,6 +56,16 @@ public class SwitchEventTriggerImpl {
 
     }
 
+    public static void eventTrigger(Stat<?> stat, PlayerEntity player) {
+        if (stat == null) return;
+
+        EventUtil.scheduleEvent(SwitchEvent.EVENT_TRIGGER, AutoSwitch.doAS, player,
+                                AutoSwitch.featureCfg.switchAllowed().contains(TargetType.EVENTS), stat);
+
+        // Run scheduler here as well as in the clock to ensure immediate-eval switches occur
+        AutoSwitch.scheduler.execute(AutoSwitch.tickTime);
+    }
+
     /**
      * Process type of action made and desired switch action.
      * <p>Tick scheduler clock to ensure immediate-mode actions are taken on time.</p>
@@ -77,8 +88,8 @@ public class SwitchEventTriggerImpl {
                 event = SwitchEvent.ATTACK;
                 doSwitchType = AutoSwitch.featureCfg.switchAllowed()
                                                     .contains(crosshairTarget.getType() == HitResult.Type.ENTITY ?
-                                                              AutoSwitchConfig.TargetType.MOBS :
-                                                              AutoSwitchConfig.TargetType.BLOCKS);
+                                                              TargetType.MOBS :
+                                                              TargetType.BLOCKS);
                 break;
             default:
                 throw new IllegalStateException("AutoSwitch encountered an unexpected enum value: " + desiredType +

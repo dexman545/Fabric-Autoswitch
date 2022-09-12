@@ -14,7 +14,7 @@ public final class ConfigHeaders {
             Enchant and item id uses '!' instead of colons. A colon can be used as long as it is on the right of the equal sign.
             Example: minecraft!stick;minecraft!fortune\s
             List is ordered and will affect tool selection.\s
-            You can add block/mob-specific overrides by adding it's id (replacing colon with '\\:' or '!') on a new line and adding values to the right of\s
+            You can add target overrides by adding it's id (replacing colon with '\\:' or '!') on a new line and adding values to the right of\s
             the equals sign ('=') as you would normally. Check the boat for an example.\s
             Removing the values after the equals sign will disable the switch. In the case of overrides, the line may be removed for default behavior.
             If you would like to write config values across multiple lines, end the preceding line with '\\', followed by a new line. See https://stackoverflow.com/a/8978515
@@ -24,9 +24,20 @@ public final class ConfigHeaders {
     public static final String usableConfig = "AutoSwitch Usable Configuration File" +
                                               "\nThis file defines tool switching targets for the 'use/interact' " +
                                               "action (right clicking) on a mob or block. " +
-                                              "\nSame format as the Material Config:" + format;
+                                              "\nSame format as the Attack Action Config:" + format;
 
-    public static final String eventConfig = format; //todo adapt for events
+    public static final String eventConfig = """
+                                             AutoSwitch Event Configuration File
+                                             This file defines tool switching targets for events.
+                                             
+                                             Currently supported events:
+                                                - Statistics (See https://minecraft.fandom.com/wiki/Statistics#Resource_location)
+                                                    To specify a statistic change event, precede the statistic's ID by 'stat@'.
+                                                    Whenever the statistic is modified, switching will occur.
+                                                    * Note: Using statistics that update every tick will prevent switchback and other features from functioning.
+                                             
+                                             Same format as the Attack Action Config:
+                                             """ + format;
 
 
     private ConfigHeaders() {

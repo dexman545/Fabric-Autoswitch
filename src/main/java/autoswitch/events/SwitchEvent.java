@@ -195,6 +195,31 @@ public enum SwitchEvent {
             SwitchState.preventBlockAttack = false;
             return true;
         }
+    },
+    EVENT_TRIGGER {
+        @Override
+        public boolean invoke() {
+            if (canNotSwitch()) return false;
+
+            handlePrevSlot();
+
+            Targetable.event(protoTarget, player).changeTool().ifPresent(this::handlePostSwitchTasks);
+
+            return true;
+        }
+
+        private void handlePostSwitchTasks(boolean hasSwitched) {
+            AutoSwitch.switchState.setHasSwitched(hasSwitched);
+            doOffhandSwitch = doOffhand();
+            if (hasSwitched) {
+                EventUtil.eventHandler(AutoSwitch.tickTime, 0.1, OFFHAND);
+                EventUtil.eventHandler(AutoSwitch.tickTime, featureCfg.switchbackDelay(), SWITCHBACK);
+            }
+        }
+
+        private boolean doOffhand() {
+            return AutoSwitch.featureCfg.putUseActionToolInOffHand() == AutoSwitchConfig.OffhandType.ALL;
+        }
     };
 
     public static PlayerEntity player;

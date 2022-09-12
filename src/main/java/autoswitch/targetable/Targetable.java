@@ -212,7 +212,7 @@ public abstract class Targetable {
 
         Object target = getAction().getTarget(protoTarget);
 
-        if (target == null || stopProcessingSlot(target)) return;
+        if (target == null || stopProcessingSlot(target, slot)) return;
 
         getAction().getTarget2ToolSelectorsMap()
                         .getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
@@ -278,7 +278,7 @@ public abstract class Targetable {
 
     }
 
-    boolean stopProcessingSlot(Object target) {
+    boolean stopProcessingSlot(Object target, int slot) {
         return false;
     }
 

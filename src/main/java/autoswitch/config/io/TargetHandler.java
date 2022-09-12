@@ -31,6 +31,11 @@ public class TargetHandler {
                 return group;
             }
 
+            var event = EventTargetHandler.getTargetableEvent(str);
+            if (event != null) {
+                return event;
+            }
+
             Identifier id;
             if ((id = Identifier.tryParse(str)) != null) {
                 target = FutureRegistryEntry.getOrCreate(RegistryType.BLOCK_OR_ENTITY, id);

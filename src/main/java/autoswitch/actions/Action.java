@@ -21,6 +21,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.stat.Stat;
 
 public enum Action {
     ATTACK(true, () -> AutoSwitch.attackActionCfg),
@@ -66,6 +67,9 @@ public enum Action {
      */
     private static Object getTarget(Map<Object, IntArrayList> map, Object protoTarget) {
         if (protoTarget instanceof ItemTarget) return protoTarget;
+
+        // Event with stat change trigger
+        if (protoTarget instanceof Stat<?>) return protoTarget;
 
         // These methods were moved to AbstractBlockState in 20w12a,
         // so their intermediary name changed breaking compatibility

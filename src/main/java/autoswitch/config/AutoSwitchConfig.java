@@ -1,5 +1,7 @@
 package autoswitch.config;
 
+import java.util.EnumSet;
+
 import autoswitch.config.util.CaseInsensitiveEnumConverter;
 import autoswitch.config.util.Comment;
 import autoswitch.config.util.Permission;
@@ -8,8 +10,6 @@ import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Mutable;
 import org.aeonbits.owner.Reloadable;
-
-import java.util.EnumSet;
 
 @Config.HotReload(type = Config.HotReloadType.ASYNC, value = 1) //set value = X for interval of X seconds. Default: 5
 @Config.Sources({"file:${configDir}"})
@@ -26,12 +26,12 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @Comment("AutoSwitch functionality in creative mode.")
     Boolean switchInCreative();
 
-    @DefaultValue("BLOCKS, MOBS")
+    @DefaultValue("BLOCKS, MOBS, EVENTS")
     @Separator(",")
     @Key("switchAllowedFor")
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Comment("Allow switching on the specified type, eg. only switch for blocks by specifying 'BLOCKS'. Leave blank" +
-             " to disable this behavior entirely." + "\nAcceptable values: MOBS, BLOCKS")
+             " to disable this behavior entirely." + "\nAcceptable values: MOBS, BLOCKS, EVENTS")
     EnumSet<TargetType> switchAllowed();
 
     @DefaultValue("true")
@@ -42,7 +42,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Key("switchbackAllowedFor")
     @Comment("Return to the previous slot when no longer performing the action on the specified type. Leave blank" +
-             " to disable this behavior entirely." + "\nAcceptable values: MOBS, BLOCKS")
+             " to disable this behavior entirely." + "\nAcceptable values: MOBS, BLOCKS, EVENTS")
     EnumSet<TargetType> switchbackAllowed();
 
     @DefaultValue("MOBS")
@@ -50,7 +50,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     @ConverterClass(CaseInsensitiveEnumConverter.class)
     @Comment("Before switching back when using the 'attack' action, wait for the attack cooldown to finish. " +
              "Fixes attacks not doing a lot of damage to mobs, and makes switchback for blocks visually smoother. " +
-             "\nAcceptable values: MOBS, BLOCKS")
+             "\nAcceptable values: MOBS, BLOCKS, EVENTS")
     EnumSet<TargetType> switchbackWaits();
 
     @DefaultValue("true")

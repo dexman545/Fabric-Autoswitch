@@ -106,7 +106,7 @@ public final class ConfigEstablishment {
         AutoSwitch.eventActionConfig.addReloadListener(event -> {
             Action.EVENT.clearSelectors();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
-            AutoSwitch.logger.info("Interact Config Reloaded");
+            AutoSwitch.logger.info("Event Config Reloaded");
         });
 
         AutoSwitch.featureCfg.addReloadListener(event -> {
