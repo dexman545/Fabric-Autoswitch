@@ -13,7 +13,8 @@ import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.util.registry.Registry;
 
 public class BlockStateTargetHandler {
-    private static final Pattern groupPattern = Pattern.compile("((\\w+:)?\\w+\\[(\\w+\\s*=[\\w\\d,\\s]+)+\\])");
+    private static final Pattern groupPattern =
+            Pattern.compile("((\\w+:)?\\w+((\\[(\\w+\\s*=[\\w\\d,\\s]+)+\\])|(\\{(\\w+\\s*:[\\w\\d,\\s]+)+\\})){1,2})");
 
     private static boolean isTaggedMatch(String str) {
         return groupPattern.matcher(str).matches();
