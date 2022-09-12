@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import autoswitch.AutoSwitch;
-import autoswitch.config.io.TagHandler;
+import autoswitch.config.io.TagTargetHandler;
 
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import org.jetbrains.annotations.Nullable;
@@ -45,7 +45,7 @@ public class ToolSelector implements Selector<ItemStack> {
             var multiEnch = enchantmentsStr.split("&");
 
             for (String ench : multiEnch) {
-                var tagSelector = TagHandler.getEnchantmentSelector(ench);
+                var tagSelector = TagTargetHandler.getEnchantmentSelector(ench);
                 if (tagSelector != null) {
                     enchantmentSelectors.add(tagSelector);
                 } else {
@@ -60,7 +60,7 @@ public class ToolSelector implements Selector<ItemStack> {
         if (AutoSwitch.switchData.toolPredicates.containsKey(itemSelectorStr)) {
             itemSelector = new ItemSelector(AutoSwitch.switchData.toolPredicates.get(itemSelectorStr));
         } else {
-            var tagSelector = TagHandler.getItemSelector(itemSelectorStr);
+            var tagSelector = TagTargetHandler.getItemSelector(itemSelectorStr);
             if (tagSelector != null) {
                 itemSelector = tagSelector;
             } else {
