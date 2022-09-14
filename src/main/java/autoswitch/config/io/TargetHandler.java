@@ -36,7 +36,7 @@ public class TargetHandler {
                 return event;
             }
 
-            var state = BlockStateTargetHandler.getBlockState(str);
+            var state = BlockStateTargetHandler.blockStateTargetGroup(str);
             if (state != null) {
                 return state;
             }
