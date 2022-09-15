@@ -1,29 +1,37 @@
 package autoswitch.config.io;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import autoswitch.AutoSwitch;
 import autoswitch.selectors.TargetableGroup;
+import autoswitch.selectors.futures.FutureRegistryEntry;
+import autoswitch.selectors.futures.RegistryType;
 
 import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.command.argument.BlockArgumentParser;
 import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.state.property.Property;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.Identifier;
 
 public class BlockStateTargetHandler {
-    // Does not except DataValues as need to get the ElockEntity
-    // With data: ((?<Id>(?:\w+:)?\w+)(?:(?<States>\[((?:\w+\s*=\s*\w+,?\s*)+)\])?)(?:(?<Data>\{((?:\w+\s*:\s*\w+,
-    // ?\s*)+)\}))?)
     private static final Pattern groupPattern =
-            Pattern.compile("((?<Id>(?:\\w+:)?\\w+)(?:(?<States>\\[((?:\\w+\\s*=\\s*\\w+,?\\s*)+)\\])?))");
+            Pattern.compile("((?<Id>(?:\\w+:)?\\w+)(?:(?<States>\\[((?:\\w+\\s*=\\s*\\w+,?\\s*)+)\\])?)(?:(?<Data>\\{" +
+                            "((?:\\w+\\s*:\\s*\\w+,?\\s*)+)\\}))?)");
 
-    private static boolean isTaggedMatch(String str) {
-        return groupPattern.matcher(str).matches();
+    private static Match isTaggedMatch(String str) {
+        var match = groupPattern.matcher(str);
+
+        if (match.matches() && match.group("States") != null) {
+            return new Match(match.matches(), match.group("Id"), match.group("States")
+                                                                      .replace("[", "")
+                                                                      .replace("]", ""));
+        }
+
+        return new Match(false, null, null);
     }
 
     /**
@@ -31,36 +39,50 @@ public class BlockStateTargetHandler {
      */
     public static TargetableGroup<BlockState> blockStateTargetGroup(String input) {
         input = input.replaceAll("\\+", "=");
-        if (isTaggedMatch(input)) {
-            try {
-                //todo FREs/RegistryHolder?
-                //todo use block predicate instead, as it does not need to specify all states
-                //todo link in config header https://minecraft.fandom.com/wiki/Argument_types#block_predicate
-                BlockArgumentParser.BlockResult result = BlockArgumentParser.block(Registry.BLOCK, input, false);
 
-                var blockPredicate = (Predicate<Object>) (o) -> {
-                    if (o instanceof BlockState state) {
-                        var targetState = result.blockState();
-                        if (!state.isOf(targetState.getBlock())) return false;
+        var match = isTaggedMatch(input);
+        if (match.isMatch) {
+            var futureBlock = FutureRegistryEntry.getOrCreate(RegistryType.BLOCK, new Identifier(match.id));
+            futureBlock.setTypeLocked(true);
 
-                        for(Property<?> property : result.properties().keySet()) {
-                            if (state.get(property) != targetState.get(property)) {
-                                return false;
-                            }
+            if (match.properties == null) return null;
+
+            var properties =
+                    Arrays.stream(match.properties().split(",")).map(String::strip)
+                          .map(s -> s.split("=")).filter(a -> a.length == 2)
+                          .collect(Collectors.toMap(e -> e[0], e -> e[1]));
+
+            var blockPredicate = (Predicate<Object>) (o) -> {
+                if (o instanceof BlockState state) {
+                    if (!futureBlock.matches(state.getBlock())) return false;
+
+                    for(Map.Entry<String, String> entry : properties.entrySet()) {
+                        Property<?> property = state.getBlock().getStateManager().getProperty(entry.getKey());
+                        if (property == null) {
+                            return false;
                         }
 
-                        return true;
+                        Comparable<?> comparable = property.parse(entry.getValue()).orElse(null);
+                        if (comparable == null) {
+                            return false;
+                        }
+
+                        if (state.get(property) != comparable) {
+                            return false;
+                        }
                     }
 
-                    return false;
-                };
+                    return true;
+                }
 
-                return new TargetableGroup<>(input, new TargetableGroup.TargetPredicate(input, blockPredicate));
-            } catch (CommandSyntaxException e) {
-                AutoSwitch.logger.error("BlockState parser", e);
-            }
+                return false;
+            };
+
+            return new TargetableGroup<>(input, new TargetableGroup.TargetPredicate(input, blockPredicate));
         }
 
         return null;
     }
+
+    private record Match(boolean isMatch, String id, String properties) {}
 }
