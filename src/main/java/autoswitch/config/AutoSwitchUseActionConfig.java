@@ -51,13 +51,13 @@ public interface AutoSwitchUseActionConfig extends Config, Reloadable, Accessibl
 
     @Separator(",")
     @DefaultValue("")
-    @Key("minecraft!beehive")
+    @Key("minecraft!beehive[honey_level+5]")
     @Comment("Get honeycomb or honey from the hive with shears or a bottle, respectively.")
     ToolSelector[] beehive();
 
     @Separator(",")
     @DefaultValue("")
-    @Key("minecraft!bee_nest")
+    @Key("minecraft!bee_nest[honey_level+5]")
     @Comment("Get honeycomb or honey from the hive with shears or a bottle, respectively.")
     ToolSelector[] beeNest();
 
