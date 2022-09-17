@@ -11,12 +11,13 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '0.12.+'
+    id 'fabric-loom' version '1.0.+'
     //id "com.github.fudge.forgedflowerloom" version "2.0.0"
     id 'io.github.juuxel.loom-quiltflower' version '1.+'
     id 'maven-publish'
     id "com.modrinth.minotaur" version "2.+"
     id 'com.matthewprenger.cursegradle' version '1.4.+'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 
     // To trigger musical code on project refresh and run processResources on project launch in Idea
     id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
@@ -95,6 +96,10 @@ configurations { //todo move into Outlet, change include to work differently
         transitive = false
     }
     requiredLib
+    shade
+    implementation.extendsFrom shade
+    modShade
+    modImplementation.extendsFrom modShade
 
     // Natural hierarchy is inverted for Gradle
     modCompileOnly.extendsFrom(optional)
@@ -103,6 +108,12 @@ configurations { //todo move into Outlet, change include to work differently
     implementation.extendsFrom(requiredLib)
     include.extendsFrom(requiredModApi, /*requiredModImpl,*/ requiredLib) // Disabled modImpl as fapi modules depend on other modules
     modApi.extendsFrom(requiredModApi)
+}
+
+shadowJar {
+    minimize()
+    from sourceSets.main.output
+    configurations = [ project.configurations.shade, project.configurations.modShade ]
 }
 
 //noinspection SpellCheckingInspection
@@ -118,6 +129,7 @@ dependencies {
     // OWNER library
     //requiredLib "org.aeonbits.owner:owner:1.0.12"
     requiredLib files('api/owner-1.0.13-SNAPSHOT.jar') // Custom version allowing EnumSets to be used
+    shade files('api/owner-1.0.13-SNAPSHOT.jar')
 
     // Autoswitch API
     requiredModApi 'com.github.dexman545:autoswitch-api:3.0.0'//-SNAPSHOT
@@ -128,6 +140,12 @@ dependencies {
 
     //todo remove when we bump MC requirement to >=1.19.2
     include fabricApi.module("fabric-client-tags-api-v1", project.fabric_version)
+}
+
+
+remapJar {
+    dependsOn(shadowJar)
+    inputFile.set(shadowJar.archiveFile)
 }
 
 /**
