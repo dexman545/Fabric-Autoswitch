@@ -58,7 +58,7 @@ public class ToolSelector implements Selector<ItemStack> {
         }
 
         if (AutoSwitch.switchData.toolPredicates.containsKey(itemSelectorStr)) {
-            itemSelector = new ItemSelector(AutoSwitch.switchData.toolPredicates.get(itemSelectorStr));
+            itemSelector = new ItemSelector(AutoSwitch.switchData.toolPredicates.get(itemSelectorStr), itemSelectorStr);
         } else {
             var tagSelector = TagTargetHandler.getItemSelector(itemSelectorStr);
             if (tagSelector != null) {
@@ -120,8 +120,7 @@ public class ToolSelector implements Selector<ItemStack> {
 
     @Override
     public String toString() {
-        return "ToolSelector{" + "itemSelector=" + itemSelector + ", enchantmentSelectors=" +
-               Arrays.toString(enchantmentSelectors) + '}';
+        return "ToolSelector{" + configEntry() + '}';
     }
 
     @Override
@@ -155,6 +154,33 @@ public class ToolSelector implements Selector<ItemStack> {
         }
 
         return id;
+    }
+
+    @Override
+    public String configEntry() {
+        StringBuilder entry = new StringBuilder(itemSelector.configEntry());
+
+        if (enchantmentSelectors != null && enchantmentSelectors.length > 0) {
+            entry.append(itemSelector.separator());
+            for (int i = 0; i < enchantmentSelectors.length; i++) {
+                entry.append(enchantmentSelectors[i].configEntry());
+                if (i < enchantmentSelectors.length - 1) {
+                    entry.append(enchantmentSelectors[i].separator());
+                }
+            }
+        }
+
+        return entry.toString();
+    }
+
+    @Override
+    public String separator() {
+        return ",";
+    }
+
+    @Override
+    public boolean chainable() {
+        return true;
     }
 
 }

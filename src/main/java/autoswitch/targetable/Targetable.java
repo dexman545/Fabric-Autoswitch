@@ -38,8 +38,8 @@ public abstract class Targetable {
             return item.getMaxDamage() == 0;
         }
         return false;
-    }));
-    protected static final ToolSelector nullToolSelector = new ToolSelector(new ItemSelector(item -> false));
+    }, "BlankTool"));
+    protected static final ToolSelector nullToolSelector = new ToolSelector(new ItemSelector(item -> false, "NullTool"));
     /**
      * Maps a hotbar slot to the rating for tool effectiveness - ie. speed for blocks and/or enchantment level based on
      * user config

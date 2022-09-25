@@ -13,21 +13,25 @@ import net.minecraft.util.Identifier;
 
 public class EnchantmentSelector implements Selector<Enchantment> {
     private final Predicate<Object> predicate;
+    private final String entryName;
 
     public EnchantmentSelector(Identifier id) {
         predicate = makeFutureRegistryEntryPredicate(RegistryType.ENCHANTMENT, id);
+        entryName = id.toString();
     }
 
     public EnchantmentSelector(TagKey<Enchantment> tagKey) {
         this.predicate = IdentifiedTag.makeEnchantmentPredicate(tagKey);
+        this.entryName = "enchant@" + tagKey.id();
     }
 
-    public EnchantmentSelector(Enchantment enchantment) {
+    /*public EnchantmentSelector(Enchantment enchantment) {
         this(enchantment::equals);
-    }
+    }*/
 
-    public EnchantmentSelector(Predicate<Object> predicate) {
+    public EnchantmentSelector(Predicate<Object> predicate, String entryName) {
         this.predicate = predicate;
+        this.entryName = entryName;
     }
 
     public double getRating(ItemStack stack) {
@@ -81,7 +85,22 @@ public class EnchantmentSelector implements Selector<Enchantment> {
 
     @Override
     public String toString() {
-        return "EnchantmentSelector{" + "predicate=" + predicate + '}';
+        return "EnchantmentSelector{" + configEntry() + '}';
+    }
+
+    @Override
+    public String configEntry() {
+        return entryName;
+    }
+
+    @Override
+    public String separator() {
+        return "&";
+    }
+
+    @Override
+    public boolean chainable() {
+        return true;
     }
 
 }

@@ -12,17 +12,20 @@ import net.minecraft.util.Identifier;
 public class ItemSelector implements Selector<Item> {
 
     private final Predicate<Object> predicate;
+    private final String entryName;
 
     public ItemSelector(Identifier id) {
         predicate = makeFutureRegistryEntryPredicate(RegistryType.ITEM, id);
+        entryName = id.toString();
     }
 
     public ItemSelector(TagKey<Item> tagKey) {
-        this(IdentifiedTag.makeItemPredicate(tagKey));
+        this(IdentifiedTag.makeItemPredicate(tagKey), "item@" + tagKey.id().toString());
     }
 
-    public ItemSelector(Predicate<Object> predicate) {
+    public ItemSelector(Predicate<Object> predicate, String entryName) {
         this.predicate = predicate;
+        this.entryName = entryName;
     }
 
     @Override
@@ -47,7 +50,17 @@ public class ItemSelector implements Selector<Item> {
 
     @Override
     public String toString() {
-        return "ItemSelector{" + "predicate=" + predicate + '}';
+        return "ItemSelector{" + configEntry() + '}';
+    }
+
+    @Override
+    public String configEntry() {
+        return entryName;
+    }
+
+    @Override
+    public String separator() {
+        return ";";
     }
 
 }
