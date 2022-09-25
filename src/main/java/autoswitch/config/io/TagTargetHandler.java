@@ -152,7 +152,7 @@ public class TagTargetHandler {
                 return ITEM;
             } else if (tagGroup.startsWith("block")) {
                 return BLOCK;
-            } else if (tagGroup.startsWith("enchantment")) {
+            } else if (tagGroup.startsWith("enchantment") || tagGroup.startsWith("enchant")) {
                 return ENCHANTMENT;
             }
 
