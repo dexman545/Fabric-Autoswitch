@@ -244,7 +244,7 @@ public abstract class Targetable {
     private void updateToolListsAndRatings(ItemStack stack, ToolSelector toolSelector,
                                            int slot, AtomicReference<Float> counter) {
         // Evaluate enchantments
-        var stackEnchants = !toolSelector.enchantmentsRequired();
+        var stackEnchants = toolSelector.enchantmentsRequired();
         var rating = toolSelector.getRating(stack);
 
         AutoSwitch.logger.debug("Slot: {}; Initial Rating: {}", slot, rating);
