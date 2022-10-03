@@ -80,6 +80,19 @@ outlet {
 loom {
     // Enable runtime only log4j, forces mod to use SLF4J for logging.
     runtimeOnlyLog4j = true
+
+    runs {
+        // This adds a new gradle task that runs the datagen API: "gradlew runDatagenClient"
+        datagenClient {
+            inherit client
+            name "Data Generation"
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.strict-validation"
+
+            runDir "build/datagen"
+        }
+    }
 }
 
 // Controls if optional deps. should be loaded at runtime via runClient
@@ -114,6 +127,16 @@ shadowJar {
     minimize()
     from sourceSets.main.output
     configurations = [ project.configurations.shade, project.configurations.modShade ]
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs += [
+                    'src/main/generated'
+            ]
+        }
+    }
 }
 
 //noinspection SpellCheckingInspection

@@ -19,6 +19,9 @@
   "entrypoints": {
     "client": [
       "autoswitch.AutoSwitch"
+    ],
+    "fabric-datagen": [
+      "autoswitch.datagen.DataGeneration"
     ]
   },
   "depends": {
