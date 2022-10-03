@@ -375,12 +375,6 @@ task fixResourcesLaunch(type: Copy) {
     from processResources
 }
 
-idea.project.settings {
-    taskTriggers {
-        afterBuild fixResourcesLaunch
-    }
-}
-
 /**
  * @return old MC version from musical-code-data.properties for use in musical code
  */
