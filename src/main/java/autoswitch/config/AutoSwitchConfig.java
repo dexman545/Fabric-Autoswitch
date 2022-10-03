@@ -5,6 +5,7 @@ import java.util.EnumSet;
 import autoswitch.config.util.CaseInsensitiveEnumConverter;
 import autoswitch.config.util.Comment;
 import autoswitch.config.util.Permission;
+import autoswitch.config.util.TranslationKey;
 
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Config;
@@ -128,6 +129,7 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
     Boolean skipDepletedItems();
 
     @DefaultValue("")
+    @TranslationKey(value = "config_version", showInUi = false)
     @Comment("No touchy! For checking when to regen config files!")
     String configVersion();
 

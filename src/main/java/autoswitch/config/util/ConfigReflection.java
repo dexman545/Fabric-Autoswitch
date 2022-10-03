@@ -62,6 +62,11 @@ public class ConfigReflection {
         return (key == null) ? accessibleMember.getName() : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
     }
 
+    public static <T extends AccessibleObject & Member> String translationKey(T accessibleMember) {
+        TranslationKey key = accessibleMember.getAnnotation(TranslationKey.class);
+        return (key == null) ? key(accessibleMember) : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
+    }
+
     // Get the config entry's value
     private static String defaultValue(AccessibleObject accessibleObject) {
         Config.DefaultValue defaultValue = accessibleObject.getAnnotation(Config.DefaultValue.class);
