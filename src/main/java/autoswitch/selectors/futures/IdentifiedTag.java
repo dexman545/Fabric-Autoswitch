@@ -14,6 +14,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 
@@ -41,6 +42,8 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
         return t -> getOrCreate(tagKey, Item.class, RegistryType.ITEM, o -> {
             if (o instanceof Item item) {
                 return ClientTags.isInWithLocalFallback(tagKey, item);
+            } else if (o instanceof ItemStack stack) {
+                return ClientTags.isInWithLocalFallback(tagKey, stack.getItem());
             }
             return false;
         }).contains(t);
@@ -50,6 +53,8 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
         return t -> IdentifiedTag.getOrCreate(tagKey, Block.class, RegistryType.BLOCK, o -> {
             if (o instanceof BlockState state) {
                 return ClientTags.isInWithLocalFallback(tagKey, state.getBlock());
+            } else if (o instanceof Block block) {
+                return ClientTags.isInWithLocalFallback(tagKey, block);
             }
             return false;
         }).contains(t);
@@ -60,6 +65,8 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
                                               RegistryType.ENTITY, o -> {
                     if (o instanceof Entity e) {
                         return ClientTags.isInWithLocalFallback(tagKey, e.getType());
+                    } else if (o instanceof EntityType<?> type) {
+                        return ClientTags.isInWithLocalFallback(tagKey, type);
                     }
                     return false;
                 }).contains(t);
