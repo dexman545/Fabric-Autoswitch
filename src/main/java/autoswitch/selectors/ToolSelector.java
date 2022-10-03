@@ -20,6 +20,13 @@ public class ToolSelector implements Selector<ItemStack> {
     public ToolSelector(ItemSelector itemSelector, @Nullable EnchantmentSelector... enchantmentSelectors) {
         this.itemSelector = itemSelector;
         this.enchantmentSelectors = enchantmentSelectors;
+
+        // Skip the rest of the evaluation as the ToolSelector has already been handled
+        if (AutoSwitch.switchData.toolSelectorKeys.containsKey(configEntry())) {
+            this.id = AutoSwitch.switchData.toolSelectorKeys.getInt(configEntry());
+            return;
+        }
+
         this.id = makeId();
     }
 
@@ -118,6 +125,14 @@ public class ToolSelector implements Selector<ItemStack> {
         return id;
     }
 
+    public ItemSelector getItemSelector() {
+        return itemSelector;
+    }
+
+    public EnchantmentSelector[] getEnchantmentSelectors() {
+        return enchantmentSelectors;
+    }
+
     @Override
     public String toString() {
         return "ToolSelector{" + configEntry() + '}';
@@ -175,7 +190,7 @@ public class ToolSelector implements Selector<ItemStack> {
 
     @Override
     public String separator() {
-        return ",";
+        return ", ";
     }
 
     @Override

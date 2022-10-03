@@ -58,6 +58,14 @@ public class FutureRegistryEntry extends FutureStateHolder {
         INSTANCES.forEach(f -> f.validateEntry(true));
     }
 
+    public RegistryType getType() {
+        return type;
+    }
+
+    public Object getEntry() {
+        return entry;
+    }
+
     @Override
     public void validateEntry(boolean force) {
         if (!force && state != FutureState.AWAITING_VALIDATION) return;
