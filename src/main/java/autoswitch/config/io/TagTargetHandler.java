@@ -73,7 +73,7 @@ public class TagTargetHandler {
         return null;
     }
 
-    private enum TagType {
+    public enum TagType {
         BLOCK(new TagTypeHandler<Block>() {
             @Override
             protected RegistryKey<? extends Registry<Block>> getRegistry() {

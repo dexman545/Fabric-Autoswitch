@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:axes",
+      "required": false
+    },
+    {
+      "id": "#c:shears",
+      "required": false
+    },
+    {
+      "id": "#c:shovels",
+      "required": false
+    },
+    {
+      "id": "#c:swords",
+      "required": false
+    },
+    {
+      "id": "#c:spears",
+      "required": false
+    },
+    {
+      "id": "#c:hoes",
+      "required": false
+    },
+    {
+      "id": "#c:pickaxes",
+      "required": false
+    }
+  ]
+}

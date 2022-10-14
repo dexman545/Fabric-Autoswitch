@@ -1,7 +1,9 @@
 package autoswitch.selectors.futures;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Set;
 
 import autoswitch.AutoSwitch;
 import autoswitch.util.RegistryHelper;
@@ -19,7 +21,7 @@ import net.minecraft.util.collection.IndexedIterable;
 import net.minecraft.util.registry.Registry;
 
 @SuppressWarnings("unchecked")
-public class FutureRegistryEntry extends FutureStateHolder {
+public class FutureRegistryEntry extends FutureStateHolder implements Representable {
     private static final LinkedList<RegistryHolder<?, ?>> REGISTRY_HOLDERS = new LinkedList<>();
     private static final ObjectOpenHashSet<FutureRegistryEntry> INSTANCES = new ObjectOpenHashSet<>();
 
@@ -123,6 +125,12 @@ public class FutureRegistryEntry extends FutureStateHolder {
 
     public void setTypeLocked(boolean typeLocked) {
         this.typeLocked = typeLocked;
+    }
+
+    @Override
+    public Set<FutureRegistryEntry> getRepresentable() {
+        validateEntry();
+        return Collections.singleton(this);
     }
 
     public static class TargetHashingStrategy implements Hash.Strategy<Object> {
