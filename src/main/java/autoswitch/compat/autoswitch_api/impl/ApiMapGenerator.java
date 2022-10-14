@@ -11,7 +11,6 @@ import autoswitch.config.util.ConfigReflection;
 import autoswitch.selectors.ItemTarget;
 import autoswitch.selectors.TargetableGroup;
 import autoswitch.selectors.TargetableGroup.TargetPredicate;
-import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +81,14 @@ public class ApiMapGenerator {
     private static Predicate<Object> makeToolPredicate(String toolName, @NotNull Class<? extends Item> itemClass) {
         var pluralName = toolName.endsWith("s") ? toolName : toolName + "s";
         var fabricTag = TagKey.of(Registry.ITEM_KEY, new Identifier("fabric", pluralName));
-        var commonTag = TagKey.of(Registry.ITEM_KEY, new Identifier("c", pluralName));
+
+
+        TagKey<Item> commonTag;
+        if (toolName.equals("trident")) {
+            commonTag = TagKey.of(Registry.ITEM_KEY, new Identifier("c", "spears"));
+        } else {
+            commonTag = TagKey.of(Registry.ITEM_KEY, new Identifier("c", pluralName));
+        }
 
         // todo move to using itemstack rather than item itself - api change?
         return o -> {
