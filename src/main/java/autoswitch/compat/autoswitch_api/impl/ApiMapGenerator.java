@@ -1,5 +1,7 @@
 package autoswitch.compat.autoswitch_api.impl;
 
+import java.util.function.Predicate;
+
 import autoswitch.AutoSwitch;
 import autoswitch.actions.Action;
 import autoswitch.config.AutoSwitchAttackActionConfig;
@@ -11,6 +13,8 @@ import autoswitch.selectors.TargetableGroup;
 import autoswitch.selectors.TargetableGroup.TargetPredicate;
 import autoswitch.util.SwitchUtil;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 
 import net.minecraft.block.Material;
@@ -19,14 +23,18 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.ShearsItem;
+import net.minecraft.item.ShovelItem;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.TridentItem;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Predicate;
 
 public class ApiMapGenerator {
     public static void createApiMaps() {
