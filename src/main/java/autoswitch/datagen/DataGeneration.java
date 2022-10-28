@@ -12,14 +12,15 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 public class DataGeneration implements DataGeneratorEntrypoint {
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
+        var pack = fabricDataGenerator.createPack();
         // Provide some tags for use in AutoSwitch via Client/Local Tags API of Fabric API
-        fabricDataGenerator.addProvider(BlockTagProvider::new);
-        fabricDataGenerator.addProvider(EntityTypeTagProvider::new);
-        fabricDataGenerator.addProvider(EnchantmentTagProvider::new);
-        fabricDataGenerator.addProvider(ItemTagProvider::new);
+        pack.addProvider(BlockTagProvider::new);
+        pack.addProvider(EntityTypeTagProvider::new);
+        pack.addProvider(EnchantmentTagProvider::new);
+        pack.addProvider(ItemTagProvider::new);
 
         // Data generation for languages
-        fabricDataGenerator.addProvider(EngLangProvider::new);
+        pack.addProvider(EngLangProvider::new);
     }
 
 }

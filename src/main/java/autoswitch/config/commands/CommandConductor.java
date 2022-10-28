@@ -3,14 +3,12 @@ package autoswitch.config.commands;
 import static autoswitch.AutoSwitch.doAS;
 import static autoswitch.AutoSwitch.featureCfg;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
-import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.mixin.impl.ConnectionHandler;
 
 import com.mojang.brigadier.Command;
@@ -28,21 +26,34 @@ public class CommandConductor {
     /**
      * Converts a config key and method into {@link Command<FabricClientCommandSource>} that modifies the config file.
      * <p>
-     * Only works for those that don't override {@link GenericCommand#paramater()}as it uses the default value.
+     * Only works for those that don't override {@link GenericCommand#parameter()}as it uses the default value.
      */
     private static final BiFunction<String, Method, Command<FabricClientCommandSource>> configCommandMaker =
             (name, method) -> (context) -> {
+
+        Class<?> t;
+        if ((t = CommandGenerator.getEnum4Collection(method)) != null) {
+            var newVal = "";
+            for (int i = 0; i < t.getEnumConstants().length; i++) {
+                try {
+                    AutoSwitch.logger.error("{}", context.getArgument("option" + (i > 0 ? i : ""), t).toString());
+                    newVal += context.getArgument("option" + (i > 0 ? i : ""), t).toString();
+                } catch (IllegalArgumentException ignored) {}
+            }
+            AutoSwitch.logger.error("{}", newVal);
+        }
+
                 featureCfg.setProperty(name,
                                        context.getArgument("option" /*Default value of 'paramater' in GenericCommand*/,
                                                            method.getReturnType()).toString());
-                try {
+                /*try {
                     ConfigEstablishment.writeConfigFiles();
                     context.getSource().sendFeedback(Text.of("Config file updated."));
                 } catch (IOException e) {
                     context.getSource().sendError(Text.of("Failed to update config file."));
                     AutoSwitch.logger.error("Failed to update config file", e);
                     return 1;
-                }
+                }*/
                 return 0;
             };
 

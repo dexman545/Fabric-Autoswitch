@@ -2,12 +2,12 @@ package autoswitch.datagen.providers;
 
 import java.nio.file.Path;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
 public class EngLangProvider extends FabricLanguageProvider {
-    public EngLangProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator, "en_us");
+    public EngLangProvider(FabricDataOutput output) {
+        super(output, "en_us");
     }
 
     @Override
@@ -17,7 +17,7 @@ public class EngLangProvider extends FabricLanguageProvider {
         // Load an existing language file.
         try {
             Path existingFilePath =
-                    dataGenerator.getModContainer().findPath("assets/aswitch/lang/en_us.json").get();
+                    dataOutput.getModContainer().findPath("assets/aswitch/lang/en_us.json").get();
             translationBuilder.add(existingFilePath);
         } catch (Exception e) {
             throw new RuntimeException("Failed to add existing language file!", e);

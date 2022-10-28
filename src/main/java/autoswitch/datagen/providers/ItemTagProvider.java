@@ -1,6 +1,6 @@
 package autoswitch.datagen.providers;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
 
@@ -9,8 +9,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
-    public ItemTagProvider(FabricDataGenerator dataGenerator) {
-        super(dataGenerator);
+    public ItemTagProvider(FabricDataOutput output) {
+        super(output);
     }
 
     @Override

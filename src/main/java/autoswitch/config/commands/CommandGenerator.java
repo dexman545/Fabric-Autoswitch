@@ -1,6 +1,8 @@
 package autoswitch.config.commands;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -89,6 +91,15 @@ public class CommandGenerator {
                 }
                 return c.value();
             }
+
+            @Override
+            public int repetitions() {
+                Class<?> clazz;
+                if ((clazz = getEnum4Collection(method)) != null) {
+                    return clazz.getEnumConstants().length;
+                }
+                return 1;
+            }
         };
     }
 
@@ -101,11 +112,27 @@ public class CommandGenerator {
      */
     public static Consumer<GenericCommand> createGeneric2RealCommandConverter(
             LiteralArgumentBuilder<FabricClientCommandSource> builder) {
+
+        /*return c -> {
+            var root = ClientCommandManager.literal(c.name()).executes(context -> {
+                context.getSource().sendError(Text.of("Please specify an option."));
+                context.getSource().sendError(Text.of(c.failureMessage()));
+                return 1;
+            });
+
+            for (int i = 0; i < c.repetitions(); i++) {
+                root.then(ClientCommandManager.argument(c.parameter() + (i > 0 ? i : ""),
+                                                        c.argumentType()).executes(c.command()));
+            }
+            builder.then(root.then(ClientCommandManager.argument("test", BoolArgumentType.bool())));
+        };*/
+
+        //todo ask in fabricord about a list argument
         return (c) -> builder.then(ClientCommandManager.literal(c.name()).executes(context -> {
             context.getSource().sendError(Text.of("Please specify an option."));
             context.getSource().sendError(Text.of(c.failureMessage()));
             return 1;
-        }).then(ClientCommandManager.argument(c.paramater(), c.argumentType()).executes(c.command())));
+        }).then(ClientCommandManager.argument(c.parameter(), c.argumentType()).executes(c.command())));
     }
 
     /**
@@ -123,6 +150,20 @@ public class CommandGenerator {
         if (clazz.equals(Double.class)) return DoubleArgumentType.doubleArg();
         if (clazz.equals(Integer.class)) return IntegerArgumentType.integer();
         if (clazz.equals(String.class)) return StringArgumentType.greedyString();
+        var maybeEnum = getEnum4Collection(method);
+        if (maybeEnum != null) return new GenericRepeatingArgumentType<>(new GenericEnumArgument(maybeEnum));
+        return null;
+    }
+
+    public static <U extends Enum<U>> Class<U> getEnum4Collection(Method method) {
+        var clazz = method.getReturnType();
+        if (Collection.class.isAssignableFrom(clazz)) {
+            if (method.getGenericReturnType() instanceof ParameterizedType parameterizedType) {
+                var t = (Class<?>)parameterizedType.getActualTypeArguments()[0];
+                return (Class<U>) t;
+            }
+        }
+
         return null;
     }
 
