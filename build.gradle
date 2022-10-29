@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.github.dexman545.Outlet:Outlet:1.3.9'//master-SNAPSHOT
+        classpath 'com.github.dexman545.Outlet:Outlet:1.4.0'//master-SNAPSHOT
     }
 }
 
@@ -23,6 +23,7 @@ plugins {
     id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
 }
 apply plugin: 'dex.plugins.outlet'
+
 
 import com.matthewprenger.cursegradle.CurseUploadTask
 import com.modrinth.minotaur.dependencies.ModDependency
@@ -42,6 +43,7 @@ repositories {
 }
 
 outlet.mcVersionRange = project.range
+//outlet.cacheTime = new TimeDuration(0, 12, 0, 0,0)
 
 java {
     toolchain {
