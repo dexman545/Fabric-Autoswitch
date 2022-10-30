@@ -13,6 +13,7 @@ import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.config.util.Comment;
 import autoswitch.config.util.ConfigReflection;
 import autoswitch.config.util.GameConfigEditorUtil;
+import autoswitch.config.util.TranslationKey;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -159,7 +160,16 @@ public class CommandGenerator {
                     var options = ClientCommandManager.argument(c.parameter(), c.argumentType())
                                                       .then(ClientCommandManager.argument("enabled", BoolArgumentType.bool())
                                                                                 .executes(execution));
-                    var subNodes = ClientCommandManager.literal(c.name()).then(options);
+                    var subNodes = ClientCommandManager.literal(c.name())
+                                                       .executes(context -> {
+                                                           context.getSource()
+                                                                  .sendFeedback(
+                                                                          Text.translatable(c.translationKey(),
+                                                                                            AutoSwitch.featureCfg
+                                                                                                    .getProperty(c.name())));
+                                                           return 0;
+                                                       })
+                                                       .then(options);
                     builder.then(subNodes);
 
                     return;
@@ -209,6 +219,12 @@ public class CommandGenerator {
     public Set<GenericCommand> getCommands() {
         Set<GenericCommand> out = new ObjectArraySet<>();
         for (Method method : methods) {
+            TranslationKey ano;
+            if ((ano = method.getAnnotation(TranslationKey.class)) != null) {
+                if (!ano.showInUi()) {
+                    continue;
+                }
+            }
             out.add(buildCommandOption(method, maker));
         }
         return out;
