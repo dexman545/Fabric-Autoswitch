@@ -21,12 +21,18 @@ public interface GenericCommand {
 
     String name();
 
-    default String paramater() {
+    default String parameter() {
         return "option";
     }
 
     Command<FabricClientCommandSource> command();
 
     String failureMessage();
+
+    default int repetitions() {
+        return 1;
+    }
+
+    Object owningOption();
 
 }

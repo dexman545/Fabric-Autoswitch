@@ -18,9 +18,11 @@ import net.minecraft.command.CommandSource;
 public class GenericEnumArgument implements ArgumentType {
     private final Collection<String> EXAMPLES = new ReferenceArrayList<>();
     private final Class<?> clazz;
+    private final boolean isCollection;
 
-    public <Y extends Enum<Y>> GenericEnumArgument(Class<?> yClass) {
+    public <Y extends Enum<Y>> GenericEnumArgument(Class<?> yClass, boolean isCollection) {
         clazz = yClass;
+        this.isCollection = isCollection;
         if (!yClass.isEnum()) return;
         for (Object ec : yClass.getEnumConstants()) {
             EXAMPLES.add(((Y) ec).name());
@@ -43,4 +45,11 @@ public class GenericEnumArgument implements ArgumentType {
         return EXAMPLES;
     }
 
+    public boolean isCollection() {
+        return isCollection;
+    }
+
+    public <Y extends Enum<Y>> Class<?> getEnum() {
+        return (Class<Y>) clazz;
+    }
 }

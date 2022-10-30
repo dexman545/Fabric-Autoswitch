@@ -1,14 +1,9 @@
 package autoswitch.config.commands;
 
-import static autoswitch.AutoSwitch.doAS;
-import static autoswitch.AutoSwitch.featureCfg;
-
-import java.lang.reflect.Method;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
+import autoswitch.config.io.ConfigEstablishment;
+import autoswitch.config.util.GameConfigEditorUtil;
 import autoswitch.mixin.impl.ConnectionHandler;
 
 import com.mojang.brigadier.Command;
@@ -22,6 +17,14 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import net.minecraft.text.Text;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+
+import static autoswitch.AutoSwitch.doAS;
+import static autoswitch.AutoSwitch.featureCfg;
+
 public class CommandConductor {
     /**
      * Converts a config key and method into {@link Command<FabricClientCommandSource>} that modifies the config file.
@@ -31,29 +34,20 @@ public class CommandConductor {
     private static final BiFunction<String, Method, Command<FabricClientCommandSource>> configCommandMaker =
             (name, method) -> (context) -> {
 
-        Class<?> t;
-        if ((t = CommandGenerator.getEnum4Collection(method)) != null) {
-            var newVal = "";
-            for (int i = 0; i < t.getEnumConstants().length; i++) {
-                try {
-                    AutoSwitch.logger.error("{}", context.getArgument("option" + (i > 0 ? i : ""), t).toString());
-                    newVal += context.getArgument("option" + (i > 0 ? i : ""), t).toString();
-                } catch (IllegalArgumentException ignored) {}
-            }
-            AutoSwitch.logger.error("{}", newVal);
-        }
+                var option = context.getArgument("option", method.getReturnType());
+                //var currentValue = GameConfigEditorUtil.FEATURE_CONFIG.currentValue(method);
+                var consumer = GameConfigEditorUtil.FEATURE_CONFIG.modifyConfig(name);
 
-                featureCfg.setProperty(name,
-                                       context.getArgument("option" /*Default value of 'paramater' in GenericCommand*/,
-                                                           method.getReturnType()).toString());
-                /*try {
+                consumer.accept(option);
+
+                try {
                     ConfigEstablishment.writeConfigFiles();
                     context.getSource().sendFeedback(Text.of("Config file updated."));
                 } catch (IOException e) {
                     context.getSource().sendError(Text.of("Failed to update config file."));
                     AutoSwitch.logger.error("Failed to update config file", e);
                     return 1;
-                }*/
+                }
                 return 0;
             };
 

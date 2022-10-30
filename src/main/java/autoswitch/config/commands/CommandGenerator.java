@@ -1,5 +1,6 @@
 package autoswitch.config.commands;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
@@ -7,8 +8,11 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import autoswitch.AutoSwitch;
+import autoswitch.config.io.ConfigEstablishment;
 import autoswitch.config.util.Comment;
 import autoswitch.config.util.ConfigReflection;
+import autoswitch.config.util.GameConfigEditorUtil;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -100,6 +104,11 @@ public class CommandGenerator {
                 }
                 return 1;
             }
+
+            @Override
+            public Object owningOption() {
+                return method;
+            }
         };
     }
 
@@ -113,26 +122,57 @@ public class CommandGenerator {
     public static Consumer<GenericCommand> createGeneric2RealCommandConverter(
             LiteralArgumentBuilder<FabricClientCommandSource> builder) {
 
-        /*return c -> {
-            var root = ClientCommandManager.literal(c.name()).executes(context -> {
+        return (c) -> {
+            if (c.argumentType() instanceof GenericEnumArgument gea) {
+                if (gea.isCollection()) {
+                    builder.then(
+                            ClientCommandManager
+                                    .literal(c.name())
+                                    .then(ClientCommandManager.argument(c.parameter(),
+                                                                        c.argumentType())
+                                                              .then(ClientCommandManager.argument("enabled",
+                                                                                                  BoolArgumentType.bool())
+                                                                                        .executes(context -> {
+                                                                                            var option = context.getArgument("option", gea.getEnum());
+                                                                                            var enabled = context.getArgument("enabled", boolean.class);
+                                                                                            Collection currentValue = null;
+                                                                                            Consumer<Object> con = o -> {};
+                                                                                            if (c.owningOption() instanceof Method m) {
+                                                                                                currentValue = GameConfigEditorUtil.FEATURE_CONFIG.currentValue(m);
+                                                                                                con = GameConfigEditorUtil.FEATURE_CONFIG.modifyConfig(m);
+                                                                                            }
+
+                                                                                            if (currentValue != null) {
+                                                                                                if (enabled) {
+                                                                                                    currentValue.add(option);
+                                                                                                } else {
+                                                                                                    currentValue.remove(option);
+                                                                                                }
+
+                                                                                                con.accept(currentValue);
+                                                                                            }
+
+                                                                                            try {
+                                                                                                ConfigEstablishment.writeConfigFiles();
+                                                                                                context.getSource().sendFeedback(Text.of("Config file updated."));
+                                                                                            } catch (IOException e) {
+                                                                                                context.getSource().sendError(Text.of("Failed to update config file."));
+                                                                                                AutoSwitch.logger.error("Failed to update config file", e);
+                                                                                                return 1;
+                                                                                            }
+                                                                                            return 0;
+                                                                                        }))));
+
+                    return;
+                }
+            }
+
+            builder.then(ClientCommandManager.literal(c.name()).executes(context -> {
                 context.getSource().sendError(Text.of("Please specify an option."));
                 context.getSource().sendError(Text.of(c.failureMessage()));
                 return 1;
-            });
-
-            for (int i = 0; i < c.repetitions(); i++) {
-                root.then(ClientCommandManager.argument(c.parameter() + (i > 0 ? i : ""),
-                                                        c.argumentType()).executes(c.command()));
-            }
-            builder.then(root.then(ClientCommandManager.argument("test", BoolArgumentType.bool())));
-        };*/
-
-        //todo ask in fabricord about a list argument
-        return (c) -> builder.then(ClientCommandManager.literal(c.name()).executes(context -> {
-            context.getSource().sendError(Text.of("Please specify an option."));
-            context.getSource().sendError(Text.of(c.failureMessage()));
-            return 1;
-        }).then(ClientCommandManager.argument(c.parameter(), c.argumentType()).executes(c.command())));
+            }).then(ClientCommandManager.argument(c.parameter(), c.argumentType()).executes(c.command())));
+        };
     }
 
     /**
@@ -145,13 +185,13 @@ public class CommandGenerator {
     public static @Nullable ArgumentType<?> argumentType(@NotNull Method method) {
         Class<?> clazz = method.getReturnType();
         if (clazz.equals(Boolean.class)) return BoolArgumentType.bool();
-        if (clazz.isEnum()) return new GenericEnumArgument(clazz);
+        if (clazz.isEnum()) return new GenericEnumArgument(clazz, false);
         if (clazz.equals(Float.class)) return FloatArgumentType.floatArg();
         if (clazz.equals(Double.class)) return DoubleArgumentType.doubleArg();
         if (clazz.equals(Integer.class)) return IntegerArgumentType.integer();
         if (clazz.equals(String.class)) return StringArgumentType.greedyString();
         var maybeEnum = getEnum4Collection(method);
-        if (maybeEnum != null) return new GenericRepeatingArgumentType<>(new GenericEnumArgument(maybeEnum));
+        if (maybeEnum != null) return new GenericEnumArgument(maybeEnum, true);// new GenericRepeatingArgumentType<>();
         return null;
     }
 
@@ -159,7 +199,7 @@ public class CommandGenerator {
         var clazz = method.getReturnType();
         if (Collection.class.isAssignableFrom(clazz)) {
             if (method.getGenericReturnType() instanceof ParameterizedType parameterizedType) {
-                var t = (Class<?>)parameterizedType.getActualTypeArguments()[0];
+                var t = (Class<?>) parameterizedType.getActualTypeArguments()[0];
                 return (Class<U>) t;
             }
         }
