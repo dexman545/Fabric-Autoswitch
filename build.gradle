@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.github.dexman545.Outlet:Outlet:1.4.0'//master-SNAPSHOT
+        classpath 'com.github.dexman545.Outlet:Outlet:1.5.1'//master-SNAPSHOT
     }
 }
 
@@ -60,7 +60,7 @@ group = project.maven_group
 logger.lifecycle(outlet.latestMc())
 
 boolean useLatestMc = true
-if (useLatestMc || file('asdev.txt').exists()) {
+if (useLatestMc && file('asdev.txt').exists()) {
     logger.lifecycle('Using latest versions')
     project.minecraft_version = outlet.latestMc()
     //project.modmenu_version = getLatestModMenu()
@@ -68,6 +68,8 @@ if (useLatestMc || file('asdev.txt').exists()) {
     project.yarn_mappings =  outlet.yarnVersion()
     project.fabric_version = outlet.fapiVersion()
     project.java = outlet.javaLanguageCompatibility()
+} else {
+    logger.lifecycle('Using specified versions')
 }
 
 outlet {
@@ -334,26 +336,7 @@ tasks.withType(CurseUploadTask) {
  */
 // I got tired of having to find the right version, ok?
 String getLatestModMenu() {
-
-    // Build version list in format for url
-    def versionList = "["
-    boolean first = true
-    for (String ver : outlet.mcVersions()) {
-        if (first) {
-            versionList += '%22' + ver + '%22'
-            first = false
-        } else {
-            versionList += "," + '%22' + ver + '%22' // %22 = ", used to fix encoding issue
-        }
-    }
-    versionList += "]"
-    // End build version list format
-
-    // Uses Modmenu's project id
-    def url = "https://api.modrinth.com/api/v1/mod/mOgUt4GM/version?game_versions=${versionList}" as String
-    def modMenuVersions = new groovy.json.JsonSlurper().parseText(new URL(url).text) as ArrayList
-
-    return modMenuVersions.first().version_number
+    outlet.latestModrinthModVersion('modmenu')
 }
 
 /**
@@ -369,7 +352,7 @@ String getReleaseMonicker() {
     return "release"
 }
 
-// Fixes fabric.mod.template's variables not being replaced with Idea's run configs.
+// Fixes fabric.mod.json's template variables not being replaced with Idea's run configs.
 task fixResourcesLaunch(type: Copy) {
     String name = project.name.replace(" ", "_") + ".main"
 
