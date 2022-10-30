@@ -125,43 +125,42 @@ public class CommandGenerator {
         return (c) -> {
             if (c.argumentType() instanceof GenericEnumArgument gea) {
                 if (gea.isCollection()) {
-                    builder.then(
-                            ClientCommandManager
-                                    .literal(c.name())
-                                    .then(ClientCommandManager.argument(c.parameter(),
-                                                                        c.argumentType())
-                                                              .then(ClientCommandManager.argument("enabled",
-                                                                                                  BoolArgumentType.bool())
-                                                                                        .executes(context -> {
-                                                                                            var option = context.getArgument("option", gea.getEnum());
-                                                                                            var enabled = context.getArgument("enabled", boolean.class);
-                                                                                            Collection currentValue = null;
-                                                                                            Consumer<Object> con = o -> {};
-                                                                                            if (c.owningOption() instanceof Method m) {
-                                                                                                currentValue = GameConfigEditorUtil.FEATURE_CONFIG.currentValue(m);
-                                                                                                con = GameConfigEditorUtil.FEATURE_CONFIG.modifyConfig(m);
-                                                                                            }
+                    Command<FabricClientCommandSource> execution = context -> {
+                        var option = context.getArgument("option", gea.getEnum());
+                        var enabled = context.getArgument("enabled", boolean.class);
+                        Collection currentValue = null;
+                        Consumer<Object> con = o -> {};
+                        if (c.owningOption() instanceof Method m) {
+                            currentValue = GameConfigEditorUtil.FEATURE_CONFIG.currentValue(m);
+                            con = GameConfigEditorUtil.FEATURE_CONFIG.modifyConfig(m);
+                        }
 
-                                                                                            if (currentValue != null) {
-                                                                                                if (enabled) {
-                                                                                                    currentValue.add(option);
-                                                                                                } else {
-                                                                                                    currentValue.remove(option);
-                                                                                                }
+                        if (currentValue != null) {
+                            if (enabled) {
+                                currentValue.add(option);
+                            } else {
+                                currentValue.remove(option);
+                            }
 
-                                                                                                con.accept(currentValue);
-                                                                                            }
+                            con.accept(currentValue);
+                        }
 
-                                                                                            try {
-                                                                                                ConfigEstablishment.writeConfigFiles();
-                                                                                                context.getSource().sendFeedback(Text.of("Config file updated."));
-                                                                                            } catch (IOException e) {
-                                                                                                context.getSource().sendError(Text.of("Failed to update config file."));
-                                                                                                AutoSwitch.logger.error("Failed to update config file", e);
-                                                                                                return 1;
-                                                                                            }
-                                                                                            return 0;
-                                                                                        }))));
+                        try {
+                            ConfigEstablishment.writeConfigFiles();
+                            context.getSource().sendFeedback(Text.of("Config file updated."));
+                        } catch (IOException e) {
+                            context.getSource().sendError(Text.of("Failed to update config file."));
+                            AutoSwitch.logger.error("Failed to update config file", e);
+                            return 1;
+                        }
+                        return 0;
+                    };
+
+                    var options = ClientCommandManager.argument(c.parameter(), c.argumentType())
+                                                      .then(ClientCommandManager.argument("enabled", BoolArgumentType.bool())
+                                                                                .executes(execution));
+                    var subNodes = ClientCommandManager.literal(c.name()).then(options);
+                    builder.then(subNodes);
 
                     return;
                 }
