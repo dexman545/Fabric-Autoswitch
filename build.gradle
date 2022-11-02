@@ -282,6 +282,7 @@ modrinth {
     loaders = ["fabric"]
     changelog = uniChangelog
     dependencies = [new ModDependency("P7dR8mSH", "required")] // Creates a new required dependency on Fabric API
+    //debugMode = true
 }
 
 curseforge {
@@ -337,6 +338,11 @@ tasks.withType(CurseUploadTask) {
 // I got tired of having to find the right version, ok?
 String getLatestModMenu() {
     outlet.latestModrinthModVersion('modmenu')
+}
+
+// Checks only Modrinth as it gets all versions
+def versionAlreadyUploaded() {
+    project.version == outlet.latestModrinthModVersion('autoswitch')
 }
 
 /**
@@ -404,5 +410,18 @@ private static String runCommands(String... commands) {
     return result
 }
 
-publish.finalizedBy(modrinth)
+tasks.publish.onlyIf {
+    !versionAlreadyUploaded()
+}
+
+tasks.curseforge.onlyIf {
+    "release" == getReleaseMonicker() && !versionAlreadyUploaded()
+}
+
+tasks.modrinth.onlyIf {
+    !versionAlreadyUploaded()
+}
+
+publish.finalizedBy(tasks.modrinth)
+publish.finalizedBy(tasks.curseforge)
 tasks.runClient.dependsOn(tasks.processResources)
