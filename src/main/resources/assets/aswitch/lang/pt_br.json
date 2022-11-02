@@ -1,0 +1,19 @@
+{
+    "key.autoswitch.toggle": "Chave de alternância automática",
+    "key.autoswitch.toggle_mowing": "Chave de alternância de proteção de corte",
+    "msg.autoswitch.mow_false": "Cortar ao Lutar: Desativado",
+    "msg.autoswitch.mow_true": "Cortar ao Combater: Ativado",
+    "msg.autoswitch.toggle_false": "AutoSwitch: Desativado",
+    "msg.autoswitch.toggle_true": "AutoSwitch: Ativado",
+    "msg.autoswitch.config.1": "As configurações do AutoSwitch estão na pasta config.",
+    "msg.autoswitch.config.2": "Não abra ou descompile o AutoSwitch para alterá-los!",
+    "msg.autoswitch.config.3": "Uma maneira rápida de chegar lá é ir para Opções e, em seguida, Abrir pasta do pacote de recursos.",
+    "msg.autoswitch.config.4": "Em seguida, suba um nível para que você esteja na sua pasta de minecraft. Você verá uma pasta de configuração.",
+    "msg.autoswitch.config.5": "Na pasta de configuração estarão suas configurações.",
+    "msg.autoswitch.reset" : "O estado do switch foi redefinido",
+    "button.autoswitch.openconfigs": "Abrir arquivos de configuração",
+    "button.autoswitch.openfolder": "Abrir pasta de configuração",
+    "screen.autoswitch.config": "Tela de configuração do AutoSwitch",
+    "button.autoswitch.openwiki": "Abra a página Wiki sobre por que não há GUI"
+  }
+  
