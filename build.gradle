@@ -326,7 +326,7 @@ curseforge {
 // I intend for beta and alpha builds to be Modrinth exclusives
 tasks.withType(CurseUploadTask) {
     onlyIf {
-        "release" == getReleaseMonicker()
+        "release" == getReleaseMonicker() && !versionAlreadyUploaded()
     }
 }
 
@@ -412,10 +412,6 @@ private static String runCommands(String... commands) {
 
 tasks.publish.onlyIf {
     !versionAlreadyUploaded()
-}
-
-tasks.curseforge.onlyIf {
-    "release" == getReleaseMonicker() && !versionAlreadyUploaded()
 }
 
 tasks.modrinth.onlyIf {
