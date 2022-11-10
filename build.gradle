@@ -1,12 +1,6 @@
 buildscript {
     repositories {
-        maven {
-            url 'https://jitpack.io'
-        }
         mavenCentral()
-    }
-    dependencies {
-        classpath 'com.github.dexman545.Outlet:Outlet:1.5.1'//master-SNAPSHOT
     }
 }
 
@@ -21,8 +15,9 @@ plugins {
 
     // To trigger musical code on project refresh and run processResources on project launch in Idea
     id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
+
+    id "io.github.dexman545.outlet" version '1.+'
 }
-apply plugin: 'dex.plugins.outlet'
 
 
 import com.matthewprenger.cursegradle.CurseUploadTask
