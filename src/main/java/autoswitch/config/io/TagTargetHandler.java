@@ -15,6 +15,7 @@ import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.RegistryKeys;
 
 public class TagTargetHandler {
     private static final Pattern tagGroupPattern = Pattern.compile("(\\w+@\\w+:\\w+)");
@@ -77,7 +78,7 @@ public class TagTargetHandler {
         BLOCK(new TagTypeHandler<Block>() {
             @Override
             protected RegistryKey<? extends Registry<Block>> getRegistry() {
-                return Registry.BLOCK_KEY;
+                return RegistryKeys.BLOCK;
             }
 
             @Override
@@ -98,7 +99,7 @@ public class TagTargetHandler {
         ENTITY_TYPE(new TagTypeHandler<EntityType<?>>() {
             @Override
             protected RegistryKey<? extends Registry<EntityType<?>>> getRegistry() {
-                return Registry.ENTITY_TYPE_KEY;
+                return RegistryKeys.ENTITY_TYPE;
             }
 
             @Override
@@ -119,7 +120,7 @@ public class TagTargetHandler {
         ITEM(new TagTypeHandler<Item>() {
             @Override
             protected RegistryKey<? extends Registry<Item>> getRegistry() {
-                return Registry.ITEM_KEY;
+                return RegistryKeys.ITEM;
             }
 
             @Override
@@ -130,7 +131,7 @@ public class TagTargetHandler {
         ENCHANTMENT(new TagTypeHandler<Enchantment>() {
             @Override
             protected RegistryKey<? extends Registry<Enchantment>> getRegistry() {
-                return Registry.ENCHANTMENT_KEY;
+                return RegistryKeys.ENCHANTMENT;
             }
 
             @Override

@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import net.minecraft.stat.Stat;
 import net.minecraft.stat.StatType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.Registries;
 
 public class EventTargetHandler {
     private static final Pattern groupPattern = Pattern.compile("(\\w+@\\w+:\\w+)");
@@ -41,7 +41,7 @@ public class EventTargetHandler {
 
             //todo use FRE? use RegistryHolders?
             public <T> Stat<?> getStat(Identifier type, Identifier name) {
-                var maybeStatType = Registry.STAT_TYPE.getOrEmpty(type);
+                var maybeStatType = Registries.STAT_TYPE.getOrEmpty(type);
                 if (maybeStatType.isPresent()) {
                     var statType = (StatType<T>) maybeStatType.get();
                     var maybeObject = statType.getRegistry().getOrEmpty(name);

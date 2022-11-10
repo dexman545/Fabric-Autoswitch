@@ -18,6 +18,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.IndexedIterable;
+import net.minecraft.util.registry.Registries;
 import net.minecraft.util.registry.Registry;
 
 @SuppressWarnings("unchecked")
@@ -26,12 +27,12 @@ public class FutureRegistryEntry extends FutureStateHolder implements Representa
     private static final ObjectOpenHashSet<FutureRegistryEntry> INSTANCES = new ObjectOpenHashSet<>();
 
     static {
-        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.BLOCK, Block.class, RegistryType.BLOCK));
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registries.BLOCK, Block.class, RegistryType.BLOCK));
         REGISTRY_HOLDERS.add(
-                new RegistryHolder<>(Registry.ENTITY_TYPE, (Class<EntityType<?>>) (Class<?>) EntityType.class,
+                new RegistryHolder<>(Registries.ENTITY_TYPE, (Class<EntityType<?>>) (Class<?>) EntityType.class,
                                      RegistryType.ENTITY));
-        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.ITEM, Item.class, RegistryType.ITEM));
-        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registry.ENCHANTMENT, Enchantment.class, RegistryType.ENCHANTMENT));
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registries.ITEM, Item.class, RegistryType.ITEM));
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registries.ENCHANTMENT, Enchantment.class, RegistryType.ENCHANTMENT));
     }
 
     private final Identifier id;

@@ -13,7 +13,7 @@ import autoswitch.AutoSwitch;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.Registries;
 
 /**
  * Create custom targets that capture a group of similar entries. Favors the narrower entries. Targets should only be of
@@ -85,7 +85,7 @@ public final class TargetableGroup<T> {
         }
 
         if (target instanceof Block) {
-            return Registry.BLOCK.getId((Block) target).toString();
+            return Registries.BLOCK.getId((Block) target).toString();
         }
 
         return "IdentifierNotFound[" + target + "]";
