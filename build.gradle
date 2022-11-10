@@ -264,7 +264,8 @@ def uniChangelog = "This is autopublished from Github Actions. Use at your own r
         "build for changes. Based on commit: ${getCheckedOutGitCommitHash()}\n\n<br />" +
         "This build may work on Minecraft versions not specified for this version. Release cadence at time of writing " +
         "(2/12/2021):\n\n<br />" +
-        "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.2 - 1.18.1 | 4.x.x -> 1.18.2 (22w06a) - 1.19 (22w15a) | 5.x.x -> 1.19 (22w16a) - current (and possibly beyond)\n\n<br />"
+        "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.2 - 1.18.1 | 4.x.x -> 1.18.2 (22w06a) - 1.19 (22w15a) " +
+        "| 5.x.x -> 1.19 (22w16a) - 1.19.3 (22w44a) | 6.x.x -> 1.19.3 (~22w45a) -> current (and possibly beyond)\n\n<br />"
 
 modrinth {
     token = System.getenv("MODRINTH")
