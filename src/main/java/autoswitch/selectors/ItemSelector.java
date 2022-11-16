@@ -6,7 +6,7 @@ import autoswitch.selectors.futures.IdentifiedTag;
 import autoswitch.selectors.futures.RegistryType;
 
 import net.minecraft.item.Item;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 public class ItemSelector implements Selector<Item> {

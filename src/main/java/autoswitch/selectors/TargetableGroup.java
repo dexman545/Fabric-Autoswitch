@@ -13,7 +13,7 @@ import autoswitch.AutoSwitch;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 
 /**
  * Create custom targets that capture a group of similar entries. Favors the narrower entries. Targets should only be of

@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import net.minecraft.stat.Stat;
 import net.minecraft.stat.StatType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registries;
+import net.minecraft.registry.Registries;
 
 public class EventTargetHandler {
     private static final Pattern groupPattern = Pattern.compile("(\\w+@\\w+:\\w+)");

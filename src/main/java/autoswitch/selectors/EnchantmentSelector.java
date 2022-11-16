@@ -8,7 +8,7 @@ import autoswitch.selectors.futures.RegistryType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 public class EnchantmentSelector implements Selector<Enchantment> {

@@ -20,9 +20,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.item.*;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryKeys;
+import net.minecraft.registry.RegistryKeys;
 
 import org.jetbrains.annotations.NotNull;
 

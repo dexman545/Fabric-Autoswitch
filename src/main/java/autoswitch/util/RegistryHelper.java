@@ -8,8 +8,8 @@ import autoswitch.selectors.futures.IdentifiedTag;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.DefaultedRegistry;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.DefaultedRegistry;
+import net.minecraft.registry.Registry;
 
 public final class RegistryHelper {
     private RegistryHelper() {

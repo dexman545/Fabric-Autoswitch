@@ -16,7 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
 public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType type, Predicate<Object> defaultIsIn) implements Representable {

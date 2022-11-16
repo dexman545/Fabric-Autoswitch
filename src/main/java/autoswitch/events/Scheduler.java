@@ -1,10 +1,13 @@
 package autoswitch.events;
 
+import autoswitch.AutoSwitch;
+
+import java.util.HashSet;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Scheduler {
-    private final Queue<Task> schedule = new LinkedBlockingQueue<>(10);
+    private final LinkedBlockingQueue<Task> schedule = new LinkedBlockingQueue<>(10);
 
     /**
      * Add an event to the schedule to take place X seconds after the provided tick time.
@@ -36,6 +39,25 @@ public class Scheduler {
                 if (task.event.invoke()) schedule.remove(task);
             }
         });
+
+        /*var old = new HashSet<Task>();
+        schedule.forEach(task -> {
+            if (task.finalTickTime <= currentTick && task.event.handlePreSwitchTasks()) {
+                // Failure to invoke is an important part of switchback operation
+                if (task.event.invoke()) old.add(task);
+            }
+        });
+
+        schedule.removeAll(old);*/
+
+        if (schedule.size() > 6) {
+            AutoSwitch.logger.error("Set size: {}", schedule.size());
+        }
+
+        // Reset clock
+        if (schedule.isEmpty() && AutoSwitch.tickTime >= 1_073_741_823 /*Half of intMaxValue*/) {
+            AutoSwitch.tickTime = 0;
+        }
     }
 
     /**
@@ -61,7 +83,7 @@ public class Scheduler {
     /**
      * Internal representation of an event that includes the scheduled tick time to execute.
      */
-    private static class Task {
+    private static class Task {//todo make record?
         private final int finalTickTime;
         private final SwitchEvent event;
 

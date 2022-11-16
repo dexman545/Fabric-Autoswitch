@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 
-import net.minecraft.util.registry.RegistryWrapper;
+import net.minecraft.registry.RegistryWrapper;
 
 public class EntityTypeTagProvider extends FabricTagProvider.EntityTypeTagProvider  {
     public EntityTypeTagProvider(FabricDataOutput output,
