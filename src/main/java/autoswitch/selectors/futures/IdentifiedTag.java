@@ -40,7 +40,7 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
     @SuppressWarnings("unchecked")
     public static <U> IdentifiedTag<U> getOrCreate(TagKey<U> tagKey, Class<U> clazz, RegistryType type,
                                                    Predicate<Object> defaultIsIn) {
-        return (IdentifiedTag<U>) IDENTIFIED_TAGS.computeIfAbsent(tagKey, t -> new IdentifiedTag<>(tagKey, clazz, type, defaultIsIn));
+        return (IdentifiedTag<U>) IDENTIFIED_TAGS.computeIfAbsent(tagKey, $ -> new IdentifiedTag<>(tagKey, clazz, type, defaultIsIn));
     }
 
     public static IdentifiedTag<Item> getOrCreateItem(TagKey<Item> tagKey) {
@@ -135,6 +135,16 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
         buildFutureEntries();
         FALLBACK_ENTRIES.get(this).trim();
         return FALLBACK_ENTRIES.get(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IdentifiedTag<?> r) {
+            // Lambdas aren't equal to each other, and we only really only care about tag anyways
+            return r.tagKey.equals(tagKey) && r.type().equals(type);
+        }
+
+        return false;
     }
 
 }
