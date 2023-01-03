@@ -48,8 +48,7 @@ public abstract class MixinClientPlayerInteractionManager {
             SwitchEventTriggerImpl.attack(0, this.client.player, this.client.crosshairTarget);
             this.prevTarget = this.client.crosshairTarget;
         } else if (this.client.options.useKey.isPressed()) {
-            SwitchEventTriggerImpl.interact(this.breakingBlock, this.client.player,
-                                            this.client.crosshairTarget);
+            SwitchEventTriggerImpl.interact(this.breakingBlock, this.client.player, this.client.crosshairTarget);
             this.prevTarget = this.client.crosshairTarget;
         }
     }
