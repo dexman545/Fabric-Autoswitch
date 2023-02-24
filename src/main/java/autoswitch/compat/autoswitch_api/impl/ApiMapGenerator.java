@@ -1,5 +1,7 @@
 package autoswitch.compat.autoswitch_api.impl;
 
+import java.util.function.Predicate;
+
 import autoswitch.AutoSwitch;
 import autoswitch.actions.Action;
 import autoswitch.config.AutoSwitchAttackActionConfig;
@@ -11,6 +13,8 @@ import autoswitch.selectors.TargetableGroup;
 import autoswitch.selectors.TargetableGroup.TargetPredicate;
 import autoswitch.util.SwitchUtil;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 
 import net.minecraft.block.Material;
@@ -19,14 +23,18 @@ import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.vehicle.AbstractMinecartEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.ShearsItem;
+import net.minecraft.item.ShovelItem;
+import net.minecraft.item.SwordItem;
+import net.minecraft.item.TridentItem;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.registry.RegistryKeys;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Predicate;
 
 public class ApiMapGenerator {
     public static void createApiMaps() {
@@ -62,6 +70,16 @@ public class ApiMapGenerator {
             }
             anyTool = anyTool.or(tp);
         }
+        assert anyTool != null;
+        anyTool = anyTool.or(o -> { // Added in 1.19.4
+            if (o instanceof Item item) {
+                return ClientTags.isInWithLocalFallback(
+                        TagKey.of(RegistryKeys.ITEM, new Identifier("minecraft", "tools")),
+                        item
+                );
+            }
+            return false;
+        });
         AutoSwitch.switchData.toolPredicates.put("any", anyTool);
 
         // Don't include bow group in any group
@@ -80,17 +98,22 @@ public class ApiMapGenerator {
 
 
         TagKey<Item> commonTag;
+        TagKey<Item> mcTag;
         if (toolName.equals("trident")) {
             commonTag = TagKey.of(RegistryKeys.ITEM, new Identifier("c", "spears"));
+            // Other tags added in 1.19.4
+            mcTag = TagKey.of(RegistryKeys.ITEM, new Identifier("minecraft", "spears"));
         } else {
             commonTag = TagKey.of(RegistryKeys.ITEM, new Identifier("c", pluralName));
+            mcTag = TagKey.of(RegistryKeys.ITEM, new Identifier("minecraft", pluralName));// Added in 1.19.4
         }
 
         // todo move to using itemstack rather than item itself - api change?
         return o -> {
             if (o instanceof Item item) {
                 return itemClass.isInstance(item) || ClientTags.isInWithLocalFallback(fabricTag, item) ||
-                       ClientTags.isInWithLocalFallback(commonTag, item);
+                       ClientTags.isInWithLocalFallback(commonTag, item) ||
+                       ClientTags.isInWithLocalFallback(mcTag, item);
             }
             return false;
         };
