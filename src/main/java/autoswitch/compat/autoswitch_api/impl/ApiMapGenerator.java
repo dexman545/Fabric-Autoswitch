@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 
-import net.minecraft.block.Material;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Bucketable;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
@@ -33,6 +33,7 @@ import net.minecraft.item.ShovelItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.TridentItem;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 
@@ -122,114 +123,13 @@ public class ApiMapGenerator {
     // Populate Targets map with default values
     private static void genTargetMap() {
         // Blocks
-        addTarget("solid_organic", Material.SOLID_ORGANIC);
-
-        addTarget("repair_station", Material.REPAIR_STATION);
-
-        addTarget("bamboo", Material.BAMBOO);
-
-        addTarget("bamboo_sapling", Material.BAMBOO_SAPLING);
-
-        addTarget("cactus", Material.CACTUS);
-
-        addTarget("cake", Material.CAKE);
-
-        addTarget("carpet", Material.CARPET);
-
-        addTarget("organic_product", Material.ORGANIC_PRODUCT);
-
-        addTarget("cobweb", Material.COBWEB);
-
-        addTarget("soil", Material.SOIL);
-
-        addTarget("egg", Material.EGG);
-
-        addTarget("glass", Material.GLASS);
-
-        addTarget("ice", Material.ICE);
-
-        addTarget("leaves", Material.LEAVES);
-
-        addTarget("metal", Material.METAL);
-
-        addTarget("dense_ice", Material.DENSE_ICE);
-
-        addTarget("sub_block", Material.DECORATION);
-
-        addTarget("piston", Material.PISTON);
-
-        addTarget("plant", Material.PLANT);
-
-        addTarget("gourd", Material.GOURD);
-
-        addTarget("redstone_lamp", Material.REDSTONE_LAMP);
-
-        addTarget("replaceable_plant", Material.REPLACEABLE_PLANT);
-
-        addTarget("aggregate", Material.AGGREGATE);
-
-        addTarget("replaceable_underwater_plant", Material.REPLACEABLE_UNDERWATER_PLANT);
-
-        addTarget("shulker_box", Material.SHULKER_BOX);
-
-        addTarget("snow_layer", Material.SNOW_LAYER);
-
-        addTarget("snow_block", Material.SNOW_BLOCK);
-
-        addTarget("sponge", Material.SPONGE);
-
-        addTarget("stone", Material.STONE);
-
-        addTarget("tnt", Material.TNT);
-
-        addTarget("underwater_plant", Material.UNDERWATER_PLANT);
-
-        addTarget("moss_block", Material.MOSS_BLOCK);
-
-        addTarget("wood", Material.WOOD);
-
-        addTarget("wool", Material.WOOL);
-
-        addTarget("water", Material.WATER);
-
-        addTarget("fire", Material.FIRE);
-
-        addTarget("lava", Material.LAVA);
-
-        addTarget("barrier", Material.BARRIER);
-
-        addTarget("bubble_column", Material.BUBBLE_COLUMN);
-
-        addTarget("air", Material.AIR);
-
-        addTarget("portal", Material.PORTAL);
-
-        addTarget("structure_void", Material.STRUCTURE_VOID);
-
-        if (SwitchUtil.isAcceptableVersion("1.16-alpha.20.6.a")) {
-            addTarget("nether_wood", Material.NETHER_WOOD);
-        }
-
-        if (SwitchUtil.isAcceptableVersion("1.16.2-beta.2")) {
-            addTarget("nether_shoots", Material.NETHER_SHOOTS);
-        }
-
-        if (SwitchUtil.isAcceptableVersion("1.17-alpha.20.45.a")) {
-            addTarget("amethyst", Material.AMETHYST);
-        }
-
-        if (SwitchUtil.isAcceptableVersion("1.17-alpha.20.46.a")) {
-            addTarget("passable_snow_block", Material.POWDER_SNOW);
-        }
-
-        if (SwitchUtil.isAcceptableVersion("1.17-alpha.20.49.a")) {
-            addTarget("sculk", Material.SCULK);
-        }
-
-        if (SwitchUtil.isAcceptableVersion("1.19-alpha.22.19.a")) {
-            addTarget("froglight", Material.FROGLIGHT);
-            addTarget("frogspawn", Material.FROGSPAWN);
-        }
+        addDefaultTarget(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:shears_efficient")));
+        addDefaultTarget(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:sword_efficient")));
+        addDefaultTarget(BlockTags.HOE_MINEABLE);//todo wrap in AS tags?
+        addDefaultTarget(BlockTags.AXE_MINEABLE);
+        addDefaultTarget(BlockTags.PICKAXE_MINEABLE);
+        addDefaultTarget(BlockTags.SHOVEL_MINEABLE);
+        //todo leave as tag target, or give special names?
 
         // Entities
         addTarget("aquaticEntity", EntityGroup.AQUATIC);
@@ -293,6 +193,20 @@ public class ApiMapGenerator {
         } catch (NoSuchFieldError e) {
             AutoSwitch.logger.debug("Failed to add target - Name: {}, ID: {}", name, e.getMessage());
         }
+    }
+
+    private static void addDefaultTarget(TagKey<Block> tag) {
+        Predicate<Object> predicate = o -> {
+            if (o instanceof Block b) {
+                return ClientTags.isInWithLocalFallback(tag, b);
+            }
+            return false;
+        };
+
+        AutoSwitch.switchData.defaultTargets.add(predicate);
+
+        var name = "block@" + tag.id().toString().replaceAll(":", "!");
+        addTarget(name, predicate);
     }
 
 }

@@ -11,14 +11,14 @@ import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
 
 public class TagTargetHandler {
-    private static final Pattern tagGroupPattern = Pattern.compile("(\\w+@\\w+:\\w+)");
+    private static final Pattern tagGroupPattern = Pattern.compile("(\\w+@\\w+:[\\w/]+)");
 
     private static boolean isTagGroup(String str) {
         return tagGroupPattern.matcher(str).matches();

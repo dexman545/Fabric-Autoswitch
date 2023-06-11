@@ -1,7 +1,10 @@
 package autoswitch.actions;
 
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import autoswitch.AutoSwitch;
@@ -53,7 +56,7 @@ public enum Action {
         actionCache = new TargetableCache(MAX_CACHE_SIZE);
     }
 
-    public Object getTarget(Object protoTarget) {
+    public LinkedHashSet<Object> getTarget(Object protoTarget) {
         return getTarget(target2ToolSelectorsMap, protoTarget);
     }
 
@@ -65,39 +68,50 @@ public enum Action {
      *
      * @return target
      */
-    private static Object getTarget(Map<Object, IntArrayList> map, Object protoTarget) {
-        if (protoTarget instanceof ItemTarget) return protoTarget;
+    private static LinkedHashSet<Object> getTarget(Map<Object, IntArrayList> map, Object protoTarget) {
+        var out = new LinkedHashSet<Object>();
 
-        // Event with stat change trigger
-        if (protoTarget instanceof Stat<?>) return protoTarget;
+        if (protoTarget instanceof ItemTarget || protoTarget instanceof Stat<?>) {
+            out.add(protoTarget);
+            return out;
+        }
 
-        // These methods were moved to AbstractBlockState in 20w12a,
-        // so their intermediary name changed breaking compatibility
+        //todo allow finding of multiple predicates/target groups to be added to the set
         if (protoTarget instanceof BlockState state) {
             // Block Override
             Block block = state.getBlock();
             if (map.containsKey(block)) {
-                return block;
+                out.add(block);
+                return out;
             }
-            return TargetableGroup.maybeGetTarget(protoTarget)
-                                  .orElse(TargetableGroup.maybeGetTarget(block).orElse(state.getMaterial()));
+
+            out.add(TargetableGroup.maybeGetTarget(protoTarget)
+                                   .orElse(TargetableGroup.maybeGetTarget(block).orElse(null)));
+            out.addAll(getDefaultTarget(block));
+            return out;
         }
 
         if (protoTarget instanceof Entity e) {
             // Entity Override
             EntityType<?> entityType = e.getType();
             if (map.containsKey(entityType)) {
-                return entityType;
+                out.add(entityType);
+                return out;
             }
 
-            return TargetableGroup.maybeGetTarget(protoTarget)
-                                  .orElse(TargetableGroup.maybeGetTarget(entityType)
-                                                         .orElse(protoTarget instanceof LivingEntity ?
-                                                                 ((LivingEntity) protoTarget).getGroup() :
-                                                                 entityType));
+            out.add(TargetableGroup.maybeGetTarget(protoTarget)
+                                   .orElse(TargetableGroup.maybeGetTarget(entityType)
+                                                          .orElse(protoTarget instanceof LivingEntity ?
+                                                                  ((LivingEntity) protoTarget).getGroup() :
+                                                                  entityType)));
+            return out;
         }
 
-        return null;
+        return out;
+    }
+
+    private static List<Predicate<Object>> getDefaultTarget(Object t) {
+        return AutoSwitch.switchData.defaultTargets.stream().filter(o -> o.test(t)).toList();
     }
 
     public void resetCache() {

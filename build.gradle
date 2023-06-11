@@ -5,7 +5,8 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '1.0.+'
+    id 'fabric-loom' version '1.2.+'
+    //id 'org.gradle.toolchains.foojay-resolver-convention' version "0.5.0"
     //id "com.github.fudge.forgedflowerloom" version "2.0.0"
     id 'io.github.juuxel.loom-quiltflower' version '1.+'
     id 'maven-publish'
@@ -154,7 +155,9 @@ dependencies {
     shade files('api/owner-1.0.13-SNAPSHOT.jar')
 
     // Autoswitch API
-    requiredModApi 'com.github.dexman545:autoswitch-api:3.0.0'//-SNAPSHOT
+    requiredModApi("com.github.dexman545:autoswitch-api:3.0.0") {//-SNAPSHOT
+        exclude group: "net.fabricmc", module: "fabric-loader"
+    }
 
     // Mod Compat ------------
     // ModMenu
@@ -260,9 +263,10 @@ static def getCheckedOutGitCommitHash() {
 def uniChangelog = "This is autopublished from Github Actions. Use at your own risk. See commit history or a release " +
         "build for changes. Based on commit: ${getCheckedOutGitCommitHash()}\n\n<br />" +
         "This build may work on Minecraft versions not specified for this version. Release cadence at time of writing " +
-        "(2/12/2021):\n\n<br />" +
+        "(2023/05/10):\n\n<br />" +
         "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.2 - 1.18.1 | 4.x.x -> 1.18.2 (22w06a) - 1.19 (22w15a) " +
-        "| 5.x.x -> 1.19 (22w16a) - 1.19.3 (22w44a) | 6.x.x -> 1.19.3 (~22w45a) -> current (and possibly beyond)\n\n<br />"
+        "| 5.x.x -> 1.19 (22w16a) - 1.19.3 (22w44a) | 6.x.x -> 1.19.3 (~22w45a) - 1.19.4 " +
+        "| 7 -> 1.20-pre.1 - current (and possibly beyond)\n\n<br />"
 
 modrinth {
     token = System.getenv("MODRINTH")

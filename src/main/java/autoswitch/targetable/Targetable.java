@@ -2,6 +2,7 @@ package autoswitch.targetable;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,7 +48,7 @@ public abstract class Targetable {
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
     /**
      * The initial Target brought in from the world, eg. a block or entity. This differs from the Target in that a
-     * {@link net.minecraft.block.Material} or {@link net.minecraft.entity.EntityGroup} may be targeted in the user
+     * {@link autoswitch.selectors.TargetableGroup} or {@link net.minecraft.entity.EntityGroup} may be targeted in the user
      * config
      * <p>
      * Equals the actual Target iff it is a block or entity override
@@ -206,33 +207,36 @@ public abstract class Targetable {
             return;
         }
 
-        // Establish base value to add to the tool rating,
-        // promoting higher priority tools from the config in the selection
-        AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize() * 10);
+        LinkedHashSet<Object> potentialTargets = getAction().getTarget(protoTarget);
 
-        Object target = getAction().getTarget(protoTarget);
+        potentialTargets.forEach(target -> {
+            if (target == null || stopProcessingSlot(target, slot)) return;
 
-        if (target == null || stopProcessingSlot(target, slot)) return;
+            // Establish base value to add to the tool rating,
+            // promoting higher priority tools from the config in the selection
+            AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize() * 10);
 
-        getAction().getTarget2ToolSelectorsMap()
-                        .getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
-            if (id == 0) return; // Check if no ID was assigned to the toolSelector.
+            getAction().getTarget2ToolSelectorsMap()
+                       .getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
+                           if (id == 0) return; // Check if no ID was assigned to the toolSelector.
 
-            counter.updateAndGet(v -> v - 2); // Tools later in the config list are not preferred
-            ToolSelector toolSelector;
+                           counter.updateAndGet(v -> v - 2); // Tools later in the config list are not preferred
+                           ToolSelector toolSelector;
 
-            if (id != SwitchData.blank.getInt(0)) {
-                toolSelector = AutoSwitch.switchData.toolSelectors.get(id);
-            } else { // Handle case of no target but user desires fallback to items
-                toolSelector = !getAction().allowNullItemFallback() ? nullToolSelector : blankToolSelector;
-                //todo just stop processing instead of
-                // null selector?
-            }
+                           if (id != SwitchData.blank.getInt(0)) {
+                               toolSelector = AutoSwitch.switchData.toolSelectors.get(id);
+                           } else { // Handle case of no target but user desires fallback to items
+                               toolSelector = !getAction().allowNullItemFallback() ? nullToolSelector : blankToolSelector;
+                               //todo just stop processing instead of
+                               // null selector?
+                           }
 
-            if ((!getAction().allowNullItemFallback() || TargetableUtil.isRightTool(stack, protoTarget))) {
-                updateToolListsAndRatings(stack, toolSelector, slot, counter);
-            }
-
+                           AutoSwitch.logger.debug("Slot: {}; target: {}; is right: {}", slot, protoTarget,
+                                               TargetableUtil.isRightTool(stack, protoTarget));
+                           if ((!getAction().allowNullItemFallback() || TargetableUtil.isRightTool(stack, protoTarget))) {
+                               updateToolListsAndRatings(stack, toolSelector, slot, counter);
+                           }
+                       });
         });
 
     }

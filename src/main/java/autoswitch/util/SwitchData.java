@@ -1,18 +1,16 @@
 package autoswitch.util;
 
+import java.util.LinkedHashSet;
 import java.util.function.Predicate;
 
 import autoswitch.api.AutoSwitchMap;
 import autoswitch.api.DurabilityGetter;
-import autoswitch.selectors.ItemTarget;
 import autoswitch.selectors.ToolSelector;
-import autoswitch.selectors.futures.FutureRegistryEntry;
 
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 
 public class SwitchData {
     /**
@@ -55,6 +53,7 @@ public class SwitchData {
      * Map of target's key from the config -> the Object it represents.
      */
     public final AutoSwitchMap<String, Object> targets = new AutoSwitchMap<>();
+    public final LinkedHashSet<Predicate<Object>> defaultTargets = new LinkedHashSet<>();
 
     public SwitchData() {
         // Add a dummy entry for when the list of toolSelector IDs does not contain a target,
