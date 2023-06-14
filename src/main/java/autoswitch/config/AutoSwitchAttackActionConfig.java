@@ -103,7 +103,7 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @Separator(",")
     @DefaultValue("")
     @Key("minecraft!sugar_cane")
-    @Comment("A default-provided override for sugar cane.")
+    @Comment("A default-provided override for sugar cane so that tools are not used.")
     ToolSelector[] reedsSpecial();
 
     @Separator(",")
@@ -119,7 +119,7 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolSelector[] glass();
 
     @Separator(",")
-    @DefaultValue("pickaxe;minecraft:silk_touch")
+    @DefaultValue("pickaxe;minecraft:silk_touch, pickaxe;minecraft:efficiency, pickaxe")
     @Key("block@minecraft!ice")
     @Comment("A tag for ice.")
     ToolSelector[] ice();
