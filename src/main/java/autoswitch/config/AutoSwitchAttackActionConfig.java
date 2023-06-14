@@ -107,28 +107,10 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolSelector[] reedsSpecial();
 
     @Separator(",")
-    @DefaultValue("shears, axe")
-    @Key("minecraft!glow_lichen")
-    @Comment("A default-provided override for glow lichen.")
-    ToolSelector[] lichenSpecial();
-
-    @Separator(",")
     @DefaultValue("pickaxe;minecraft:silk_touch, pickaxe;minecraft:mending, pickaxe;minecraft:efficiency, pickaxe")
     @Key("minecraft!ender_chest")
     @Comment("A default-provided override for ender chests to prefer silk touch.")
     ToolSelector[] enderChestSpecial();
-
-    @Separator(",")
-    @DefaultValue("axe;minecraft:efficiency, axe;minecraft:mending, axe")
-    @Key("minecraft!cocoa")
-    @Comment("A default-provided override for cocoa beans.")
-    ToolSelector[] cocoaSpecial();
-
-    @Separator(",")
-    @DefaultValue("pickaxe")
-    @Key("block@minecraft!rails")
-    @Comment("A tag for rails.")
-    ToolSelector[] rails();
 
     @Separator(",")
     @DefaultValue("any;minecraft:silk_touch")
