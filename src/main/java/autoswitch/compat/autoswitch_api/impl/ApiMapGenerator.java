@@ -123,9 +123,11 @@ public class ApiMapGenerator {
     // Populate Targets map with default values
     private static void genTargetMap() {
         // Blocks
+        //todo wrap in AS tags?
+        //todo order dependent
         addDefaultTarget(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:shears_efficient")));
+        addDefaultTarget(BlockTags.HOE_MINEABLE);
         addDefaultTarget(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:sword_efficient")));
-        addDefaultTarget(BlockTags.HOE_MINEABLE);//todo wrap in AS tags?
         addDefaultTarget(BlockTags.AXE_MINEABLE);
         addDefaultTarget(BlockTags.PICKAXE_MINEABLE);
         addDefaultTarget(BlockTags.SHOVEL_MINEABLE);

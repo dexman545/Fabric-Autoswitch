@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.IntConsumer;
 
@@ -209,18 +210,26 @@ public abstract class Targetable {
 
         LinkedHashSet<Object> potentialTargets = getAction().getTarget(protoTarget);
 
+        // Establish base value to add to the tool rating,
+        // promoting higher priority tools from the config in the selection
+        AtomicReference<Float> baseToolRating = new AtomicReference<>((float) PlayerInventory.getHotbarSize() * 10);
+        // GH-59 We now return an order-dependent set of potential targets, those that come earlier should be
+        // preferred.
+        //todo remove and have the weighting allow for order-independence (may not be possible as we have block
+        // overrides to consider)
+        AtomicInteger targetDecayFactor = new AtomicInteger(0);
+
         potentialTargets.forEach(target -> {
             if (target == null || stopProcessingSlot(target, slot)) return;
 
-            // Establish base value to add to the tool rating,
-            // promoting higher priority tools from the config in the selection
-            AtomicReference<Float> counter = new AtomicReference<>((float) PlayerInventory.getHotbarSize() * 10);
+            baseToolRating.set((float) PlayerInventory.getHotbarSize() * 10);
 
             getAction().getTarget2ToolSelectorsMap()
                        .getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
                            if (id == 0) return; // Check if no ID was assigned to the toolSelector.
 
-                           counter.updateAndGet(v -> v - 2); // Tools later in the config list are not preferred
+                           // Tools later in the config list are not preferred
+                           baseToolRating.updateAndGet(v -> v - 10 * targetDecayFactor.get());
                            ToolSelector toolSelector;
 
                            if (id != SwitchData.blank.getInt(0)) {
@@ -231,14 +240,15 @@ public abstract class Targetable {
                                // null selector?
                            }
 
-                           AutoSwitch.logger.debug("Slot: {}; target: {}; is right: {}", slot, protoTarget,
+                           AutoSwitch.logger.debug("Slot: {}; selector: {}; is right: {}", slot, toolSelector,
                                                TargetableUtil.isRightTool(stack, protoTarget));
                            if ((!getAction().allowNullItemFallback() || TargetableUtil.isRightTool(stack, protoTarget))) {
-                               updateToolListsAndRatings(stack, toolSelector, slot, counter);
+                               updateToolListsAndRatings(stack, toolSelector, slot, baseToolRating);
                            }
                        });
-        });
 
+            targetDecayFactor.addAndGet(1);
+        });
     }
 
     /**
@@ -266,6 +276,8 @@ public abstract class Targetable {
                 rating = 0.1;
             }
         }
+
+        AutoSwitch.logger.debug("Slot: {}; New Rating: {}", slot, rating);
 
         if (rating == 0) return;
 

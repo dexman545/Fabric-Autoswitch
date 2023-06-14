@@ -130,4 +130,16 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @Comment("A tag for rails.")
     ToolSelector[] rails();
 
+    @Separator(",")
+    @DefaultValue("any;minecraft:silk_touch")
+    @Key("block@c!glass_blocks")
+    @Comment("A tag for glass.")
+    ToolSelector[] glass();
+
+    @Separator(",")
+    @DefaultValue("pickaxe;minecraft:silk_touch")
+    @Key("block@minecraft!ice")
+    @Comment("A tag for ice.")
+    ToolSelector[] ice();
+
 }
