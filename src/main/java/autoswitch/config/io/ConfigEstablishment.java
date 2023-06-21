@@ -58,6 +58,8 @@ public final class ConfigEstablishment {
         // Update old config files
         updateOldConfigFiles();
 
+        // Replace : with ! when reading to prevent configs from being messed up
+        ConfigFactory.registerLoader(new LenientPropertiesLoader());
         ConfigFactory.setProperty("configDir", configFeature);
         ConfigFactory.setProperty("configDirMats", configAttackAction);
         ConfigFactory.setProperty("configDirEvents", configEventAction);
