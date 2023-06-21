@@ -89,13 +89,13 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolSelector[] hoeTargets();
 
     @Separator(",")
-    @DefaultValue("shovel")
+    @DefaultValue("shovel;minecraft:efficiency, shovel;minecraft:mending, shovel")
     @Key("block@minecraft!mineable/shovel")
     @Comment("A tag for blocks broken more quickly by a sword.")
     ToolSelector[] shovelTargets();
 
     @Separator(",")
-    @DefaultValue("shears;minecraft:mending, shears")
+    @DefaultValue("shears;minecraft:efficiency, shears;minecraft:mending, shears")
     @Key("block@autoswitch!shears_efficient")
     @Comment("A tag for blocks broken more quickly by shears.")
     ToolSelector[] shearsTargets();
