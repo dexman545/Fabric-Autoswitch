@@ -76,6 +76,7 @@ public class ToolSelector implements Selector<ItemStack> {
                     itemSelector = new ItemSelector(item);
                 } else {
                     itemSelector = null;
+                    AutoSwitch.logger.error("Failed to generate ItemSelector of String {}", itemSelectorStr);
                 }
             }
         }
@@ -158,6 +159,10 @@ public class ToolSelector implements Selector<ItemStack> {
     }
 
     private int makeId() {
+        if (itemSelector == null) {
+            return -321574897;
+        }
+
         // Gets hashcode for use as id. While this isn't guaranteed to be unique,
         // the chance of a collision in this use case is extremely slim. If it ever collides,
         // the following while loop should fix it. If not, revert this change to UUID or better hash.
