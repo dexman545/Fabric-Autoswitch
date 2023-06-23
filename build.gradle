@@ -323,7 +323,7 @@ curseforge {
 // I intend for beta and alpha builds to be Modrinth exclusives
 tasks.withType(CurseUploadTask) {
     onlyIf {
-        "release" == getReleaseMonicker() && !versionAlreadyUploaded()
+        ("release" == getReleaseMonicker() || "beta" == getReleaseMonicker()) && !versionAlreadyUploaded()
     }
 }
 
