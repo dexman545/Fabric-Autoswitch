@@ -24,8 +24,7 @@ public class LenientPropertiesLoader implements Loader {
 
     public boolean accept(URI uri) {
         try {
-            uri.toURL();
-            return uri.toString().endsWith(".cfg");
+            return uri.toURL().toString().endsWith(".cfg");
         } catch (MalformedURLException | IllegalArgumentException e) {
             AutoSwitch.logger.error(uri.toString());
             AutoSwitch.logger.error("Lenient Processing", e);
@@ -35,12 +34,9 @@ public class LenientPropertiesLoader implements Loader {
 
     public void load(Properties result, URI uri) throws IOException {
         URL url = uri.toURL();
-        InputStream input = url.openStream();
 
-        try {
+        try (InputStream input = url.openStream()) {
             this.load(result, input);
-        } finally {
-            input.close();
         }
     }
 
