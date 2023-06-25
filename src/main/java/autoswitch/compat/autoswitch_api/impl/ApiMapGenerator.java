@@ -127,10 +127,10 @@ public class ApiMapGenerator {
         //todo order dependent
         addDefaultTarget(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:shears_efficient")));
         addDefaultTarget(BlockTags.HOE_MINEABLE);
-        addDefaultTarget(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:sword_efficient")));
         addDefaultTarget(BlockTags.AXE_MINEABLE);
         addDefaultTarget(BlockTags.PICKAXE_MINEABLE);
         addDefaultTarget(BlockTags.SHOVEL_MINEABLE);
+        addDefaultTarget(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:sword_efficient")));
         //todo leave as tag target, or give special names?
 
         // Entities

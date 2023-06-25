@@ -124,4 +124,10 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @Comment("A tag for ice.")
     ToolSelector[] ice();
 
+    @Separator(",")
+    @DefaultValue("sword;minecraft:mending, sword")
+    @Key("block@autoswitch!bamboo")
+    @Comment("A tag for bamboo.")
+    ToolSelector[] bamboo();
+
 }

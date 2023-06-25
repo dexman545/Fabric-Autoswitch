@@ -45,6 +45,9 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 .addOptional(Registries.BLOCK.getId(Blocks.BAMBOO))
                 .addOptional(Registries.BLOCK.getId(Blocks.COBWEB))
                 .addOptional(Registries.BLOCK.getId(Blocks.BAMBOO_SAPLING));
+        getOrCreateTagBuilder(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:bamboo")))
+                .addOptional(Registries.BLOCK.getId(Blocks.BAMBOO))
+                .addOptional(Registries.BLOCK.getId(Blocks.BAMBOO_SAPLING));
 
     }
 

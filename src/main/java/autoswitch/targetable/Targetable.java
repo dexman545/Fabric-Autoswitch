@@ -229,7 +229,7 @@ public abstract class Targetable {
                            if (id == 0) return; // Check if no ID was assigned to the toolSelector.
 
                            // Tools later in the config list are not preferred
-                           baseToolRating.updateAndGet(v -> v - 10 * targetDecayFactor.get());
+                           baseToolRating.updateAndGet(v -> v - 2 * targetDecayFactor.get());
                            ToolSelector toolSelector;
 
                            if (id != SwitchData.blank.getInt(0)) {
