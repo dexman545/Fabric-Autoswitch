@@ -39,7 +39,6 @@ public class LenientPropertiesLoader implements Loader {
 
         try {
             this.load(result, input);
-            AutoSwitch.logger.info(result.toString());
         } finally {
             input.close();
         }
