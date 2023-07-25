@@ -116,7 +116,25 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @DefaultValue("any;minecraft:silk_touch")
     @Key("block@c!glass_blocks")
     @Comment("A tag for glass.")
-    ToolSelector[] glass();
+    ToolSelector[] glass_blocks();
+
+    @Separator(",")
+    @DefaultValue("any;minecraft:silk_touch")
+    @Key("block@c!glass_panes")
+    @Comment("A tag for glass.")
+    ToolSelector[] glass_panes();
+
+    @Separator(",")
+    @DefaultValue("any;minecraft:silk_touch")
+    @Key("minecraft!glowstone")
+    @Comment("A tag for glass.")
+    ToolSelector[] glowstoneSpecial();
+
+    @Separator(",")
+    @DefaultValue("any;minecraft:silk_touch")
+    @Key("minecraft!sea_lantern")
+    @Comment("A tag for glass.")
+    ToolSelector[] seaLanternSpecial();
 
     @Separator(",")
     @DefaultValue("pickaxe;minecraft:silk_touch, pickaxe;minecraft:efficiency, pickaxe")
