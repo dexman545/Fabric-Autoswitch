@@ -8,7 +8,7 @@ plugins {
     id 'fabric-loom' version '1.2.+'
     //id 'org.gradle.toolchains.foojay-resolver-convention' version "0.5.0"
     //id "com.github.fudge.forgedflowerloom" version "2.0.0"
-    id 'io.github.juuxel.loom-quiltflower' version '1.+'
+    id 'io.github.juuxel.loom-vineflower' version '1.+'
     id 'maven-publish'
     id "com.modrinth.minotaur" version "2.+"
     id 'com.matthewprenger.cursegradle' version '1.4.+'
