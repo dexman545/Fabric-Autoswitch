@@ -147,7 +147,9 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API.
-    requiredModImpl "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    requiredModImpl("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}") {
+        exclude module: "fabric-api-deprecated"
+    }
 
     // OWNER library
     //requiredLib "org.aeonbits.owner:owner:1.0.12"
