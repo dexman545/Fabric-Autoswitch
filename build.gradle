@@ -281,7 +281,9 @@ modrinth {
     gameVersions = outlet.mcVersions()
     loaders = ["fabric"]
     changelog = uniChangelog
-    dependencies = [new ModDependency("P7dR8mSH", "required")] // Creates a new required dependency on Fabric API
+    dependencies {
+        required.project "fabric-api"
+    }
     //debugMode = true
 }
 
@@ -324,7 +326,7 @@ curseforge {
 
 // Only publish to Curseforge for releases
 // I intend for beta and alpha builds to be Modrinth exclusives
-tasks.withType(CurseUploadTask) {
+tasks.withType(CurseUploadTask).configureEach {
     onlyIf {
         ("release" == getReleaseMonicker() || "beta" == getReleaseMonicker()) && !versionAlreadyUploaded()
     }
@@ -356,58 +358,6 @@ String getReleaseMonicker() {
     if (((String) project.version).contains('alpha')) return "alpha"
     if (((String) project.version).contains('beta')) return "beta"
     return "release"
-}
-
-// Fixes fabric.mod.json's template variables not being replaced with Idea's run configs.
-task fixResourcesLaunch(type: Copy) {
-    String name = project.name.replace(" ", "_") + ".main"
-
-    destinationDir file("${projectDir}/out/production/${name}")
-    from processResources
-}
-
-/**
- * @return old MC version from musical-code-data.properties for use in musical code
- */
-String getOldMcVersion(boolean getNewMc) {
-    Properties props = new Properties()
-    File f = new File("${projectDir}/musical-code-data.properties")
-    if (!f.exists()) f.newWriter().close()
-    props.load(f.newDataInputStream())
-
-    def currMC = props.get('currMC') as String
-    def oldMC = props.get('oldMC') as String
-
-    if (oldMC == null) props.setProperty('oldMC', "${project.minecraft_version}")
-    if (currMC == null) {
-        props.setProperty('currMC', "${project.minecraft_version}")
-        currMC = project.minecraft_version
-    }
-
-    if (currMC != "${project.minecraft_version}") {
-        props.setProperty('oldMC', currMC as String)
-        props.setProperty('currMC', "${project.minecraft_version}")
-    }
-
-    props.store(f.newWriter(), null)
-
-    if (getNewMc) return props.get('currMC') as String
-
-    return props.get('oldMC') as String
-}
-
-// From https://stackoverflow.com/a/42691104
-// Licensed under CC BY-SA 3.0
-private static String runCommands(String... commands) {
-    def process = new ProcessBuilder(commands).redirectErrorStream(true).start()
-    process.waitFor()
-    def result = ''
-    process.inputStream.eachLine { result += it + '\n' }
-    def errorResult = process.exitValue() == 0
-    if (!errorResult) {
-        throw new IllegalStateException(result)
-    }
-    return result
 }
 
 tasks.publish.onlyIf {
