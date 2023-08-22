@@ -44,15 +44,6 @@ public class ApiMapGenerator {
         //This is solely for testing if this system works. Do not use as it matches all items.
         //AutoSwitch.data.damageMap.put(Item.class, ItemStack::getDamage);
 
-        // Tool Groups
-        /*AutoSwitch.switchData.toolGroupings.put("pickaxe", Pair.of(null, PickaxeItem.class));
-        AutoSwitch.switchData.toolGroupings.put("shovel", Pair.of(null, ShovelItem.class));
-        AutoSwitch.switchData.toolGroupings.put("hoe", Pair.of(null, HoeItem.class));
-        AutoSwitch.switchData.toolGroupings.put("shears", Pair.of(null, ShearsItem.class));
-        AutoSwitch.switchData.toolGroupings.put("trident", Pair.of(null, TridentItem.class));
-        AutoSwitch.switchData.toolGroupings.put("axe", Pair.of(null, AxeItem.class));
-        AutoSwitch.switchData.toolGroupings.put("sword", Pair.of(null, SwordItem.class));*/
-
         // Tool Groups via Predicate
         AutoSwitch.switchData.toolPredicates.computeIfAbsent("pickaxe", s -> makeToolPredicate(s, PickaxeItem.class));
         AutoSwitch.switchData.toolPredicates.computeIfAbsent("shovel", s -> makeToolPredicate(s, ShovelItem.class));

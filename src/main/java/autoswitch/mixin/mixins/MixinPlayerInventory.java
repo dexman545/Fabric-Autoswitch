@@ -48,6 +48,14 @@ public abstract class MixinPlayerInventory {
     }
 
     /**
+     * @see PlayerInventory#removeStack(int)
+     */
+    @Inject(at = @At("RETURN"), method = "removeStack(I)Lnet/minecraft/item/ItemStack;")
+    private void autoswitch$rmvs(int slot, CallbackInfoReturnable<ItemStack> cir) {
+        handleHotbarUpdate(slot);
+    }
+
+    /**
      * If the sot changed is on the hotbar, pass to the HotbarWatcher and update the prevHotbar.
      *
      * @param slot slot changed
@@ -59,14 +67,6 @@ public abstract class MixinPlayerInventory {
         List<ItemStack> hb = this.main.subList(0, getHotbarSize());
         HotbarWatcher.handleSlotChange(prevHotbar, hb);
         prevHotbar = new ReferenceArrayList<>(hb);
-    }
-
-    /**
-     * @see PlayerInventory#removeStack(int)
-     */
-    @Inject(at = @At("RETURN"), method = "removeStack(I)Lnet/minecraft/item/ItemStack;")
-    private void autoswitch$rmvs(int slot, CallbackInfoReturnable<ItemStack> cir) {
-        handleHotbarUpdate(slot);
     }
 
 }

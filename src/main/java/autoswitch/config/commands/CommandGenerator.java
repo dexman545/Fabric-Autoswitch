@@ -129,7 +129,7 @@ public class CommandGenerator {
                     Command<FabricClientCommandSource> execution = context -> {
                         var option = context.getArgument("option", gea.getEnum());
                         var enabled = context.getArgument("enabled", boolean.class);
-                        Collection currentValue = null;
+                        Collection<Object> currentValue = null;
                         Consumer<Object> con = o -> {};
                         if (c.owningOption() instanceof Method m) {
                             currentValue = GameConfigEditorUtil.FEATURE_CONFIG.currentValue(m);
@@ -191,19 +191,21 @@ public class CommandGenerator {
      *
      * @return the available argument type.
      */
-    public static @Nullable ArgumentType<?> argumentType(@NotNull Method method) {
+    @SuppressWarnings("unchecked")
+    public static <U extends Enum<U>> @Nullable ArgumentType<?> argumentType(@NotNull Method method) {
         Class<?> clazz = method.getReturnType();
         if (clazz.equals(Boolean.class)) return BoolArgumentType.bool();
-        if (clazz.isEnum()) return new GenericEnumArgument(clazz, false);
+        if (clazz.isEnum()) return new GenericEnumArgument<U>((Class<U>) clazz, false);
         if (clazz.equals(Float.class)) return FloatArgumentType.floatArg();
         if (clazz.equals(Double.class)) return DoubleArgumentType.doubleArg();
         if (clazz.equals(Integer.class)) return IntegerArgumentType.integer();
         if (clazz.equals(String.class)) return StringArgumentType.greedyString();
         var maybeEnum = getEnum4Collection(method);
-        if (maybeEnum != null) return new GenericEnumArgument(maybeEnum, true);// new GenericRepeatingArgumentType<>();
+        if (maybeEnum != null) return new GenericEnumArgument<U>((Class<U>) maybeEnum, true);
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public static <U extends Enum<U>> Class<U> getEnum4Collection(Method method) {
         var clazz = method.getReturnType();
         if (Collection.class.isAssignableFrom(clazz)) {

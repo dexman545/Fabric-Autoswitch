@@ -1,10 +1,8 @@
 package autoswitch.events;
 
-import autoswitch.AutoSwitch;
-
-import java.util.HashSet;
-import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import autoswitch.AutoSwitch;
 
 public class Scheduler {
     private final LinkedBlockingQueue<Task> schedule = new LinkedBlockingQueue<>(10);
@@ -83,20 +81,11 @@ public class Scheduler {
     /**
      * Internal representation of an event that includes the scheduled tick time to execute.
      */
-    private static class Task {//todo make record?
-        private final int finalTickTime;
-        private final SwitchEvent event;
-
-        private Task(SwitchEvent event, int finalTickTime) {
-            this.event = event;
-            this.finalTickTime = finalTickTime;
-        }
-
+    private record Task(SwitchEvent event, int finalTickTime) {
         @Override
         public String toString() {
             return "Task{" + "finalTickTime=" + finalTickTime + ", event=" + event + '}';
         }
-
     }
 
 }

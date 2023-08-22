@@ -97,7 +97,7 @@ public class GenerateConfigTemplate {
     // Remove colons as it breaks when reading if not escaped
     private static void sanitize(Properties prop) {
         for (String propertyName : prop.stringPropertyNames()) {
-            String newKey = propertyName.replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
+            String newKey = propertyName.replaceAll("(?<!\\\\)(?:\\\\{2})*:", ":");
             if (!propertyName.equals(newKey)) {
                 prop.put(newKey, prop.get(propertyName));
                 prop.remove(propertyName);

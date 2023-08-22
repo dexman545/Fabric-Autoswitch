@@ -69,7 +69,7 @@ public enum Action {
      * @return target
      */
     private static LinkedHashSet<Object> getTarget(Map<Object, IntArrayList> map, Object protoTarget) {
-        var out = new LinkedHashSet<Object>();
+        var out = new LinkedHashSet<>();
 
         if (protoTarget instanceof ItemTarget || protoTarget instanceof Stat<?>) {
             out.add(protoTarget);

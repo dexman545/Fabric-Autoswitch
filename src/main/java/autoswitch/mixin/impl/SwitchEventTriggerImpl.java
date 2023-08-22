@@ -75,55 +75,56 @@ public class SwitchEventTriggerImpl {
      * @param player          the player
      */
     private static void triggerSwitch(DesiredType desiredType, HitResult crosshairTarget, ClientPlayerEntity player) {
+        // Set event and doSwitchType
         SwitchEvent event;
         boolean doSwitchType;
-
-        // Set event and doSwitchType
         switch (desiredType) {
-            case USE:
+            case USE -> {
                 event = SwitchEvent.USE;
                 doSwitchType = AutoSwitch.featureCfg.switchUseActions();
-                break;
-            case ATTACK:
+            }
+            case ATTACK -> {
                 event = SwitchEvent.ATTACK;
                 doSwitchType = AutoSwitch.featureCfg.switchAllowed()
-                                                    .contains(crosshairTarget.getType() == HitResult.Type.ENTITY ?
-                                                              TargetType.MOBS :
-                                                              TargetType.BLOCKS);
-                break;
-            default:
-                throw new IllegalStateException("AutoSwitch encountered an unexpected enum value: " + desiredType +
-                                                "\nSome mod has fiddled with AutoSwitch's internals!");
-        }
+                        .contains(crosshairTarget.getType() == HitResult.Type.ENTITY ?
+                                TargetType.MOBS :
+                                TargetType.BLOCKS);
+            }
+            default -> throw new IllegalStateException("AutoSwitch encountered an unexpected enum value: " +
+                                                       desiredType +
+                                                       "\nSome mod has fiddled with AutoSwitch's internals!");
+        };
 
         // Trigger switch
         switch (crosshairTarget.getType()) {
-            case MISS:
-                if (desiredType != DesiredType.USE) break;
+            case MISS -> {
+                if (desiredType != DesiredType.USE)
+                    break;
                 if (AutoSwitch.useActionCfg.bow_action().length == 0) {
                     return; // guard to help prevent lag when rclicking into empty space
                 }
                 EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, ItemTarget.INSTANCE);
-                break;
-            case ENTITY:
+            }
+            case ENTITY -> {
                 EntityHitResult entityHitResult = (EntityHitResult) crosshairTarget;
                 Entity entity = entityHitResult.getEntity();
                 EventUtil.schedulePrimaryEvent(SwitchEvent.PREVENT_BLOCK_ATTACK);
                 EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, entity);
-                break;
-            case BLOCK:
-                if (desiredType == DesiredType.ATTACK && SwitchState.preventBlockAttack) break;
+            }
+            case BLOCK -> {
+                if (desiredType == DesiredType.ATTACK && SwitchState.preventBlockAttack)
+                    break;
                 BlockHitResult blockHitResult = ((BlockHitResult) crosshairTarget);
                 BlockPos blockPos = blockHitResult.getBlockPos();
                 BlockState blockState = player.clientWorld.getBlockState(blockPos);
-                if (blockState.isAir()) break;
+                if (blockState.isAir())
+                    break;
                 EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, blockState);
-                break;
+            }
         }
 
         // Run scheduler here as well as in the clock to ensure immediate-eval switches occur
         AutoSwitch.scheduler.execute(AutoSwitch.tickTime);
-
     }
 
     /**

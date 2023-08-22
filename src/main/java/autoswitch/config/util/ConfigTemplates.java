@@ -101,7 +101,7 @@ public class ConfigTemplates {
 
     private static String configEntry(String cfg, String comment, String defaultValue) {
         StringBuilder out = new StringBuilder();
-        if (comment != null && !comment.equals("")) {
+        if (comment != null && !comment.isEmpty()) {
             out.append("\n");
             out.append(wordWrapComment(comment));
         }
@@ -114,7 +114,7 @@ public class ConfigTemplates {
 
     private static String configValueEntry(String key, String value, boolean doWrap) {
         if (value == null) value = "";
-        key = key.replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
+        key = key.replaceAll("(?<!\\\\)(?:\\\\{2})*:", ":");
         return doWrap ? configValueEntryWordwrap(key + " = " + value) : key + " = " + value;
     }
 
@@ -131,7 +131,7 @@ public class ConfigTemplates {
     }
 
     private static String configCommentEntry(String defaultValue) {
-        return (defaultValue != null && !defaultValue.equals("")) ? defaultValueComment + defaultValue : "";
+        return (defaultValue != null && !defaultValue.isEmpty()) ? defaultValueComment + defaultValue : "";
     }
 
     private static String configValueEntryWordwrap(String str) {
@@ -153,7 +153,7 @@ public class ConfigTemplates {
         enumKeys = Collections.enumeration(tempList);
 
         while (enumKeys.hasMoreElements()) {
-            keys.append(keys.length() > 0 ? ", " : "").append(enumKeys.nextElement());
+            keys.append(!keys.isEmpty() ? ", " : "").append(enumKeys.nextElement());
         }
 
         return category("Provided Tool Groupings by AutoSwitch and Mods it Interfaced With", "",

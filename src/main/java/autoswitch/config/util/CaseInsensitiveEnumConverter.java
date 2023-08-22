@@ -14,7 +14,7 @@ public class CaseInsensitiveEnumConverter<X extends Enum<X>> implements Converte
     /**
      * Could be replaced with {@link org.apache.commons.lang3.EnumUtils#getEnum(Class, String)}
      *
-     * @author https://stackoverflow.com/a/28333189
+     * @author <a href="https://stackoverflow.com/a/28333189">Stack overflow.</a>
      */
     private static <T extends Enum<?>> @Nullable T searchEnum(Class<T> enumeration, String search) {
         for (T each : enumeration.getEnumConstants()) {

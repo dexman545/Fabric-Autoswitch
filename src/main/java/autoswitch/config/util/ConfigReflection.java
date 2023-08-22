@@ -59,12 +59,12 @@ public class ConfigReflection {
     // Get the config entry's key
     public static <T extends AccessibleObject & Member> String key(T accessibleMember) {
         Config.Key key = accessibleMember.getAnnotation(Config.Key.class);
-        return (key == null) ? accessibleMember.getName() : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
+        return (key == null) ? accessibleMember.getName() : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", ":");
     }
 
     public static <T extends AccessibleObject & Member> String translationKey(T accessibleMember) {
         TranslationKey key = accessibleMember.getAnnotation(TranslationKey.class);
-        return (key == null) ? key(accessibleMember) : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", "\\:");
+        return (key == null) ? key(accessibleMember) : key.value().replaceAll("(?<!\\\\)(?:\\\\{2})*:", ":");
     }
 
     // Get the config entry's value

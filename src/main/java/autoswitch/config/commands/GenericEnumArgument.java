@@ -15,24 +15,23 @@ import org.apache.commons.lang3.EnumUtils;
 import net.minecraft.command.CommandSource;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class GenericEnumArgument implements ArgumentType {
+public class GenericEnumArgument<Y extends Enum<Y>> implements ArgumentType {
     private final Collection<String> EXAMPLES = new ReferenceArrayList<>();
-    private final Class<?> clazz;
+    private final Class<Y> clazz;
     private final boolean isCollection;
 
-    public <Y extends Enum<Y>> GenericEnumArgument(Class<?> yClass, boolean isCollection) {
+    public GenericEnumArgument(Class<Y> yClass, boolean isCollection) {
         clazz = yClass;
         this.isCollection = isCollection;
         if (!yClass.isEnum()) return;
-        for (Object ec : yClass.getEnumConstants()) {
-            EXAMPLES.add(((Y) ec).name());
+        for (Y ec : yClass.getEnumConstants()) {
+            EXAMPLES.add(ec.name());
         }
     }
 
     @Override
     public Object parse(StringReader reader) {
-        return EnumUtils
-                .getEnum((Class<? extends Enum>) clazz, reader.readUnquotedString().toUpperCase(Locale.ENGLISH));
+        return EnumUtils.getEnum(clazz, reader.readUnquotedString().toUpperCase(Locale.ENGLISH));
     }
 
     @Override
@@ -49,7 +48,7 @@ public class GenericEnumArgument implements ArgumentType {
         return isCollection;
     }
 
-    public <Y extends Enum<Y>> Class<?> getEnum() {
-        return (Class<Y>) clazz;
+    public Class<?> getEnum() {
+        return clazz;
     }
 }

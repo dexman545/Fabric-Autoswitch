@@ -48,7 +48,7 @@ public class ToolSelector implements Selector<ItemStack> {
 
         ReferenceArrayList<EnchantmentSelector> enchantmentSelectors = new ReferenceArrayList<>();
 
-        if (!enchantmentsStr.equals("")) {
+        if (!enchantmentsStr.isEmpty()) {
             var multiEnch = enchantmentsStr.split("&");
 
             for (String ench : multiEnch) {
