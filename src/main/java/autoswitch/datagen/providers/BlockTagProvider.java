@@ -31,7 +31,8 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 .addOptionalTag(BlockTags.LEAVES)
                 .addOptionalTag(BlockTags.WOOL)
                 .addOptional(Registries.BLOCK.getId(Blocks.COBWEB))
-                .addOptional(Registries.BLOCK.getId(Blocks.GRASS))
+                .addOptional(Registries.BLOCK.getId(Blocks.SHORT_GRASS))
+                .addOptional(new Identifier("grass")) // This was renamed to short_grass in ~1.20.4
                 .addOptional(Registries.BLOCK.getId(Blocks.FERN))
                 .addOptional(Registries.BLOCK.getId(Blocks.DEAD_BUSH))
                 .addOptional(Registries.BLOCK.getId(Blocks.HANGING_ROOTS))
