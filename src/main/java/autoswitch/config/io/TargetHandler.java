@@ -9,7 +9,7 @@ import autoswitch.selectors.futures.RegistryType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Custom type for use of parsing the materials config into something meaningful for AutoSwitch matches strings to
@@ -41,8 +41,8 @@ public class TargetHandler {
                 return state;
             }
 
-            Identifier id;
-            if ((id = Identifier.tryParse(str)) != null) {
+            ResourceLocation id;
+            if ((id = ResourceLocation.tryParse(str)) != null) {
                 target = FutureRegistryEntry.getOrCreate(RegistryType.BLOCK_OR_ENTITY, id);
             } else {
                 AutoSwitch.logger.warn("AutoSwitch was not given a real id: " + str + " -> ignoring it");

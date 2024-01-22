@@ -12,10 +12,10 @@ import autoswitch.selectors.futures.RegistryType;
 
 import com.mojang.brigadier.StringReader;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.command.argument.BlockStateArgumentType;
-import net.minecraft.state.property.Property;
-import net.minecraft.util.Identifier;
+import net.minecraft.commands.arguments.blocks.BlockStateArgument;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 public class BlockStateTargetHandler {
     private static final Pattern groupPattern =
@@ -35,14 +35,14 @@ public class BlockStateTargetHandler {
     }
 
     /**
-     * @see BlockStateArgumentType#parse(StringReader) or fill command
+     * @see BlockStateArgument#parse(StringReader) or fill command
      */
     public static TargetableGroup<BlockState> blockStateTargetGroup(String input) {
         input = input.replaceAll("\\+", "=");
 
         var match = isTaggedMatch(input);
         if (match.isMatch) {
-            var futureBlock = FutureRegistryEntry.getOrCreate(RegistryType.BLOCK, new Identifier(match.id));
+            var futureBlock = FutureRegistryEntry.getOrCreate(RegistryType.BLOCK, new ResourceLocation(match.id));
             futureBlock.setTypeLocked(true);
 
             if (match.properties == null) return null;
@@ -57,17 +57,17 @@ public class BlockStateTargetHandler {
                     if (!futureBlock.matches(state.getBlock())) return false;
 
                     for(Map.Entry<String, String> entry : properties.entrySet()) {
-                        Property<?> property = state.getBlock().getStateManager().getProperty(entry.getKey());
+                        Property<?> property = state.getBlock().getStateDefinition().getProperty(entry.getKey());
                         if (property == null) {
                             return false;
                         }
 
-                        Comparable<?> comparable = property.parse(entry.getValue()).orElse(null);
+                        Comparable<?> comparable = property.getValue(entry.getValue()).orElse(null);
                         if (comparable == null) {
                             return false;
                         }
 
-                        if (state.get(property) != comparable) {
+                        if (state.getValue(property) != comparable) {
                             return false;
                         }
                     }

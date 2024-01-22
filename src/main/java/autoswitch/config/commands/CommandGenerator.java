@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 /**
  * Helper class for generating commands from a class file's methods.
@@ -148,9 +148,9 @@ public class CommandGenerator {
 
                         try {
                             ConfigEstablishment.writeConfigFiles();
-                            context.getSource().sendFeedback(Text.of("Config file updated."));
+                            context.getSource().sendFeedback(Component.nullToEmpty("Config file updated."));
                         } catch (IOException e) {
-                            context.getSource().sendError(Text.of("Failed to update config file."));
+                            context.getSource().sendError(Component.nullToEmpty("Failed to update config file."));
                             AutoSwitch.logger.error("Failed to update config file", e);
                             return 1;
                         }
@@ -164,7 +164,7 @@ public class CommandGenerator {
                                                        .executes(context -> {
                                                            context.getSource()
                                                                   .sendFeedback(
-                                                                          Text.translatable(c.translationKey(),
+                                                                          Component.translatable(c.translationKey(),
                                                                                             AutoSwitch.featureCfg
                                                                                                     .getProperty(c.name())));
                                                            return 0;
@@ -177,8 +177,8 @@ public class CommandGenerator {
             }
 
             builder.then(ClientCommandManager.literal(c.name()).executes(context -> {
-                context.getSource().sendError(Text.of("Please specify an option."));
-                context.getSource().sendError(Text.of(c.failureMessage()));
+                context.getSource().sendError(Component.nullToEmpty("Please specify an option."));
+                context.getSource().sendError(Component.nullToEmpty(c.failureMessage()));
                 return 1;
             }).then(ClientCommandManager.argument(c.parameter(), c.argumentType()).executes(c.command())));
         };

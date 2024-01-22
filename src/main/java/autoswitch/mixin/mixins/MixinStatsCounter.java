@@ -9,15 +9,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.stat.Stat;
-import net.minecraft.stat.StatHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.stats.Stat;
+import net.minecraft.stats.StatsCounter;
+import net.minecraft.world.entity.player.Player;
 
-@Mixin(StatHandler.class)
-public class MixinStatHandler {
-    @Inject(at = @At("HEAD"), method = "setStat")
-    private void autoswitch$triggerEventSwitchOnStatChange(PlayerEntity player, Stat<?> stat,
+@Mixin(StatsCounter.class)
+public class MixinStatsCounter {
+    /**
+     * @see StatsCounter#setValue(Player, Stat, int)
+     */
+    @Inject(at = @At("HEAD"), method = "setValue")
+    private void autoswitch$triggerEventSwitchOnStatChange(Player player, Stat<?> stat,
                                                            int value, CallbackInfo ci) {
         if (AutoSwitch.featureCfg.switchAllowed().contains(AutoSwitchConfig.TargetType.EVENTS) &&
             // Filters out unimportant events - most importantly the world tick ones for play time,
@@ -25,7 +28,7 @@ public class MixinStatHandler {
             AutoSwitch.switchData.targets.containsValue(stat)) {
 
             // Cannot use provided player as switching does not work
-            SwitchEventTriggerImpl.eventTrigger(stat, MinecraftClient.getInstance().player);
+            SwitchEventTriggerImpl.eventTrigger(stat, Minecraft.getInstance().player);
         }
     }
 }

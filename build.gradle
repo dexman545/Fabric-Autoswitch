@@ -5,7 +5,7 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '1.4.+'
+    id 'fabric-loom' version '1.5.+'
     //id 'org.gradle.toolchains.foojay-resolver-convention' version "0.5.0"
     id 'maven-publish'
     id "com.modrinth.minotaur" version "2.+"
@@ -142,7 +142,7 @@ sourceSets {
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    mappings loom.officialMojangMappings() //"net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API.
@@ -267,7 +267,7 @@ def uniChangelog = "This is autopublished from Github Actions. Use at your own r
         "(2023/05/10):\n\n<br />" +
         "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.2 - 1.18.1 | 4.x.x -> 1.18.2 (22w06a) - 1.19 (22w15a) " +
         "| 5.x.x -> 1.19 (22w16a) - 1.19.3 (22w44a) | 6.x.x -> 1.19.3 (~22w45a) - 1.19.4 " +
-        "| 7 -> 1.20-pre.1 - 1.20.1 | 8 -> 1.20.1-pre.1 - current (and possibly beyond)\n\n<br />"
+        "| 7 -> 1.20-pre.1 - 1.20.1 | 8 -> 1.20.1-pre.1 - 1.20.4 | 9 -> 1.20.5-alpha.24.3.b - current (and possibly beyond)\n\n<br />"
 
 modrinth {
     token = System.getenv("MODRINTH")

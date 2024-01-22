@@ -3,11 +3,11 @@ package autoswitch.util;
 import autoswitch.AutoSwitch;
 import autoswitch.events.SwitchEvent;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class EventUtil {
 
-    public static void scheduleEvent(SwitchEvent event, boolean doSwitch, PlayerEntity player, boolean doSwitchType,
+    public static void scheduleEvent(SwitchEvent event, boolean doSwitch, Player player, boolean doSwitchType,
                                      Object protoTarget) {
         schedulePrimaryEvent(event.setPlayer(player).setDoSwitch(doSwitch).setDoSwitchType(doSwitchType)
                                   .setProtoTarget(protoTarget));

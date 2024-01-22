@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import autoswitch.actions.Action;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Implementation of Targetable when there is no target. Intended for switchback feature.
@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 class TargetableNone extends Targetable {
     private final int prevSlot;
 
-    public TargetableNone(int prevSlot, PlayerEntity player) {
+    public TargetableNone(int prevSlot, Player player) {
         super(player);
         this.prevSlot = prevSlot;
     }

@@ -4,12 +4,12 @@ import autoswitch.AutoSwitch;
 import autoswitch.actions.Action;
 import autoswitch.config.AutoSwitchConfig;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class TargetableEvent extends Targetable {
 
-    protected TargetableEvent(Object protoTarget, PlayerEntity player) {
+    protected TargetableEvent(Object protoTarget, Player player) {
         super(player);
         this.player = player;
         this.protoTarget = protoTarget;
@@ -34,10 +34,10 @@ public class TargetableEvent extends Targetable {
     @Override
     boolean stopProcessingSlot(Object target, int slot) {
         // Stat increases before the item is removed
-        if (player.getInventory().selectedSlot == slot) {
-            var stack = player.getMainHandStack();
-            return (stack.isDamageable() && stack.getDamage() + 1 >= stack.getMaxDamage()) ||
-                   !stack.isDamageable();
+        if (player.getInventory().selected == slot) {
+            var stack = player.getMainHandItem();
+            return (stack.isDamageableItem() && stack.getDamageValue() + 1 >= stack.getMaxDamage()) ||
+                   !stack.isDamageableItem();
         }
 
         return false;

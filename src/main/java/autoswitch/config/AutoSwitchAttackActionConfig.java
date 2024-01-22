@@ -14,12 +14,14 @@ import org.aeonbits.owner.Reloadable;
 // Note: Material/EntityGroups need to be added to the map to be recognized
 public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Accessible, Mutable {
     @Separator(",")
+    @Key("entity@minecraft!aquatic")
     @DefaultValue("trident;minecraft:impaling, any;minecraft:sharpness, sword;minecraft:mending, axe;" +
-                  "minecraft:mending, sword, axe")
+                  "minecraft:mending, trident, sword, axe")
     @Comment("An EntityGroup for guardians, turtles, fish, squids, dolphins, and the like.")
     ToolSelector[] aquaticEntity();
 
     @Separator(",")
+    @Key("entity@minecraft!arthropod")
     @DefaultValue("any;minecraft:bane_of_arthropods, any;minecraft:sharpness, sword;minecraft:mending, axe;" +
                   "minecraft:mending, sword, axe")
     @Comment("An EntityGroup for spiders, bees, silverfish, and the like.")
@@ -36,11 +38,13 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     ToolSelector[] ender_dragon();
 
     @Separator(",")
+    @Key("entity@minecraft!illager")
     @DefaultValue("any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, sword, axe")
     @Comment("An EntityGroup for evokers, pillagers, illagers, vindicators, illusioners, and the like.")
     ToolSelector[] illager();
 
     @Separator(",")
+    @Key("entity@minecraft!undead")
     @DefaultValue("any;minecraft:smite, any;minecraft:sharpness, sword;minecraft:mending, axe;minecraft:mending, " +
                   "sword,axe")
     @Comment("An EntityGroup for mobs that take extra damage from smite, such as zombies, withers, and zoglins")

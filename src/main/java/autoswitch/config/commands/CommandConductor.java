@@ -1,5 +1,13 @@
 package autoswitch.config.commands;
 
+import static autoswitch.AutoSwitch.doAS;
+import static autoswitch.AutoSwitch.featureCfg;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+
 import autoswitch.AutoSwitch;
 import autoswitch.config.AutoSwitchConfig;
 import autoswitch.config.io.ConfigEstablishment;
@@ -15,15 +23,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
-import net.minecraft.text.Text;
-
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-
-import static autoswitch.AutoSwitch.doAS;
-import static autoswitch.AutoSwitch.featureCfg;
+import net.minecraft.network.chat.Component;
 
 public class CommandConductor {
     /**
@@ -42,9 +42,9 @@ public class CommandConductor {
 
                 try {
                     ConfigEstablishment.writeConfigFiles();
-                    context.getSource().sendFeedback(Text.of("Config file updated."));
+                    context.getSource().sendFeedback(Component.nullToEmpty("Config file updated."));
                 } catch (IOException e) {
-                    context.getSource().sendError(Text.of("Failed to update config file."));
+                    context.getSource().sendError(Component.nullToEmpty("Failed to update config file."));
                     AutoSwitch.logger.error("Failed to update config file", e);
                     return 1;
                 }
@@ -61,7 +61,7 @@ public class CommandConductor {
             // Create command builder and add message for when it is run on its own
             LiteralArgumentBuilder<FabricClientCommandSource> autoswitchCommandBuilder =
                     ClientCommandManager.literal("autoswitch").executes(context -> {
-                        context.getSource().sendFeedback(Text.translatable(
+                        context.getSource().sendFeedback(Component.translatable(
                                 "Commands for changing AutoSwitch's feature config options, " +
                                 "except for the tool targets. Please see the config files for " +
                                 "complete set of options and documentation. Rewrites the config files."));
@@ -101,17 +101,17 @@ public class CommandConductor {
      * Change AutoSwitch toggle to the new value if the context allows it.
      */
     private static int changeASToggle(CommandContext<FabricClientCommandSource> context, boolean newValue) {
-        boolean allowed = context.getSource().getClient().isInSingleplayer() || featureCfg.switchInMP();
+        boolean allowed = context.getSource().getClient().isLocalServer() || featureCfg.switchInMP();
 
         if (!allowed) {
-            context.getSource().sendError(Text.of("Switching is disabled on servers!"));
+            context.getSource().sendError(Component.nullToEmpty("Switching is disabled on servers!"));
             return 1;
         }
 
         String tlKeyTruthy = "msg.autoswitch.toggle_true";
         String tlKeyFalsy = "msg.autoswitch.toggle_false";
 
-        context.getSource().sendFeedback(Text.translatable(newValue ? tlKeyTruthy : tlKeyFalsy));
+        context.getSource().sendFeedback(Component.translatable(newValue ? tlKeyTruthy : tlKeyFalsy));
 
         doAS = newValue;
 
@@ -123,7 +123,7 @@ public class CommandConductor {
      */
     private static int resetState(CommandContext<FabricClientCommandSource> context) {
 
-        context.getSource().sendFeedback(Text.translatable("msg.autoswitch.reset"));
+        context.getSource().sendFeedback(Component.translatable("msg.autoswitch.reset"));
 
         ConnectionHandler.reset();
 

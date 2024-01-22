@@ -7,15 +7,15 @@ import autoswitch.selectors.ItemSelector;
 import autoswitch.selectors.TargetableGroup;
 import autoswitch.selectors.futures.IdentifiedTag;
 
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Block;
 
 public class TagTargetHandler {
     private static final Pattern tagGroupPattern = Pattern.compile("(\\w+@\\w+:[\\w/]+)");
@@ -77,14 +77,14 @@ public class TagTargetHandler {
     public enum TagType {
         BLOCK(new TagTypeHandler<Block>() {
             @Override
-            protected RegistryKey<? extends Registry<Block>> getRegistry() {
-                return RegistryKeys.BLOCK;
+            protected ResourceKey<? extends Registry<Block>> getRegistry() {
+                return Registries.BLOCK;
             }
 
             @Override
             public TargetableGroup<?> makeGroup(String tagGroup) {
                 var ss = tagGroup.split("@");
-                var tagId = Identifier.tryParse(ss[1]);
+                var tagId = ResourceLocation.tryParse(ss[1]);
 
                 if (tagId == null) return null;
 
@@ -98,14 +98,14 @@ public class TagTargetHandler {
         }),
         ENTITY_TYPE(new TagTypeHandler<EntityType<?>>() {
             @Override
-            protected RegistryKey<? extends Registry<EntityType<?>>> getRegistry() {
-                return RegistryKeys.ENTITY_TYPE;
+            protected ResourceKey<? extends Registry<EntityType<?>>> getRegistry() {
+                return Registries.ENTITY_TYPE;
             }
 
             @Override
             public TargetableGroup<?> makeGroup(String tagGroup) {
                 var ss = tagGroup.split("@");
-                var tagId = Identifier.tryParse(ss[1]);
+                var tagId = ResourceLocation.tryParse(ss[1]);
 
                 if (tagId == null) return null;
 
@@ -119,8 +119,8 @@ public class TagTargetHandler {
         }),
         ITEM(new TagTypeHandler<Item>() {
             @Override
-            protected RegistryKey<? extends Registry<Item>> getRegistry() {
-                return RegistryKeys.ITEM;
+            protected ResourceKey<? extends Registry<Item>> getRegistry() {
+                return Registries.ITEM;
             }
 
             @Override
@@ -130,8 +130,8 @@ public class TagTargetHandler {
         }),
         ENCHANTMENT(new TagTypeHandler<Enchantment>() {
             @Override
-            protected RegistryKey<? extends Registry<Enchantment>> getRegistry() {
-                return RegistryKeys.ENCHANTMENT;
+            protected ResourceKey<? extends Registry<Enchantment>> getRegistry() {
+                return Registries.ENCHANTMENT;
             }
 
             @Override
@@ -162,21 +162,21 @@ public class TagTargetHandler {
     }
 
     private abstract static class TagTypeHandler<T> {
-        protected abstract RegistryKey<? extends Registry<T>> getRegistry();
+        protected abstract ResourceKey<? extends Registry<T>> getRegistry();
 
         public abstract TargetableGroup<?> makeGroup(String tagGroup);
 
         public TagKey<T> makeTag(String tagGroup) {
             var ss = tagGroup.split("@");
-            var tagId = Identifier.tryParse(ss[1]);
+            var tagId = ResourceLocation.tryParse(ss[1]);
 
             if (tagId == null) return null;
 
             return makeTagKey(tagId);
         }
 
-        protected TagKey<T> makeTagKey(Identifier tagId) {
-            return TagKey.of(getRegistry(), tagId);
+        protected TagKey<T> makeTagKey(ResourceLocation tagId) {
+            return TagKey.create(getRegistry(), tagId);
         }
 
     }

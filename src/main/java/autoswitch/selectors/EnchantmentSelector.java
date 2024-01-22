@@ -5,24 +5,24 @@ import java.util.function.Predicate;
 import autoswitch.selectors.futures.IdentifiedTag;
 import autoswitch.selectors.futures.RegistryType;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 public class EnchantmentSelector implements Selector<Enchantment> {
     private final Predicate<Object> predicate;
     private final String entryName;
 
-    public EnchantmentSelector(Identifier id) {
+    public EnchantmentSelector(ResourceLocation id) {
         predicate = makeFutureRegistryEntryPredicate(RegistryType.ENCHANTMENT, id);
         entryName = id.toString();
     }
 
     public EnchantmentSelector(TagKey<Enchantment> tagKey) {
         this.predicate = IdentifiedTag.makeEnchantmentPredicate(tagKey);
-        this.entryName = "enchant@" + tagKey.id();
+        this.entryName = "enchant@" + tagKey.location();
     }
 
     /*public EnchantmentSelector(Enchantment enchantment) {
@@ -36,11 +36,11 @@ public class EnchantmentSelector implements Selector<Enchantment> {
 
     public double getRating(ItemStack stack) {
         var enchantmentRating = 0d;
-        if (stack.hasEnchantments()) {
-            var enchantments = EnchantmentHelper.get(stack).keySet();
+        if (stack.isEnchanted()) {
+            var enchantments = EnchantmentHelper.getEnchantments(stack).keySet();
             for (Enchantment enchantment : enchantments) {
                 if (matches(enchantment)) {
-                    enchantmentRating += 1.1 * EnchantmentHelper.getLevel(enchantment, stack);
+                    enchantmentRating += 1.1 * EnchantmentHelper.getItemEnchantmentLevel(enchantment, stack);
                 }
             }
         }
@@ -50,8 +50,8 @@ public class EnchantmentSelector implements Selector<Enchantment> {
 
     public boolean matches(ItemStack stack) {
         var matches = false;
-        if (stack.hasEnchantments()) {
-            var enchantments = EnchantmentHelper.get(stack).keySet();
+        if (stack.isEnchanted()) {
+            var enchantments = EnchantmentHelper.getEnchantments(stack).keySet();
             for (Enchantment enchantment : enchantments) {
                 if (matches(enchantment)) {
                     matches = true;

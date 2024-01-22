@@ -4,17 +4,17 @@ import autoswitch.AutoSwitch;
 import autoswitch.actions.Action;
 import autoswitch.config.AutoSwitchConfig;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Targetable instance for attacking a block or entity
  */
 class TargetableAttack extends Targetable {
 
-    public TargetableAttack(Object protoTarget, PlayerEntity player) {
+    public TargetableAttack(Object protoTarget, Player player) {
         super(player);
         this.player = player;
         this.protoTarget = protoTarget;

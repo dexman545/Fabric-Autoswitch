@@ -13,11 +13,11 @@ import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class SwitchUtil {
@@ -31,21 +31,21 @@ public class SwitchUtil {
                 AutoSwitch.switchState.setHasSwitched(true);
             }
 
-            assert MinecraftClient.getInstance().getNetworkHandler() !=
+            assert Minecraft.getInstance().getConnection() !=
                    null : "Minecraft client was null when AutoSwitch wanted to sent a packet!";
 
             if (moveToOffhand && doPutActionOffhandCheck()) {
-                MinecraftClient.getInstance().getNetworkHandler().sendPacket(
-                        new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN,
+                Minecraft.getInstance().getConnection().send(
+                        new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ZERO,
                                                   Direction.DOWN));
             }
         };
     }
 
     private static boolean doPutActionOffhandCheck() {
-        assert MinecraftClient.getInstance().player != null;
+        assert Minecraft.getInstance().player != null;
         return !(AutoSwitch.featureCfg.preserveOffhandItem() &&
-                 MinecraftClient.getInstance().player.getOffHandStack() != ItemStack.EMPTY);
+                 Minecraft.getInstance().player.getOffhandItem() != ItemStack.EMPTY);
     }
 
     public static String getMinecraftVersion() {

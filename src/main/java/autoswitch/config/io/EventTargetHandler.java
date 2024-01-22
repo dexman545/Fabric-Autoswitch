@@ -2,10 +2,10 @@ package autoswitch.config.io;
 
 import java.util.regex.Pattern;
 
-import net.minecraft.stat.Stat;
-import net.minecraft.stat.StatType;
-import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.stats.Stat;
+import net.minecraft.stats.StatType;
 
 public class EventTargetHandler {
     private static final Pattern groupPattern = Pattern.compile("(\\w+@\\w+:\\w+)");
@@ -35,18 +35,18 @@ public class EventTargetHandler {
 
                 if (split.length != 2) return null;
 
-                return getStat(new Identifier(split[0].replace(".", ":")),
-                               new Identifier(split[1].replace(".", ":")));
+                return getStat(new ResourceLocation(split[0].replace(".", ":")),
+                               new ResourceLocation(split[1].replace(".", ":")));
             }
 
             //todo use FRE? use RegistryHolders?
-            public <T> Stat<?> getStat(Identifier type, Identifier name) {
-                var maybeStatType = Registries.STAT_TYPE.getOrEmpty(type);
+            public <T> Stat<?> getStat(ResourceLocation type, ResourceLocation name) {
+                var maybeStatType = BuiltInRegistries.STAT_TYPE.getOptional(type);
                 if (maybeStatType.isPresent()) {
                     var statType = (StatType<T>) maybeStatType.get();
-                    var maybeObject = statType.getRegistry().getOrEmpty(name);
+                    var maybeObject = statType.getRegistry().getOptional(name);
                     if (maybeObject.isPresent()) {
-                        return statType.getOrCreateStat(maybeObject.get());
+                        return statType.get(maybeObject.get());
                     }
                 }
 

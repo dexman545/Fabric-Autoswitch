@@ -9,15 +9,15 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType type, Predicate<Object> defaultIsIn) implements Representable {
     private static final Object2ObjectOpenHashMap<TagKey<?>, IdentifiedTag<?>> IDENTIFIED_TAGS =
@@ -112,8 +112,8 @@ public record IdentifiedTag<T>(TagKey<T> tagKey, Class<T> clazz, RegistryType ty
         FALLBACK_ENTRIES.get(this).trim();
     }
 
-    public void addEntries(Collection<Identifier> ids) {
-        for (Identifier id : ids) {
+    public void addEntries(Collection<ResourceLocation> ids) {
+        for (ResourceLocation id : ids) {
             FALLBACK_ENTRIES.get(this).add(FutureRegistryEntry.getOrCreate(type, id));
         }
     }

@@ -12,7 +12,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import org.apache.commons.lang3.EnumUtils;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class GenericEnumArgument<Y extends Enum<Y>> implements ArgumentType {
@@ -36,7 +36,7 @@ public class GenericEnumArgument<Y extends Enum<Y>> implements ArgumentType {
 
     @Override
     public CompletableFuture<Suggestions> listSuggestions(CommandContext context, SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(EXAMPLES, builder);
+        return SharedSuggestionProvider.suggest(EXAMPLES, builder);
     }
 
     @Override

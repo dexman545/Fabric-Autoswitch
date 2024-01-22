@@ -12,14 +12,14 @@ import it.unimi.dsi.fastutil.Function;
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
-import net.minecraft.block.Block;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.IndexedIterable;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.IdMap;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.Block;
 
 @SuppressWarnings("unchecked")
 public class FutureRegistryEntry extends FutureStateHolder implements Representable {
@@ -27,21 +27,21 @@ public class FutureRegistryEntry extends FutureStateHolder implements Representa
     private static final ObjectOpenHashSet<FutureRegistryEntry> INSTANCES = new ObjectOpenHashSet<>();
 
     static {
-        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registries.BLOCK, Block.class, RegistryType.BLOCK));
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(BuiltInRegistries.BLOCK, Block.class, RegistryType.BLOCK));
         REGISTRY_HOLDERS.add(
-                new RegistryHolder<>(Registries.ENTITY_TYPE, (Class<EntityType<?>>) (Class<?>) EntityType.class,
+                new RegistryHolder<>(BuiltInRegistries.ENTITY_TYPE, (Class<EntityType<?>>) (Class<?>) EntityType.class,
                                      RegistryType.ENTITY));
-        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registries.ITEM, Item.class, RegistryType.ITEM));
-        REGISTRY_HOLDERS.add(new RegistryHolder<>(Registries.ENCHANTMENT, Enchantment.class, RegistryType.ENCHANTMENT));
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(BuiltInRegistries.ITEM, Item.class, RegistryType.ITEM));
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(BuiltInRegistries.ENCHANTMENT, Enchantment.class, RegistryType.ENCHANTMENT));
     }
 
-    private final Identifier id;
+    private final ResourceLocation id;
     private Object entry;
     private RegistryHolder<?, ?> holder;
     private RegistryType type;
     private boolean typeLocked = false;
 
-    protected FutureRegistryEntry(RegistryType type, Identifier id) {
+    protected FutureRegistryEntry(RegistryType type, ResourceLocation id) {
         this.id = id;
         this.type = type;
         entry = null;
@@ -53,7 +53,7 @@ public class FutureRegistryEntry extends FutureStateHolder implements Representa
         REGISTRY_HOLDERS.addFirst(registryHolder);
     }
 
-    public static FutureRegistryEntry getOrCreate(RegistryType type, Identifier id) {
+    public static FutureRegistryEntry getOrCreate(RegistryType type, ResourceLocation id) {
         return INSTANCES.addOrGet(new FutureRegistryEntry(type, id));
     }
 
@@ -172,10 +172,10 @@ public class FutureRegistryEntry extends FutureStateHolder implements Representa
 
     }
 
-    public record RegistryHolder<T extends IndexedIterable<U>, U>(T registry, Class<U> clazz, RegistryType type,
-                                                                  Function<Identifier, U> id2EntryFunction) {
+    public record RegistryHolder<T extends IdMap<U>, U>(T registry, Class<U> clazz, RegistryType type,
+                                                                  Function<ResourceLocation, U> id2EntryFunction) {
         public RegistryHolder(Registry<U> registry, Class<U> clazz, RegistryType type) {
-            this((T) registry, clazz, type, id -> RegistryHelper.getEntry(registry, ((Identifier) id)));
+            this((T) registry, clazz, type, id -> RegistryHelper.getEntry(registry, ((ResourceLocation) id)));
         }
 
         public boolean canHold(Object o) {

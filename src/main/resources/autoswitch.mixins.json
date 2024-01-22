@@ -6,11 +6,11 @@
   "mixins": [
   ],
   "client": [
-    "MixinClientPlayerInteractionManager",
-    "MixinClientPlayNetworkHandler",
-    "MixinMinecraftClient",
-    "MixinPlayerInventory",
-    "MixinStatHandler"
+    "MixinMultiPlayerGameMode",
+    "MixinClientPacketListener",
+    "MixinMinecraft",
+    "MixinInventory",
+    "MixinStatsCounter"
   ],
   "injectors": {
     "defaultRequire": 1

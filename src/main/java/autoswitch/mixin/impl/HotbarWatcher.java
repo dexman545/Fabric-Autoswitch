@@ -8,8 +8,8 @@ import autoswitch.util.TargetableCache;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 public class HotbarWatcher {
 
@@ -25,7 +25,7 @@ public class HotbarWatcher {
     }
 
     public static IntArrayList compareHotbars(List<ItemStack> prev, List<ItemStack> current) {
-        IntArrayList changedHotbarSlots = new IntArrayList(PlayerInventory.getHotbarSize());
+        IntArrayList changedHotbarSlots = new IntArrayList(Inventory.getSelectionSize());
         if (prev == null || current == null) return changedHotbarSlots;
         for (int slot = 0; slot < prev.size(); slot++) {
             final ItemStack oStack = prev.get(slot);
@@ -53,9 +53,9 @@ public class HotbarWatcher {
 
     private static boolean stacksSufficientlyDiffer(ItemStack o, ItemStack n) {
         if (o.isEmpty() || n.isEmpty()) return true;
-        if (ItemStack.areEqual(o, n)) return false;
+        if (ItemStack.matches(o, n)) return false;
 
-        return !ItemStack.canCombine(o, n) || !ItemStack.areItemsEqual(o, n);
+        return !ItemStack.isSameItemSameTags(o, n) || !ItemStack.isSameItem(o, n);
 
     }
 

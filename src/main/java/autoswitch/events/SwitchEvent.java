@@ -13,10 +13,10 @@ import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchState;
 import autoswitch.util.SwitchUtil;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.Saddleable;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Saddleable;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Processing of switch events.
@@ -110,7 +110,7 @@ public enum SwitchEvent {
          */
         private boolean doSwitchback() {
             // Uses -20.0f to give player some leeway when fighting. Use 0 for perfect timing
-            return player.getAttackCooldownProgress(-20.0f) != 1.0f;
+            return player.getAttackStrengthScale(-20.0f) != 1.0f;
         }
 
         private boolean doMobSwitchback() {
@@ -123,7 +123,7 @@ public enum SwitchEvent {
 
         private boolean disallowSwitchback() {
             // Check if conditions are met for switchback
-            if (AutoSwitch.switchState.getHasSwitched() && !player.handSwinging) {
+            if (AutoSwitch.switchState.getHasSwitched() && !player.swinging) {
                 return SwitchState.preventBlockAttack || ((doBlockSwitchback() || doMobSwitchback()) && doSwitchback());
             }
             return true;
@@ -222,7 +222,7 @@ public enum SwitchEvent {
         }
     };
 
-    public static PlayerEntity player;
+    public static Player player;
     private static Object protoTarget;
     private static boolean doSwitchType;
     private static boolean doSwitch;
@@ -241,7 +241,7 @@ public enum SwitchEvent {
      */
     public boolean canNotSwitch() {
         // Client is checked to fix LAN worlds (Issue #18)
-        return !doSwitch || !doSwitchType || (featureCfg.disableSwitchingWhenCrouching() && player.isSneaking());
+        return !doSwitch || !doSwitchType || (featureCfg.disableSwitchingWhenCrouching() && player.isShiftKeyDown());
     }
 
     /**
@@ -249,7 +249,7 @@ public enum SwitchEvent {
      */
     void handlePrevSlot() {
         if (!AutoSwitch.switchState.getHasSwitched()) {
-            AutoSwitch.switchState.setPrevSlot(player.getInventory().selectedSlot);
+            AutoSwitch.switchState.setPrevSlot(player.getInventory().selected);
         }
     }
 
@@ -270,7 +270,7 @@ public enum SwitchEvent {
         return this;
     }
 
-    public SwitchEvent setPlayer(PlayerEntity player) {
+    public SwitchEvent setPlayer(Player player) {
         SwitchEvent.player = player;
         return this;
     }

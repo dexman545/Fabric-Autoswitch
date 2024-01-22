@@ -19,12 +19,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import org.aeonbits.owner.Accessible;
 import org.aeonbits.owner.Mutable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.stat.Stat;
+import net.minecraft.stats.Stat;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public enum Action {
     ATTACK(true, () -> AutoSwitch.attackActionCfg),
@@ -100,10 +100,8 @@ public enum Action {
             }
 
             out.add(TargetableGroup.maybeGetTarget(protoTarget)
-                                   .orElse(TargetableGroup.maybeGetTarget(entityType)
-                                                          .orElse(protoTarget instanceof LivingEntity ?
-                                                                  ((LivingEntity) protoTarget).getGroup() :
-                                                                  entityType)));
+                                   .orElse(TargetableGroup.maybeGetTarget(entityType).orElse(entityType)));
+            out.addAll(getDefaultTarget(e));
             return out;
         }
 

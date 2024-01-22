@@ -16,6 +16,7 @@ import autoswitch.util.SwitchData;
 import autoswitch.util.SwitchState;
 import autoswitch.util.TickUtil;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.EntityGroup;
+import net.minecraft.client.KeyMapping;
 
 public class AutoSwitch implements ClientModInitializer {
 
@@ -43,8 +42,8 @@ public class AutoSwitch implements ClientModInitializer {
     public static int tickTime = 0;
     public static boolean doAS = true;
     // Keybindings
-    private final KeyBinding autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(
-            new KeyBinding("key.autoswitch.toggle", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R, "AutoSwitch"));
+    private final KeyMapping autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(
+            new KeyMapping("key.autoswitch.toggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "AutoSwitch"));
 
     @Override
     public void onInitializeClient() {
@@ -69,9 +68,9 @@ public class AutoSwitch implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(e -> {
             // Keybindings implementation BEGIN ---
-            if (autoswitchToggleKeybinding.wasPressed()) {
+            if (autoswitchToggleKeybinding.consumeClick()) {
                 doAS = TickUtil.keybindingToggleAction(e.player, doAS,
-                                                       !doAS && (e.isInSingleplayer() || featureCfg.switchInMP()),
+                                                       !doAS && (e.isLocalServer() || featureCfg.switchInMP()),
                                                        "msg.autoswitch.toggle_true", "msg.autoswitch.toggle_false");
                 if (!doAS) scheduler.resetSchedule(); // Clear event schedule when switching is disabled
             }
@@ -83,14 +82,6 @@ public class AutoSwitch implements ClientModInitializer {
 
         // Notify when AS Loaded
         logger.info("AutoSwitch Loaded");
-
-        // Test if all Materials are configured
-        if ("true".equals(System.getenv("as-dev"))) {
-            logger.info("Checking code-only targets...");
-            assert (/*testTargetsForCompletion(Material.class) |*/
-                    testTargetsForCompletion(EntityGroup.class)) : "Missing target found!";
-        }
-
     }
 
     private boolean testTargetsForCompletion(Class<?> clazz) {

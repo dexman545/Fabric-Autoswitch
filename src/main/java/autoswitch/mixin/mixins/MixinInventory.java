@@ -14,43 +14,43 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
-@Mixin(PlayerInventory.class)
-public abstract class MixinPlayerInventory {
+@Mixin(Inventory.class)
+public abstract class MixinInventory {
 
     /**
-     * @see PlayerInventory#main
+     * @see Inventory#items
      */
     @Shadow
     @Final
-    public DefaultedList<ItemStack> main;
+    public NonNullList<ItemStack> items;
 
     @Unique
     private ReferenceArrayList<ItemStack> prevHotbar;
 
     /**
-     * @see PlayerInventory#getHotbarSize()
+     * @see Inventory#getSelectionSize()
      */
     @Shadow
-    public static int getHotbarSize() {
+    public static int getSelectionSize() {
         return 0;
     }
 
     /**
-     * @see PlayerInventory#setStack(int, ItemStack)
+     * @see Inventory#setItem(int, ItemStack)
      */
-    @Inject(at = @At("RETURN"), method = "setStack(ILnet/minecraft/item/ItemStack;)V")
+    @Inject(at = @At("RETURN"), method = "setItem(ILnet/minecraft/world/item/ItemStack;)V")
     private void autoswitch$setr(int slot, ItemStack stack, CallbackInfo ci) {
         handleHotbarUpdate(slot);
     }
 
     /**
-     * @see PlayerInventory#removeStack(int)
+     * @see Inventory#removeItemNoUpdate(int)
      */
-    @Inject(at = @At("RETURN"), method = "removeStack(I)Lnet/minecraft/item/ItemStack;")
+    @Inject(at = @At("RETURN"), method = "removeItemNoUpdate(I)Lnet/minecraft/world/item/ItemStack;")
     private void autoswitch$rmvs(int slot, CallbackInfoReturnable<ItemStack> cir) {
         handleHotbarUpdate(slot);
     }
@@ -62,9 +62,9 @@ public abstract class MixinPlayerInventory {
      */
     @Unique
     private void handleHotbarUpdate(int slot) {
-        if (!PlayerInventory.isValidHotbarIndex(slot)) return;
+        if (!Inventory.isHotbarSlot(slot)) return;
 
-        List<ItemStack> hb = this.main.subList(0, getHotbarSize());
+        List<ItemStack> hb = this.items.subList(0, getSelectionSize());
         HotbarWatcher.handleSlotChange(prevHotbar, hb);
         prevHotbar = new ReferenceArrayList<>(hb);
     }

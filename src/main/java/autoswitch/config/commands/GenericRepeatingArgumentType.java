@@ -11,7 +11,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.SharedSuggestionProvider;
 
 public class GenericRepeatingArgumentType<U, T extends ArgumentType<U>> implements ArgumentType<Collection<U>> {
     private final T argType;
@@ -32,10 +32,10 @@ public class GenericRepeatingArgumentType<U, T extends ArgumentType<U>> implemen
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        if (!(context.getSource() instanceof CommandSource)) {
+        if (!(context.getSource() instanceof SharedSuggestionProvider)) {
             return Suggestions.empty();
         } else {
-            return CommandSource.suggestMatching(getExamples(), builder);
+            return SharedSuggestionProvider.suggest(getExamples(), builder);
         }
     }
 

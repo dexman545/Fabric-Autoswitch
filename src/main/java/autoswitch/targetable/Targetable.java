@@ -23,11 +23,11 @@ import it.unimi.dsi.fastutil.ints.Int2DoubleArrayMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Parent class for Targetable type. Used to establish shared functions and parameters that are used for manipulating
@@ -49,14 +49,14 @@ public abstract class Targetable {
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
     /**
      * The initial Target brought in from the world, eg. a block or entity. This differs from the Target in that a
-     * {@link autoswitch.selectors.TargetableGroup} or {@link net.minecraft.entity.EntityGroup} may be targeted in the user
+     * {@link autoswitch.selectors.TargetableGroup} or {@link net.minecraft.world.entity.MobType} may be targeted in the user
      * config
      * <p>
      * Equals the actual Target iff it is a block or entity override
      */
     Object protoTarget = null;
 
-    PlayerEntity player;
+    Player player;
 
     /**
      * Base constructor for Targetable, initializes the class parameters and fetches the target map and initial tool map
@@ -64,7 +64,7 @@ public abstract class Targetable {
      *
      * @param player player this will effect
      */
-    protected Targetable(PlayerEntity player) {
+    protected Targetable(Player player) {
         this.player = player;
     }
 
@@ -73,7 +73,7 @@ public abstract class Targetable {
      *
      * @return returns the correct Targetable subclass to handle the operation
      */
-    public static Targetable use(Object protoTarget, PlayerEntity player) {
+    public static Targetable use(Object protoTarget, Player player) {
         return new TargetableUsable(player, protoTarget);
     }
 
@@ -82,7 +82,7 @@ public abstract class Targetable {
      *
      * @return returns the correct Targetable subclass to handle the operation
      */
-    public static Targetable switchback(int prevSlot, PlayerEntity player) {
+    public static Targetable switchback(int prevSlot, Player player) {
         return new TargetableNone(prevSlot, player);
     }
 
@@ -91,7 +91,7 @@ public abstract class Targetable {
      *
      * @return returns the correct Targetable subclass to handle the operation
      */
-    public static Targetable attack(Object protoTarget, PlayerEntity player) {
+    public static Targetable attack(Object protoTarget, Player player) {
         return new TargetableAttack(protoTarget, player);
     }
 
@@ -100,7 +100,7 @@ public abstract class Targetable {
      *
      * @return returns the correct Targetable subclass to handle the operation
      */
-    public static Targetable event(Object protoTarget, PlayerEntity player) {
+    public static Targetable event(Object protoTarget, Player player) {
         return new TargetableEvent(protoTarget, player);
     }
 
@@ -110,8 +110,8 @@ public abstract class Targetable {
      * map. Sends an air item if the slot is empty
      */
     void populateToolLists() {
-        List<ItemStack> hotbar = player.getInventory().main.subList(0, PlayerInventory.getHotbarSize());
-        for (int slot = 0; slot < PlayerInventory.getHotbarSize(); slot++) {
+        List<ItemStack> hotbar = player.getInventory().items.subList(0, Inventory.getSelectionSize());
+        for (int slot = 0; slot < Inventory.getSelectionSize(); slot++) {
             if (TargetableUtil.skipSlot(hotbar.get(slot))) {
                 continue;
             }
@@ -137,13 +137,13 @@ public abstract class Targetable {
      */
     public Optional<Boolean> changeTool() {
         return findSlot().map(slot -> {
-            int currentSlot = player.getInventory().selectedSlot;
+            int currentSlot = player.getInventory().selected;
             if (slot == currentSlot) {
                 // No need to change slot!
                 return false;
             }
 
-            player.getInventory().selectedSlot = slot;
+            player.getInventory().selected = slot;
             return true;
         });
     }
@@ -179,7 +179,7 @@ public abstract class Targetable {
      */
     private Boolean switchAllowed() {
         return ((!this.player.isCreative() || AutoSwitch.featureCfg.switchInCreative()) &&
-                (switchTypeAllowed() && (MinecraftClient.getInstance().isInSingleplayer() ||
+                (switchTypeAllowed() && (Minecraft.getInstance().isLocalServer() ||
                                          AutoSwitch.featureCfg.switchInMP())));
     }
 
@@ -212,7 +212,7 @@ public abstract class Targetable {
 
         // Establish base value to add to the tool rating,
         // promoting higher priority tools from the config in the selection
-        AtomicReference<Float> baseToolRating = new AtomicReference<>((float) PlayerInventory.getHotbarSize() * 10);
+        AtomicReference<Float> baseToolRating = new AtomicReference<>((float) Inventory.getSelectionSize() * 10);
         // GH-59 We now return an order-dependent set of potential targets, those that come earlier should be
         // preferred.
         //todo remove and have the weighting allow for order-independence (may not be possible as we have block
@@ -222,7 +222,7 @@ public abstract class Targetable {
         potentialTargets.forEach(target -> {
             if (target == null || stopProcessingSlot(target, slot)) return;
 
-            baseToolRating.set((float) PlayerInventory.getHotbarSize() * 10);
+            baseToolRating.set((float) Inventory.getSelectionSize() * 10);
 
             getAction().getTarget2ToolSelectorsMap()
                        .getOrDefault(target, SwitchData.blank).forEach((IntConsumer) id -> {
@@ -282,7 +282,7 @@ public abstract class Targetable {
         if (rating == 0) return;
 
         // Prefer current slot. Has outcome of making undamageable item fallback not switch if it can help it
-        if (player.getInventory().selectedSlot == slot) {
+        if (player.getInventory().selected == slot) {
             rating += 0.1;
         }
         double finalRating = rating;

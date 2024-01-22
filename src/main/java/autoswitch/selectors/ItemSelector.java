@@ -5,22 +5,22 @@ import java.util.function.Predicate;
 import autoswitch.selectors.futures.IdentifiedTag;
 import autoswitch.selectors.futures.RegistryType;
 
-import net.minecraft.item.Item;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 
 public class ItemSelector implements Selector<Item> {
 
     private final Predicate<Object> predicate;
     private final String entryName;
 
-    public ItemSelector(Identifier id) {
+    public ItemSelector(ResourceLocation id) {
         predicate = makeFutureRegistryEntryPredicate(RegistryType.ITEM, id);
         entryName = id.toString();
     }
 
     public ItemSelector(TagKey<Item> tagKey) {
-        this(IdentifiedTag.makeItemPredicate(tagKey), "item@" + tagKey.id().toString());
+        this(IdentifiedTag.makeItemPredicate(tagKey), "item@" + tagKey.location().toString());
     }
 
     public ItemSelector(Predicate<Object> predicate, String entryName) {

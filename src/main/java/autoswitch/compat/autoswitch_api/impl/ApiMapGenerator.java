@@ -13,29 +13,33 @@ import autoswitch.selectors.TargetableGroup;
 import autoswitch.selectors.TargetableGroup.TargetPredicate;
 import autoswitch.util.SwitchUtil;
 
+import net.minecraft.tags.EntityTypeTags;
+
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.Bucketable;
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.vehicle.AbstractMinecartEntity;
-import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.PickaxeItem;
-import net.minecraft.item.RangedWeaponItem;
-import net.minecraft.item.ShearsItem;
-import net.minecraft.item.ShovelItem;
-import net.minecraft.item.SwordItem;
-import net.minecraft.item.TridentItem;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Bucketable;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.TridentItem;
+import net.minecraft.world.level.block.Block;
 
 public class ApiMapGenerator {
     public static void createApiMaps() {
@@ -66,7 +70,7 @@ public class ApiMapGenerator {
         anyTool = anyTool.or(o -> { // Added in 1.19.4
             if (o instanceof Item item) {
                 return ClientTags.isInWithLocalFallback(
-                        TagKey.of(RegistryKeys.ITEM, new Identifier("minecraft", "tools")),
+                        TagKey.create(Registries.ITEM, new ResourceLocation("minecraft", "tools")),
                         item
                 );
             }
@@ -75,7 +79,7 @@ public class ApiMapGenerator {
         AutoSwitch.switchData.toolPredicates.put("any", anyTool);
 
         // Don't include bow group in any group
-        AutoSwitch.switchData.toolPredicates.computeIfAbsent("bow", s -> makeToolPredicate(s, RangedWeaponItem.class));
+        AutoSwitch.switchData.toolPredicates.computeIfAbsent("bow", s -> makeToolPredicate(s, ProjectileWeaponItem.class));
 
         // Targets
         genTargetMap();
@@ -86,18 +90,18 @@ public class ApiMapGenerator {
 
     private static Predicate<Object> makeToolPredicate(String toolName, @NotNull Class<? extends Item> itemClass) {
         var pluralName = toolName.endsWith("s") ? toolName : toolName + "s";
-        var fabricTag = TagKey.of(RegistryKeys.ITEM, new Identifier("fabric", pluralName));
+        var fabricTag = TagKey.create(Registries.ITEM, new ResourceLocation("fabric", pluralName));
 
 
         TagKey<Item> commonTag;
         TagKey<Item> mcTag;
         if (toolName.equals("trident")) {
-            commonTag = TagKey.of(RegistryKeys.ITEM, new Identifier("c", "spears"));
+            commonTag = TagKey.create(Registries.ITEM, new ResourceLocation("c", "spears"));
             // Other tags added in 1.19.4
-            mcTag = TagKey.of(RegistryKeys.ITEM, new Identifier("minecraft", "spears"));
+            mcTag = TagKey.create(Registries.ITEM, new ResourceLocation("minecraft", "spears"));
         } else {
-            commonTag = TagKey.of(RegistryKeys.ITEM, new Identifier("c", pluralName));
-            mcTag = TagKey.of(RegistryKeys.ITEM, new Identifier("minecraft", pluralName));// Added in 1.19.4
+            commonTag = TagKey.create(Registries.ITEM, new ResourceLocation("c", pluralName));
+            mcTag = TagKey.create(Registries.ITEM, new ResourceLocation("minecraft", pluralName));// Added in 1.19.4
         }
 
         // todo move to using itemstack rather than item itself - api change?
@@ -116,30 +120,32 @@ public class ApiMapGenerator {
         // Blocks
         //todo wrap in AS tags?
         //todo order dependent
-        addDefaultTarget(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:shears_efficient")));
-        addDefaultTarget(BlockTags.HOE_MINEABLE);
-        addDefaultTarget(BlockTags.AXE_MINEABLE);
-        addDefaultTarget(BlockTags.PICKAXE_MINEABLE);
-        addDefaultTarget(BlockTags.SHOVEL_MINEABLE);
-        addDefaultTarget(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:sword_efficient")));
+        addDefaultBlockTarget(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:shears_efficient")));
+        addDefaultBlockTarget(BlockTags.MINEABLE_WITH_HOE);
+        addDefaultBlockTarget(BlockTags.MINEABLE_WITH_AXE);
+        addDefaultBlockTarget(BlockTags.MINEABLE_WITH_PICKAXE);
+        addDefaultBlockTarget(BlockTags.MINEABLE_WITH_SHOVEL);
+        addDefaultBlockTarget(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:sword_efficient")));
         //todo leave as tag target, or give special names?
 
         // Entities
-        addTarget("aquaticEntity", EntityGroup.AQUATIC);
+        // See SENSITIVE_TO_IMPALING tag, not references in damage source for the tag
+        addDefaultEntityTarget(EntityTypeTags.AQUATIC);
 
-        addTarget("arthropod", EntityGroup.ARTHROPOD);
+        addDefaultEntityTarget("defaultEntity", e -> e instanceof LivingEntity);
 
-        addTarget("defaultEntity", EntityGroup.DEFAULT);
+        // See SENSITIVE_TO_BANE_OF_ARTHROPODS tag, not references in damage source for the tag
+        addDefaultEntityTarget(EntityTypeTags.ARTHROPOD);
 
-        addTarget("illager", EntityGroup.ILLAGER);
+        addDefaultEntityTarget(EntityTypeTags.ILLAGER);
 
-        addTarget("undead", EntityGroup.UNDEAD);
+        addDefaultEntityTarget(EntityTypeTags.UNDEAD);
 
         addTarget("ender_dragon", EntityType.ENDER_DRAGON);
 
         addTarget(new TargetableGroup<>("minecart",
                                         new TargetPredicate("minecarts",
-                                                            e -> e instanceof AbstractMinecartEntity)));
+                                                            e -> e instanceof AbstractMinecart)));
 
         addTarget(new TargetableGroup<>("bucketable_swimmer",
                                 new TargetPredicate("things that extend the Bucketable interface",
@@ -148,7 +154,7 @@ public class ApiMapGenerator {
         if (SwitchUtil.isAcceptableVersion("1.19-alpha.22.19.a")) {
             addTarget(new TargetableGroup<>("boats",
                                             new TargetPredicate("boats",
-                                                                e -> e instanceof BoatEntity)));
+                                                                e -> e instanceof Boat)));
         }
 
         // Item Use
@@ -188,7 +194,7 @@ public class ApiMapGenerator {
         }
     }
 
-    private static void addDefaultTarget(TagKey<Block> tag) {
+    private static void addDefaultBlockTarget(TagKey<Block> tag) {
         Predicate<Object> predicate = o -> {
             if (o instanceof Block b) {
                 return ClientTags.isInWithLocalFallback(tag, b);
@@ -198,8 +204,33 @@ public class ApiMapGenerator {
 
         AutoSwitch.switchData.defaultTargets.add(predicate);
 
-        var name = "block@" + tag.id().toString().replaceAll(":", "!");
+        var name = "block@" + tag.location().toString().replaceAll(":", "!");
         addTarget(name, predicate);
+    }
+
+    private static void addDefaultEntityTarget(TagKey<EntityType<?>> tag) {
+        Predicate<Object> predicate = o -> {
+            if (o instanceof Entity e) {
+                return ClientTags.isInWithLocalFallback(tag, e.getType());
+            }
+            return false;
+        };
+
+        AutoSwitch.switchData.defaultTargets.add(predicate);
+
+        var name = "entity@" + tag.location().toString().replaceAll(":", "!");
+        addTarget(name, predicate);
+    }
+
+    private static void addDefaultEntityTarget(String name, Predicate<Entity> predicate) {
+        Predicate<Object> p = o -> {
+            if (o instanceof Entity e) {
+                return predicate.test(e);
+            }
+            return false;
+        };
+        AutoSwitch.switchData.defaultTargets.add(p);
+        addTarget(name, p);
     }
 
 }

@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 
 import autoswitch.AutoSwitch;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.block.Block;
 
 /**
  * Create custom targets that capture a group of similar entries. Favors the narrower entries. Targets should only be of
- * type {@link net.minecraft.entity.EntityType} or {@link net.minecraft.block.Block}
+ * type {@link net.minecraft.world.entity.EntityType} or {@link net.minecraft.world.level.block.Block}
  */
 public final class TargetableGroup<T> {
     /**
@@ -81,11 +81,11 @@ public final class TargetableGroup<T> {
 
     private static String getTargetId(Object target) {
         if (target instanceof EntityType<?>) {
-            return EntityType.getId((EntityType<?>) target).toString();
+            return EntityType.getKey((EntityType<?>) target).toString();
         }
 
         if (target instanceof Block) {
-            return Registries.BLOCK.getId((Block) target).toString();
+            return BuiltInRegistries.BLOCK.getKey((Block) target).toString();
         }
 
         return "IdentifierNotFound[" + target + "]";

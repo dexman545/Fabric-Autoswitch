@@ -6,49 +6,49 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Blocks;
 
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
     public BlockTagProvider(FabricDataOutput output,
-                            CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+                            CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
     }
 
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup arg) {
-        getOrCreateTagBuilder(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:shears_efficient")))
-                .addOptionalTag(FabricMineableTags.SHEARS_MINEABLE)
+    protected void addTags(HolderLookup.Provider arg) {
+        tag(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:shears_efficient")))
+                .addOptionalTag(FabricMineableTags.SHEARS_MINEABLE.location())
                 //todo which MC will be real?
-                .addOptionalTag(TagKey.of(RegistryKeys.BLOCK, new Identifier("minecraft:shears_efficient")))
-                .addOptionalTag(TagKey.of(RegistryKeys.BLOCK, new Identifier("minecraft:mineable/shears")))
+                .addOptionalTag(new ResourceLocation("minecraft:shears_efficient"))
+                .addOptionalTag(new ResourceLocation("minecraft:mineable/shears"))
                 // Copied from ShearsItem postMine and getMiningSpeedMultiplier
-                .addOptionalTag(BlockTags.LEAVES)
-                .addOptionalTag(BlockTags.WOOL)
-                .addOptional(Registries.BLOCK.getId(Blocks.COBWEB))
-                .addOptional(Registries.BLOCK.getId(Blocks.SHORT_GRASS))
-                .addOptional(new Identifier("grass")) // This was renamed to short_grass in ~1.20.4
-                .addOptional(Registries.BLOCK.getId(Blocks.FERN))
-                .addOptional(Registries.BLOCK.getId(Blocks.DEAD_BUSH))
-                .addOptional(Registries.BLOCK.getId(Blocks.HANGING_ROOTS))
-                .addOptional(Registries.BLOCK.getId(Blocks.VINE))
-                .addOptional(Registries.BLOCK.getId(Blocks.TRIPWIRE))
-                .addOptional(Registries.BLOCK.getId(Blocks.GLOW_LICHEN));
+                .addOptionalTag(BlockTags.LEAVES.location())
+                .addOptionalTag(BlockTags.WOOL.location())
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.COBWEB))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.SHORT_GRASS))
+                .addOptional(new ResourceLocation("grass")) // This was renamed to short_grass in ~1.20.4
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.FERN))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.DEAD_BUSH))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.HANGING_ROOTS))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.VINE))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.TRIPWIRE))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.GLOW_LICHEN));
         // Exists as bamboo and cobweb isn't in sword_efficient
-        getOrCreateTagBuilder(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:sword_efficient")))
-                .addOptionalTag(FabricMineableTags.SWORD_MINEABLE)
-                .addOptionalTag(BlockTags.SWORD_EFFICIENT)
-                .addOptional(Registries.BLOCK.getId(Blocks.BAMBOO))
-                .addOptional(Registries.BLOCK.getId(Blocks.COBWEB))
-                .addOptional(Registries.BLOCK.getId(Blocks.BAMBOO_SAPLING));
-        getOrCreateTagBuilder(TagKey.of(RegistryKeys.BLOCK, new Identifier("autoswitch:bamboo")))
-                .addOptional(Registries.BLOCK.getId(Blocks.BAMBOO))
-                .addOptional(Registries.BLOCK.getId(Blocks.BAMBOO_SAPLING));
+        tag(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:sword_efficient")))
+                .addOptionalTag(FabricMineableTags.SWORD_MINEABLE.location())
+                .addOptionalTag(BlockTags.SWORD_EFFICIENT.location())
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.COBWEB))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO_SAPLING));
+        tag(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:bamboo")))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO_SAPLING));
 
     }
 

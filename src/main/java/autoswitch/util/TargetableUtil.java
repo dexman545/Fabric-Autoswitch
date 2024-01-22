@@ -4,15 +4,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import autoswitch.AutoSwitch;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TargetableUtil {
     private static final int NONE = -1;
@@ -29,35 +28,31 @@ public class TargetableUtil {
     /**
      * Generates a target rating for the given stack.
      *
-     * @see net.minecraft.entity.player.PlayerEntity#attack(Entity) for Entity case's damage calculation
+     * @see net.minecraft.world.entity.player.Player#attack(Entity) for Entity case's damage calculation
      */
     public static float getTargetRating(Object target, ItemStack stack) {
-        if (target instanceof BlockState) { // TODO correct clamping for instabreak situations ie. swords on bamboo
-            return clampToolRating(stack.getMiningSpeedMultiplier((BlockState) target));
+        if (target instanceof BlockState blockState) { // TODO correct clamping for instabreak situations ie. swords on bamboo
+            return clampToolRating(stack.getDestroySpeed(blockState));
         }
 
-        if (target instanceof Entity) {
-            if (!(stack.getItem() instanceof ToolItem)) return 0;
+        if (target instanceof Entity entity) {
+            if (!(stack.getItem() instanceof TieredItem)) return 0;
 
             float damage;
             float h = 0;
             AtomicReference<Float> baseDamage = new AtomicReference<>((float) 0);
 
             // Doesn't include enchants
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_DAMAGE).forEach(
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE).forEach(
                     entityAttributeModifier -> baseDamage
-                            .updateAndGet(v -> (float) (v + entityAttributeModifier.getValue())));
+                            .updateAndGet(v -> (float) (v + entityAttributeModifier.getAmount())));
 
             damage = baseDamage.get();
 
             // Consider Enchantments
             if (AutoSwitch.featureCfg.weaponRatingIncludesEnchants()) {
-                // Should group be passed? Config gives them their own entries
-                if (target instanceof LivingEntity) {
-                    h = EnchantmentHelper.getAttackDamage(stack, ((LivingEntity) target).getGroup());
-                } else {
-                    h = EnchantmentHelper.getAttackDamage(stack, EntityGroup.DEFAULT);
-                }
+                h = EnchantmentHelper.getDamageBonus(stack, entity.getType());
+
                 // Disabled as config can specify this anyway
                 /*int l = EnchantmentHelper.getLevel(Enchantments.FIRE_ASPECT, stack);
                 if (target instanceof LivingEntity &&
@@ -71,9 +66,9 @@ public class TargetableUtil {
             AtomicReference<Float> attackSpeed = new AtomicReference<>((float) 0);
 
             // Get attack speed
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(EntityAttributes.GENERIC_ATTACK_SPEED).forEach(
+            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_SPEED).forEach(
                     entityAttributeModifier -> attackSpeed.updateAndGet(v -> (float)
-                            (v + entityAttributeModifier.getValue())));
+                            (v + entityAttributeModifier.getAmount())));
 
             if (attackSpeed.get() == 0 || damage == 0) return 0;
 
@@ -111,7 +106,7 @@ public class TargetableUtil {
     public static boolean skipSlot(ItemStack itemStack) {
         AutoSwitch.logger.debug("Stack: {}; First: {}; Second: {}", itemStack,
                                 !(AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() &&
-                                  !itemStack.isDamageable()),
+                                  !itemStack.isDamageableItem()),
                                 isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
         // Skip energy items that are out of power
         if (AutoSwitch.featureCfg.skipDepletedItems() &&
@@ -119,7 +114,7 @@ public class TargetableUtil {
             return true;
         }
         // First part: don't skip iff items w/o durability (non-tools) are needed
-        return (!(AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() && !itemStack.isDamageable()) &&
+        return (!(AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() && !itemStack.isDamageableItem()) &&
                 isAlmostBroken(itemStack) && AutoSwitch.featureCfg.tryPreserveDamagedTools());
 
     }
@@ -131,14 +126,14 @@ public class TargetableUtil {
     private static int getDurability(ItemStack stack) {
         AtomicReference<Number> durability = new AtomicReference<>(NONE);
 
-        if (!stack.isDamageable()) {
+        if (!stack.isDamageableItem()) {
             AutoSwitch.switchData.damageMap.forEach((clazz, durabilityGetter) -> {
                 if (clazz.isInstance(stack.getItem())) {
                     durability.set(durabilityGetter.getDurability(stack));
                 }
             });
         } else {
-            return stack.getMaxDamage() - stack.getDamage(); // Vanilla items
+            return stack.getMaxDamage() - stack.getDamageValue(); // Vanilla items
         }
 
         return durability.get().intValue();
@@ -159,7 +154,7 @@ public class TargetableUtil {
 
         if (target instanceof BlockState state) {
             // Multiplier check to correct for swords on bamboo
-            return !state.isToolRequired() || (stack.isSuitableFor(state) || stack.getMiningSpeedMultiplier(state) > 1);
+            return !state.requiresCorrectToolForDrops() || (stack.isCorrectToolForDrops(state) || stack.getDestroySpeed(state) > 1);
         }
 
         return true;

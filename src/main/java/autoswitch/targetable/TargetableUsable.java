@@ -3,9 +3,9 @@ package autoswitch.targetable;
 import autoswitch.AutoSwitch;
 import autoswitch.actions.Action;
 
-import net.minecraft.entity.Saddleable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.Saddleable;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 class TargetableUsable extends Targetable {
 
@@ -15,7 +15,7 @@ class TargetableUsable extends Targetable {
      *
      * @param player player this will effect
      */
-    public TargetableUsable(PlayerEntity player, Object target) {
+    public TargetableUsable(Player player, Object target) {
         super(player);
         this.protoTarget = target;
         populateToolLists();

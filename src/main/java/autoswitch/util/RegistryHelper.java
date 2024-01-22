@@ -6,9 +6,9 @@ import autoswitch.selectors.futures.IdentifiedTag;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.registry.DefaultedRegistry;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 
 public final class RegistryHelper {
     private RegistryHelper() {
@@ -25,7 +25,7 @@ public final class RegistryHelper {
     }
 
     @Nullable
-    public static <T> T getEntry(Registry<T> registry, Identifier id) {
+    public static <T> T getEntry(Registry<T> registry, ResourceLocation id) {
         var entry = registry.get(id);
         if (!isDefaultEntry(registry, entry, id)) {
             return entry;
@@ -34,11 +34,11 @@ public final class RegistryHelper {
         return null;
     }
 
-    public static <T> boolean isDefaultEntry(Registry<T> registry, T entry, Identifier id) {
+    public static <T> boolean isDefaultEntry(Registry<T> registry, T entry, ResourceLocation id) {
         if (entry == null) return false;
         if (registry instanceof DefaultedRegistry<T> defaultedRegistry) {
-            if (defaultedRegistry.getDefaultId().equals(id)) return false;
-            return registry.get(defaultedRegistry.getDefaultId()).equals(entry);
+            if (defaultedRegistry.getDefaultKey().equals(id)) return false;
+            return registry.get(defaultedRegistry.getDefaultKey()).equals(entry);
         }
 
         return false;

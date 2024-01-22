@@ -7,15 +7,15 @@ import autoswitch.selectors.ItemTarget;
 import autoswitch.util.EventUtil;
 import autoswitch.util.SwitchState;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.stat.Stat;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.stats.Stat;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 
 /**
@@ -27,14 +27,14 @@ public class SwitchEventTriggerImpl {
     /**
      * Logic for handling ATTACK type actions.
      * <p>
-     * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doAttack()}
+     * Duplicates short-circuit conditions from {@link net.minecraft.client.Minecraft#startAttack()}
      *
      * @param attackCooldown  the attack cooldown
      * @param player          the player
      * @param crosshairTarget the crosshair target
      */
-    public static void attack(int attackCooldown, ClientPlayerEntity player, HitResult crosshairTarget) {
-        if (attackCooldown > 0 || player.isRiding() || crosshairTarget == null) return;
+    public static void attack(int attackCooldown, LocalPlayer player, HitResult crosshairTarget) {
+        if (attackCooldown > 0 || player.isHandsBusy() || crosshairTarget == null) return;
 
         triggerSwitch(DesiredType.ATTACK, crosshairTarget, player);
 
@@ -43,20 +43,20 @@ public class SwitchEventTriggerImpl {
     /**
      * Logic for handling USE actions.
      * <p>
-     * Duplicates short-circuit conditions from {@link net.minecraft.client.MinecraftClient#doItemUse()}
+     * Duplicates short-circuit conditions from {@link net.minecraft.client.Minecraft#startUseItem()}
      *
      * @param isBreakingBlock if the player is currently breaking a block
      * @param player          the player
      * @param crosshairTarget the crosshair target
      */
-    public static void interact(boolean isBreakingBlock, ClientPlayerEntity player, HitResult crosshairTarget) {
-        if (isBreakingBlock || player.isRiding() || crosshairTarget == null) return;
+    public static void interact(boolean isBreakingBlock, LocalPlayer player, HitResult crosshairTarget) {
+        if (isBreakingBlock || player.isHandsBusy() || crosshairTarget == null) return;
 
         triggerSwitch(DesiredType.USE, crosshairTarget, player);
 
     }
 
-    public static void eventTrigger(Stat<?> stat, PlayerEntity player) {
+    public static void eventTrigger(Stat<?> stat, Player player) {
         if (stat == null) return;
 
         EventUtil.scheduleEvent(SwitchEvent.EVENT_TRIGGER, AutoSwitch.doAS, player,
@@ -74,7 +74,7 @@ public class SwitchEventTriggerImpl {
      * @param crosshairTarget target that the player is looking at.
      * @param player          the player
      */
-    private static void triggerSwitch(DesiredType desiredType, HitResult crosshairTarget, ClientPlayerEntity player) {
+    private static void triggerSwitch(DesiredType desiredType, HitResult crosshairTarget, LocalPlayer player) {
         // Set event and doSwitchType
         SwitchEvent event;
         boolean doSwitchType;
@@ -116,7 +116,7 @@ public class SwitchEventTriggerImpl {
                     break;
                 BlockHitResult blockHitResult = ((BlockHitResult) crosshairTarget);
                 BlockPos blockPos = blockHitResult.getBlockPos();
-                BlockState blockState = player.clientWorld.getBlockState(blockPos);
+                BlockState blockState = player.clientLevel.getBlockState(blockPos);
                 if (blockState.isAir())
                     break;
                 EventUtil.scheduleEvent(event, AutoSwitch.doAS, player, doSwitchType, blockState);

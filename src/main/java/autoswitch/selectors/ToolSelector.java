@@ -9,8 +9,8 @@ import autoswitch.config.io.TagTargetHandler;
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class ToolSelector implements Selector<ItemStack> {
     private final ItemSelector itemSelector;
@@ -56,7 +56,7 @@ public class ToolSelector implements Selector<ItemStack> {
                 if (tagSelector != null) {
                     enchantmentSelectors.add(tagSelector);
                 } else {
-                    var eId = Identifier.tryParse(ench);
+                    var eId = ResourceLocation.tryParse(ench);
                     if (eId != null) {
                         enchantmentSelectors.add(new EnchantmentSelector(eId));
                     }
@@ -71,7 +71,7 @@ public class ToolSelector implements Selector<ItemStack> {
             if (tagSelector != null) {
                 itemSelector = tagSelector;
             } else {
-                var item = Identifier.tryParse(itemSelectorStr);
+                var item = ResourceLocation.tryParse(itemSelectorStr);
                 if (item != null) {
                     itemSelector = new ItemSelector(item);
                 } else {

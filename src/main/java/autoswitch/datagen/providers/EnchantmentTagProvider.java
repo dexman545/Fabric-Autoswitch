@@ -5,9 +5,9 @@ import java.util.concurrent.CompletableFuture;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class EnchantmentTagProvider extends FabricTagProvider<Enchantment> {
     /**
@@ -19,12 +19,12 @@ public class EnchantmentTagProvider extends FabricTagProvider<Enchantment> {
      * @param registriesFuture The backing registry for the Tag type.
      */
     public EnchantmentTagProvider(FabricDataOutput output,
-                                  CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
-        super(output, RegistryKeys.ENCHANTMENT, registriesFuture);
+                                  CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        super(output, Registries.ENCHANTMENT, registriesFuture);
     }
 
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup arg) {
+    protected void addTags(HolderLookup.Provider arg) {
 
     }
 
