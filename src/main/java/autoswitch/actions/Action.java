@@ -22,7 +22,6 @@ import org.aeonbits.owner.Mutable;
 import net.minecraft.stats.Stat;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 

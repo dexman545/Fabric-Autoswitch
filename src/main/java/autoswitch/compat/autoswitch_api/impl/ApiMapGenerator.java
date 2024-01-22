@@ -13,11 +13,6 @@ import autoswitch.selectors.TargetableGroup;
 import autoswitch.selectors.TargetableGroup.TargetPredicate;
 import autoswitch.util.SwitchUtil;
 
-import net.minecraft.tags.EntityTypeTags;
-
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
@@ -25,8 +20,11 @@ import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
