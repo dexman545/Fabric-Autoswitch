@@ -96,18 +96,21 @@ public final class ConfigEstablishment {
         AutoSwitch.attackActionCfg.addReloadListener(event -> {
             Action.ATTACK.clearSelectors();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
+            Action.ATTACK.resetCache();
             AutoSwitch.logger.info("Attack Config Reloaded");
         });
 
         AutoSwitch.useActionCfg.addReloadListener(event -> {
-            Action.ATTACK.clearSelectors();
+            Action.INTERACT.clearSelectors();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
+            Action.INTERACT.resetCache();
             AutoSwitch.logger.info("Interact Config Reloaded");
         });
 
         AutoSwitch.eventActionConfig.addReloadListener(event -> {
             Action.EVENT.clearSelectors();
             AutoSwitchMapsGenerator.populateAutoSwitchMaps();
+            Action.EVENT.resetCache();
             AutoSwitch.logger.info("Event Config Reloaded");
         });
 
