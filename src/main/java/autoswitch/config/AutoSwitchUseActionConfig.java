@@ -26,6 +26,12 @@ public interface AutoSwitchUseActionConfig extends Config, Reloadable, Accessibl
     ToolSelector[] mooshroom();
 
     @Separator(",")
+    @DefaultValue("shears")
+    @Key("minecraft!bogged")
+    @Comment("Shear a bogged to get mushrooms.")
+    ToolSelector[] bogged();
+
+    @Separator(",")
     @DefaultValue("minecraft:bucket")
     @Key("minecraft!cow")
     @Comment("Milk a cow to get milk.")
