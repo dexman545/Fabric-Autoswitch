@@ -5,11 +5,16 @@ import java.util.function.Predicate;
 import autoswitch.selectors.futures.IdentifiedTag;
 import autoswitch.selectors.futures.RegistryType;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public class EnchantmentSelector implements Selector<Enchantment> {
     private final Predicate<Object> predicate;
@@ -34,13 +39,16 @@ public class EnchantmentSelector implements Selector<Enchantment> {
         this.entryName = entryName;
     }
 
+    /**
+     * {@link EnchantmentHelper#runIterationOnItem(EnchantmentHelper.EnchantmentVisitor, ItemStack)} for looping code
+     */
     public double getRating(ItemStack stack) {
         var enchantmentRating = 0d;
         if (stack.isEnchanted()) {
-            var enchantments = EnchantmentHelper.getEnchantments(stack).keySet();
-            for (Enchantment enchantment : enchantments) {
-                if (matches(enchantment)) {
-                    enchantmentRating += 1.1 * EnchantmentHelper.getItemEnchantmentLevel(enchantment, stack);
+            ItemEnchantments itemEnchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+            for (Object2IntMap.Entry<Holder<Enchantment>> entry : itemEnchantments.entrySet()) {
+                if (matches(entry.getKey().value())) {
+                    enchantmentRating += 1.1 * entry.getIntValue();
                 }
             }
         }
@@ -48,12 +56,15 @@ public class EnchantmentSelector implements Selector<Enchantment> {
         return enchantmentRating;
     }
 
+    /**
+     * {@link EnchantmentHelper#runIterationOnItem(EnchantmentHelper.EnchantmentVisitor, ItemStack)} for looping code
+     */
     public boolean matches(ItemStack stack) {
         var matches = false;
         if (stack.isEnchanted()) {
-            var enchantments = EnchantmentHelper.getEnchantments(stack).keySet();
-            for (Enchantment enchantment : enchantments) {
-                if (matches(enchantment)) {
+            ItemEnchantments itemEnchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+            for (Object2IntMap.Entry<Holder<Enchantment>> entry : itemEnchantments.entrySet()) {
+                if (matches(entry.getKey().value())) {
                     matches = true;
                     break;
                 }

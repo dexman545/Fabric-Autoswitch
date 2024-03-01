@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,15 +14,17 @@ import autoswitch.config.util.ConfigReflection;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 
+import net.minecraft.core.HolderLookup;
+
 public class EngLangProvider extends FabricLanguageProvider {
     Pattern WORD_FINDER = Pattern.compile("(([A-Z]?[a-z]+)|([A-Z]))");
 
-    public EngLangProvider(FabricDataOutput output) {
-        super(output, "en_us");
+    public EngLangProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registryLookup) {
+        super(output, registryLookup);
     }
 
     @Override
-    public void generateTranslations(TranslationBuilder translationBuilder) {
+    public void generateTranslations(HolderLookup.Provider registryLookup, TranslationBuilder translationBuilder) {
         //translationBuilder.add("", "");
 
         buildFeatureConfigTranslations(translationBuilder);

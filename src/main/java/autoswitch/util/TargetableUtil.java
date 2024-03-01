@@ -4,11 +4,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import autoswitch.AutoSwitch;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -26,8 +28,9 @@ public class TargetableUtil {
 
     /**
      * Generates a target rating for the given stack.
-     *
-     * @see net.minecraft.world.entity.player.Player#attack(Entity) for Entity case's damage calculation
+     * <p>
+     * {@link net.minecraft.world.entity.player.Player#attack(Entity)} for Entity case's damage calculation
+     * {@link net.minecraft.world.entity.Mob#getApproximateAttackDamageWithItem(ItemStack)} for attribute modifiers
      */
     public static float getTargetRating(Object target, ItemStack stack) {
         if (target instanceof BlockState blockState) { // TODO correct clamping for instabreak situations ie. swords on bamboo
@@ -39,12 +42,29 @@ public class TargetableUtil {
 
             float damage;
             float h = 0;
-            AtomicReference<Float> baseDamage = new AtomicReference<>((float) 0);
+            AtomicReference<Float> baseDamage = new AtomicReference<>((float) 1);
+            AtomicReference<Float> attackSpeed = new AtomicReference<>((float) 1);
 
             // Doesn't include enchants
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_DAMAGE).forEach(
-                    entityAttributeModifier -> baseDamage
-                            .updateAndGet(v -> (float) (v + entityAttributeModifier.getAmount())));
+            ItemAttributeModifiers itemAttributeModifiers = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS,
+                                                                           ItemAttributeModifiers.EMPTY);
+            itemAttributeModifiers.forEach(EquipmentSlot.MAINHAND, (holder, modifier) -> {
+                if (holder.value() == Attributes.ATTACK_DAMAGE) {
+                    baseDamage.accumulateAndGet((float) modifier.getAmount(), (t, m) -> switch(modifier.getOperation()) {
+                        case ADD_VALUE -> t+m;
+                        case ADD_MULTIPLIED_BASE -> t+(m * 1);
+                        case ADD_MULTIPLIED_TOTAL -> t+(m * t);
+                    });
+                }
+
+                if (holder.value() == Attributes.ATTACK_SPEED) {
+                    attackSpeed.accumulateAndGet((float) modifier.getAmount(), (t, m) -> switch(modifier.getOperation()) {
+                        case ADD_VALUE -> t+m;
+                        case ADD_MULTIPLIED_BASE -> t+(m * 1);
+                        case ADD_MULTIPLIED_TOTAL -> t+(m * t);
+                    });
+                }
+            });
 
             damage = baseDamage.get();
 
@@ -61,13 +81,6 @@ public class TargetableUtil {
             }
 
             damage += h;
-
-            AtomicReference<Float> attackSpeed = new AtomicReference<>((float) 0);
-
-            // Get attack speed
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).get(Attributes.ATTACK_SPEED).forEach(
-                    entityAttributeModifier -> attackSpeed.updateAndGet(v -> (float)
-                            (v + entityAttributeModifier.getAmount())));
 
             if (attackSpeed.get() == 0 || damage == 0) return 0;
 

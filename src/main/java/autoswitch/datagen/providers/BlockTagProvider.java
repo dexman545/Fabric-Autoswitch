@@ -32,7 +32,6 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 .addOptionalTag(BlockTags.WOOL.location())
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.COBWEB))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.SHORT_GRASS))
-                .addOptional(new ResourceLocation("grass")) // This was renamed to short_grass in ~1.20.4
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.FERN))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.DEAD_BUSH))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.HANGING_ROOTS))
