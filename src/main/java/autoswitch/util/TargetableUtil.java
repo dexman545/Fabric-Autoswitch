@@ -50,7 +50,7 @@ public class TargetableUtil {
                                                                            ItemAttributeModifiers.EMPTY);
             itemAttributeModifiers.forEach(EquipmentSlot.MAINHAND, (holder, modifier) -> {
                 if (holder.value() == Attributes.ATTACK_DAMAGE) {
-                    baseDamage.accumulateAndGet((float) modifier.getAmount(), (t, m) -> switch(modifier.getOperation()) {
+                    baseDamage.accumulateAndGet((float) modifier.amount(), (t, m) -> switch(modifier.operation()) {
                         case ADD_VALUE -> t+m;
                         case ADD_MULTIPLIED_BASE -> t+(m * 1);
                         case ADD_MULTIPLIED_TOTAL -> t+(m * t);
@@ -58,7 +58,7 @@ public class TargetableUtil {
                 }
 
                 if (holder.value() == Attributes.ATTACK_SPEED) {
-                    attackSpeed.accumulateAndGet((float) modifier.getAmount(), (t, m) -> switch(modifier.getOperation()) {
+                    attackSpeed.accumulateAndGet((float) modifier.amount(), (t, m) -> switch(modifier.operation()) {
                         case ADD_VALUE -> t+m;
                         case ADD_MULTIPLIED_BASE -> t+(m * 1);
                         case ADD_MULTIPLIED_TOTAL -> t+(m * t);

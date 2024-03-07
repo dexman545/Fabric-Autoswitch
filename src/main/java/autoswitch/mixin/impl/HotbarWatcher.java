@@ -55,7 +55,7 @@ public class HotbarWatcher {
         if (o.isEmpty() || n.isEmpty()) return true;
         if (ItemStack.matches(o, n)) return false;
 
-        return !ItemStack.isSameItemSameTags(o, n) || !ItemStack.isSameItem(o, n);
+        return !ItemStack.isSameItemSameComponents(o, n) || !ItemStack.isSameItem(o, n);
 
     }
 

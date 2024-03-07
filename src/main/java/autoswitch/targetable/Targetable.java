@@ -49,7 +49,7 @@ public abstract class Targetable {
     private final Int2DoubleArrayMap slot2ToolRating = new Int2DoubleArrayMap();
     /**
      * The initial Target brought in from the world, eg. a block or entity. This differs from the Target in that a
-     * {@link autoswitch.selectors.TargetableGroup} or {@link net.minecraft.world.entity.MobType} may be targeted in the user
+     * {@link autoswitch.selectors.TargetableGroup} or {@link net.minecraft.world.entity.EntityType} may be targeted in the user
      * config
      * <p>
      * Equals the actual Target iff it is a block or entity override

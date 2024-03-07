@@ -55,6 +55,9 @@ public abstract class MixinInventory {
         handleHotbarUpdate(slot);
     }
 
+
+    //todo these injects don't seem to cover everything anymore
+    //  instead, redirct inventory creation to one that track the changes? that seems dangerous
     /**
      * If the sot changed is on the hotbar, pass to the HotbarWatcher and update the prevHotbar.
      *
