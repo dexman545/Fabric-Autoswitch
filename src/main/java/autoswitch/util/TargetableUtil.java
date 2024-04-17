@@ -38,7 +38,7 @@ public class TargetableUtil {
         }
 
         if (target instanceof Entity entity) {
-            if (!(stack.getItem() instanceof TieredItem)) return 0;
+            if (!(stack.getItem() instanceof TieredItem)) return 0;//todo this is wrong
 
             float damage;
             float h = 0;

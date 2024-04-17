@@ -36,8 +36,8 @@ import net.minecraft.world.item.ItemStack;
 @Environment(EnvType.CLIENT)
 public abstract class Targetable {
     protected static final ToolSelector blankToolSelector = new ToolSelector(new ItemSelector(o -> {
-        if (o instanceof Item item) {
-            return item.getMaxDamage() == 0;
+        if (o instanceof Item item) {//todo this needs to be an itemstack
+            return item.getDefaultInstance().getMaxDamage() == 0;
         }
         return false;
     }, "BlankTool"));

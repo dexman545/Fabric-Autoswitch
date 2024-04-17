@@ -4,7 +4,6 @@ import java.util.concurrent.CompletableFuture;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.mininglevel.v1.FabricMineableTags;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,7 +22,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider arg) {
         tag(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:shears_efficient")))
-                .addOptionalTag(FabricMineableTags.SHEARS_MINEABLE.location())
+                //.addOptionalTag(FabricMineableTags.SHEARS_MINEABLE.location())
                 //todo which MC will be real?
                 .addOptionalTag(new ResourceLocation("minecraft:shears_efficient"))
                 .addOptionalTag(new ResourceLocation("minecraft:mineable/shears"))
@@ -40,7 +39,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.GLOW_LICHEN));
         // Exists as bamboo and cobweb isn't in sword_efficient
         tag(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:sword_efficient")))
-                .addOptionalTag(FabricMineableTags.SWORD_MINEABLE.location())
+                //.addOptionalTag(FabricMineableTags.SWORD_MINEABLE.location())
                 .addOptionalTag(BlockTags.SWORD_EFFICIENT.location())
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.COBWEB))

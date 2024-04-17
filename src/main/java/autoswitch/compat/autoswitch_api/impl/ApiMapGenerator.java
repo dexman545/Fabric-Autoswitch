@@ -94,11 +94,11 @@ public class ApiMapGenerator {
         TagKey<Item> commonTag;
         TagKey<Item> mcTag;
         if (toolName.equals("trident")) {
-            commonTag = TagKey.create(Registries.ITEM, new ResourceLocation("c", "spears"));
+            commonTag = TagKey.create(Registries.ITEM, new ResourceLocation("c", "tools/spears"));
             // Other tags added in 1.19.4
             mcTag = TagKey.create(Registries.ITEM, new ResourceLocation("minecraft", "spears"));
         } else {
-            commonTag = TagKey.create(Registries.ITEM, new ResourceLocation("c", pluralName));
+            commonTag = TagKey.create(Registries.ITEM, new ResourceLocation("c", "tools/"+pluralName));
             mcTag = TagKey.create(Registries.ITEM, new ResourceLocation("minecraft", pluralName));// Added in 1.19.4
         }
 
