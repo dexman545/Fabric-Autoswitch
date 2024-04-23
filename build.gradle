@@ -366,6 +366,6 @@ tasks.modrinth.onlyIf {
     !versionAlreadyUploaded()
 }
 
-publish.finalizedBy(tasks.modrinth)
 publish.finalizedBy(tasks.curseforge)
+publish.finalizedBy(tasks.modrinth)
 tasks.runClient.dependsOn(tasks.processResources)
