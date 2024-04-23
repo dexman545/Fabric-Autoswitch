@@ -10,7 +10,7 @@ plugins {
     id 'maven-publish'
     id "com.modrinth.minotaur" version "2.+"
     id 'com.matthewprenger.cursegradle' version '1.4.+'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "io.github.goooler.shadow" version "8.1.7"
 
     // To trigger musical code on project refresh and run processResources on project launch in Idea
     id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
