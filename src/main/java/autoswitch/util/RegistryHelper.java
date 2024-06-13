@@ -1,5 +1,6 @@
 package autoswitch.util;
 
+import autoswitch.AutoSwitch;
 import autoswitch.actions.Action;
 import autoswitch.selectors.futures.FutureRegistryEntry;
 import autoswitch.selectors.futures.IdentifiedTag;
@@ -26,9 +27,11 @@ public final class RegistryHelper {
 
     @Nullable
     public static <T> T getEntry(Registry<T> registry, ResourceLocation id) {
-        var entry = registry.get(id);
-        if (!isDefaultEntry(registry, entry, id)) {
-            return entry;
+        if (registry != null) {
+            var entry = registry.get(id);
+            if (!isDefaultEntry(registry, entry, id)) {
+                return entry;
+            }
         }
 
         return null;

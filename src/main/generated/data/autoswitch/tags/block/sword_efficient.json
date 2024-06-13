@@ -1,10 +1,6 @@
 {
   "values": [
     {
-      "id": "#fabric:mineable/sword",
-      "required": false
-    },
-    {
       "id": "#minecraft:sword_efficient",
       "required": false
     },

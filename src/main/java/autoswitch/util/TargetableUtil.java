@@ -69,8 +69,9 @@ public class TargetableUtil {
             damage = baseDamage.get();
 
             // Consider Enchantments
-            if (AutoSwitch.featureCfg.weaponRatingIncludesEnchants()) {
-                h = EnchantmentHelper.getDamageBonus(stack, entity.getType());
+            //if (AutoSwitch.featureCfg.weaponRatingIncludesEnchants()) {
+                // EnchantmentHelper.modifyDamage(); can't use as creates LootContext, no idea if it has side effects
+                //h = EnchantmentHelper.getDamageBonus(stack, entity.getType());
 
                 // Disabled as config can specify this anyway
                 /*int l = EnchantmentHelper.getLevel(Enchantments.FIRE_ASPECT, stack);
@@ -78,7 +79,7 @@ public class TargetableUtil {
                     (((LivingEntity)target).isOnFire() && ((LivingEntity)target).isFireImmune())) {
                         damage += l;
                 }*/
-            }
+            //}
 
             damage += h;
 

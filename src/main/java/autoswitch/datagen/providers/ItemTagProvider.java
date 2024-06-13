@@ -20,7 +20,7 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        tag(TagKey.create(Registries.ITEM, new ResourceLocation("autoswitch:any")))
+        tag(TagKey.create(Registries.ITEM, ResourceLocation.parse("autoswitch:any")))
                 .addOptionalTag(ItemTags.AXES.location())
                 //.addOptionalTag(ConventionalItemTags.BOWS)
                 .addOptionalTag(ConventionalItemTags.SHEARS_TOOLS.location())

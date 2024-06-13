@@ -35,8 +35,8 @@ public class EventTargetHandler {
 
                 if (split.length != 2) return null;
 
-                return getStat(new ResourceLocation(split[0].replace(".", ":")),
-                               new ResourceLocation(split[1].replace(".", ":")));
+                return getStat(ResourceLocation.parse(split[0].replace(".", ":")),
+                               ResourceLocation.parse(split[1].replace(".", ":")));
             }
 
             //todo use FRE? use RegistryHolders?

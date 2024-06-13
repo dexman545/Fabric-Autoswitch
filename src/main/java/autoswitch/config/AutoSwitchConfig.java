@@ -104,11 +104,11 @@ public interface AutoSwitchConfig extends Config, Reloadable, Accessible, Mutabl
              "break " + "integration, this is simply a more extreme kill switch.")
     Boolean disableModMenuConfig();
 
-    @DefaultValue("false")
+    /*@DefaultValue("false") todo add back when figure out how to do with needing serverworld
     @Comment("Tools with enchantments that increase attack damage will be rated higher. " +
              "This means an axe with sharpness can be preferred over a sword. " +
              "Set to true to enable this functionality. False ignores the enchantments.")
-    Boolean weaponRatingIncludesEnchants();
+    Boolean weaponRatingIncludesEnchants();*/
 
     @DefaultValue("false")
     @Comment("Will force use of the toggle key in order to enable switching.")

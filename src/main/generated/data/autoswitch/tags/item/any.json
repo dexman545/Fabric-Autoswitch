@@ -1,19 +1,11 @@
 {
   "values": [
     {
-      "id": "#c:axes",
-      "required": false
-    },
-    {
       "id": "#minecraft:axes",
       "required": false
     },
     {
-      "id": "#c:shears",
-      "required": false
-    },
-    {
-      "id": "#c:shovels",
+      "id": "#c:tools/shears",
       "required": false
     },
     {
@@ -21,27 +13,15 @@
       "required": false
     },
     {
-      "id": "#c:swords",
-      "required": false
-    },
-    {
       "id": "#minecraft:swords",
       "required": false
     },
     {
-      "id": "#c:spears",
-      "required": false
-    },
-    {
-      "id": "#c:hoes",
+      "id": "#c:tools/spears",
       "required": false
     },
     {
       "id": "#minecraft:hoes",
-      "required": false
-    },
-    {
-      "id": "#c:pickaxes",
       "required": false
     },
     {

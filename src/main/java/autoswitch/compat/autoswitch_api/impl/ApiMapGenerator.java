@@ -68,7 +68,7 @@ public class ApiMapGenerator {
         anyTool = anyTool.or(o -> { // Added in 1.19.4
             if (o instanceof Item item) {
                 return ClientTags.isInWithLocalFallback(
-                        TagKey.create(Registries.ITEM, new ResourceLocation("minecraft", "tools")),
+                        TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("minecraft", "tools")),
                         item
                 );
             }
@@ -88,18 +88,18 @@ public class ApiMapGenerator {
 
     private static Predicate<Object> makeToolPredicate(String toolName, @NotNull Class<? extends Item> itemClass) {
         var pluralName = toolName.endsWith("s") ? toolName : toolName + "s";
-        var fabricTag = TagKey.create(Registries.ITEM, new ResourceLocation("fabric", pluralName));
+        var fabricTag = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("fabric", pluralName));
 
 
         TagKey<Item> commonTag;
         TagKey<Item> mcTag;
         if (toolName.equals("trident")) {
-            commonTag = TagKey.create(Registries.ITEM, new ResourceLocation("c", "tools/spears"));
+            commonTag = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/spears"));
             // Other tags added in 1.19.4
-            mcTag = TagKey.create(Registries.ITEM, new ResourceLocation("minecraft", "spears"));
+            mcTag = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("minecraft", "spears"));
         } else {
-            commonTag = TagKey.create(Registries.ITEM, new ResourceLocation("c", "tools/"+pluralName));
-            mcTag = TagKey.create(Registries.ITEM, new ResourceLocation("minecraft", pluralName));// Added in 1.19.4
+            commonTag = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "tools/"+pluralName));
+            mcTag = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("minecraft", pluralName));// Added in 1.19.4
         }
 
         // todo move to using itemstack rather than item itself - api change?
@@ -118,12 +118,12 @@ public class ApiMapGenerator {
         // Blocks
         //todo wrap in AS tags?
         //todo order dependent
-        addDefaultBlockTarget(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:shears_efficient")));
+        addDefaultBlockTarget(TagKey.create(Registries.BLOCK, ResourceLocation.parse("autoswitch:shears_efficient")));
         addDefaultBlockTarget(BlockTags.MINEABLE_WITH_HOE);
         addDefaultBlockTarget(BlockTags.MINEABLE_WITH_AXE);
         addDefaultBlockTarget(BlockTags.MINEABLE_WITH_PICKAXE);
         addDefaultBlockTarget(BlockTags.MINEABLE_WITH_SHOVEL);
-        addDefaultBlockTarget(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:sword_efficient")));
+        addDefaultBlockTarget(TagKey.create(Registries.BLOCK, ResourceLocation.parse("autoswitch:sword_efficient")));
         //todo leave as tag target, or give special names?
 
         // Entities

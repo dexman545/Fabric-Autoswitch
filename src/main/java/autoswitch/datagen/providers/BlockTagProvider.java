@@ -21,11 +21,11 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        tag(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:shears_efficient")))
+        tag(TagKey.create(Registries.BLOCK, ResourceLocation.parse("autoswitch:shears_efficient")))
                 //.addOptionalTag(FabricMineableTags.SHEARS_MINEABLE.location())
                 //todo which MC will be real?
-                .addOptionalTag(new ResourceLocation("minecraft:shears_efficient"))
-                .addOptionalTag(new ResourceLocation("minecraft:mineable/shears"))
+                .addOptionalTag(ResourceLocation.parse("minecraft:shears_efficient"))
+                .addOptionalTag(ResourceLocation.parse("minecraft:mineable/shears"))
                 // Copied from ShearsItem postMine and getMiningSpeedMultiplier
                 .addOptionalTag(BlockTags.LEAVES.location())
                 .addOptionalTag(BlockTags.WOOL.location())
@@ -38,13 +38,13 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.TRIPWIRE))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.GLOW_LICHEN));
         // Exists as bamboo and cobweb isn't in sword_efficient
-        tag(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:sword_efficient")))
+        tag(TagKey.create(Registries.BLOCK, ResourceLocation.parse("autoswitch:sword_efficient")))
                 //.addOptionalTag(FabricMineableTags.SWORD_MINEABLE.location())
                 .addOptionalTag(BlockTags.SWORD_EFFICIENT.location())
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.COBWEB))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO_SAPLING));
-        tag(TagKey.create(Registries.BLOCK, new ResourceLocation("autoswitch:bamboo")))
+        tag(TagKey.create(Registries.BLOCK, ResourceLocation.parse("autoswitch:bamboo")))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO_SAPLING));
 

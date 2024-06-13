@@ -3,7 +3,9 @@ package autoswitch.selectors.futures;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import autoswitch.AutoSwitch;
 import autoswitch.util.RegistryHelper;
@@ -12,9 +14,11 @@ import it.unimi.dsi.fastutil.Function;
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.IdMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -32,7 +36,18 @@ public class FutureRegistryEntry extends FutureStateHolder implements Representa
                 new RegistryHolder<>(BuiltInRegistries.ENTITY_TYPE, (Class<EntityType<?>>) (Class<?>) EntityType.class,
                                      RegistryType.ENTITY));
         REGISTRY_HOLDERS.add(new RegistryHolder<>(BuiltInRegistries.ITEM, Item.class, RegistryType.ITEM));
-        REGISTRY_HOLDERS.add(new RegistryHolder<>(BuiltInRegistries.ENCHANTMENT, Enchantment.class, RegistryType.ENCHANTMENT));
+        REGISTRY_HOLDERS.add(new RegistryHolder<>(() -> {
+            //todo as enchantments are dynamic now, do we really care about their ids? fortune is still hardcoded to
+            // use id in places
+            if (Minecraft.getInstance() != null) {
+                if (Minecraft.getInstance().level != null) {
+                    if (Minecraft.getInstance().level.registryAccess() != null) {
+                        return Minecraft.getInstance().level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
+                    }
+                }
+            }
+            return null;
+        }, Enchantment.class, RegistryType.ENCHANTMENT));
     }
 
     private final ResourceLocation id;
@@ -172,10 +187,19 @@ public class FutureRegistryEntry extends FutureStateHolder implements Representa
 
     }
 
-    public record RegistryHolder<T extends IdMap<U>, U>(T registry, Class<U> clazz, RegistryType type,
+    public record RegistryHolder<T extends Registry<U>, U>(Supplier<T> registry, Class<U> clazz, RegistryType type,
                                                                   Function<ResourceLocation, U> id2EntryFunction) {
         public RegistryHolder(Registry<U> registry, Class<U> clazz, RegistryType type) {
-            this((T) registry, clazz, type, id -> RegistryHelper.getEntry(registry, ((ResourceLocation) id)));
+            this(registry, clazz, type, id -> RegistryHelper.getEntry(registry, ((ResourceLocation) id)));
+        }
+
+        public RegistryHolder(Supplier<T> registry, Class<U> clazz, RegistryType type) {
+            this(registry, clazz, type, id -> RegistryHelper.getEntry(registry.get(), ((ResourceLocation) id)));
+        }
+
+        public RegistryHolder(Registry<U> registry, Class<U> clazz, RegistryType type,
+                              Function<ResourceLocation, U> id2EntryFunction) {
+            this(() -> (T) registry, clazz, type, id2EntryFunction);
         }
 
         public boolean canHold(Object o) {

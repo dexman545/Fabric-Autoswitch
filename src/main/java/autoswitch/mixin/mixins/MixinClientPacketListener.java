@@ -22,7 +22,7 @@ public abstract class MixinClientPacketListener {
      *
      * @see ClientPacketListener#handleLogin(ClientboundLoginPacket)
      */
-    @Inject(method = "handleLogin(Lnet/minecraft/network/protocol/game/ClientboundLoginPacket;)V", at = @At("HEAD"))
+    @Inject(method = "handleLogin(Lnet/minecraft/network/protocol/game/ClientboundLoginPacket;)V", at = @At("RETURN"))
     private void resetOnServerJoin(ClientboundLoginPacket packet, CallbackInfo ci) {
         ConnectionHandler.reset();
         RegistryHelper.revalidateFutureEntries();

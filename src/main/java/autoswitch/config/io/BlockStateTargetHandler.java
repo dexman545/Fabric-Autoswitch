@@ -42,7 +42,7 @@ public class BlockStateTargetHandler {
 
         var match = isTaggedMatch(input);
         if (match.isMatch) {
-            var futureBlock = FutureRegistryEntry.getOrCreate(RegistryType.BLOCK, new ResourceLocation(match.id));
+            var futureBlock = FutureRegistryEntry.getOrCreate(RegistryType.BLOCK, ResourceLocation.parse(match.id));
             futureBlock.setTypeLocked(true);
 
             if (match.properties == null) return null;
