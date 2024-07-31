@@ -29,7 +29,6 @@
   "currently.autoswitch.toolEnchantmentsStack": "Tool enchantments stack: %s",
   "currently.autoswitch.tryPreserveDamagedTools": "Try preserve damaged tools: %s",
   "currently.autoswitch.useNoDurabilityItemsWhenUnspecified": "Use no durability items when unspecified: %s",
-  "currently.autoswitch.weaponRatingIncludesEnchants": "Weapon rating includes enchants: %s",
   "key.autoswitch.toggle": "AutoSwitch Toggle Key",
   "key.autoswitch.toggle_mowing": "Mowing Protection Toggle Key",
   "msg.autoswitch.config.1": "AutoSwitch configs are in the config folder.",

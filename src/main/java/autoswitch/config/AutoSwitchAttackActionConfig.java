@@ -152,4 +152,10 @@ public interface AutoSwitchAttackActionConfig extends Config, Reloadable, Access
     @Comment("A tag for bamboo.")
     ToolSelector[] bamboo();
 
+    @Separator(",")
+    @DefaultValue("axe;minecraft!silk_touch, axe")
+    @Key("block@autoswitch!mushroom_block")
+    @Comment("A tag for full mushroom blocks.")
+    ToolSelector[] mushroom_blocks();
+
 }

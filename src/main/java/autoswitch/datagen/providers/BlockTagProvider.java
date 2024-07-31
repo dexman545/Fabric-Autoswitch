@@ -47,6 +47,10 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         tag(TagKey.create(Registries.BLOCK, ResourceLocation.parse("autoswitch:bamboo")))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO_SAPLING));
+        tag(TagKey.create(Registries.BLOCK, ResourceLocation.parse("autoswitch:mushroom_block")))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.MUSHROOM_STEM))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BROWN_MUSHROOM_BLOCK))
+                .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.RED_MUSHROOM_BLOCK));
 
     }
 
