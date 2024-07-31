@@ -68,6 +68,5 @@
   "title.autoswitch.toggleMessageControl": "Toggle message control",
   "title.autoswitch.toolEnchantmentsStack": "Tool enchantments stack",
   "title.autoswitch.tryPreserveDamagedTools": "Try preserve damaged tools",
-  "title.autoswitch.useNoDurabilityItemsWhenUnspecified": "Use no durability items when unspecified",
-  "title.autoswitch.weaponRatingIncludesEnchants": "Weapon rating includes enchants"
+  "title.autoswitch.useNoDurabilityItemsWhenUnspecified": "Use no durability items when unspecified"
 }
