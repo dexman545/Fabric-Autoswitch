@@ -118,7 +118,7 @@ configurations { //todo move into Outlet, change include to work differently
     if (useCompileOnlyDeps) modRuntime.extendsFrom(optional)
     modImplementation.extendsFrom(requiredModImpl)
     implementation.extendsFrom(requiredLib)
-    include.extendsFrom(requiredModApi, /*requiredModImpl,*/ requiredLib) // Disabled modImpl as fapi modules depend on other modules
+    include.extendsFrom(requiredModApi, /*requiredModImpl,*/) // Disabled modImpl as fapi modules depend on other modules
     modApi.extendsFrom(requiredModApi)
 }
 
