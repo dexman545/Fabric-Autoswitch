@@ -50,8 +50,7 @@ class TargetableAttack extends Targetable {
 
     @Override
     protected boolean stopProcessingSlot(Object target, int slot) {
-        return !AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() &&
-               getAction().getTarget2ToolSelectorsMap().get(target) == null;
+        return getAction().getTarget2ToolSelectorsMap().get(target) == null;
     }
 
 }
