@@ -46,8 +46,7 @@ public final class RegistryHelper {
     public static <T> boolean isDefaultEntry(Registry<T> registry, Holder.Reference<T> entry, ResourceLocation id) {
         if (entry == null) return false;
         if (registry instanceof DefaultedRegistry<T> defaultedRegistry) {
-            if (defaultedRegistry.getDefaultKey().equals(id)) return false;
-            return registry.get(defaultedRegistry.getDefaultKey()).equals(entry);
+            return entry.is(defaultedRegistry.getDefaultKey());
         }
 
         return false;
