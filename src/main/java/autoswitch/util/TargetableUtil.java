@@ -9,7 +9,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,7 +37,7 @@ public class TargetableUtil {
         }
 
         if (target instanceof Entity entity) {
-            if (!(stack.getItem() instanceof TieredItem)) return 0;//todo this is wrong
+            //if (!(stack.getItem() instanceof TieredItem)) return 0;//todo this is wrong, TierItem is gone
 
             float damage;
             float h = 0;

@@ -5,11 +5,15 @@ import autoswitch.actions.Action;
 import autoswitch.selectors.futures.FutureRegistryEntry;
 import autoswitch.selectors.futures.IdentifiedTag;
 
+import net.minecraft.core.Holder;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+
+import java.util.Optional;
 
 public final class RegistryHelper {
     private RegistryHelper() {
@@ -29,15 +33,17 @@ public final class RegistryHelper {
     public static <T> T getEntry(Registry<T> registry, ResourceLocation id) {
         if (registry != null) {
             var entry = registry.get(id);
-            if (!isDefaultEntry(registry, entry, id)) {
-                return entry;
+            if (entry.isPresent()) {
+                if (!isDefaultEntry(registry, entry.get(), id)) {
+                    return entry.get().value();
+                }
             }
         }
 
         return null;
     }
 
-    public static <T> boolean isDefaultEntry(Registry<T> registry, T entry, ResourceLocation id) {
+    public static <T> boolean isDefaultEntry(Registry<T> registry, Holder.Reference<T> entry, ResourceLocation id) {
         if (entry == null) return false;
         if (registry instanceof DefaultedRegistry<T> defaultedRegistry) {
             if (defaultedRegistry.getDefaultKey().equals(id)) return false;

@@ -42,7 +42,7 @@ public class FutureRegistryEntry extends FutureStateHolder implements Representa
             if (Minecraft.getInstance() != null) {
                 if (Minecraft.getInstance().level != null) {
                     if (Minecraft.getInstance().level.registryAccess() != null) {
-                        return Minecraft.getInstance().level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
+                        return Minecraft.getInstance().level.registryAccess().lookup(Registries.ENCHANTMENT).orElse(null);
                     }
                 }
             }
