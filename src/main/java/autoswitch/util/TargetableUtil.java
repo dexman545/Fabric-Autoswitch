@@ -166,8 +166,7 @@ public class TargetableUtil {
         if (AutoSwitch.featureCfg.useNoDurabilityItemsWhenUnspecified() && stack.getMaxDamage() == 0) return true;
 
         if (target instanceof BlockState state) {
-            // Multiplier check to correct for swords on bamboo
-            return !state.requiresCorrectToolForDrops() || (stack.isCorrectToolForDrops(state) || stack.getDestroySpeed(state) > 1);
+            return !state.requiresCorrectToolForDrops() || stack.isCorrectToolForDrops(state);
         }
 
         return true;
