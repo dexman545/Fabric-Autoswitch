@@ -31,11 +31,9 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.ShovelItem;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.level.block.Block;
 
@@ -47,13 +45,13 @@ public class ApiMapGenerator {
         //AutoSwitch.data.damageMap.put(Item.class, ItemStack::getDamage);
 
         // Tool Groups via Predicate
-        AutoSwitch.switchData.toolPredicates.computeIfAbsent("pickaxe", s -> makeToolPredicate(s, PickaxeItem.class));
+        AutoSwitch.switchData.toolPredicates.computeIfAbsent("pickaxe", s -> makeToolPredicate(s, null));
         AutoSwitch.switchData.toolPredicates.computeIfAbsent("shovel", s -> makeToolPredicate(s, ShovelItem.class));
         AutoSwitch.switchData.toolPredicates.computeIfAbsent("hoe", s -> makeToolPredicate(s, HoeItem.class));
         AutoSwitch.switchData.toolPredicates.computeIfAbsent("shears", s -> makeToolPredicate(s, ShearsItem.class));
         AutoSwitch.switchData.toolPredicates.computeIfAbsent("trident", s -> makeToolPredicate(s, TridentItem.class));
         AutoSwitch.switchData.toolPredicates.computeIfAbsent("axe", s -> makeToolPredicate(s, AxeItem.class));
-        AutoSwitch.switchData.toolPredicates.computeIfAbsent("sword", s -> makeToolPredicate(s, SwordItem.class));
+        AutoSwitch.switchData.toolPredicates.computeIfAbsent("sword", s -> makeToolPredicate(s, null));
 
         // Any tool
         Predicate<Object> anyTool = null;
@@ -86,7 +84,7 @@ public class ApiMapGenerator {
         TargetableGroup.validatePredicates();
     }
 
-    private static Predicate<Object> makeToolPredicate(String toolName, @NotNull Class<? extends Item> itemClass) {
+    private static Predicate<Object> makeToolPredicate(String toolName, Class<? extends Item> itemClass) {
         var pluralName = toolName.endsWith("s") ? toolName : toolName + "s";
         var fabricTag = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("fabric", pluralName));
 
@@ -105,7 +103,8 @@ public class ApiMapGenerator {
         // todo move to using itemstack rather than item itself - api change?
         return o -> {
             if (o instanceof Item item) {
-                return itemClass.isInstance(item) || ClientTags.isInWithLocalFallback(fabricTag, item) ||
+                return (itemClass != null && itemClass.isInstance(item)) ||
+                       ClientTags.isInWithLocalFallback(fabricTag, item) ||
                        ClientTags.isInWithLocalFallback(commonTag, item) ||
                        ClientTags.isInWithLocalFallback(mcTag, item);
             }

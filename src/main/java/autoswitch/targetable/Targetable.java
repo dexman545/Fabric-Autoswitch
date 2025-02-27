@@ -110,7 +110,7 @@ public abstract class Targetable {
      * map. Sends an air item if the slot is empty
      */
     void populateToolLists() {
-        List<ItemStack> hotbar = player.getInventory().items.subList(0, Inventory.getSelectionSize());
+        List<ItemStack> hotbar = player.getInventory().getNonEquipmentItems().subList(0, Inventory.getSelectionSize());
         for (int slot = 0; slot < Inventory.getSelectionSize(); slot++) {
             if (TargetableUtil.skipSlot(hotbar.get(slot))) {
                 continue;
@@ -137,13 +137,13 @@ public abstract class Targetable {
      */
     public Optional<Boolean> changeTool() {
         return findSlot().map(slot -> {
-            int currentSlot = player.getInventory().selected;
+            int currentSlot = player.getInventory().getSelectedSlot();
             if (slot == currentSlot) {
                 // No need to change slot!
                 return false;
             }
 
-            player.getInventory().selected = slot;
+            player.getInventory().setSelectedSlot(slot);
             return true;
         });
     }
@@ -282,7 +282,7 @@ public abstract class Targetable {
         if (rating == 0) return;
 
         // Prefer current slot. Has outcome of making undamageable item fallback not switch if it can help it
-        if (player.getInventory().selected == slot) {
+        if (player.getInventory().getSelectedSlot() == slot) {
             rating += 0.1;
         }
         double finalRating = rating;

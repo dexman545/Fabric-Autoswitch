@@ -5,6 +5,10 @@
       "required": false
     },
     {
+      "id": "#minecraft:sword_instantly_mines",
+      "required": false
+    },
+    {
       "id": "minecraft:bamboo",
       "required": false
     },

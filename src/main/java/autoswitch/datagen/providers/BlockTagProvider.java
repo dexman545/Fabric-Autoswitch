@@ -41,6 +41,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         tag(TagKey.create(Registries.BLOCK, ResourceLocation.parse("autoswitch:sword_efficient")))
                 //.addOptionalTag(FabricMineableTags.SWORD_MINEABLE.location())
                 .addOptionalTag(BlockTags.SWORD_EFFICIENT.location())
+                .addOptionalTag(BlockTags.SWORD_INSTANTLY_MINES.location())
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.COBWEB))
                 .addOptional(BuiltInRegistries.BLOCK.getKey(Blocks.BAMBOO_SAPLING));

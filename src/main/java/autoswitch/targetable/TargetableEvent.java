@@ -34,7 +34,7 @@ public class TargetableEvent extends Targetable {
     @Override
     boolean stopProcessingSlot(Object target, int slot) {
         // Stat increases before the item is removed
-        if (player.getInventory().selected == slot) {
+        if (player.getInventory().getSelectedSlot() == slot) {
             var stack = player.getMainHandItem();
             return (stack.isDamageableItem() && stack.getDamageValue() + 1 >= stack.getMaxDamage()) ||
                    !stack.isDamageableItem();

@@ -3,7 +3,8 @@ package autoswitch.targetable;
 import autoswitch.AutoSwitch;
 import autoswitch.actions.Action;
 
-import net.minecraft.world.entity.Saddleable;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PlayerRideable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -39,8 +40,8 @@ class TargetableUsable extends Targetable {
     @Override
     protected boolean stopProcessingSlot(Object target, int slot) {
         // Don't switch if the target isn't saddled. Assumes only use for saddleable entity would be to ride it
-        return AutoSwitch.featureCfg.checkSaddlableEntitiesForSaddle() && this.protoTarget instanceof Saddleable &&
-               !((Saddleable) protoTarget).isSaddled();
+        return AutoSwitch.featureCfg.checkSaddlableEntitiesForSaddle() && this.protoTarget instanceof PlayerRideable &&
+               (protoTarget instanceof Mob) && !((Mob) protoTarget).isSaddled();
     }
 
 }

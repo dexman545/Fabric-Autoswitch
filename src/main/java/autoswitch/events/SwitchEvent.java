@@ -14,7 +14,7 @@ import autoswitch.util.SwitchState;
 import autoswitch.util.SwitchUtil;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Saddleable;
+import net.minecraft.world.entity.PlayerRideable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -65,7 +65,7 @@ public enum SwitchEvent {
     USE {
         private boolean doOffhand() {
             if (AutoSwitch.featureCfg.putUseActionToolInOffHand() == AutoSwitchConfig.OffhandType.SADDLE) {
-                return protoTarget instanceof Saddleable;
+                return protoTarget instanceof PlayerRideable;
             }
             return AutoSwitch.featureCfg.putUseActionToolInOffHand().allowed();
         }
@@ -249,7 +249,7 @@ public enum SwitchEvent {
      */
     void handlePrevSlot() {
         if (!AutoSwitch.switchState.getHasSwitched()) {
-            AutoSwitch.switchState.setPrevSlot(player.getInventory().selected);
+            AutoSwitch.switchState.setPrevSlot(player.getInventory().getSelectedSlot());
         }
     }
 
