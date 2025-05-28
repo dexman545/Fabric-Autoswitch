@@ -1,8 +1,0 @@
-{
-  "key.autoswitch.toggle": "AutoSwitch Toggle-toets",
-  "key.autoswitch.toggle_mowing": "Maaibeveiliging Toggle Key",
-  "msg.autoswitch.mow_false": "Maaien tijdens vechten: uitgeschakeld",
-  "msg.autoswitch.mow_true": "Maaien tijdens vechten: ingeschakeld",
-  "msg.autoswitch.toggle_false": "AutoSwitch: uitgeschakeld",
-  "msg.autoswitch.toggle_true": "AutoSwitch: ingeschakeld"
-}

@@ -1,8 +1,0 @@
-{
-  "key.autoswitch.toggle": "自动切换切换键",
-  "key.autoswitch.toggle_mowing": "割草保护拨动键",
-  "msg.autoswitch.mow_false": "战斗时割：已禁用",
-  "msg.autoswitch.mow_true": "战斗时割：已启用",
-  "msg.autoswitch.toggle_false": "AutoSwitch：已禁用",
-  "msg.autoswitch.toggle_true": "AutoSwitch：已启用"
-}

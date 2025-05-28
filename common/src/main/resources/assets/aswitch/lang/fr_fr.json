@@ -1,0 +1,5 @@
+{
+  "key.autoswitch.toggle": "Touche de basculement AutoSwitch",
+  "msg.autoswitch.toggle_false": "AutoSwitch: désactivé",
+  "msg.autoswitch.toggle_true": "AutoSwitch: activé"
+}

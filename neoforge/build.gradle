@@ -1,0 +1,100 @@
+plugins {
+    id 'multiloader-loader'
+    id 'net.neoforged.moddev'
+    id 'jvm-test-suite'
+}
+
+neoForge {
+    version = neoforge_version
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+    runs {
+        configureEach {
+            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
+        }
+        client {
+            client()
+        }
+        clientData {
+            clientData()
+        }
+        serverData {
+            serverData()
+        }
+        server {
+            server()
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+    unitTest {
+        enable()
+        testedMod = mods."${mod_id}"
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation('com.google.auto.service:auto-service:1.1.1')
+    testAnnotationProcessor('com.google.auto.service:auto-service:1.1.1')
+    testImplementation "net.neoforged:testframework:$neoforge_version"
+    additionalRuntimeClasspath ("org.spongepowered:configurate-hocon:$configurate_version")
+}
+
+tasks.named('shadowJar') {
+    archiveClassifier = ''
+}
+
+tasks.jar {
+    archiveClassifier = 'base'
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+configurations {
+    shippingJar {
+        canBeResolved = false
+        canBeConsumed = true
+        outgoing.artifact(tasks.shadowJar)
+    }
+}
+
+
+artifacts {
+    shippingJar tasks.shadowJar
+}
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+            targets {
+                all {
+                    testTask.configure {
+                        filter {
+                            includeTestsMatching '*Test'
+                            includeTestsMatching '*Tests'
+                            includeTestsMatching '*TestCase'
+                            excludeTestsMatching 'dex.autoswitch.mixin.*'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+tasks.register("deleteConfig", Delete) {
+    delete fileTree(layout.buildDirectory.dir('minecraft-junit/config')) {
+        include "**/*.conf"
+    }
+}
+
+tasks.test.dependsOn("deleteConfig")

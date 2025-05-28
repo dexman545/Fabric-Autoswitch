@@ -1,0 +1,79 @@
+plugins {
+    id 'multiloader-common'
+    id 'com.gradleup.shadow'
+}
+
+configurations {
+    commonJava{
+        canBeResolved = true
+    }
+    commonResources{
+        canBeResolved = true
+    }
+    shadow
+}
+
+dependencies {
+    compileOnly(project(':common')) {
+        capabilities {
+            requireCapability "$group:$mod_id"
+        }
+    }
+    testCompileOnly(project(':common')) {
+        capabilities {
+            requireCapability "$group:$mod_id"
+        }
+    }
+    commonJava project(path: ':common', configuration: 'commonJava')
+    commonResources project(path: ':common', configuration: 'commonResources')
+    commonJava project(path: ':engine', configuration: 'commonJava')
+    commonResources project(path: ':engine', configuration: 'commonResources')
+    api 'com.google.auto.service:auto-service:1.1.1'
+    annotationProcessor 'com.google.auto.service:auto-service:1.1.1'
+    shadow(runtimeOnly("org.spongepowered:configurate-hocon:$configurate_version"))
+    api("org.spongepowered:configurate-hocon:$configurate_version")
+}
+
+tasks.named('compileJava', JavaCompile) {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
+}
+
+tasks.named('compileTestJava', JavaCompile) {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
+}
+
+processResources {
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
+}
+
+tasks.named('javadoc', Javadoc).configure {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
+}
+
+tasks.named('sourcesJar', Jar) {
+    dependsOn(configurations.commonJava)
+    from(configurations.commonJava)
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
+}
+
+tasks.named('shadowJar') {
+    configurations = [project.configurations.shadow]
+    relocate("org.spongepowered.configurate", "dex.lib.org.spongepowered.configurate")
+    relocate("com.typesafe.config", "dex.lib.com.typesafe.config")
+    relocate("io.leangen.geantyref", "dex.lib.io.leangen.geantyref")
+    relocate("net.kyori.option", "dex.lib.net.kyori.option")
+    minimize()
+}
+
+tasks.assemble {
+    dependsOn(tasks.shadowJar)
+}
+
+artifacts {
+    archives tasks.shadowJar
+}

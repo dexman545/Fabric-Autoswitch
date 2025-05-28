@@ -1,0 +1,5 @@
+{
+  "key.autoswitch.toggle": "自动切换切换键",
+  "msg.autoswitch.toggle_false": "AutoSwitch：已禁用",
+  "msg.autoswitch.toggle_true": "AutoSwitch：已启用"
+}

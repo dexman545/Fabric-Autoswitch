@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "autoswitch-test",
+  "version": "1.0.0",
+  "name": "AutoSwitch Test",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "dex.autoswitch.gametest.unit.UnitGameTest"
+    ],
+    "fabric-client-gametest": [
+      "dex.autoswitch.gametest.client.ClientTest"
+    ]
+  }
+}

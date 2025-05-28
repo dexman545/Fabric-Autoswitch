@@ -1,0 +1,140 @@
+import net.fabricmc.loom.task.prod.ClientProductionRunTask
+
+plugins {
+    id 'multiloader-loader'
+    id 'fabric-loom'
+    id 'jvm-test-suite'
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation('com.google.auto.service:auto-service:1.1.1')
+    testAnnotationProcessor('com.google.auto.service:auto-service:1.1.1')
+    testImplementation "net.fabricmc:fabric-loader-junit:${project.fabric_loader_version}"
+}
+
+loom {
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    fabricApi {
+        configureTests {
+            createSourceSet = true
+            modId = "${project.name}-test"
+            eula = true
+        }
+    }
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('runs/client')
+        }
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('runs/server')
+        }
+        clientGameTest {
+            client()
+            name "Fabric Client Test"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.file('junit.xml').get().asFile.path}"
+            runDir('runs/gametest')
+            source = sourceSets.gametest
+            ideConfigGenerated(true)
+        }
+        serverGameTest {
+            server()
+            name "Fabric Server Test"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.file('junit.xml').get().asFile.path}"
+            runDir('runs/gametest')
+            source = sourceSets.gametest
+            ideConfigGenerated(true)
+        }
+    }
+    /*decompilers {
+        vineflower {
+            options += [
+                    mark-corresponding-synthetics: 1
+            ]
+        }
+    }*/
+}
+
+tasks.named('shadowJar') {
+    archiveClassifier = 'shadow'
+}
+
+tasks.jar {
+    archiveClassifier = 'base'
+}
+
+remapJar {
+    dependsOn(shadowJar)
+    mustRunAfter(shadowJar)
+    inputFile = file(shadowJar.archiveFile)
+}
+
+configurations {
+    shippingJar {
+        canBeResolved = false
+        canBeConsumed = true
+        outgoing.artifact(tasks.remapJar)
+    }
+}
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+            targets {
+                all {
+                    testTask.configure {
+                        //shouldRunAfter(runGameTest)
+                        filter {
+                            includeTestsMatching '*Test'
+                            includeTestsMatching '*Tests'
+                            includeTestsMatching '*TestCase'
+                            excludeTestsMatching 'dex.autoswitch.mixin.*'
+                        }
+
+                        delete(project.layout.buildDirectory.dir("unitTests"))
+                        mkdir project.layout.buildDirectory.dir("unitTests")
+                        workingDir = project.layout.buildDirectory.dir("unitTests")
+                    }
+                }
+            }
+        }
+    }
+}
+
+tasks.register("prodClient", ClientProductionRunTask) {
+    mods.from configurations.modImplementation
+    tracy {
+        tracyCapture = file("$rootDir/tracy-client/tracy-capture.exe")
+
+        output = file("profile.tracy")
+
+        maxShutdownWaitSeconds = 10
+    }
+}
+
+tasks.register("openTrace", Exec) {
+    commandLine file("$rootDir/tracy-client/tracy-profiler.exe"), file("profile.tracy")
+}
+
+artifacts {
+    shippingJar tasks.remapJar
+}
