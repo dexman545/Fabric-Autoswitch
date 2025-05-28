@@ -1,6 +1,9 @@
 name: Java CI
 
-on: [push]
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
   publish:
@@ -13,23 +16,13 @@ jobs:
           java-version: 21
           distribution: 'zulu'
 
-      - name: Cache Gradle files
-        uses: actions/cache@v2
-        if: ${{ !env.ACT }}
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('*/build.gradle', '*/settings.gradle', '*gradle.*') }}
-          restore-keys: ${{ runner.os }}-gradle-
-
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
-            publish
+            publishMods
         env:
           KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
           KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}

@@ -1,371 +1,123 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
+import me.modmuss50.mpp.PublishModTask
+import me.modmuss50.mpp.ReleaseType
 
 plugins {
-    id 'fabric-loom' version '1.10.+'
-    //id 'org.gradle.toolchains.foojay-resolver-convention' version "0.5.0"
-    id 'maven-publish'
-    id "com.modrinth.minotaur" version "2.+"
-    id 'com.matthewprenger.cursegradle' version '1.4.+'
-    id "io.github.goooler.shadow" version "8.1.7"
-
-    // To trigger musical code on project refresh and run processResources on project launch in Idea
-    id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
-
-    id "io.github.dexman545.outlet" version '1.6.+'
+    // see https://fabricmc.net/develop/ for new versions
+    id 'fabric-loom' version '1.10-SNAPSHOT' apply false
+    // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
+    id 'net.neoforged.moddev' version '2.0.86' apply false
+    id 'com.gradleup.shadow'  version '9.0.0-beta13' apply false
+    id "me.modmuss50.mod-publish-plugin" version '0.8.4'
+    id("io.github.dexman545.outlet") version "1.7.0-alpha.3"
 }
 
-
-import com.matthewprenger.cursegradle.CurseUploadTask
-import com.modrinth.minotaur.dependencies.ModDependency
-import groovy.json.JsonSlurper
-
-repositories {
-    maven {
-        url 'https://api.modrinth.com/maven'
-        name 'Modrinth'
+configurations {
+    fabricJar {
+        canBeResolved = true
+        canBeConsumed = false
     }
-    maven {
-        url 'https://jitpack.io'
-        content {
-            includeGroup "com.github.dexman545"
-        }
+    neoforgeJar {
+        canBeResolved = true
+        canBeConsumed = false
     }
 }
 
-outlet.cacheTime = null
-outlet.mcVersionRange = project.range
-//outlet.cacheTime = new TimeDuration(0, 12, 0, 0,0)
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(outlet.javaVersion()))
-    }
-}
-
-System.out.println("Using toolchain: " + outlet.javaVersion())
-
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
-
-logger.lifecycle(outlet.latestMc())
-
-boolean useLatestMc = true
-if (useLatestMc && file('asdev.txt').exists()) {
-    logger.lifecycle('Using latest versions')
-    project.minecraft_version = outlet.latestMc()
-    //project.modmenu_version = getLatestModMenu()
-    project.loader_version = outlet.loaderVersion()
-    project.yarn_mappings =  outlet.yarnVersion()
-    project.fabric_version = outlet.fapiVersion()
-    project.java = outlet.javaLanguageCompatibility()
-} else {
-    logger.lifecycle('Using specified versions')
+dependencies {
+    fabricJar project(path: ':fabric', configuration: 'shippingJar')
+    neoforgeJar project(path: ':neoforge', configuration: 'shippingJar')
 }
 
 outlet {
-    maintainPropertiesFile = file('asdev.txt').exists()
-    propertiesData = ['fabric_version': project.fabric_version,
-            'minecraft_version' : project.minecraft_version,
-            'yarn_mappings' : project.yarn_mappings,
-            'loader_version' : project.loader_version,
-            'java' : project.java]
+    mcVersionRange = fab_mc_version_range
 }
 
-loom {
-    // Enable runtime only log4j, forces mod to use SLF4J for logging.
-    runtimeOnlyLog4j = true
+publishMods {
+    changelog = providers.fileContents(layout.projectDirectory.file("changelog.md")).getAsText()
+    type = getVersionType()
 
-    runs {
-        // This adds a new gradle task that runs the datagen API: "gradlew runDatagenClient"
-        datagenClient {
-            inherit client
-            name "Data Generation"
-            vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
-            vmArg "-Dfabric-api.datagen.strict-validation"
+    dryRun = providers.environmentVariable("CURSE").getOrNull() == null ||
+            providers.environmentVariable("MODRINTH").getOrNull() == null
 
-            runDir "build/datagen"
+    def cfOptions = curseforgeOptions {
+        accessToken = providers.environmentVariable("CURSE")
+        projectId = "347405"
+        for (final def v in outlet.curseforgeMcVersions()) {
+            minecraftVersions.add(v)
+        }
+    }
+
+    def mrOptions = modrinthOptions {
+        accessToken = providers.environmentVariable("MODRINTH")
+        projectId = "uSdcnlts"
+        for (final def v in outlet.mcVersions()) {
+            minecraftVersions.add(v)
+        }
+    }
+
+    def fabricJar = configurations.fabricJar.elements.map {
+        it.asFile.first
+    }
+
+    def neoforgeJar = configurations.neoforgeJar.elements.map {
+        it.asFile.first
+    }
+
+    curseforge("curseforgeFabric") {
+        from cfOptions
+        file.fileProvider(fabricJar)
+
+        modLoaders.add("fabric")
+        requires {
+            slug = "fabric-api"
+        }
+    }
+
+    curseforge("curseforgeNeoforge") {
+        from cfOptions
+        file.fileProvider(neoforgeJar)
+
+        modLoaders.add("neoforge")
+    }
+
+    modrinth("modrinthNeoforge") {
+        from mrOptions
+        file.fileProvider(neoforgeJar)
+
+        modLoaders.add("neoforge")
+    }
+
+    modrinth("modrinthFabric") {
+        from mrOptions
+        file.fileProvider(fabricJar)
+
+        modLoaders.add("fabric")
+        requires {
+            slug = "fabric-api"
         }
     }
 }
 
-// Controls if optional deps. should be loaded at runtime via runClient
-def useCompileOnlyDeps = false
-
-configurations { //todo move into Outlet, change include to work differently
-    optional {
-        transitive = false
-    }
-    requiredModImpl {
-        transitive = false
-    }
-    requiredModApi {
-        transitive = false
-    }
-    requiredLib
-    shade
-    implementation.extendsFrom shade
-    modShade
-    modImplementation.extendsFrom modShade
-
-    // Natural hierarchy is inverted for Gradle
-    modCompileOnly.extendsFrom(optional)
-    if (useCompileOnlyDeps) modRuntime.extendsFrom(optional)
-    modImplementation.extendsFrom(requiredModImpl)
-    implementation.extendsFrom(requiredLib)
-    include.extendsFrom(requiredModApi, /*requiredModImpl,*/) // Disabled modImpl as fapi modules depend on other modules
-    modApi.extendsFrom(requiredModApi)
-}
-
-shadowJar {
-    minimize()
-    from sourceSets.main.output
-    configurations = [ project.configurations.shade, project.configurations.modShade ]
-}
-
-sourceSets {
-    main {
-        resources {
-            srcDirs += [
-                    'src/main/generated'
-            ]
-        }
-    }
-}
-
-//noinspection SpellCheckingInspection
-dependencies {
-    // To change the versions see the gradle.properties file
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings() //"net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-
-    // Fabric API.
-    requiredModImpl("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}") {
-        exclude module: "fabric-api-deprecated"
-    }
-
-    // OWNER library
-    //requiredLib "org.aeonbits.owner:owner:1.0.12"
-    requiredLib files('api/owner-1.0.13-SNAPSHOT.jar') // Custom version allowing EnumSets to be used
-    shade files('api/owner-1.0.13-SNAPSHOT.jar')
-
-    // Autoswitch API
-    requiredModApi("com.github.dexman545:autoswitch-api:3.0.0") {//-SNAPSHOT
-        exclude group: "net.fabricmc", module: "fabric-loader"
-    }
-
-    // Mod Compat ------------
-    // ModMenu
-    //optional "maven.modrinth:modmenu:${project.modmenu_version}"
-}
-
-
-remapJar {
-    dependsOn(shadowJar)
-    inputFile.set(shadowJar.archiveFile)
-}
-
-/**
-* Generate list of Fabric API modules based on fabric.mod.json
-*/
-Set<String> fapiModules() {
-    def out = []
-    project.sourceSets.main.resources.files.each {
-        if (it.name == 'fabric.mod.json') {
-            def modJson = new JsonSlurper().parse(it)
-            out = modJson.depends.keySet().findAll { id ->
-                (id as String).startsWith('fabric-')
-            }
-        }
-    }
-    return out
-}
-
-/*remapJar { //Disabled till loom 0.7 adds it. Planned for creating a standalone jar
-    include configurations.requiredLib
-}*/
-
-processResources {
-    inputs.property "version", project.version
-    inputs.property "range", project.range
-    inputs.property "java", project.java
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version, "range": project.range, "java": project.java
-    }
-
-    filesMatching("autoswitch.mixins.json") {
-        expand "java": project.java
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
-    it.options.encoding = "UTF-8"
-
-    it.options.incremental = true
-
-    // The Minecraft launcher currently installs Java 8 for users, so your mod probably wants to target Java 8 too
-    // JDK 9 introduced a new way of specifying this that will make sure no newer classes or methods are used.
-    // We'll use that if it's available, but otherwise we'll use the older option.
-    def targetVersion = project.java as int
-    System.out.println("Using level: " + targetVersion)
-    if (JavaVersion.current().isJava9Compatible()) {
-        it.options.release.set(targetVersion)
-    } else {
-        it.sourceCompatibility = JavaVersion.toVersion(targetVersion)
-        it.targetCompatibility = JavaVersion.toVersion(targetVersion)
-    }
-}
-
-java {
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
-    withSourcesJar()
-}
-
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
-    }
-}
-
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
-    }
-}
-
-static def getCheckedOutGitCommitHash() {
-    'git rev-parse --verify --short HEAD'.execute().text.trim()
-}
-
-def uniChangelog = "This is autopublished from Github Actions. Use at your own risk. See commit history or a release " +
-        "build for changes. Based on commit: ${getCheckedOutGitCommitHash()}\n\n<br />" +
-        "This build may work on Minecraft versions not specified for this version. Release cadence at time of writing " +
-        "(2023/05/10):\n\n<br />" +
-        "1.x.x -> 1.14-1.15 | 2.x.x -> 1.16.x | 3.x.x -> 1.16.2 - 1.18.1 | 4.x.x -> 1.18.2 (22w06a) - 1.19 (22w15a) " +
-        "| 5.x.x -> 1.19 (22w16a) - 1.19.3 (22w44a) | 6.x.x -> 1.19.3 (~22w45a) - 1.19.4 " +
-        "| 7 -> 1.20-pre.1 - 1.20.1 | 8 -> 1.20.1-pre.1 - 1.20.4 | 9 -> 1.20.5 (24w09a) - current (and possibly beyond)\n\n<br />"
-
-modrinth {
-    token = System.getenv("MODRINTH")
-    projectId = 'uSdcnlts'
-    versionName = "AutoSwitch $project.version (autopublished)"
-    versionNumber = project.version
-    versionType = getReleaseMonicker()
-    uploadFile = remapJar
-    gameVersions = outlet.mcVersions()
-    loaders = ["fabric"]
-    changelog = uniChangelog
-    dependencies {
-        required.project "fabric-api"
-    }
-    //debugMode = true
-}
-
-curseforge {
-    if (System.getenv("CURSE")) {
-        apiKey = System.getenv("CURSE")
-    }
-
-    project {
-        id = '347405'
-        changelog = uniChangelog
-        releaseType = getReleaseMonicker()
-
-        outlet.curseforgeMcVersions().each {
-            if (it.endsWith(".0")) it = it.substring(0, it.length()-2)
-            addGameVersion it
-        }
-        addGameVersion 'Fabric'
-
-        changelogType = 'html'
-
-        mainArtifact(remapJar) {
-            displayName = "AutoSwitch $project.version (autopublished)"
-        }
-
-        relations {
-            requiredDependency 'fabric-api'
-        }
-
-        afterEvaluate {
-            uploadTask.dependsOn("remapJar")
-        }
-    }
-
-    options {
-        forgeGradleIntegration = false
-        //debug = true // Non-upload testing
-    }
-}
-
-// Only publish to Curseforge for releases
-// I intend for beta and alpha builds to be Modrinth exclusives
-tasks.withType(CurseUploadTask).configureEach {
+tasks.withType(PublishModTask).configureEach {
+    def mcv = providers.gradleProperty("minecraft_version").get()
     onlyIf {
-        ("release" == getReleaseMonicker() || "beta" == getReleaseMonicker()) /*&& !versionAlreadyUploaded()*/
+        def t = it as PublishModTask
+        def isSnapshot = (mcv.contains("w") || mcv.contains("p") || mcv.contains("r"))
+        def isForForge = t.platform.modLoaders.get().contains("forge") || t.platform.modLoaders.get().contains("neoforge")
+        def isCurseforge = it.name.contains("Curseforge")
+        def isRelease = t.platform.type.get() == ReleaseType.STABLE
+
+        return ((isForForge ^ isSnapshot) || !isForForge) && (!isCurseforge || isRelease)
     }
 }
 
-/**
- * Get latest Mod Menu version from Fabric's maven. Not keyed to MC version.
- *
- * @return mod menu version.
- */
-// I got tired of having to find the right version, ok?
-String getLatestModMenu() {
-    outlet.latestModrinthModVersion('modmenu')
-}
+def getVersionType() {
+    if ((version as String).contains('alpha')) {
+        return ReleaseType.ALPHA
+    }
 
-// Checks only Modrinth as it gets all versions
-def versionAlreadyUploaded() {
-    project.version == outlet.latestModrinthModVersion('autoswitch')
-}
+    if ((version as String).contains('beta')) {
+        return ReleaseType.BETA
+    }
 
-/**
- * Get the type of release.
- * <p>
- * Used for publishing to distribution services.
- *
- * @return build release type, such as 'alpha', 'beta', or 'release'
- */
-String getReleaseMonicker() {
-    if (((String) project.version).contains('alpha')) return "alpha"
-    if (((String) project.version).contains('beta')) return "beta"
-    return "release"
+    return ReleaseType.STABLE
 }
-
-tasks.publish.onlyIf {
-    !versionAlreadyUploaded()
-}
-
-tasks.modrinth.onlyIf {
-    !versionAlreadyUploaded()
-}
-
-publish.finalizedBy(tasks.curseforge)
-publish.finalizedBy(tasks.modrinth)
-tasks.runClient.dependsOn(tasks.processResources)

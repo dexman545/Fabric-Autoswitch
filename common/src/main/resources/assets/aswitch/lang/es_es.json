@@ -1,0 +1,5 @@
+{
+  "key.autoswitch.toggle": "Tecla de alternancia de cambio automático",
+  "msg.autoswitch.toggle_false": "AutoSwitch: deshabilitado",
+  "msg.autoswitch.toggle_true": "AutoSwitch: habilitado"
+}

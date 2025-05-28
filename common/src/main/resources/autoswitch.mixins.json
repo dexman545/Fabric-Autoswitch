@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dex.autoswitch.mixin.mixins",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_18",
+  "mixins": [],
+  "client": [
+    "MixinClientPacketListener",
+    "MixinMinecraft",
+    "MixinMultiPlayerGameMode",
+    "MixinStatsCounter",
+    "switchback_cancel.MixinClientPacketListener",
+    "switchback_cancel.MixinInventory",
+    "switchback_cancel.MixinMinecraft",
+    "switchback_cancel.MixinMouseHandler"
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

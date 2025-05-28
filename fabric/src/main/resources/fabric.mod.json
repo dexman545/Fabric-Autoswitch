@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${description}",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contact": {
+    "discord": "https://discord.gg/X39v7hMzJU",
+    "homepage": "https://github.com/dexman545/Fabric-Autoswitch",
+    "sources": "https://github.com/dexman545/Fabric-Autoswitch",
+    "issues": "https://github.com/dexman545/Fabric-Autoswitch/issues"
+  },
+  "license": "${license}",
+  "icon": "${mod_id}.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dex.autoswitch.Autoswitch"
+    ]
+  },
+  "mixins": [
+    "${mod_id}.mixins.json",
+    "${mod_id}.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${fab_mc_version_range}",
+    "java": ">=${java_version}"
+  }
+}

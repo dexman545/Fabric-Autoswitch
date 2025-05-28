@@ -1,0 +1,5 @@
+{
+  "key.autoswitch.toggle": "AutoSwitch 전환키",
+  "msg.autoswitch.toggle_false": "AutoSwitch: 사용 안 함",
+  "msg.autoswitch.toggle_true": "AutoSwitch: 사용함"
+}
