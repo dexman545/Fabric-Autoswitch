@@ -8,7 +8,7 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.86' apply false
     id 'com.gradleup.shadow'  version '9.0.0-beta13' apply false
     id "me.modmuss50.mod-publish-plugin" version '0.8.4'
-    id("io.github.dexman545.outlet") version "1.7.0-alpha.3"
+    id("io.github.dexman545.outlet") version "1.7.0-alpha.4"
 }
 
 configurations {
@@ -29,6 +29,16 @@ dependencies {
 
 outlet {
     mcVersionRange = fab_mc_version_range
+    propertiesData = [
+            'minecraft_version' : outlet.latestMc(),
+            'fabric_version': outlet.fapiVersion(),
+            'fabric_loader_version' : outlet.loaderVersion(),
+            'neo_form_version' : outlet.neoformVersion(),
+            'neoforge_version' : outlet.neoforgeVersion() ?: project.neoforge_version,
+    ]
+}
+
+tasks.register("updateVersions",  dex.plugins.TaskPropertiesUpdate) {
 }
 
 publishMods {
