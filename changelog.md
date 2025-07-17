@@ -1,3 +1,6 @@
+# AutoSwitch 12.0.1
+- Fix skipDeletedItems not being applied to items with durability
+
 # Changes Since AutoSwitch 11
 - Complete rewrite of AutoSwitch
 - Update for 1.21.6
