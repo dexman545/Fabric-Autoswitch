@@ -35,8 +35,8 @@ outlet {
             'fabric_loader_version' : outlet.loaderVersion(),
             'neo_form_version' : outlet.neoformVersion(),
             'neoforge_version' : outlet.neoforgeVersion(outlet.latestMc(), true) ?: project.neoforge_version,
-            'parchment_minecraft' : outlet.parchmentVersion(outlet.latestMc()).v1 ?: project.parchment_minecraft,
-            'parchment_version' : outlet.parchmentVersion(outlet.latestMc()).v2 ?: project.parchment_version,
+            'parchment_minecraft' : outlet.parchmentVersion(outlet.latestMc())?.v1 ?: project.parchment_minecraft,
+            'parchment_version' : outlet.parchmentVersion(outlet.latestMc())?.v2 ?: project.parchment_version,
             'java_version' : outlet.javaLanguageCompatibility().toString(),
     ]
 }

@@ -43,6 +43,14 @@ public class Autoswitch implements ClientModInitializer {
             }
         });
 
+        AutoSwitchApi.INSTANCE.DEPLETED.addEntry(stack -> {
+            if (stack.isDamageableItem()) {
+                return stack.nextDamageWillBreak();
+            }
+
+            return false;
+        });
+
         var share = FabricLoader.getInstance().getObjectShare();
         for (AutoSwitchApi.ApiEntry<?> entry : AutoSwitchApi.INSTANCE.getEntries()) {
             share.put(entry.id().toString(), entry.entries());
