@@ -1,5 +1,7 @@
 package dex.autoswitch.engine.data.extensible;
 
+import dex.autoswitch.engine.state.SwitchContext;
+
 public interface PlayerInventory<ITEM> {
     void selectSlot(int slot);
 
@@ -12,7 +14,7 @@ public interface PlayerInventory<ITEM> {
 
     ITEM getTool(int slot);
 
-    boolean canSwitchBack();
+    boolean canSwitchBack(SwitchContext ctx);
 
     void moveOffhand();
 }

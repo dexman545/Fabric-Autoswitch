@@ -8,11 +8,12 @@ import dex.autoswitch.engine.state.SwitchContext;
 import dex.autoswitch.engine.types.SwitchedPlayer;
 import dex.autoswitch.gametest.util.FabricTestPlatformHelper;
 import dex.autoswitch.platform.Services;
+import org.apache.commons.lang3.mutable.MutableBoolean;
+
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.mutable.MutableBoolean;
 
 public abstract class AbstractTest {
     protected TestPlayer select(Action action, Object target, Player player) {
@@ -73,7 +74,7 @@ public abstract class AbstractTest {
         }
 
         @Override
-        public boolean canSwitchBack() {
+        public boolean canSwitchBack(SwitchContext ctx) {
             // Can't check attack strength here as it never seems to be non-0
             return (!player.player().isUsingItem()) && !player.player().swinging;
         }

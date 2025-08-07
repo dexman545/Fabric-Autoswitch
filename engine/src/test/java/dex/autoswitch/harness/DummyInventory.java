@@ -1,10 +1,11 @@
 package dex.autoswitch.harness;
 
-import dex.autoswitch.engine.data.extensible.PlayerInventory;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import dex.autoswitch.engine.data.extensible.PlayerInventory;
+import dex.autoswitch.engine.state.SwitchContext;
 
 public class DummyInventory implements PlayerInventory<DummyTypes.DummyTool> {
     private final List<DummyTypes.DummyTool> inventory;
@@ -53,7 +54,7 @@ public class DummyInventory implements PlayerInventory<DummyTypes.DummyTool> {
     }
 
     @Override
-    public boolean canSwitchBack() {
+    public boolean canSwitchBack(SwitchContext ctx) {
         return false;
     }
 

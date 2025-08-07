@@ -1,9 +1,11 @@
 package dex.autoswitch.harness;
 
-import dex.autoswitch.engine.data.extensible.PlayerInventory;
-import net.minecraft.world.item.ItemStack;
-
 import java.util.List;
+
+import dex.autoswitch.engine.data.extensible.PlayerInventory;
+import dex.autoswitch.engine.state.SwitchContext;
+
+import net.minecraft.world.item.ItemStack;
 
 public class DummyInventory implements PlayerInventory<ItemStack> {
     private final List<ItemStack> inventory;
@@ -44,7 +46,7 @@ public class DummyInventory implements PlayerInventory<ItemStack> {
     }
 
     @Override
-    public boolean canSwitchBack() {
+    public boolean canSwitchBack(SwitchContext ctx) {
         return false;
     }
 

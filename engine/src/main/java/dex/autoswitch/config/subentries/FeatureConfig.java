@@ -1,13 +1,13 @@
 package dex.autoswitch.config.subentries;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import dex.autoswitch.config.data.tree.ExpressionTree;
 import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.TargetType;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @ConfigSerializable
 public class FeatureConfig {
@@ -74,6 +74,13 @@ public class FeatureConfig {
     public int switchbackDelay = 1;
 
     @Comment("""
+            Delay switchback until attack progress has fully charged when these targets match.
+            This is useful when fighting mobs, where otherwise after each attack switchback will trigger,
+            causing the attack progress to reset.
+            """)
+    public Set<SwitchbackSelector> switchbackWaitsForAttackProgress = new HashSet<>();
+
+    @Comment("""
             Determine when to swap a tool to the offhand when interacting.\
             """)
     public Set<OffhandSelector> offhandSelectors = new HashSet<>();
@@ -103,5 +110,28 @@ public class FeatureConfig {
         public int priority = 10;
         public TargetType type;
         public ExpressionTree tool;
+
+        @Override
+        public String toString() {
+            return "OffhandSelector{" +
+                    "priority=" + priority +
+                    ", type=" + type +
+                    ", tool=" + tool +
+                    '}';
+        }
+    }
+
+    @ConfigSerializable
+    public static class SwitchbackSelector {
+        public Action action;
+        public ExpressionTree target;
+
+        @Override
+        public String toString() {
+            return "SwitchbackSelector{" +
+                    "action=" + action +
+                    ", target=" + target +
+                    '}';
+        }
     }
 }

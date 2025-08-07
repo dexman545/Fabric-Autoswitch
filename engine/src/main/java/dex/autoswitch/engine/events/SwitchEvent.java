@@ -94,7 +94,7 @@ public enum SwitchEvent {
         }
 
         private boolean disallowSwitchback(SwitchContext ctx) {
-            if (!ctx.player().canSwitchBack()) return true;
+            if (!ctx.player().canSwitchBack(ctx)) return true;
 
             if (ctx.switchState().preventBlockAttack()) {
                 return true;

@@ -1,6 +1,10 @@
 package dex.autoswitch.engine.types;
 
+import dex.autoswitch.config.subentries.FeatureConfig;
+import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.PlayerInventory;
+import dex.autoswitch.engine.state.SwitchContext;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,13 +35,13 @@ public record SwitchedPlayer(Player player) implements PlayerInventory<ItemStack
     }
 
     @Override
-    public boolean canSwitchBack() {
+    public boolean canSwitchBack(SwitchContext ctx) {
         var gm = Minecraft.getInstance().gameMode;
         if (gm == null) {
             return false;
         }
 
-        return (!gm.isDestroying() && !player.isUsingItem()) && (player.getAttackStrengthScale(-20f) == 1.0f) && !player.swinging;
+        return (!gm.isDestroying() && !player.isUsingItem()) && (!waitForAttackProgress(ctx) || player.getAttackStrengthScale(-20f) == 1.0f) && !player.swinging;
     }
 
     @Override
@@ -51,5 +55,19 @@ public record SwitchedPlayer(Player player) implements PlayerInventory<ItemStack
                         BlockPos.ZERO, Direction.DOWN));
             }
         }
+    }
+
+    private boolean waitForAttackProgress(SwitchContext ctx) {
+        for (FeatureConfig.SwitchbackSelector selector : ctx.config().featureConfig.switchbackWaitsForAttackProgress) {
+            if (selector.action == ctx.action()) {
+                var c = new SelectionContext(ctx.action(), ctx.target());
+                var m = selector.target.matches(0, c, ctx.target());
+                if (m.matches()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
