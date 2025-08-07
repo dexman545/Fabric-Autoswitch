@@ -1,3 +1,7 @@
+# 12.1.0
+- Add config option `feature-config.switchback-waits-for-attack-progress` to
+control when switchback waits for attack progress to fully reset.
+
 # AutoSwitch 12.0.1
 - Fix skipDeletedItems not being applied to items with durability
 
