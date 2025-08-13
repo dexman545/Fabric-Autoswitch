@@ -1,5 +1,12 @@
 package dex.autoswitch.config;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import dex.autoswitch.config.data.FallbackSelector;
 import dex.autoswitch.config.data.tree.ExpressionTree;
 import dex.autoswitch.config.subentries.FeatureConfig;
 import dex.autoswitch.engine.Action;
@@ -11,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.PostProcess;
-
-import java.util.*;
 
 @ConfigSerializable
 public class AutoSwitchConfig {
@@ -51,7 +56,7 @@ public class AutoSwitchConfig {
 
     public SelectionEngine getEngine() {
         if (engine == null) {
-            engine = new SelectionEngine(getConfiguration(), featureConfig.switchAwayFromTools ? FALLBACK : null);
+            engine = new SelectionEngine(getConfiguration(), new FallbackSelector(featureConfig.switchAwayFromTools, FALLBACK));
         }
 
         return engine;

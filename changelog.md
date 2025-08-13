@@ -1,3 +1,7 @@
+# 12.1.1
+- Convert `feature-config.switch-away-from-tools` from a boolean to a set of actions that can 
+have the switch away behavior. Defaults to just the `ATTACK` action.
+
 # 12.1.0
 - Add config option `feature-config.switchback-waits-for-attack-progress` to
 control when switchback waits for attack progress to fully reset.
