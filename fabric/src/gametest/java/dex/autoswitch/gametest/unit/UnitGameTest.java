@@ -1,11 +1,13 @@
 package dex.autoswitch.gametest.unit;
 
+import java.util.Objects;
+
 import dex.autoswitch.Constants;
 import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.types.selectable.StatSelectableType;
 import dex.autoswitch.gametest.util.Hotbars;
 import dex.autoswitch.gametest.util.RegistryObject;
-import net.fabricmc.fabric.api.gametest.v1.GameTest;
+
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +16,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Blocks;
 
-import java.util.Objects;
+import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class UnitGameTest extends AbstractTest {
     @GameTest
@@ -189,6 +191,27 @@ public class UnitGameTest extends AbstractTest {
 
         select(Action.INTERACT, beeNestWithHoney5, player);
         assertSlot(helper, player, 3);
+
+        helper.succeed();
+    }
+
+    @GameTest
+    public void skipDepletedItemsTest(GameTestHelper helper) {
+        setup(helper);
+
+        TestPlayer testPlayer;
+        var player = Hotbars.wornFighter(helper);
+        var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
+
+        select(Action.ATTACK, creeper, player);
+        assertSlot(helper, player, 1);
+
+        // Set sword to be nearly broken
+        var sword1 = player.getInventory().getItem(1);
+        sword1.setDamageValue(sword1.getMaxDamage() - 1);
+
+        select(Action.ATTACK, creeper, player);
+        assertSlot(helper, player, 2);
 
         helper.succeed();
     }

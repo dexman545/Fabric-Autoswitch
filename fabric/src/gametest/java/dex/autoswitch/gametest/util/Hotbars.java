@@ -1,6 +1,7 @@
 package dex.autoswitch.gametest.util;
 
 import dex.autoswitch.gametest.util.RegistryObject.Enchant;
+
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
@@ -128,6 +129,20 @@ public class Hotbars {
 
         inv.add(3, RegistryObject.stack(
                 helper, Items.MILK_BUCKET
+        ));
+
+        return player;
+    }
+
+    public static Player wornFighter(GameTestHelper helper) {
+        var player = helper.makeMockPlayer(GameType.SURVIVAL);
+        var inv = player.getInventory();
+
+        inv.add(1, RegistryObject.stack(
+                helper, Items.IRON_SWORD
+        ));
+        inv.add(2, RegistryObject.stack(
+                helper, Items.IRON_SWORD
         ));
 
         return player;

@@ -1,6 +1,9 @@
 package dex.autoswitch.gametest.unit;
 
+import java.util.function.Predicate;
+
 import dex.autoswitch.Constants;
+import dex.autoswitch.api.impl.AutoSwitchApi;
 import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.data.extensible.PlayerInventory;
 import dex.autoswitch.engine.events.SwitchEvent;
@@ -16,6 +19,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class AbstractTest {
+    private static final Predicate<ItemStack> DEPLETED_STACK_PREDICATE = stack -> {
+        if (stack.isDamageableItem()) {
+            return stack.nextDamageWillBreak();
+        }
+
+        return false;
+    };
+
+    public AbstractTest() {
+        // Register API methods here as the main mod entrypoint is not run for tests,
+        // meaning ObjectShare is never queried or populated
+        if (!AutoSwitchApi.INSTANCE.DEPLETED.entries().contains(DEPLETED_STACK_PREDICATE)) {
+            AutoSwitchApi.INSTANCE.DEPLETED.addEntry(DEPLETED_STACK_PREDICATE);
+        }
+    }
+
     protected TestPlayer select(Action action, Object target, Player player) {
         TestPlayer testPlayer = new TestPlayer(new SwitchedPlayer(player));
         Constants.SCHEDULER.schedule(getEvent(action),
