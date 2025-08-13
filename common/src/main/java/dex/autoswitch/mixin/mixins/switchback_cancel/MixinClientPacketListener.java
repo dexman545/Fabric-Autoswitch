@@ -4,10 +4,11 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dex.autoswitch.Constants;
 import dex.autoswitch.engine.events.SwitchEvent;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.world.entity.player.Inventory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.world.entity.player.Inventory;
 
 @Mixin(ClientPacketListener.class)
 public class MixinClientPacketListener {
@@ -17,6 +18,7 @@ public class MixinClientPacketListener {
             require = 0)
     private void autoswitch$cancelSwitchback(Inventory instance, int slot, Operation<Void> original) {
         Constants.SCHEDULER.cancel(SwitchEvent.SWITCHBACK);
+        Constants.SWITCH_STATE.reset();
         original.call(instance, slot);
     }
 }
