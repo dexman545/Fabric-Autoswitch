@@ -1,21 +1,27 @@
 package dex.autoswitch.engine;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Set;
+
+import dex.autoswitch.config.data.FallbackSelector;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.PlayerInventory;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 public class SelectionEngine {
     private final Map<Action, Map<Selector, Set<Selector>>> configuration;
     /**
      * The fallback tool selector to use in case no tools matched
      */
-    @Nullable
-    private final Selector fallback;
+    private final FallbackSelector fallback;
 
-    public SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configuration, @Nullable Selector fallback) {
+    public SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configuration, FallbackSelector fallback) {
         this.configuration = Collections.unmodifiableMap(configuration);
         this.fallback = fallback;
     }
@@ -78,11 +84,11 @@ public class SelectionEngine {
      * @return the fallback slot if available, otherwise don't switch
      */
     private OptionalInt pickFallbackSlot(PlayerInventory<?> inventory, SelectionContext context) {
-        if (fallback != null) {
+        if (fallback.match(context.action())) {
             var slot = inventory.currentSelectedSlot();
             Match toolMatch;
             do {
-                toolMatch = fallback.matches(context, inventory.getTool(slot));
+                toolMatch = fallback.fallback().matches(context, inventory.getTool(slot));
 
                 if (toolMatch.matches()) {
                     break;

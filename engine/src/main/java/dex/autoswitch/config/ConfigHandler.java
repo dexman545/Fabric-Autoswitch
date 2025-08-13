@@ -1,18 +1,19 @@
 package dex.autoswitch.config;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.logging.Logger;
+
 import dex.autoswitch.config.codecs.DataMapCodec;
 import dex.autoswitch.config.codecs.ExpressionTreeCodec;
 import dex.autoswitch.config.codecs.IdSelectorCodec;
 import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.config.data.tree.ExpressionTree;
 import dex.autoswitch.config.data.tree.IdSelector;
+import dex.autoswitch.config.transformations.Transformations;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
-
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.logging.Logger;
 
 public class ConfigHandler {
     public static final Logger LOGGER = Logger.getLogger("AutoSwitch-Config");
@@ -46,11 +47,19 @@ public class ConfigHandler {
     public static AutoSwitchConfig readConfiguration(Path path) throws ConfigurateException {
         var loader = createLoader(path);
 
-        var root = loader.load();
+        var root = Transformations.updateNode(loader.load());
         return root.get(AutoSwitchConfig.class);
     }
 
     public static AutoSwitchConfigReference readDynamicConfiguration(Path path, URL ref) throws IOException {
+        updateConfig(path);
         return new AutoSwitchConfigReference(path, ref);
+    }
+
+    private static void updateConfig(Path path) throws ConfigurateException {
+        var loader = createLoader(path);
+
+        var root = Transformations.updateNode(loader.load());
+        loader.save(root);
     }
 }

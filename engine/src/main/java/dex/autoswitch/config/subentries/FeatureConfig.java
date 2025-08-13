@@ -14,9 +14,10 @@ public class FeatureConfig {
     @Comment("""
             Switch away from the currently active tool when no tools matched for the current target.
             E.g. you are holding a shovel but attack stone and have no pickaxe, if this is enabled
-            it will switch off of the shovel to some non-tool item.\
+            it will switch off of the shovel to some non-tool item.
+            Only triggers for the actions specified.\
             """)
-    public boolean switchAwayFromTools = true;
+    public Set<Action> switchAwayFromTools = Set.of(Action.ATTACK);
 
     @Comment("""
             "Prefer the tool with minimum required mining level.\
