@@ -58,6 +58,11 @@ public record SwitchedPlayer(Player player) implements PlayerInventory<ItemStack
     }
 
     private boolean waitForAttackProgress(SwitchContext ctx) {
+        // If the hand is empty, attack progress does not progress
+        if (player.getMainHandItem() == ItemStack.EMPTY) {
+            return false;
+        }
+
         for (FeatureConfig.SwitchbackSelector selector : ctx.config().featureConfig.switchbackWaitsForAttackProgress) {
             if (selector.action == ctx.action()) {
                 var c = new SelectionContext(ctx.action(), ctx.target());
