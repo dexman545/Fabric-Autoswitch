@@ -1,5 +1,9 @@
 package dex.autoswitch.test.tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Set;
+
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.SelectionEngine;
@@ -7,8 +11,6 @@ import dex.autoswitch.harness.DummyInventory;
 import dex.autoswitch.harness.DummyTypes;
 import dex.autoswitch.test.util.AbstractSelectionTest;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SelectionTest extends AbstractSelectionTest {
     private final AutoSwitchConfig autoSwitchConfig = loadConfig("emptySelector");
@@ -96,13 +98,13 @@ public class SelectionTest extends AbstractSelectionTest {
         engine.select(inventory, Action.ATTACK, torak);
         assertEquals(0, inventory.currentSelectedSlot());
 
-        autoSwitchConfig.featureConfig.switchAwayFromTools = false;
+        autoSwitchConfig.featureConfig.switchAwayFromTools = Set.of();
         autoSwitchConfig.resetConfiguration();
         engine = autoSwitchConfig.getEngine();
         inventory.selectSlot(1);
         engine.select(inventory, Action.ATTACK, torak);
         assertEquals(1, inventory.currentSelectedSlot());
-        autoSwitchConfig.featureConfig.switchAwayFromTools = true;
+        autoSwitchConfig.featureConfig.switchAwayFromTools = Set.of(Action.ATTACK);
         autoSwitchConfig.resetConfiguration();
     }
 }
