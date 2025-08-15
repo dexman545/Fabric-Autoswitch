@@ -4,18 +4,6 @@ on:
   push:
 
 jobs:
-  # Update Neoforge resource cache if needed
-  update-cache:
-    runs-on: ubuntu-latest
-    name: Update Assets Cache
-    steps:
-      - uses: neoforged/actions-modding/minecraft-assets-cache/create@v1
-        with:
-          minecraft-versions: |
-
-          minecraft-version-file: gradle.properties
-          minecraft-version-regexp: /^\s*minecraft_version\s*=\s*(.+)\s*$/m
-
   test:
     runs-on: ubuntu-latest
     steps:
@@ -29,6 +17,14 @@ jobs:
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+
+      # Update Neoforge resource cache if needed
+      - uses: neoforged/actions-modding/minecraft-assets-cache/create@v1
+        with:
+          minecraft-versions: |
+
+          minecraft-version-file: gradle.properties
+          minecraft-version-regexp: /^\s*minecraft_version\s*=\s*(.+)\s*$/m
 
       - name: Setup Minecraft Assets Cache
         uses: neoforged/actions-modding/minecraft-assets-cache/use@v1

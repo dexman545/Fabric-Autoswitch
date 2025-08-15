@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Update Assets Cache
     steps:
+      - uses: actions/checkout@v4
+
       - uses: neoforged/actions-modding/minecraft-assets-cache/create@v1
         with:
           minecraft-versions: |
