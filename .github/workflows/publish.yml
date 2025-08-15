@@ -19,6 +19,17 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      # Update Neoforge resource cache if needed
+      - uses: neoforged/actions-modding/minecraft-assets-cache/create@v1
+        with:
+          minecraft-versions: |
+
+          minecraft-version-file: gradle.properties
+          minecraft-version-regexp: /^\s*minecraft_version\s*=\s*(.+)\s*$/m
+
+      - name: Setup Minecraft Assets Cache
+        uses: neoforged/actions-modding/minecraft-assets-cache/use@v1
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
