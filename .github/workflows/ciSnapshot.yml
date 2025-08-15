@@ -1,7 +1,7 @@
-name: Java CI
+name: Java CI against Latest Snapshot
+# Run tests against latest snapshot
 
 on:
-  push:
   workflow_dispatch:
 
 jobs:
@@ -19,6 +19,14 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
+      - name: Update versions
+        run: ./gradlew updateVersions
+
       # Update Neoforge resource cache if needed
       - uses: neoforged/actions-modding/minecraft-assets-cache/create@v1
         with:
@@ -29,11 +37,6 @@ jobs:
 
       - name: Setup Minecraft Assets Cache
         uses: neoforged/actions-modding/minecraft-assets-cache/use@v1
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Run tests
         run: ./gradlew test
