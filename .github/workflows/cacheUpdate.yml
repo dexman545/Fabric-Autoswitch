@@ -1,0 +1,18 @@
+name: Minecraft Assets Cache
+
+on:
+  #schedule:
+  #  - cron: "3 2 * * 0" # Every Sunday at 02:03
+  workflow_dispatch:
+
+jobs:
+  update-cache:
+    runs-on: ubuntu-latest
+    name: Update Assets Cache
+    steps:
+      - uses: neoforged/actions-modding/minecraft-assets-cache/create@v1
+        with:
+          minecraft-versions: |
+
+          minecraft-version-file: gradle.properties
+          minecraft-version-regexp: /^\s*minecraft_version\s*=\s*(.+)\s*$/m

@@ -4,10 +4,23 @@ on:
   push:
 
 jobs:
-  publish:
+  # Update Neoforge resource cache if needed
+  update-cache:
+    runs-on: ubuntu-latest
+    name: Update Assets Cache
+    steps:
+      - uses: neoforged/actions-modding/minecraft-assets-cache/create@v1
+        with:
+          minecraft-versions: |
+
+          minecraft-version-file: gradle.properties
+          minecraft-version-regexp: /^\s*minecraft_version\s*=\s*(.+)\s*$/m
+
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK 24
         uses: actions/setup-java@v4
         with:
@@ -17,17 +30,13 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Setup Minecraft Assets Cache
+        uses: neoforged/actions-modding/minecraft-assets-cache/use@v1
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
-      - name: Build with Gradle
+      - name: Run tests
         run: ./gradlew test
-        env:
-          KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
-          KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
-          KEY_STORE_KEY_PASS: ${{ secrets.KEY_STORE_KEY_PASS }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MODRINTH: ${{ secrets.MODRINTH }}
-          CURSE: ${{ secrets.CURSE }}
