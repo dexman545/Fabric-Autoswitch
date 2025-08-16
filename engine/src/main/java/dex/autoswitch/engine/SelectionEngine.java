@@ -123,7 +123,7 @@ public class SelectionEngine {
      *         <li>level {@code maxTargetRatingLevel}</li>
      *       </ol>
      *     </li>
-     *     <li>Target Priority</li>
+     *     <li>Tool Priority</li>
      *     <li>Tool Rating
      *       <ol>
      *         <li>level 0</li>
@@ -134,6 +134,13 @@ public class SelectionEngine {
      *     <li>isSlotCurrentlySelected</li>
      *     <li>smallest slot</li>
      * </ol>
+     *
+     * Prefers more specific entries over more general ones, so non-groups are preferred over groups,
+     * and those with data are prioritized over those without.
+     * <p>
+     * Type rating is a measure of the type within the given context, such as weapon DPS or mining level.
+     * <p>
+     * Data rating is the measure of the data within the given context, such as normalized enchantment level.
      *
      * <p>
      * Ratings levels are generally a recursive sort of:
