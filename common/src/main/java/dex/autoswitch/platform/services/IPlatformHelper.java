@@ -1,12 +1,13 @@
 package dex.autoswitch.platform.services;
 
+import java.nio.file.Path;
+import java.util.Set;
+
 import dex.autoswitch.Tags;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.tags.TagKey;
-
-import java.nio.file.Path;
-import java.util.Set;
 
 public interface IPlatformHelper {
 
@@ -32,10 +33,24 @@ public interface IPlatformHelper {
      */
     boolean isDevelopmentEnvironment();
 
+    /**
+     * @return The config directory of the game.
+     */
     Path getConfigDir();
 
+    /**
+     * This is the actual implementation of {@link #isInTag(TagKey, Object)} for checking if an object is in a tag.
+     *
+     * @param tagKey tag to check for
+     * @param t object to check for
+     * @param <T> object type
+     * @return if the given tag contains the given object
+     */
     <T> boolean isInTagGeneral(TagKey<T> tagKey, T t);
 
+    /**
+     * A utility method to get the {@link RegistryAccess} of the game.
+     */
     default RegistryAccess getRegistryAccess() {
         //noinspection ConstantValue
         if (Minecraft.getInstance() != null) {
@@ -50,6 +65,17 @@ public interface IPlatformHelper {
         return null;
     }
 
+    /**
+     * Checks if the given object is in the given tag, handling custom tags from {@link Tags}.
+     *
+     * @see Tags
+     * @see #isInTagGeneral(TagKey, Object)
+     *
+     * @param tagKey tag to check for
+     * @param t object to check for
+     * @param <T> object type
+     * @return if the given tag contains the given object
+     */
     default <T> boolean isInTag(TagKey<T> tagKey, T t) {
         return switch (Tags.getTag(tagKey)) {
             case Tags.Group.CustomPredicate<T> v -> v.predicate().test(t);
