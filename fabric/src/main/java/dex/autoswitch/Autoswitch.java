@@ -1,14 +1,22 @@
 package dex.autoswitch;
 
+import java.util.Collection;
+import java.util.function.Predicate;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import dex.autoswitch.api.impl.AutoSwitchApi;
+import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.KeyMapping;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.world.item.ItemStack;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.util.profiling.Profiler;
-import org.lwjgl.glfw.GLFW;
+import net.fabricmc.loader.api.ObjectShare;
 
 public class Autoswitch implements ClientModInitializer {
     private final KeyMapping autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(
@@ -43,15 +51,8 @@ public class Autoswitch implements ClientModInitializer {
             }
         });
 
-        AutoSwitchApi.INSTANCE.DEPLETED.addEntry(stack -> {
-            if (stack.isDamageableItem()) {
-                return stack.nextDamageWillBreak();
-            }
+        var share = getObjectShare();
 
-            return false;
-        });
-
-        var share = FabricLoader.getInstance().getObjectShare();
         for (AutoSwitchApi.ApiEntry<?> entry : AutoSwitchApi.INSTANCE.getEntries()) {
             share.put(entry.id().toString(), entry.entries());
         }
@@ -60,5 +61,29 @@ public class Autoswitch implements ClientModInitializer {
         //AutoSwitchApi.INSTANCE.DEPLETED.addEntry(stack -> stack.getDamageValue() != 0);
 
         Constants.LOG.info("AutoSwitch Fabric Loaded!");
+    }
+
+    /**
+     * Get the object share and register inbuilt API via it.
+     */
+    private static @NotNull ObjectShare getObjectShare() {
+        var share = FabricLoader.getInstance().getObjectShare();
+
+        // Handle damageable items
+        share.whenAvailable(AutoSwitchApi.INSTANCE.DEPLETED.id().toString(), (id, entries) -> {
+            if (entries instanceof Collection<?> collection) {
+                //noinspection unchecked
+                ((Collection<Predicate<ItemStack>>)collection).add(stack -> {
+
+                    if (stack.isDamageableItem()) {
+                        return stack.nextDamageWillBreak();
+                    }
+
+                    return false;
+                });
+            }
+        });
+
+        return share;
     }
 }
