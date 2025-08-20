@@ -7,6 +7,11 @@ import dex.autoswitch.engine.state.SwitchContext;
 import dex.autoswitch.engine.state.SwitchState;
 
 public enum SwitchEvent {
+    /**
+     * Event triggered for attack actions. Captures the currently selected slot,
+     * attempts a slot switch for the target, and if a switch occurred,
+     * schedules a subsequent {@link #SWITCHBACK}.
+     */
     ATTACK {
         @Override
         public boolean perform(SwitchContext ctx) {
@@ -31,6 +36,11 @@ public enum SwitchEvent {
             }
         }
     },
+    /**
+     * Event triggered for interact actions. Captures the currently selected slot,
+     * attempts a slot switch for the target, and if a switch occurred,
+     * schedules subsequent {@link #OFFHAND} and {@link #SWITCHBACK} events.
+     */
     INTERACT {
         @Override
         public boolean perform(SwitchContext ctx) {
@@ -150,6 +160,11 @@ public enum SwitchEvent {
             return true;
         }
     },
+    /**
+     * Event triggered on player statistic change that may affect.
+     * Captures the current slot, attempts a switch,
+     * schedules {@link #OFFHAND} (after a short delay) and {@link #SWITCHBACK}.
+     */
     STAT_CHANGE {
         @Override
         public boolean perform(SwitchContext ctx) {
@@ -168,16 +183,39 @@ public enum SwitchEvent {
         }
     };
 
+    /**
+     * Execute this event using the provided context.
+     *
+     * @param ctx execution context containing player access, current target/action, configuration,
+     *            scheduler, and the mutable {@link SwitchState}
+     * @return {@code true} if the event completed successfully (even if no switch occurred), {@code false} when an
+     *         event explicitly aborts its action (e.g., {@link #SWITCHBACK} when disallowed).
+     *         A value of {@code true} indicates the event was handled successfully,
+     *         and should be removed from the scheduler.
+     */
     public abstract boolean perform(SwitchContext ctx);
 
+    /**
+     * Records the currently selected slot into {@link SwitchState} so that a later {@link #SWITCHBACK} can restore it.
+     */
     protected void handlePrevSlot(SwitchContext ctx) {
         ctx.switchState().setPrevSlot(ctx.player().currentSelectedSlot());
     }
 
+    /**
+     * Enqueues {@link #SWITCHBACK} using the configured delay.
+     * <p>
+     * This is typically called only after a successful switch and when switch-back is permitted for the current target.
+     */
     protected void scheduleSwitchback(SwitchContext ctx) {
         ctx.scheduler().schedule(SWITCHBACK, ctx, ctx.config().featureConfig.switchbackDelay);
     }
 
+    /**
+     * Enqueues {@link #OFFHAND} for the resolved target, if any.
+     *
+     * @param delayTicks scheduler delay in ticks before attempting to offhand
+     */
     protected void scheduleOffhand(SwitchContext ctx, int delayTicks) {
         var type = SwitchRegistry.INSTANCE.getSelectableType(ctx.target());
         if (type != null) {

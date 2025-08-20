@@ -1,10 +1,19 @@
 package dex.autoswitch.engine.data;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Represents a match result with an associated set of ratings distributed across multiple levels,
+ * that can be combined to form a final rating or merged with other matches.
+ */
 public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) {
     public Match(boolean matches) {
         this(matches, new HashMap<>());
@@ -16,6 +25,16 @@ public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) 
         }
     }
 
+    /**
+     * Adds a rating to the specified level. If the given rating supplier is not memoized,
+     * it will be wrapped in a {@link MemoizedDoubleSupplier} to ensure its value is computed only once.
+     * If ratings exist for the specified level, the supplied rating is added to the existing set.
+     * Otherwise, a new set is created for the level, and the rating is added to it.
+     *
+     * @param level the level at which the rating should be added.
+     * @param rating a {@link DoubleSupplier} providing the rating value. If not already memoized,
+     *               it will be wrapped in a {@link MemoizedDoubleSupplier}.
+     */
     public void addRating(int level, DoubleSupplier rating) {
         if (!(rating instanceof MemoizedDoubleSupplier)) {
             rating = new MemoizedDoubleSupplier(rating);
@@ -31,6 +50,14 @@ public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) 
         }
     }
 
+    /**
+     * Adds a set of rating suppliers to the specified level. If ratings already exist for
+     * the given level, the supplied set of ratings is merged with the existing set. Otherwise,
+     * the supplied set is added as a new entry for the specified level.
+     *
+     * @param level  the level at which the ratings should be added
+     * @param rating a set of {@link DoubleSupplier} instances providing rating values
+     */
     public void addRating(int level, Set<DoubleSupplier> rating) {
         ratings.merge(level, rating,
                 (a, b) -> {
@@ -39,6 +66,13 @@ public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) 
                 });
     }
 
+    /**
+     * Calculates and returns the cumulative rating for the specified level.
+     * If no ratings are available for the given level, the method returns {@code 0}.
+     *
+     * @param level the level for which the cumulative rating should be calculated
+     * @return the sum of the ratings at the specified level, or {@code 0} if no ratings exist
+     */
     public double getRating(int level) {
         var rating = ratings.get(level);
         if (rating != null && !rating.isEmpty()) {
@@ -48,10 +82,28 @@ public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) 
         return 0;
     }
 
+    /**
+     * Retrieves the maximum level present in the ratings map.
+     * The levels are derived from the keys of the map. If the map is empty,
+     * the method returns {@code 0}.
+     *
+     * @return the highest key (level) in the ratings map, or {@code 0} if the map is empty
+     */
     public int getMaxLevel() {
         return ratings.keySet().stream().max(Comparator.naturalOrder()).orElse(0);
     }
 
+    /**
+     * Merges the ratings from the given match object into the current match. If the provided match
+     * is valid (its `matches` field is true), the ratings from the given match are added to the
+     * ratings of the current match. For each level in the provided ratings map, the associated set
+     * of rating suppliers is added to the corresponding level in the current match's ratings. If a
+     * level does not already exist in the current match, it is created and initialized with the
+     * ratings from the given match.
+     *
+     * @param match the match object whose ratings are to be merged into the current match. If
+     *              the `matches` field of the provided match is false, no merge operation occurs.
+     */
     public void merge(Match match) {
         if (match.matches) {
             for (Map.Entry<Integer, Set<DoubleSupplier>> entry : match.ratings.entrySet()) {

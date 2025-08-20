@@ -1,3 +1,4 @@
+import dex.plugins.TaskPropertiesUpdate
 import me.modmuss50.mpp.PublishModTask
 import me.modmuss50.mpp.ReleaseType
 
@@ -41,7 +42,7 @@ outlet {
     ]
 }
 
-tasks.register("updateVersions",  dex.plugins.TaskPropertiesUpdate) {
+tasks.register("updateVersions",  TaskPropertiesUpdate) {
 }
 
 publishMods {

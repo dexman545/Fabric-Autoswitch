@@ -26,14 +26,40 @@ public class SelectionEngine {
         this.fallback = fallback;
     }
 
+    /**
+     * Selects a tool for the given action and target.
+     *
+     * @param inventory the player inventory to select from
+     * @param action the action to select for
+     * @param target the target to select for
+     */
     public void select(PlayerInventory<?> inventory, Action action, Object target) {
         findSlot(inventory, action, target).ifPresent(inventory::selectSlot);
     }
 
+    /**
+     * Finds the slot for the given action and target.
+     *
+     * @param inventory the player inventory to select from
+     * @param action the action to select for
+     * @param target the target to select for
+     * @return the slot to select, empty if no slot was found
+     */
     public OptionalInt findSlot(PlayerInventory<?> inventory, Action action, Object target) {
         return findIdealSlot(inventory, configuration.get(action), new SelectionContext(action, target));
     }
 
+    /**
+     * Identifies the ideal slot in a player's inventory based on the provided selectors and context.
+     * The selection prioritizes target priority, target rating, tool priority, tool rating,
+     * and whether the slot is currently selected (reversed slot order as a tie-breaker).
+     *
+     * @see ToolOrder ToolOrder for the sort order
+     * @param inventory the player's inventory to evaluate for selection
+     * @param selectors a mapping of target selectors and their associated tool selectors
+     * @param context the context that includes the action and target for which the tools and slots are being evaluated
+     * @return the ideal slot to select, wrapped in an {@code OptionalInt}. If no suitable slot is found, returns an empty {@code OptionalInt}.
+     */
     // Sort the slots in this order: targetPriority -> targetRatingN -> toolPriority -> toolRatingN -> slot(reversed)
     // Higher priority is weighted better in all cases, same with rating.
     private OptionalInt findIdealSlot(PlayerInventory<?> inventory, Map<Selector, Set<Selector>> selectors, SelectionContext context) {
@@ -63,8 +89,9 @@ public class SelectionEngine {
 
         // Pick the max candidate by our comparator
         Optional<Candidate> best;
+        //noinspection ConstantConditions
         if (false) {
-            // A version to print informaion for debugging
+            // A version to print information for debugging
             candidates.sort(new ToolOrder(inventory.currentSelectedSlot()).reversed());
 
             for (var c : candidates) {
@@ -85,6 +112,7 @@ public class SelectionEngine {
      */
     private OptionalInt pickFallbackSlot(PlayerInventory<?> inventory, SelectionContext context) {
         if (fallback.match(context.action())) {
+            // Start at the current selected slot so it has priority
             var slot = inventory.currentSelectedSlot();
             Match toolMatch;
             do {
@@ -94,6 +122,7 @@ public class SelectionEngine {
                     break;
                 }
 
+                // Wrap around if we reach the end of the inventory
                 slot++;
                 slot %= inventory.slotCount();
             } while (slot != inventory.currentSelectedSlot());
@@ -106,6 +135,28 @@ public class SelectionEngine {
         return OptionalInt.empty();
     }
 
+    /**
+     * Represents a candidate slot in a player's inventory, used for selecting tools optimized for a specific target
+     * and context. This data structure is used to evaluate and prioritize slots based on multiple criteria such as
+     * target and tool match priorities, ratings, and whether the slot is currently selected.
+     * <p>
+     * The evaluation process considers the following:
+     * - Target priority: Determines the importance of the target match.
+     * - Tool priority: Determines the importance of the tool match.
+     * - Match ratings for both the target and tool, which indicate suitability for selection.
+     * - Slot index, with the currently selected slot having priority.
+     * <p>
+     * Fields:
+     * - tar: The matcher for the target, determines compatibility with the target context.
+     * - tool: The matcher for the tool, evaluates compatibility with the tool selectors.
+     * - targetPriority: The priority value for the target match.
+     * - targetMatch: The result of the matching process for the target.
+     * - toolPriority: The priority value for the tool match.
+     * - toolMatch: The result of the matching process for the tool.
+     * - slot: The index of the slot in the player's inventory.
+     * - isSelected: A flag indicating whether this slot is the currently selected one.
+     * @see ToolOrder ToolOrder for the sort order
+     */
     private record Candidate(Matcher tar, Matcher tool, int targetPriority, Match targetMatch,
                              int toolPriority, Match toolMatch,
                              int slot, boolean isSelected) {}
@@ -152,6 +203,7 @@ public class SelectionEngine {
      * </ol>
      *
      * @param currentSlot the currently selected slot to prefer
+     * @see dex.autoswitch.config.data.tree.ExpressionTree#matches
      */
     private record ToolOrder(int currentSlot) implements Comparator<Candidate> {
         @Override
@@ -182,7 +234,7 @@ public class SelectionEngine {
                 if (diff != 0) return diff;
             }
 
-            // Prefer currently selected slot
+            // Prefer the currently selected slot
             diff = Boolean.compare(c1.isSelected, c2.isSelected);
             if (diff != 0) return diff;
 
