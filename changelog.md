@@ -1,3 +1,6 @@
+# AutoSwitch 12.1.2
+- Fix fabric loader dependency always being bumped when building
+
 # 12.1.1
 - Convert `feature-config.switch-away-from-tools` from a boolean to a set of actions that can 
 have the switch away behavior. Defaults to just the `ATTACK` action.
