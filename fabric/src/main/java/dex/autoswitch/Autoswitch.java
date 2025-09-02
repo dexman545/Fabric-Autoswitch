@@ -21,7 +21,7 @@ import net.fabricmc.loader.api.ObjectShare;
 public class Autoswitch implements ClientModInitializer {
     private final KeyMapping autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(
             new KeyMapping("key.autoswitch.toggle",
-                    InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "key.categories.autoswitch"));
+                    InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, KeyMapping.Category.GAMEPLAY));
 
     @Override
     public void onInitializeClient() {

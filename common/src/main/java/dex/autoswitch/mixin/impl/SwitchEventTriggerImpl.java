@@ -6,6 +6,7 @@ import dex.autoswitch.engine.TargetType;
 import dex.autoswitch.engine.events.SwitchEvent;
 import dex.autoswitch.engine.state.SwitchContext;
 import dex.autoswitch.engine.types.SwitchedPlayer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.stats.Stat;
@@ -114,7 +115,8 @@ public class SwitchEventTriggerImpl {
                     break;
                 var blockHitResult = ((BlockHitResult) crosshairTarget);
                 var blockPos = blockHitResult.getBlockPos();
-                var blockState = player.clientLevel.getBlockState(blockPos);
+                @SuppressWarnings("resource")
+                var blockState = player.level().getBlockState(blockPos);
                 if (blockState.isAir())
                     break;
                 var context = new SwitchContext(new SwitchedPlayer(player), Constants.CONFIG,
