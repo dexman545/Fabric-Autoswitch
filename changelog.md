@@ -1,5 +1,6 @@
-# AutoSwitch 12.1.2
+# 12.1.2
 - Fix fabric loader dependency always being bumped when building
+- Lock MC version upper bound to 1.21.8/25w36a due to breaking changes in vanilla
 
 # 12.1.1
 - Convert `feature-config.switch-away-from-tools` from a boolean to a set of actions that can 
