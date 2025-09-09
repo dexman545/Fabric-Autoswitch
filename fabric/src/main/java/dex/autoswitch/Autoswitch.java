@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,7 +22,8 @@ import net.fabricmc.loader.api.ObjectShare;
 public class Autoswitch implements ClientModInitializer {
     private final KeyMapping autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(
             new KeyMapping("key.autoswitch.toggle",
-                    InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, KeyMapping.Category.GAMEPLAY));
+                    InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R,
+                    KeyMapping.Category.register(ResourceLocation.parse("autoswitch:autoswitch"))));
 
     @Override
     public void onInitializeClient() {

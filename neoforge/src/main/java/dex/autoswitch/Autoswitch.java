@@ -1,13 +1,10 @@
 package dex.autoswitch;
 
 
+import java.util.function.Predicate;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import dex.autoswitch.api.impl.AutoSwitchApi;
-import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.profiling.Profiler;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
@@ -17,19 +14,22 @@ import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.function.Predicate;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.world.item.ItemStack;
 
 @Mod(value = Constants.MOD_ID, dist = Dist.CLIENT)
 public class Autoswitch {
     public static final Lazy<KeyMapping> SWITCH_TOGGLE = Lazy.of(() ->
             new KeyMapping("key.autoswitch.toggle",
-                    KeyConflictContext.IN_GAME,
-                    InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "key.categories.autoswitch"));
+                    InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R,
+                    KeyMapping.Category.register(ResourceLocation.parse("autoswitch:autoswitch"))));
 
     // Use net.neoforged.neoforge.event.TagsUpdatedEvent to reset cache
     public Autoswitch(IEventBus eventBus) {

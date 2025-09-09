@@ -2,5 +2,5 @@
   "key.autoswitch.toggle": "AutoSwitch Toggle Key",
   "msg.autoswitch.toggle_false": "AutoSwitch: Disabled",
   "msg.autoswitch.toggle_true": "AutoSwitch: Enabled",
-  "key.categories.autoswitch": "AutoSwitch"
+  "key.category.autoswitch.autoswitch": "AutoSwitch"
 }
