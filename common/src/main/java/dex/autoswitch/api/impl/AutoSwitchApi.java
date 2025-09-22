@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
  */
 @ApiStatus.Internal
 public final class AutoSwitchApi {
-    public static AutoSwitchApi INSTANCE = new AutoSwitchApi();
+    public static final AutoSwitchApi INSTANCE = new AutoSwitchApi();
     private final HashMap<ResourceLocation, ApiEntry<?>> entryMap = new HashMap<>();
 
     /**
@@ -48,7 +48,7 @@ public final class AutoSwitchApi {
      *       {@code Predicate<ItemStack>}.</li>
      * </ul>
      */
-    public ApiEntry<Predicate<ItemStack>> DEPLETED = register("depletion");
+    public final ApiEntry<Predicate<ItemStack>> DEPLETED = register("depletion");
 
     private AutoSwitchApi() {
     }
