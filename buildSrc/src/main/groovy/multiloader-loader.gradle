@@ -73,7 +73,3 @@ tasks.named('shadowJar') {
 tasks.assemble {
     dependsOn(tasks.shadowJar)
 }
-
-artifacts {
-    archives tasks.shadowJar
-}
