@@ -1,5 +1,3 @@
-modLoader = "javafml"
-loaderVersion = "${neoforge_loader_version_range}"
 license = "${license}"
 issueTrackerURL="https://github.com/dexman545/Fabric-Autoswitch/issues"
 [[mods]]
@@ -9,7 +7,6 @@ displayName = "${mod_name}"
 #see https://docs.neoforged.net/docs/misc/updatechecker/
 #see https://docs.modrinth.com/api/operations/forgeupdates/
 updateJSONURL="https://api.modrinth.com/updates/autoswitch/forge_updates.json"
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional (displayed in the mod UI)
 displayURL="https://modrinth.com/mod/autoswitch"
 logoFile="${mod_id}.png"
 credits="${credits}"
