@@ -16,7 +16,6 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.Lazy;
-import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -28,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 public class Autoswitch {
     public static final Lazy<KeyMapping> SWITCH_TOGGLE = Lazy.of(() ->
             new KeyMapping("key.autoswitch.toggle",
-                    InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R,
+                    InputConstants.Type.KEYSYM, InputConstants.KEY_R,
                     KeyMapping.Category.register(ResourceLocation.parse("autoswitch:autoswitch"))));
 
     // Use net.neoforged.neoforge.event.TagsUpdatedEvent to reset cache

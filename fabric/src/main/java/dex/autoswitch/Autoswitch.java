@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import com.mojang.blaze3d.platform.InputConstants;
 import dex.autoswitch.api.impl.AutoSwitchApi;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +21,7 @@ import net.fabricmc.loader.api.ObjectShare;
 public class Autoswitch implements ClientModInitializer {
     private final KeyMapping autoswitchToggleKeybinding = KeyBindingHelper.registerKeyBinding(
             new KeyMapping("key.autoswitch.toggle",
-                    InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R,
+                    InputConstants.Type.KEYSYM, InputConstants.KEY_R,
                     KeyMapping.Category.register(ResourceLocation.parse("autoswitch:autoswitch"))));
 
     @Override
