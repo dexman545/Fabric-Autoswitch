@@ -25,10 +25,11 @@ import net.minecraft.world.item.ItemStack;
 
 @Mod(value = Constants.MOD_ID, dist = Dist.CLIENT)
 public class Autoswitch {
+    public static KeyMapping.Category CATEGORY = new KeyMapping.Category(ResourceLocation.parse("autoswitch:autoswitch"));
     public static final Lazy<KeyMapping> SWITCH_TOGGLE = Lazy.of(() ->
             new KeyMapping("key.autoswitch.toggle",
                     InputConstants.Type.KEYSYM, InputConstants.KEY_R,
-                    KeyMapping.Category.register(ResourceLocation.parse("autoswitch:autoswitch"))));
+                    CATEGORY));
 
     // Use net.neoforged.neoforge.event.TagsUpdatedEvent to reset cache
     public Autoswitch(IEventBus eventBus) {
@@ -111,6 +112,7 @@ public class Autoswitch {
     }
 
     public static void registerBindings(RegisterKeyMappingsEvent event) {
+        event.registerCategory(CATEGORY);
         event.register(SWITCH_TOGGLE.get());
     }
 }
