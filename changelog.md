@@ -1,5 +1,16 @@
+# 13.1.0
+- Implement enchantment level specification for item selectors
+    - See [examples here](https://github.com/dexman545/Fabric-Autoswitch/blob/master/fabric/src/gametest/resources/configs/enchantmentLevelTest.conf)
+- Add debug huds to show enchantment ids and potion contents of the currently held item. 
+  - Access via `F3+F6`
+  - Named `autoswitch:enchantments` and `autoswitch:item_components`
+
 # 13.0.0
 - Update for 1.21.9/25w37a
+
+# 12.2.0
+- Implement enchantment level specification for item selectors
+    - See [examples here](https://github.com/dexman545/Fabric-Autoswitch/blob/master/fabric/src/gametest/resources/configs/enchantmentLevelTest.conf)
 
 # 12.1.2
 - Fix fabric loader dependency always being bumped when building
