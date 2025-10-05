@@ -1,3 +1,7 @@
+# 12.2.0
+- Implement enchantment level specification for item selectors
+  - See [examples here](https://github.com/dexman545/Fabric-Autoswitch/blob/master/fabric/src/gametest/resources/configs/enchantmentLevelTest.conf)
+
 # 12.1.2
 - Fix fabric loader dependency always being bumped when building
 - Lock MC version upper bound to 1.21.8/25w36a due to breaking changes in vanilla
