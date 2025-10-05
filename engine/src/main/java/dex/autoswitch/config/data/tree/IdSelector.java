@@ -58,7 +58,12 @@ public record IdSelector(FutureSelectable<?, ?> selectable, Set<TypedData> data)
 
             // Merge specific data ratings, returning false if any fail to match
             for (TypedData typedData : data) {
-                var m = typedData.matches(baseLevel, context, inputSelectable);
+                var ctx = context;
+                if (typedData.type().recontextualize()) {
+                    ctx = new SelectionContext(context.action(), this.selectable);
+                }
+
+                var m = typedData.matches(baseLevel, ctx, inputSelectable);
                 if (!m.matches()) {
                     return m;
                 }

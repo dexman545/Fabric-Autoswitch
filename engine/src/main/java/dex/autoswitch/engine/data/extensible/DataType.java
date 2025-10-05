@@ -1,11 +1,11 @@
 package dex.autoswitch.engine.data.extensible;
 
+import java.util.Locale;
+import java.util.Objects;
+
 import dex.autoswitch.config.data.tree.Data;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
-
-import java.util.Locale;
-import java.util.Objects;
 
 public abstract class DataType<T extends Data> {
     private final String id;
@@ -43,5 +43,12 @@ public abstract class DataType<T extends Data> {
 
     public Class<T> getSupportedData() {
         return supportedData;
+    }
+
+    /**
+     * @return if {@code true}, the data type matching will be given a new context during matching.
+     */
+    public boolean recontextualize() {
+        return false;
     }
 }
