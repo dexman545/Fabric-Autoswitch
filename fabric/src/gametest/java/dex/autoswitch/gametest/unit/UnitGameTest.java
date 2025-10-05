@@ -215,4 +215,31 @@ public class UnitGameTest extends AbstractTest {
 
         helper.succeed();
     }
+
+    @GameTest
+    public void enchantmentLevelTest(GameTestHelper helper) {
+        setup(helper);
+
+        var config = loadConfig("enchantmentLevelTest");
+        var player = Hotbars.createLevelSensitive(helper);
+
+        var stone = RegistryObject.block(Blocks.STONE);
+        var obsidian = RegistryObject.block(Blocks.OBSIDIAN);
+        var deepslate = RegistryObject.block(Blocks.DEEPSLATE);
+        var cobblestone = RegistryObject.block(Blocks.COBBLESTONE);
+
+        select(Action.ATTACK, stone, player, config);
+        assertSlot(helper, player, 1);
+
+        select(Action.ATTACK, cobblestone, player, config);
+        assertSlot(helper, player, 5);
+
+        select(Action.ATTACK, obsidian, player, config);
+        assertSlot(helper, player, 2);
+
+        select(Action.ATTACK, deepslate, player, config);
+        assertSlot(helper, player, 4);
+
+        helper.succeed();
+    }
 }

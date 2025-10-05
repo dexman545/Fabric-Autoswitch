@@ -1,9 +1,13 @@
 package dex.autoswitch.gametest.unit;
 
+import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.function.Predicate;
 
 import dex.autoswitch.Constants;
 import dex.autoswitch.api.impl.AutoSwitchApi;
+import dex.autoswitch.config.AutoSwitchConfig;
+import dex.autoswitch.config.ConfigHandler;
 import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.data.extensible.PlayerInventory;
 import dex.autoswitch.engine.events.SwitchEvent;
@@ -12,6 +16,7 @@ import dex.autoswitch.engine.types.SwitchedPlayer;
 import dex.autoswitch.gametest.util.FabricTestPlatformHelper;
 import dex.autoswitch.platform.Services;
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.spongepowered.configurate.ConfigurateException;
 
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
@@ -35,10 +40,24 @@ public abstract class AbstractTest {
         }
     }
 
+    protected AutoSwitchConfig loadConfig(String file) {
+        try {
+            var p = AbstractTest.class.getResource("/configs/" + file + ".conf");
+            assert p != null;
+            return ConfigHandler.readConfiguration(Path.of(p.toURI()));
+        } catch (ConfigurateException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     protected TestPlayer select(Action action, Object target, Player player) {
+        return select(action, target, player, Constants.CONFIG);
+    }
+
+    protected TestPlayer select(Action action, Object target, Player player, AutoSwitchConfig config) {
         TestPlayer testPlayer = new TestPlayer(new SwitchedPlayer(player));
         Constants.SCHEDULER.schedule(getEvent(action),
-                new SwitchContext(testPlayer, Constants.CONFIG, action,
+                new SwitchContext(testPlayer, config, action,
                         target, Constants.SWITCH_STATE, Constants.SCHEDULER), 0);
         Constants.SCHEDULER.tick();
         return testPlayer;

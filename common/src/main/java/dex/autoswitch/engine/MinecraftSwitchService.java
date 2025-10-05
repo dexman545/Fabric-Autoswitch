@@ -1,6 +1,8 @@
 package dex.autoswitch.engine;
 
 
+import java.util.Set;
+
 import com.google.auto.service.AutoService;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.extensible.DataType;
@@ -9,13 +11,17 @@ import dex.autoswitch.engine.data.extensible.SwitchRegistryService;
 import dex.autoswitch.engine.types.data.BlockStateData;
 import dex.autoswitch.engine.types.data.ComponentData;
 import dex.autoswitch.engine.types.data.EnchantmentData;
+import dex.autoswitch.engine.types.data.EnchantmentLevelData;
 import dex.autoswitch.engine.types.data.EntityEquipmentData;
-import dex.autoswitch.engine.types.selectable.*;
+import dex.autoswitch.engine.types.selectable.BlockSelectableType;
+import dex.autoswitch.engine.types.selectable.EnchantmentSelectableType;
+import dex.autoswitch.engine.types.selectable.EntitySelectableType;
+import dex.autoswitch.engine.types.selectable.ItemSelectableType;
+import dex.autoswitch.engine.types.selectable.StatSelectableType;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Set;
 
 @AutoService(SwitchRegistryService.class)
 public class MinecraftSwitchService implements SwitchRegistryService {
@@ -50,8 +56,8 @@ public class MinecraftSwitchService implements SwitchRegistryService {
                 EnchantmentData.INSTANCE,
                 BlockStateData.INSTANCE,
                 EntityEquipmentData.INSTANCE,
-                ComponentData.INSTANCE
-                //EnchantmentLevelData.INSTANCE
+                ComponentData.INSTANCE,
+                EnchantmentLevelData.INSTANCE
         );
     }
 

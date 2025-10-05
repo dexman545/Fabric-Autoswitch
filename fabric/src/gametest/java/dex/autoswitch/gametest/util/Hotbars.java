@@ -148,6 +148,37 @@ public class Hotbars {
         return player;
     }
 
+    public static Player createLevelSensitive(GameTestHelper helper) {
+        var player = helper.makeMockPlayer(GameType.SURVIVAL);
+        var inv = player.getInventory();
+
+        inv.add(0, RegistryObject.stack(
+                helper, Items.DIAMOND_PICKAXE
+        ));
+        inv.add(1, RegistryObject.stack(
+                helper, Items.DIAMOND_PICKAXE,
+                Enchant.of(Enchantments.EFFICIENCY, 5)
+        ));
+        inv.add(2, RegistryObject.stack(
+                helper, Items.DIAMOND_PICKAXE,
+                Enchant.of(Enchantments.EFFICIENCY, 4)
+        ));
+        inv.add(3, RegistryObject.stack(
+                helper, Items.DIAMOND_PICKAXE,
+                Enchant.of(Enchantments.EFFICIENCY, 3)
+        ));
+        inv.add(4, RegistryObject.stack(
+                helper, Items.DIAMOND_PICKAXE,
+                Enchant.of(Enchantments.EFFICIENCY, 2)
+        ));
+        inv.add(5, RegistryObject.stack(
+                helper, Items.DIAMOND_PICKAXE,
+                Enchant.of(Enchantments.EFFICIENCY, 1)
+        ));
+
+        return player;
+    }
+
     /*public static Player createStandardPlayer(GameTestHelper helper) {
         var player = helper.makeMockPlayer(GameType.SURVIVAL);
         var inv = player.getInventory();
