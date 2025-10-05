@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dex.autoswitch.api.impl.AutoSwitchApi;
+import dex.autoswitch.gui.debug.DebugText;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
@@ -35,6 +36,8 @@ public class Autoswitch {
     public Autoswitch(IEventBus eventBus) {
         // Use NeoForge to bootstrap the Common mod.
         CommonClass.init();
+
+        DebugText.register();
 
         NeoForge.EVENT_BUS.addListener(Autoswitch::onTick);
         eventBus.addListener(Autoswitch::registerBindings);

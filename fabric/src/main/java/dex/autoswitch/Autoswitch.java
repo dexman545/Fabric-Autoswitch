@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dex.autoswitch.api.impl.AutoSwitchApi;
+import dex.autoswitch.gui.debug.DebugText;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.KeyMapping;
@@ -28,6 +29,8 @@ public class Autoswitch implements ClientModInitializer {
     public void onInitializeClient() {
         // Use Fabric to bootstrap the Common mod.
         CommonClass.init();
+
+        DebugText.register();
 
         ClientTickEvents.END_CLIENT_TICK.register(e -> {
             // Keybindings implementation BEGIN ---

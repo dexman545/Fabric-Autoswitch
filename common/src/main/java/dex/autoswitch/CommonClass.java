@@ -2,7 +2,6 @@ package dex.autoswitch;
 
 import dex.autoswitch.config.subentries.FeatureConfig;
 import dex.autoswitch.engine.data.SwitchRegistry;
-import dex.autoswitch.gui.debug.DebugText;
 import dex.autoswitch.platform.Services;
 
 import net.minecraft.network.chat.Component;
@@ -20,8 +19,6 @@ public class CommonClass {
         if (Services.PLATFORM.isModLoaded("autoswitch")) {
             Constants.LOG.info("Hello to autoswitch");
         }
-
-        DebugText.register();
     }
 
     /**
