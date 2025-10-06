@@ -1,19 +1,19 @@
 package dex.autoswitch.engine.types.data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import dex.autoswitch.Constants;
-import dex.autoswitch.config.data.tree.Data;
 import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
 import dex.autoswitch.engine.types.selectable.ItemSelectableType;
 import dex.autoswitch.futures.FutureSelectable;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class EntityEquipmentData extends DataType<DataMap> {
     public static final EntityEquipmentData INSTANCE = new EntityEquipmentData();
@@ -23,29 +23,27 @@ public class EntityEquipmentData extends DataType<DataMap> {
     }
 
     @Override
-    public Match matches(int baseLevel, SelectionContext context, Object selectable, Data data) {
+    public Match matches(int baseLevel, SelectionContext context, Object selectable, DataMap data) {
         if (selectable instanceof LivingEntity entity) {
-            if (data instanceof DataMap dataMap) {
-                var requiredState = process(dataMap);
+            var requiredState = process(data);
 
-                for (Equipment equipment : requiredState) {
-                    var slot = getSlot(equipment);
+            for (Equipment equipment : requiredState) {
+                var slot = getSlot(equipment);
 
-                    if (slot == null) {
-                        return new Match(false);
-                    }
-
-                    var stack = entity.getItemBySlot(slot);
-                    var desired = FutureSelectable.getOrCreate(ResourceLocation.tryParse(equipment.item()),
-                            ItemSelectableType.INSTANCE, false);
-
-                    if (!desired.matches(context, stack)) {
-                        return new Match(false);
-                    }
+                if (slot == null) {
+                    return new Match(false);
                 }
 
-                return new Match(true);
+                var stack = entity.getItemBySlot(slot);
+                var desired = FutureSelectable.getOrCreate(ResourceLocation.tryParse(equipment.item()),
+                        ItemSelectableType.INSTANCE, false);
+
+                if (!desired.matches(context, stack)) {
+                    return new Match(false);
+                }
             }
+
+            return new Match(true);
         }
 
         return new Match(false);

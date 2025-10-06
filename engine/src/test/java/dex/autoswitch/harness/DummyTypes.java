@@ -1,9 +1,11 @@
 package dex.autoswitch.harness;
 
-import dex.autoswitch.config.data.tree.Data;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.config.data.tree.ExpressionTree;
-import dex.autoswitch.engine.Matcher;
 import dex.autoswitch.engine.TargetType;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
@@ -12,10 +14,6 @@ import dex.autoswitch.engine.data.extensible.SelectableType;
 import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.futures.FutureSelectableValue;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 public class DummyTypes {
     public static final SelectableType<String, DummyTarget, Pattern> BLOCK_TYPE = new SelectableType<>("block") {
@@ -256,20 +254,14 @@ public class DummyTypes {
 
     public static final DataType<ExpressionTree> ENCHANTMENTS = new DataType<>("enchantments", ExpressionTree.class) {
         @Override
-        public Match matches(int baseLevel, SelectionContext context, Object selectable, Data data) {
-            if (data instanceof Matcher matcher) {
-                return matcher.matches(baseLevel, context, selectable);
-            }
-            return new Match(false);
+        public Match matches(int baseLevel, SelectionContext context, Object selectable, ExpressionTree data) {
+            return data.matches(baseLevel, context, selectable);
         }
     };
 
     public static final DataType<DataMap> COMPONENTS = new DataType<>("components", DataMap.class) {
         @Override
-        public Match matches(int baseLevel, SelectionContext context, Object selectable, Data data) {
-            if (data instanceof Matcher matcher) {
-                return matcher.matches(baseLevel, context, selectable);
-            }
+        public Match matches(int baseLevel, SelectionContext context, Object selectable, DataMap data) {
             return new Match(false);
         }
     };

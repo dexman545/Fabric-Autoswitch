@@ -1,11 +1,11 @@
 package dex.autoswitch.engine.types.data;
 
 import dex.autoswitch.Constants;
-import dex.autoswitch.config.data.tree.Data;
 import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
+
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,11 +20,9 @@ public class ComponentData extends DataType<DataMap> {
     }
 
     @Override
-    public Match matches(int baseLevel, SelectionContext context, Object selectable, Data data) {
+    public Match matches(int baseLevel, SelectionContext context, Object selectable, DataMap data) {
         if (selectable instanceof ItemStack stack) {
-            if (data instanceof DataMap dataMap) {
-                return new Match(process(stack, dataMap));
-            }
+            return new Match(process(stack, data));
         }
 
         return new Match(false);
