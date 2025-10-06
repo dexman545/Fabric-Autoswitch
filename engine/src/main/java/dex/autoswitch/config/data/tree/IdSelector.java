@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * The basic selector. Favors more specific (not a group, more required data) over more general selectors
  */
-public record IdSelector(FutureSelectable<?, ?> selectable, Set<TypedData> data) implements ExpressionTree {
+public record IdSelector(FutureSelectable<?, ?> selectable, Set<TypedData<?>> data) implements ExpressionTree {
     public IdSelector {
         Objects.requireNonNull(selectable);
         if (data == null) {
@@ -61,7 +61,7 @@ public record IdSelector(FutureSelectable<?, ?> selectable, Set<TypedData> data)
             var ctx = new SelectionContext(context.action(), this.selectable);
 
             // Merge specific data ratings, returning false if any fail to match
-            for (TypedData typedData : data) {
+            for (TypedData<?> typedData : data) {
                 var m = typedData.matches(baseLevel, ctx, inputSelectable);
                 if (!m.matches()) {
                     return m;
