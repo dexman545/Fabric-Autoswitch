@@ -28,30 +28,18 @@ import net.minecraft.world.phys.EntityHitResult;
 
 public class DebugText {
     public static void register() {
-        DebugScreenEntriesAccessor.callRegister(
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "enchantments"),
-                new EnchantmentHelp(false));
-        DebugScreenEntriesAccessor.callRegister(
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "enchantment_tags"),
-                new EnchantmentHelp(true));
-        DebugScreenEntriesAccessor.callRegister(
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "item_components"),
-                new ItemComponentHelp());
-        DebugScreenEntriesAccessor.callRegister(
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "attack_targets"),
-                new DebugText.TargetHelp(Action.ATTACK));
-        DebugScreenEntriesAccessor.callRegister(
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "interact_targets"),
-                new DebugText.TargetHelp(Action.INTERACT));
-        DebugScreenEntriesAccessor.callRegister(
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "tool_selectors"),
-                new ToolSelectorHelp());
-        DebugScreenEntriesAccessor.callRegister(
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "item_tags"),
-                new ItemTagHelp());
-        DebugScreenEntriesAccessor.callRegister(
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "entity_tags"),
-                new EntityTagHelp());
+        register("enchantments", new EnchantmentHelp(false));
+        register("enchantment_tags", new EnchantmentHelp(true));
+        register("item_components", new ItemComponentHelp());
+        register("attack_targets", new DebugText.TargetHelp(Action.ATTACK));
+        register("interact_targets", new DebugText.TargetHelp(Action.INTERACT));
+        register("tool_selectors", new ToolSelectorHelp());
+        register("item_tags", new ItemTagHelp());
+        register("entity_tags", new EntityTagHelp());
+    }
+
+    private static void register(String id, DebugScreenEntry entry) {
+        DebugScreenEntriesAccessor.callRegister(ResourceLocation.fromNamespaceAndPath("autoswitch", id), entry);
     }
 
     private record EnchantmentHelp(boolean showTags) implements DebugScreenEntry {
@@ -74,7 +62,8 @@ public class DebugText {
                 var enchantments = heldItem.getEnchantments();
                 for (var enchantment : enchantments.keySet()) {
                     if (showTags) {
-                        enchantment.tags().forEach(tag -> displayer.addToGroup(GROUP_TWO, "#" + tag.location()));
+                        enchantment.tags().forEach(tag ->
+                                displayer.addToGroup(GROUP_TWO, "#" + tag.location()));
                     } else {
                         displayer.addToGroup(GROUP_ONE, enchantment.getRegisteredName());
                     }
@@ -150,7 +139,10 @@ public class DebugText {
         @Override
         public void display(@NotNull DebugScreenDisplayer displayer,
                             @Nullable Level level, @Nullable LevelChunk levelChunk, @Nullable LevelChunk levelChunk1) {
-            if (level == null || Minecraft.getInstance().player == null) return;
+            if (level == null || Minecraft.getInstance().player == null || Minecraft.getInstance().hitResult == null) {
+                return;
+            }
+
             var selectors = Constants.CONFIG.getConfiguration().get(action);
             var context = switch (Objects.requireNonNull(Minecraft.getInstance().hitResult.getType())) {
                 case MISS -> null;
