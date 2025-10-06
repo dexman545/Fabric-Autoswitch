@@ -49,6 +49,9 @@ public class DebugText {
         DebugScreenEntriesAccessor.callRegister(
                 ResourceLocation.fromNamespaceAndPath("autoswitch", "item_tags"),
                 new ItemTagHelp());
+        DebugScreenEntriesAccessor.callRegister(
+                ResourceLocation.fromNamespaceAndPath("autoswitch", "entity_tags"),
+                new EntityTagHelp());
     }
 
     private record EnchantmentHelp(boolean showTags) implements DebugScreenEntry {
@@ -95,6 +98,25 @@ public class DebugText {
             displayer.addToGroup(GROUP_ONE, "Held Item Tags:");
 
             heldItem.getTags().forEach(tag -> displayer.addToGroup(GROUP_ONE, "#" + tag.location()));
+        }
+    }
+
+    private record EntityTagHelp() implements DebugScreenEntry {
+        private static final ResourceLocation GROUP_ONE =
+                ResourceLocation.fromNamespaceAndPath("autoswitch", "entity_tag_help_one");
+
+        @Override
+        public void display(@NotNull DebugScreenDisplayer displayer,
+                            @Nullable Level level, @Nullable LevelChunk levelChunk, @Nullable LevelChunk levelChunk1) {
+            if (level == null || Minecraft.getInstance().player == null) return;
+
+            if (Minecraft.getInstance().hitResult instanceof EntityHitResult result) {
+                displayer.addToGroup(GROUP_ONE, "Targeted Entity Tags:");
+
+                //noinspection deprecation
+                result.getEntity().getType().builtInRegistryHolder().tags()
+                        .forEach(tag -> displayer.addToGroup(GROUP_ONE, "#" + tag.location()));
+            }
         }
     }
 
