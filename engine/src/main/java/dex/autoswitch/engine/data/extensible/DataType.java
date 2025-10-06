@@ -19,12 +19,15 @@ public abstract class DataType<T extends Data> {
     }
 
     /**
-     * Determines if the given data matches the selectable and includes ratings for this data
+     * Determines if the given data matches the selectable and includes ratings for this data.
+     * <p>
+     * The context is recontextualized for data evaluation to specify the target as the owning selector for this data,
+     * e.g. the {@code Enchantment} that is having its levels evaluated.
      *
      * @param baseLevel  the level to use when generating ratings levels
      * @param context    the context of this match, e.g. the target block for tool matching
-     * @param selectable the object to generate the ratings for. This may be a holder type such
-     *                   as a {@code Holder(Set<Enchantment>)}
+     * @param selectable the object to generate the ratings for, such as {@code ItemStack}. This may be a holder type such
+     *                   as a {@code Holder(Set<Enchantment>)}.
      * @return the match for the given input, ratings should be normalized to the range of [0, 1]
      */
     public abstract Match matches(int baseLevel, SelectionContext context, Object selectable, Data data);
@@ -43,12 +46,5 @@ public abstract class DataType<T extends Data> {
 
     public Class<T> getSupportedData() {
         return supportedData;
-    }
-
-    /**
-     * @return if {@code true}, the data type matching will be given a new context during matching.
-     */
-    public boolean recontextualize() {
-        return false;
     }
 }

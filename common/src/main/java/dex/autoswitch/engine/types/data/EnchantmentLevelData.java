@@ -53,11 +53,6 @@ public class EnchantmentLevelData extends DataType<DataMap> {
         return new Match(false);
     }
 
-    @Override
-    public boolean recontextualize() {
-        return true;
-    }
-
     private Set<LevelCondition> process(DataMap dataMap) {
         var properties = new HashSet<LevelCondition>();
         switch (dataMap) {
