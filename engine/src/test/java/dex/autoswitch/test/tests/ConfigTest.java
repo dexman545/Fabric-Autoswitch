@@ -1,5 +1,11 @@
 package dex.autoswitch.test.tests;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.nio.file.Path;
+import java.util.Set;
+
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.config.ConfigHandler;
 import dex.autoswitch.config.data.tree.IdSelector;
@@ -13,12 +19,6 @@ import dex.autoswitch.harness.DummyTypes;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurateException;
-
-import java.nio.file.Path;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigTest {
     @Test
@@ -51,10 +51,10 @@ public class ConfigTest {
         assertTrue(woolTools.contains(
                 new Selector(0,
                         makeIdSelector("pickaxe", DummyTypes.ITEM_TYPE, false,
-                                new TypedData(DummyTypes.ENCHANTMENTS, makeIdSelector("bob", DummyTypes.ENCHANTMENT_TYPE, false))))));
+                                new TypedData<>(DummyTypes.ENCHANTMENTS, makeIdSelector("bob", DummyTypes.ENCHANTMENT_TYPE, false))))));
         assertTrue(woolTools.contains(
                 new Selector(-1, makeIdSelector("shears", DummyTypes.ITEM_TYPE, false,
-                        new TypedData(DummyTypes.ENCHANTMENTS, new Intersection(Set.of(
+                        new TypedData<>(DummyTypes.ENCHANTMENTS, new Intersection(Set.of(
                                 makeIdSelector("bob", DummyTypes.ENCHANTMENT_TYPE, true),
                                 makeIdSelector("bobby", DummyTypes.ENCHANTMENT_TYPE, false)
                         )))))));

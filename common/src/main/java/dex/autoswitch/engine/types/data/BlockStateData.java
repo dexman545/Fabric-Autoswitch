@@ -1,14 +1,14 @@
 package dex.autoswitch.engine.types.data;
 
-import dex.autoswitch.config.data.tree.Data;
+import java.util.HashSet;
+import java.util.Set;
+
 import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
-import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.HashSet;
-import java.util.Set;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockStateData extends DataType<DataMap> {
     public static final BlockStateData INSTANCE = new BlockStateData();
@@ -18,31 +18,29 @@ public class BlockStateData extends DataType<DataMap> {
     }
 
     @Override
-    public Match matches(int baseLevel, SelectionContext context, Object selectable, Data data) {
+    public Match matches(int baseLevel, SelectionContext context, Object selectable, DataMap data) {
         if (selectable instanceof BlockState blockState) {
-            if (data instanceof DataMap dataMap) {
-                var requiredState = process(dataMap);
+            var requiredState = process(data);
 
-                var stateDefinition = blockState.getBlock().getStateDefinition();
-                for (StateProperty stateProperty : requiredState) {
-                    var property = stateDefinition.getProperty(stateProperty.key);
+            var stateDefinition = blockState.getBlock().getStateDefinition();
+            for (StateProperty stateProperty : requiredState) {
+                var property = stateDefinition.getProperty(stateProperty.key);
 
-                    if (property == null) {
-                        return new Match(false);
-                    }
-
-                    var expectedValue = property.getValue(stateProperty.val);
-                    if (expectedValue.isEmpty()) {
-                        return new Match(false);
-                    }
-
-                    if (expectedValue.get() != blockState.getValue(property)) {
-                        return new Match(false);
-                    }
+                if (property == null) {
+                    return new Match(false);
                 }
 
-                return new Match(true);
+                var expectedValue = property.getValue(stateProperty.val);
+                if (expectedValue.isEmpty()) {
+                    return new Match(false);
+                }
+
+                if (expectedValue.get() != blockState.getValue(property)) {
+                    return new Match(false);
+                }
             }
+
+            return new Match(true);
         }
 
         return new Match(false);

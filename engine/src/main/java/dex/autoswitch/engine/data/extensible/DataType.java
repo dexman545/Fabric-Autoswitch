@@ -30,7 +30,7 @@ public abstract class DataType<T extends Data> {
      *                   as a {@code Holder(Set<Enchantment>)}.
      * @return the match for the given input, ratings should be normalized to the range of [0, 1]
      */
-    public abstract Match matches(int baseLevel, SelectionContext context, Object selectable, Data data);
+    public abstract Match matches(int baseLevel, SelectionContext context, Object selectable, T data);
 
     /**
      * @return the id of this DataType

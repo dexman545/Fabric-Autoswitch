@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import dex.autoswitch.Constants;
-import dex.autoswitch.config.data.tree.Data;
 import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
@@ -27,24 +26,22 @@ public class EnchantmentLevelData extends DataType<DataMap> {
     }
 
     @Override
-    public Match matches(int baseLevel, SelectionContext context, Object selectable, Data data) {
+    public Match matches(int baseLevel, SelectionContext context, Object selectable, DataMap data) {
         if (context.target() instanceof FutureSelectable<?, ?> enchantmentSelector) {
             if (selectable instanceof ItemStack stack) {
                 var enchantmentData = stack.getEnchantments();
                 var enchantments = enchantmentData.keySet();
                 for (Holder<Enchantment> enchantment : enchantments) {
                     if (enchantmentSelector.matches(null, enchantment.value())) {
-                        if (data instanceof DataMap dataMap) {
-                            var condition = CONDITION_CACHE.computeIfAbsent(dataMap, this::process);
+                        var condition = CONDITION_CACHE.computeIfAbsent(data, this::process);
 
-                            for (LevelCondition levelCondition : condition) {
-                                if (!levelCondition.matches(enchantmentData.getLevel(enchantment))) {
-                                    return new Match(false);
-                                }
+                        for (LevelCondition levelCondition : condition) {
+                            if (!levelCondition.matches(enchantmentData.getLevel(enchantment))) {
+                                return new Match(false);
                             }
-
-                            return new Match(true);
                         }
+
+                        return new Match(true);
                     }
                 }
             }
