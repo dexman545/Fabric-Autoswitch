@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dex.autoswitch.api.impl.AutoSwitchApi;
-import dex.autoswitch.gui.debug.DebugText;
+import dex.autoswitch.debug.gui.DebugText;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.KeyMapping;
