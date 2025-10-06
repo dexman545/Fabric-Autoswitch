@@ -9,6 +9,9 @@
 - Add debug hud to show item tags that apply to the currently held item
   - Access via `F3+F6`
   - Named `autoswitch:item_tags`
+- Add debug hud to show enchantment tags for currently held item
+  - Access via `F3+F6`
+  - Named `autoswitch:enchantment_tags`
 
 # 13.1.0
 - Implement enchantment level specification for item selectors

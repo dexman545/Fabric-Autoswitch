@@ -30,7 +30,10 @@ public class DebugText {
     public static void register() {
         DebugScreenEntriesAccessor.callRegister(
                 ResourceLocation.fromNamespaceAndPath("autoswitch", "enchantments"),
-                new EnchantmentHelp());
+                new EnchantmentHelp(false));
+        DebugScreenEntriesAccessor.callRegister(
+                ResourceLocation.fromNamespaceAndPath("autoswitch", "enchantment_tags"),
+                new EnchantmentHelp(true));
         DebugScreenEntriesAccessor.callRegister(
                 ResourceLocation.fromNamespaceAndPath("autoswitch", "item_components"),
                 new ItemComponentHelp());
@@ -48,9 +51,11 @@ public class DebugText {
                 new ItemTagHelp());
     }
 
-    private record EnchantmentHelp() implements DebugScreenEntry {
+    private record EnchantmentHelp(boolean showTags) implements DebugScreenEntry {
         private static final ResourceLocation GROUP_ONE =
                 ResourceLocation.fromNamespaceAndPath("autoswitch", "enchantment_help_one");
+        private static final ResourceLocation GROUP_TWO =
+                ResourceLocation.fromNamespaceAndPath("autoswitch", "enchantment_help_two");
 
         @Override
         public void display(@NotNull DebugScreenDisplayer displayer,
@@ -61,11 +66,15 @@ public class DebugText {
             var heldItem = player.getMainHandItem();
 
             if (heldItem.isEnchanted()) {
-                displayer.addToGroup(GROUP_ONE, "Held Item Enchantments:");
+                displayer.addToGroup(showTags ? GROUP_TWO : GROUP_ONE, "Held Item Enchantments:");
 
                 var enchantments = heldItem.getEnchantments();
                 for (var enchantment : enchantments.keySet()) {
-                    displayer.addToGroup(GROUP_ONE, enchantment.getRegisteredName());
+                    if (showTags) {
+                        enchantment.tags().forEach(tag -> displayer.addToGroup(GROUP_TWO, "#" + tag.location()));
+                    } else {
+                        displayer.addToGroup(GROUP_ONE, enchantment.getRegisteredName());
+                    }
                 }
             }
         }
