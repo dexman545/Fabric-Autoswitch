@@ -70,14 +70,14 @@ public interface Matcher {
                 sb.append(']');
 
                 var subData = idSelector.data();
-                for (TypedData subDatum : subData) {
+                for (TypedData<?> subDatum : subData) {
                     sb.append('\n').append(" ".repeat(level));
                     sb.append(prettyPrint(subDatum, level + 1));
                 }
 
                 yield " ".repeat(level) + sb.toString();
             }
-            case TypedData typedData -> {
+            case TypedData<?> typedData -> {
                 var sb = new StringBuilder(" ".repeat(level));
                 sb.append(typedData.type().id());
                 sb.append('[');

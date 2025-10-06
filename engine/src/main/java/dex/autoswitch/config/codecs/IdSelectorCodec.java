@@ -1,10 +1,15 @@
 package dex.autoswitch.config.codecs;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import dex.autoswitch.config.ConfigHandler;
 import dex.autoswitch.config.data.tree.IdSelector;
 import dex.autoswitch.config.data.tree.TypedData;
 import dex.autoswitch.engine.data.SwitchRegistry;
-import dex.autoswitch.engine.data.extensible.DataType;
 import dex.autoswitch.engine.data.extensible.SelectableType;
 import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.futures.FutureSelectableGroup;
@@ -14,12 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
-
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
     public static final IdSelectorCodec INSTANCE = new IdSelectorCodec();
@@ -80,18 +79,17 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
             return null;
         }
 
-        Set<TypedData> data = new HashSet<>();
+        Set<TypedData<?>> data = new HashSet<>();
         if (dataNode.isMap()) {
             var children = dataNode.childrenMap();
             for (Map.Entry<Object, ? extends ConfigurationNode> entry : children.entrySet()) {
                 if (entry.getKey() instanceof String key) {
-                    DataType<?> dataType;
                     try {
-                        dataType = SwitchRegistry.INSTANCE.getDataType(key);
+                        var dataType = SwitchRegistry.INSTANCE.getDataType(key);
+                        data.add(new TypedData<>(dataType, entry.getValue().get(dataType.getSupportedData())));
                     } catch (IllegalArgumentException e) {
                         throw new SerializationException(e);
                     }
-                    data.add(new TypedData(dataType, entry.getValue().get(dataType.getSupportedData())));
                 } else {
                     throw new SerializationException("Unknown key type " + entry.getKey());
                 }
@@ -121,7 +119,7 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
         }
 
         if (selector.data() != null && !selector.data().isEmpty()) {
-            for (TypedData typedData : selector.data()) {
+            for (TypedData<?> typedData : selector.data()) {
                 node.node(DATA).node(typedData.type().id()).set(selector.data());
             }
         }

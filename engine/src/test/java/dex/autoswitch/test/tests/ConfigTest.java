@@ -68,7 +68,7 @@ public class ConfigTest {
         }
     }
 
-    protected <T> IdSelector makeIdSelector(T id, SelectableType<T, ?, ?> type, boolean isGroup, TypedData... data) {
+    protected <T> IdSelector makeIdSelector(T id, SelectableType<T, ?, ?> type, boolean isGroup, TypedData<?>... data) {
         return new IdSelector(FutureSelectable.getOrCreate(id, type, isGroup), Set.of(data));
     }
 }

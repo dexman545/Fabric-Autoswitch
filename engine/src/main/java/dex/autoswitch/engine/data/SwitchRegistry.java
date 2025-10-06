@@ -1,12 +1,17 @@
 package dex.autoswitch.engine.data;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.ServiceLoader;
+
+import dex.autoswitch.config.data.tree.Data;
 import dex.autoswitch.engine.Matcher;
 import dex.autoswitch.engine.data.extensible.DataType;
 import dex.autoswitch.engine.data.extensible.SelectableType;
 import dex.autoswitch.engine.data.extensible.SwitchRegistryService;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 /**
  * The various types should be registered via a {@link SwitchRegistryService}.
@@ -51,12 +56,13 @@ public class SwitchRegistry {
         nonToolMatcher = nonTool;
     }
 
-    public DataType<?> getDataType(String id) {
+    public <T extends Data> DataType<T> getDataType(String id) {
         Objects.requireNonNull(id);
         id = id.toUpperCase(Locale.ENGLISH);
         var i = DATA_TYPES.get(id);
         if (i != null) {
-            return i;
+            //noinspection unchecked
+            return (DataType<T>) i;
         }
 
         throw new IllegalArgumentException("Tried to fetch DataType with invalid id " + id);
