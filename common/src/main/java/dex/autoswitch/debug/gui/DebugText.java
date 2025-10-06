@@ -136,6 +136,9 @@ public class DebugText {
     private record TargetHelp(Action action) implements DebugScreenEntry {
         private static final ResourceLocation GROUP_ONE =
                 ResourceLocation.fromNamespaceAndPath("autoswitch", "target_help_one");
+        private static final ResourceLocation GROUP_TWO =
+                ResourceLocation.fromNamespaceAndPath("autoswitch", "target_help_two");
+
         @Override
         public void display(@NotNull DebugScreenDisplayer displayer,
                             @Nullable Level level, @Nullable LevelChunk levelChunk, @Nullable LevelChunk levelChunk1) {
@@ -193,9 +196,15 @@ public class DebugText {
 
             if (targets.isEmpty()) return;
 
-            displayer.addToGroup(GROUP_ONE, "Matched Targets for %s:".formatted(action.name()));
+            var group = switch (action) {
+                case ATTACK -> GROUP_TWO;
+                case INTERACT -> GROUP_ONE;
+                default -> throw new IllegalStateException("Unexpected value: " + action);
+            };
+
+            displayer.addToGroup(group, "Matched Targets for %s:".formatted(action.name()));
             for (String target : targets) {
-                displayer.addToGroup(GROUP_ONE, target);
+                displayer.addToGroup(group, target);
             }
         }
     }
