@@ -17,6 +17,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -51,9 +52,13 @@ public class Autoswitch {
     private static void sendIMC(InterModEnqueueEvent event) {
         InterModComms.sendTo(Constants.MOD_ID, AutoSwitchApi.INSTANCE.DEPLETED.id().getPath(),
                 () -> (Predicate<ItemStack>) stack -> {
-                    var cap = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-                    if (cap != null) {
-                        return cap.getEnergyStored() == 0;
+                    if (stack.isEmpty()) {
+                        return false;
+                    }
+
+                    var handler = ItemAccess.forStack(stack).getCapability(Capabilities.Energy.ITEM);
+                    if (handler != null) {
+                        return handler.getAmountAsLong() == 0;
                     }
 
                     return false;

@@ -15,6 +15,7 @@
 - Add debug hud to show entity tags of the currently targeted entity
     - Access via `F3+F6`
     - Named `autoswitch:entity_tags`
+- Update Neoforge for new transfer api
 
 # 13.1.0
 - Implement enchantment level specification for item selectors

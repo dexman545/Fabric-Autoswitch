@@ -45,7 +45,7 @@ dependencies {
     testImplementation('com.google.auto.service:auto-service:1.1.1')
     testAnnotationProcessor('com.google.auto.service:auto-service:1.1.1')
     testImplementation "net.neoforged:testframework:$neoforge_version"
-    additionalRuntimeClasspath ("org.spongepowered:configurate-hocon:$configurate_version")
+    implementation("org.spongepowered:configurate-hocon:$configurate_version")
 }
 
 tasks.named('shadowJar') {
