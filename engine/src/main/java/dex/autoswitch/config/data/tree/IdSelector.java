@@ -56,13 +56,12 @@ public record IdSelector(FutureSelectable<?, ?> selectable, Set<TypedData> data)
             // The type rating for the given context and input selectable
             match.addRating(baseLevel++, () -> this.selectable.rating(context, inputSelectable));
 
+            // Recontextualize the selection context for data evaluation,
+            // passing the current selector as the target
+            var ctx = new SelectionContext(context.action(), this.selectable);
+
             // Merge specific data ratings, returning false if any fail to match
             for (TypedData typedData : data) {
-                var ctx = context;
-                if (typedData.type().recontextualize()) {
-                    ctx = new SelectionContext(context.action(), this.selectable);
-                }
-
                 var m = typedData.matches(baseLevel, ctx, inputSelectable);
                 if (!m.matches()) {
                     return m;
