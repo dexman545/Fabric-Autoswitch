@@ -43,6 +43,9 @@ public class DebugText {
         DebugScreenEntriesAccessor.callRegister(
                 ResourceLocation.fromNamespaceAndPath("autoswitch", "tool_selectors"),
                 new ToolSelectorHelp());
+        DebugScreenEntriesAccessor.callRegister(
+                ResourceLocation.fromNamespaceAndPath("autoswitch", "item_tags"),
+                new ItemTagHelp());
     }
 
     private record EnchantmentHelp() implements DebugScreenEntry {
@@ -65,6 +68,24 @@ public class DebugText {
                     displayer.addToGroup(GROUP_ONE, enchantment.getRegisteredName());
                 }
             }
+        }
+    }
+
+    private record ItemTagHelp() implements DebugScreenEntry {
+        private static final ResourceLocation GROUP_ONE =
+                ResourceLocation.fromNamespaceAndPath("autoswitch", "item_tag_help_one");
+
+        @Override
+        public void display(@NotNull DebugScreenDisplayer displayer,
+                            @Nullable Level level, @Nullable LevelChunk levelChunk, @Nullable LevelChunk levelChunk1) {
+            if (level == null || Minecraft.getInstance().player == null) return;
+
+            var player = Minecraft.getInstance().player;
+            var heldItem = player.getMainHandItem();
+
+            displayer.addToGroup(GROUP_ONE, "Held Item Tags:");
+
+            heldItem.getTags().forEach(tag -> displayer.addToGroup(GROUP_ONE, "#" + tag.location()));
         }
     }
 

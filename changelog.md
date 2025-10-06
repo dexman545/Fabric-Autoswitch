@@ -1,12 +1,14 @@
 # 13.2.0
 - Add debug huds to show matched targets and tool selectors
   - Access via `F3+F6`
-  - Named `autoswitch:attack_targets` and `autoswitch:interact_targets`
   - Named `autoswitch:attack_targets`, `autoswitch:tool_selectors`, and `autoswitch:interact_targets`
     - `tool_selectors` do not take into consideration the target or Action, they only consider the held item
       - Sorted based on data ratings (not very useful)
     - `*_targets` are sorted based on target priority and data ratings
       - Mimics the sorting used by the Selection Engine to choose which tool to use
+- Add debug hud to show item tags that apply to the currently held item
+  - Access via `F3+F6`
+  - Named `autoswitch:item_tags`
 
 # 13.1.0
 - Implement enchantment level specification for item selectors
