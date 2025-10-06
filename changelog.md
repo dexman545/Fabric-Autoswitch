@@ -16,6 +16,7 @@
     - Access via `F3+F6`
     - Named `autoswitch:entity_tags`
 - Update Neoforge for new transfer api
+  - Support for 21.9.1-beta+
 
 # 13.1.0
 - Implement enchantment level specification for item selectors
