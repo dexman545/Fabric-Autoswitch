@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 @Mixin(net.minecraft.client.gui.components.debug.DebugScreenEntries.class)
 public interface DebugScreenEntriesAccessor {
+    @SuppressWarnings("UnusedReturnValue")
     @Invoker
     static ResourceLocation callRegister(ResourceLocation p_435372_, DebugScreenEntry p_433580_) {
         throw new UnsupportedOperationException();

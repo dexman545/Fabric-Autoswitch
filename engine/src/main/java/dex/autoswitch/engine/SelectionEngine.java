@@ -10,6 +10,7 @@ import java.util.OptionalInt;
 import java.util.Set;
 
 import dex.autoswitch.config.data.FallbackSelector;
+import dex.autoswitch.config.data.tree.ExpressionTree;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.PlayerInventory;
@@ -30,8 +31,8 @@ public class SelectionEngine {
      * Selects a tool for the given action and target.
      *
      * @param inventory the player inventory to select from
-     * @param action the action to select for
-     * @param target the target to select for
+     * @param action    the action to select for
+     * @param target    the target to select for
      */
     public void select(PlayerInventory<?> inventory, Action action, Object target) {
         findSlot(inventory, action, target).ifPresent(inventory::selectSlot);
@@ -41,8 +42,8 @@ public class SelectionEngine {
      * Finds the slot for the given action and target.
      *
      * @param inventory the player inventory to select from
-     * @param action the action to select for
-     * @param target the target to select for
+     * @param action    the action to select for
+     * @param target    the target to select for
      * @return the slot to select, empty if no slot was found
      */
     public OptionalInt findSlot(PlayerInventory<?> inventory, Action action, Object target) {
@@ -54,15 +55,21 @@ public class SelectionEngine {
      * The selection prioritizes target priority, target rating, tool priority, tool rating,
      * and whether the slot is currently selected (reversed slot order as a tie-breaker).
      *
-     * @see ToolOrder ToolOrder for the sort order
      * @param inventory the player's inventory to evaluate for selection
      * @param selectors a mapping of target selectors and their associated tool selectors
-     * @param context the context that includes the action and target for which the tools and slots are being evaluated
+     * @param context   the context that includes the action and target for which the tools and slots are being evaluated
      * @return the ideal slot to select, wrapped in an {@code OptionalInt}. If no suitable slot is found, returns an empty {@code OptionalInt}.
+     *
+     * @see ToolOrder ToolOrder for the sort order
      */
     // Sort the slots in this order: targetPriority -> targetRatingN -> toolPriority -> toolRatingN -> slot(reversed)
     // Higher priority is weighted better in all cases, same with rating.
     private OptionalInt findIdealSlot(PlayerInventory<?> inventory, Map<Selector, Set<Selector>> selectors, SelectionContext context) {
+        // Disabling of a target (e.g. so that stone blocks won't switch to pickaxes) is done by adding a tool selector
+        // that matches any item in the case of no selectors specified, that way the engine will correctly pick
+        // the currently selected slot.
+        // See AutoSwitchConfig#getToolSelectors.
+
         // Build a list of all (targetSel, toolSel, slot) triples that match
         List<Candidate> candidates = new ArrayList<>();
         for (var e : selectors.entrySet()) {
@@ -155,11 +162,13 @@ public class SelectionEngine {
      * - toolMatch: The result of the matching process for the tool.
      * - slot: The index of the slot in the player's inventory.
      * - isSelected: A flag indicating whether this slot is the currently selected one.
+     *
      * @see ToolOrder ToolOrder for the sort order
      */
     private record Candidate(Matcher tar, Matcher tool, int targetPriority, Match targetMatch,
                              int toolPriority, Match toolMatch,
-                             int slot, boolean isSelected) {}
+                             int slot, boolean isSelected) {
+    }
 
     /**
      * Unless specified otherwise, favors higher valued numbers and {@code true} over {@code false}.
@@ -185,7 +194,7 @@ public class SelectionEngine {
      *     <li>isSlotCurrentlySelected</li>
      *     <li>smallest slot</li>
      * </ol>
-     *
+     * <p>
      * Prefers more specific entries over more general ones, so non-groups are preferred over groups,
      * and those with data are prioritized over those without.
      * <p>
@@ -203,7 +212,7 @@ public class SelectionEngine {
      * </ol>
      *
      * @param currentSlot the currently selected slot to prefer
-     * @see dex.autoswitch.config.data.tree.ExpressionTree#matches
+     * @see ExpressionTree#matches
      */
     private record ToolOrder(int currentSlot) implements Comparator<Candidate> {
         @Override

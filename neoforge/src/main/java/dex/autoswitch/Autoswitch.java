@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 
 @Mod(value = Constants.MOD_ID, dist = Dist.CLIENT)
 public class Autoswitch {
-    public static KeyMapping.Category CATEGORY = new KeyMapping.Category(ResourceLocation.parse("autoswitch:autoswitch"));
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(ResourceLocation.parse("autoswitch:autoswitch"));
     public static final Lazy<KeyMapping> SWITCH_TOGGLE = Lazy.of(() ->
             new KeyMapping("key.autoswitch.toggle",
                     InputConstants.Type.KEYSYM, InputConstants.KEY_R,
