@@ -1,3 +1,6 @@
+# 13.2.1
+- Remove shearing target defaults for mooshroom, bogged, and snow golems
+
 # 13.2.0
 - Add debug huds to show matched targets and tool selectors
   - Access via `F3+F6`
