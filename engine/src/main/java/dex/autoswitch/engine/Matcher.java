@@ -1,5 +1,6 @@
 package dex.autoswitch.engine;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import dex.autoswitch.config.data.tree.Data;
@@ -15,6 +16,7 @@ import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.futures.FutureSelectableGroup;
 import dex.autoswitch.futures.FutureSelectableValue;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a functional interface that matches objects against defined criteria
@@ -41,63 +43,54 @@ public interface Matcher {
 
     static String prettyPrint(Matcher matcher, int level) {
         return switch (matcher) {
-            case DisjunctiveUnion disjunctiveUnion -> "XOR{\n" +
-                    disjunctiveUnion.children().stream()
-                            .map(child -> prettyPrint((Matcher) child, level + 1))
-                            .collect(Collectors.joining("\n" + " ".repeat(level))) +
-                    "\n" + " ".repeat(level) + "}";
-            case Intersection intersection -> "OR{\n" +
-                    intersection.children().stream()
-                            .map(child -> prettyPrint((Matcher) child, level + 1))
-                            .collect(Collectors.joining("\n" + " ".repeat(level))) +
-                    "\n" + " ".repeat(level) + "}";
-            case Invert invert -> "NOT[" + prettyPrint((Matcher) invert.child(), level) + "]";
-            case Union union -> "AND{\n" +
-                    union.children().stream()
-                            .map(child -> prettyPrint((Matcher) child, level + 1))
-                            .collect(Collectors.joining("\n" + " ".repeat(level))) +
-                    "\n" + " ".repeat(level) + "}";
-            case IdSelector idSelector -> {
-                var sb = new StringBuilder(idSelector.selectable().getSelectorType().id());
+            case DisjunctiveUnion(var children) -> prettyPrintChildren("XOR", children, level);
+            case Intersection(var children) -> prettyPrintChildren("OR", children, level);
+            case Union(var children) -> prettyPrintChildren("AND", children, level);
+            case Invert(Matcher child) -> " ".repeat(level) + "NOT[" + prettyPrint(child, level + 1) + "]";
+            case IdSelector(var selectable, var data) -> {
+                var sb = new StringBuilder(selectable.getSelectorType().id());
 
                 sb.append('[');
 
-                switch (idSelector.selectable()) {
+                switch (selectable) {
                     case FutureSelectableGroup<?, ?, ?> v -> sb.append('#').append(v.getKey());
                     case FutureSelectableValue<?, ?> v -> sb.append(v.getKey());
                 }
 
                 sb.append(']');
 
-                var subData = idSelector.data();
-                for (TypedData<?> subDatum : subData) {
-                    sb.append('\n').append(" ".repeat(level));
+                var indent = " ".repeat(level);
+                for (TypedData<?> subDatum : data) {
+                    sb.append('\n').append(indent);
                     sb.append(prettyPrint(subDatum, level + 1));
                 }
 
-                yield " ".repeat(level) + sb.toString();
+                yield indent + sb;
             }
-            case TypedData<?> typedData -> {
-                var sb = new StringBuilder(" ".repeat(level));
-                sb.append(typedData.type().id());
-                sb.append('[');
-                sb.append(prettyPrint(typedData.data(), level + 1));
-                sb.append(']');
-
-                yield sb.toString();
-            }
-            default -> "<Fallback>";
+            case TypedData<?> typedData -> " ".repeat(level) +
+                    typedData.type().id() + '[' + prettyPrint(typedData.data(), level + 1) + ']';
+            default -> " ".repeat(level) + "<Fallback>";
         };
+    }
+
+    private static @NotNull String prettyPrintChildren(String type, Set<ExpressionTree> children, int level) {
+        var indent = " ".repeat(Math.max(0, level - 1));
+        return type + "{\n" +
+                children.stream()
+                        .map(child -> prettyPrint((Matcher) child, level + 1))
+                        .collect(Collectors.joining("\n")) +
+                "\n" + indent + "}";
     }
 
     private static String prettyPrint(Data data, int level) {
         return switch (data) {
-            case DataMap.Pair pair -> pair.key() + ": " + prettyPrint(pair.value(), level + 1);
+            case DataMap.Pair pair -> pair.key() + ": " + prettyPrint(pair.value(), level);
             case DataMap.Value value -> value.value();
             case DataMap.Map map -> map.entries().stream()
-                    .map(entry -> prettyPrint(entry, level + 1))
+                    .map(entry -> prettyPrint(entry, level))
                     .collect(Collectors.joining("\n" + " ".repeat(level)));
-            case ExpressionTree tree -> prettyPrint((Matcher) tree, level+1);
+            case ExpressionTree tree -> prettyPrint((Matcher) tree, level);
+            //noinspection UnnecessaryDefault
             default -> data.toString();
         };
     }
