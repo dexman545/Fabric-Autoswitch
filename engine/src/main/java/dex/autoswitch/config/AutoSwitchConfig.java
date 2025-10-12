@@ -1,6 +1,7 @@
 package dex.autoswitch.config;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,6 +16,7 @@ import dex.autoswitch.engine.Selector;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SwitchRegistry;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 import org.spongepowered.configurate.objectmapping.meta.PostProcess;
@@ -43,12 +45,15 @@ public class AutoSwitchConfig {
     private transient SelectionEngine engine;
     private final transient Set<Object> relevantEvents = new HashSet<>();
 
-    public Map<Action, Map<Selector, Set<Selector>>> getConfiguration() {
+    @Unmodifiable
+    public Map<Action, @Unmodifiable Map<Selector, @Unmodifiable Set<Selector>>> getConfiguration() {
         if (configuration == null) {
-            configuration = new HashMap<>();
+            var configuration = new HashMap<Action, Map<Selector, Set<Selector>>>();
             for (Action action : Action.values()) {
                 configuration.put(action, makeMap(action));
             }
+
+            this.configuration = Collections.unmodifiableMap(configuration);
         }
 
         return configuration;
@@ -91,7 +96,7 @@ public class AutoSwitchConfig {
 
             var tools = getToolSelectors(targetEntry);
 
-            m.put(new Selector(targetEntry.priority, targetEntry.target), tools);
+            m.put(new Selector(targetEntry.priority, targetEntry.target), Collections.unmodifiableSet(tools));
         }
 
         // Add non-tool selector
@@ -101,7 +106,7 @@ public class AutoSwitchConfig {
                     Set.of(new Selector(Integer.MIN_VALUE, SwitchRegistry.INSTANCE.nonToolMatcher)));
         }*/
 
-        return m;
+        return Collections.unmodifiableMap(m);
     }
 
     private @NotNull Set<Selector> getToolSelectors(TargetEntry targetEntry) {

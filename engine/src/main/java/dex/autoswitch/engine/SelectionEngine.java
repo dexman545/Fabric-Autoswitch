@@ -15,13 +15,10 @@ import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.PlayerInventory;
 
-public class SelectionEngine {
-    private final Map<Action, Map<Selector, Set<Selector>>> configuration;
-    /**
-     * The fallback tool selector to use in case no tools matched
-     */
-    private final FallbackSelector fallback;
-
+/**
+ * @param fallback The fallback tool selector to use in case no tools matched
+ */
+public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configuration, FallbackSelector fallback) {
     public SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configuration, FallbackSelector fallback) {
         this.configuration = Collections.unmodifiableMap(configuration);
         this.fallback = fallback;
