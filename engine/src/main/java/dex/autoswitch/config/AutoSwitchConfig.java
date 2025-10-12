@@ -38,6 +38,7 @@ public class AutoSwitchConfig {
     @Comment("Control selection when a stat changes")
     public Set<TargetEntry> statChangeAction = new HashSet<>();
 
+    @SuppressWarnings("unused")
     @Comment("Config version to support migration")
     public int configVersion = 1;
 
