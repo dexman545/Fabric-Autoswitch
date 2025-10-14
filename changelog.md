@@ -1,6 +1,8 @@
 # 13.2.1
 - Remove shearing target defaults for mooshroom, bogged, and snow golems
 - Add sea lanterns to the silk touch default target
+- Add default config entry for things that prefer silk touch axes
+- Add default config entry for things that prefer silk touch hoes
 
 # 13.2.0
 - Add debug huds to show matched targets and tool selectors
