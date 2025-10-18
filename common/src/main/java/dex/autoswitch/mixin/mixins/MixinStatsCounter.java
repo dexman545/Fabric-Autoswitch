@@ -6,15 +6,16 @@ import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.TargetType;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.mixin.impl.SwitchEventTriggerImpl;
-import net.minecraft.stats.Stat;
-import net.minecraft.stats.StatsCounter;
-import net.minecraft.util.profiling.Profiler;
-import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.stats.Stat;
+import net.minecraft.stats.StatsCounter;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.world.entity.player.Player;
 
 @Mixin(StatsCounter.class)
 public class MixinStatsCounter {
@@ -27,6 +28,7 @@ public class MixinStatsCounter {
         var profiler = Profiler.get();
         profiler.push("autoswitch:eventTrigger");
         if (Constants.CONFIG.featureConfig.switchAllowed.contains(TargetType.EVENTS) &&
+                Constants.CONFIG.featureConfig.switchActions.contains(Action.STAT_CHANGE) &&
                 // Filters out unimportant events
                 autoswitch$statRelevant(stat)) {
 

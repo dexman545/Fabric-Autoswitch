@@ -55,7 +55,8 @@ public class SwitchEventTriggerImpl {
 
     public static void eventTrigger(Stat<?> stat, Player player) {
         if (stat == null || player == null || !Constants.performSwitch ||
-                !Constants.CONFIG.featureConfig.switchAllowed.contains(TargetType.EVENTS) || canNotSwitch(player)) {
+                !Constants.CONFIG.featureConfig.switchAllowed.contains(TargetType.EVENTS) || canNotSwitch(player) ||
+                !Constants.CONFIG.featureConfig.switchActions.contains(Action.STAT_CHANGE)) {
             return;
         }
 
@@ -85,7 +86,7 @@ public class SwitchEventTriggerImpl {
             }
             case ATTACK -> {
                 event = SwitchEvent.ATTACK;
-                yield Constants.CONFIG.featureConfig.switchActions.contains(Action.INTERACT) &&
+                yield Constants.CONFIG.featureConfig.switchActions.contains(Action.ATTACK) &&
                         Constants.CONFIG.featureConfig.switchAllowed.contains(crosshairTarget.getType() == HitResult.Type.ENTITY ?
                                 TargetType.ENTITIES :
                                 TargetType.BLOCKS);
