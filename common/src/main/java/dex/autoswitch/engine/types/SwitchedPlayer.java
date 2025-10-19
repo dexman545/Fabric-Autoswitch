@@ -8,7 +8,9 @@ import dex.autoswitch.engine.state.SwitchContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.ClientboundSetHeldSlotPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +19,10 @@ public record SwitchedPlayer(Player player) implements PlayerInventory<ItemStack
     @Override
     public void selectSlot(int slot) {
         player.getInventory().setSelectedSlot(slot);
+        // Fixes cases of event trigger being run on the integrated server thread
+        if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.connection.send(new ClientboundSetHeldSlotPacket(slot));
+        }
     }
 
     @Override
