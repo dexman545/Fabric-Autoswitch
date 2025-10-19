@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatsCounter;
 import net.minecraft.util.profiling.Profiler;
@@ -27,7 +28,11 @@ public class MixinStatsCounter {
                                                            int value, CallbackInfo ci) {
         var profiler = Profiler.get();
         profiler.push("autoswitch:eventTrigger");
-        if (Constants.CONFIG.featureConfig.switchAllowed.contains(TargetType.EVENTS) &&
+        // Stats are only updated on the server, which is fine for singleplayer,
+        // but when in multiplayer they are updated when the stat screen is opened,
+        // which should not trigger a switch.
+        if (Minecraft.getInstance().isSingleplayer() &&
+                Constants.CONFIG.featureConfig.switchAllowed.contains(TargetType.EVENTS) &&
                 Constants.CONFIG.featureConfig.switchActions.contains(Action.STAT_CHANGE) &&
                 // Filters out unimportant events
                 autoswitch$statRelevant(stat)) {
