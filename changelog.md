@@ -1,3 +1,15 @@
+# 12.2.1
+- Remove shearing target defaults for mooshroom, bogged, and snow golems
+- Add sea lanterns to the silk touch default target
+- Add default config entry for things that prefer silk touch axes
+- Add default config entry for things that prefer silk touch hoes
+- Fix stat-change action not working in singleplayer
+    - Unfortunately, due to how statistics work they cannot function in multiplayer.
+        - If a suitable replacement is found, it will be added to get multiplayer working
+- Simplify honey level target definition in default config
+- Fix matching target debug texts being merged
+- Fix `switch-actions` config not being obeyed
+
 # 12.2.0
 - Implement enchantment level specification for item selectors
   - See [examples here](https://github.com/dexman545/Fabric-Autoswitch/blob/master/fabric/src/gametest/resources/configs/enchantmentLevelTest.conf)
