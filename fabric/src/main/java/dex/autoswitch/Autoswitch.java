@@ -9,6 +9,7 @@ import dex.autoswitch.debug.gui.DebugText;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.components.debug.DebugScreenEntries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +31,7 @@ public class Autoswitch implements ClientModInitializer {
         // Use Fabric to bootstrap the Common mod.
         CommonClass.init();
 
-        DebugText.register();
+        DebugText.register(DebugScreenEntries::register);
 
         ClientTickEvents.END_CLIENT_TICK.register(e -> {
             // Keybindings implementation BEGIN ---

@@ -2,6 +2,7 @@ package dex.autoswitch.debug.gui;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 
 import dex.autoswitch.Constants;
 import dex.autoswitch.engine.Action;
@@ -9,7 +10,6 @@ import dex.autoswitch.engine.Matcher;
 import dex.autoswitch.engine.Selector;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
-import dex.autoswitch.mixin.mixins.DebugScreenEntriesAccessor;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectReferencePair;
 import org.jetbrains.annotations.NotNull;
@@ -27,19 +27,19 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class DebugText {
-    public static void register() {
-        register("enchantments", new EnchantmentHelp(false));
-        register("enchantment_tags", new EnchantmentHelp(true));
-        register("item_components", new ItemComponentHelp());
-        register("attack_targets", new DebugText.TargetHelp(Action.ATTACK));
-        register("interact_targets", new DebugText.TargetHelp(Action.INTERACT));
-        register("tool_selectors", new ToolSelectorHelp());
-        register("item_tags", new ItemTagHelp());
-        register("entity_tags", new EntityTagHelp());
+    public static void register(BiConsumer<ResourceLocation, DebugScreenEntry> consumer) {
+        register(consumer, "enchantments", new EnchantmentHelp(false));
+        register(consumer, "enchantment_tags", new EnchantmentHelp(true));
+        register(consumer, "item_components", new ItemComponentHelp());
+        register(consumer, "attack_targets", new DebugText.TargetHelp(Action.ATTACK));
+        register(consumer, "interact_targets", new DebugText.TargetHelp(Action.INTERACT));
+        register(consumer, "tool_selectors", new ToolSelectorHelp());
+        register(consumer, "item_tags", new ItemTagHelp());
+        register(consumer, "entity_tags", new EntityTagHelp());
     }
 
-    private static void register(String id, DebugScreenEntry entry) {
-        DebugScreenEntriesAccessor.callRegister(ResourceLocation.fromNamespaceAndPath("autoswitch", id), entry);
+    private static void register(BiConsumer<ResourceLocation, DebugScreenEntry> consumer, String id, DebugScreenEntry entry) {
+        consumer.accept(ResourceLocation.fromNamespaceAndPath("autoswitch", id), entry);
     }
 
     private record EnchantmentHelp(boolean showTags) implements DebugScreenEntry {

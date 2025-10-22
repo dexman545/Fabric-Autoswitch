@@ -14,6 +14,7 @@ import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterDebugEntriesEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.Lazy;
@@ -38,12 +39,11 @@ public class Autoswitch {
         // Use NeoForge to bootstrap the Common mod.
         CommonClass.init();
 
-        DebugText.register();
-
         NeoForge.EVENT_BUS.addListener(Autoswitch::onTick);
         eventBus.addListener(Autoswitch::registerBindings);
         eventBus.addListener(Autoswitch::sendIMC);
         eventBus.addListener(Autoswitch::receiveIMC);
+        eventBus.addListener(Autoswitch::debug);
 
         Constants.LOG.info("AutoSwitch Neoforge Loaded!");
     }
@@ -122,5 +122,9 @@ public class Autoswitch {
     public static void registerBindings(RegisterKeyMappingsEvent event) {
         event.registerCategory(CATEGORY);
         event.register(SWITCH_TOGGLE.get());
+    }
+
+    private static void debug(RegisterDebugEntriesEvent event) {
+        DebugText.register(event::register);
     }
 }
