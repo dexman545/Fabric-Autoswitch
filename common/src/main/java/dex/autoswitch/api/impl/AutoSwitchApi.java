@@ -13,7 +13,7 @@ import dex.autoswitch.Constants;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 @ApiStatus.Internal
 public final class AutoSwitchApi {
     public static final AutoSwitchApi INSTANCE = new AutoSwitchApi();
-    private final HashMap<ResourceLocation, ApiEntry<?>> entryMap = new HashMap<>();
+    private final HashMap<Identifier, ApiEntry<?>> entryMap = new HashMap<>();
 
     /**
      * Registry of predicates that determine whether an {@link ItemStack} is considered "depleted" by AutoSwitch.
@@ -68,7 +68,7 @@ public final class AutoSwitchApi {
      * Intended for platform bootstrap to route incoming contributions to the
      * appropriate {@link ApiEntry}.
      */
-    public HashMap<ResourceLocation, ApiEntry<?>> getEntryMap() {
+    public HashMap<Identifier, ApiEntry<?>> getEntryMap() {
         return entryMap;
     }
 
@@ -90,14 +90,14 @@ public final class AutoSwitchApi {
      * @param entries The synchronized, non-removable set backing this API entry.
      * @param <T>     The expected type of contributed objects (e.g. {@code Predicate<ItemStack>}).
      */
-    public record ApiEntry<T>(ResourceLocation id, Set<T> entries) implements Iterable<T> {
+    public record ApiEntry<T>(Identifier id, Set<T> entries) implements Iterable<T> {
         /**
          * Creates a namespaced API entry from a simple path component.
          *
          * @param id The path component to register under the {@link Constants#MOD_ID} namespace.
          */
         public ApiEntry(String id) {
-            this(ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, id), Collections.synchronizedSet(new ApiSet<>()));
+            this(Identifier.fromNamespaceAndPath(Constants.MOD_ID, id), Collections.synchronizedSet(new ApiSet<>()));
         }
 
         /**

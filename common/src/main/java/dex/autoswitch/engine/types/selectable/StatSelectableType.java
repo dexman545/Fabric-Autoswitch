@@ -1,19 +1,20 @@
 package dex.autoswitch.engine.types.selectable;
 
+import java.util.Optional;
+
 import dex.autoswitch.engine.TargetType;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.SelectableType;
 import dex.autoswitch.futures.FutureSelectable;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatType;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
-public class StatSelectableType extends SelectableType<ResourceLocation, Stat<?>, Void> {
+public class StatSelectableType extends SelectableType<Identifier, Stat<?>, Void> {
     public static final StatSelectableType INSTANCE = new StatSelectableType();
 
     protected StatSelectableType() {
@@ -26,9 +27,9 @@ public class StatSelectableType extends SelectableType<ResourceLocation, Stat<?>
      * See Command parsing for reference {@link ObjectiveCriteria#byName(String)}
      */
     @Override
-    public Stat<?> lookup(ResourceLocation resourceLocation) {
-        var statType = ResourceLocation.bySeparator(resourceLocation.getNamespace(), '.');
-        var statName = ResourceLocation.bySeparator(resourceLocation.getPath(), '.');
+    public Stat<?> lookup(Identifier Identifier) {
+        var statType = Identifier.bySeparator(Identifier.getNamespace(), '.');
+        var statName = Identifier.bySeparator(Identifier.getPath(), '.');
 
         var stat = BuiltInRegistries.STAT_TYPE
                 .getOptional(statType)
@@ -36,12 +37,12 @@ public class StatSelectableType extends SelectableType<ResourceLocation, Stat<?>
         return stat.orElse(null);
     }
 
-    private static <T> Optional<Stat<?>> getStat(StatType<T> statType, ResourceLocation resourceLocation) {
-        return statType.getRegistry().getOptional(resourceLocation).map(statType::get);
+    private static <T> Optional<Stat<?>> getStat(StatType<T> statType, Identifier Identifier) {
+        return statType.getRegistry().getOptional(Identifier).map(statType::get);
     }
 
     @Override
-    public Void lookupGroup(ResourceLocation resourceLocation) {
+    public Void lookupGroup(Identifier Identifier) {
         return null;
     }
 
@@ -69,23 +70,23 @@ public class StatSelectableType extends SelectableType<ResourceLocation, Stat<?>
     }
 
     @Override
-    public double typeRating(SelectionContext context, FutureSelectable<ResourceLocation, Stat<?>> futureValue, Object selectable) {
+    public double typeRating(SelectionContext context, FutureSelectable<Identifier, Stat<?>> futureValue, Object selectable) {
         return 0;
     }
 
     @Override
-    public String serializeKey(ResourceLocation resourceLocation) {
-        return resourceLocation.toString();
+    public String serializeKey(Identifier Identifier) {
+        return Identifier.toString();
     }
 
     @Override
-    public ResourceLocation deserializeKey(String key) {
-        var id = ResourceLocation.tryParse(key);
+    public Identifier deserializeKey(String key) {
+        var id = Identifier.tryParse(key);
 
         if (id != null) {
             return id;
         }
 
-        throw new NullPointerException("Invalid ResourceLocation: " + key);
+        throw new NullPointerException("Invalid Identifier: " + key);
     }
 }

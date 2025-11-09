@@ -22,13 +22,13 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.item.ItemStack;
 
 @Mod(value = Constants.MOD_ID, dist = Dist.CLIENT)
 public class Autoswitch {
-    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(ResourceLocation.parse("autoswitch:autoswitch"));
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.parse("autoswitch:autoswitch"));
     public static final Lazy<KeyMapping> SWITCH_TOGGLE = Lazy.of(() ->
             new KeyMapping("key.autoswitch.toggle",
                     InputConstants.Type.KEYSYM, InputConstants.KEY_R,
@@ -79,7 +79,7 @@ public class Autoswitch {
     private static void receiveIMC(InterModProcessEvent event) {
         InterModComms.getMessages(Constants.MOD_ID).forEach(imc -> {
             Constants.LOG.info("Processing IMC: {}", imc);
-            var entry = AutoSwitchApi.INSTANCE.getEntryMap().get(ResourceLocation.tryBuild(imc.modId(), imc.method()));
+            var entry = AutoSwitchApi.INSTANCE.getEntryMap().get(Identifier.tryBuild(imc.modId(), imc.method()));
             if (entry != null) {
                 try {
                     Constants.LOG.info("Registered API entry");
@@ -90,7 +90,7 @@ public class Autoswitch {
                             "') has passed the incorrect object to AutoSwitch via the IMC", e);
                 }
             } else {
-                Constants.LOG.warn("Unknown IMC: {}", ResourceLocation.tryBuild(imc.modId(), imc.method()));
+                Constants.LOG.warn("Unknown IMC: {}", Identifier.tryBuild(imc.modId(), imc.method()));
             }
         });
     }

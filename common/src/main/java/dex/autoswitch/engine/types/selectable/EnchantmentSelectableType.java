@@ -6,14 +6,15 @@ import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.futures.FutureSelectableGroup;
 import dex.autoswitch.futures.FutureSelectableValue;
 import dex.autoswitch.platform.Services;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import org.jetbrains.annotations.Nullable;
 
 public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     public static final EnchantmentSelectableType INSTANCE = new EnchantmentSelectableType();
@@ -23,10 +24,10 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     }
 
     @Override
-    public Holder<Enchantment> lookup(ResourceLocation resourceLocation) {
+    public Holder<Enchantment> lookup(Identifier Identifier) {
         var maybeReg = Services.PLATFORM.getRegistryAccess().lookup(Registries.ENCHANTMENT);
         if (maybeReg.isPresent()) {
-            var entry = maybeReg.get().get(ResourceKey.create(Registries.ENCHANTMENT, resourceLocation));
+            var entry = maybeReg.get().get(ResourceKey.create(Registries.ENCHANTMENT, Identifier));
             if (entry.isPresent()) {
                 return entry.get();
             }
@@ -36,8 +37,8 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     }
 
     @Override
-    public TagKey<Enchantment> lookupGroup(ResourceLocation resourceLocation) {
-        return TagKey.create(Registries.ENCHANTMENT, resourceLocation);
+    public TagKey<Enchantment> lookupGroup(Identifier Identifier) {
+        return TagKey.create(Registries.ENCHANTMENT, Identifier);
     }
 
     @Override
@@ -86,12 +87,12 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     }
 
     @Override
-    public double typeRating(SelectionContext context, FutureSelectable<ResourceLocation, Holder<Enchantment>> futureValue, Object selectable) {
+    public double typeRating(SelectionContext context, FutureSelectable<Identifier, Holder<Enchantment>> futureValue, Object selectable) {
         if (selectable instanceof ItemStack stack) {
             if (stack.isEnchanted()) {
                 var enchantments = stack.getEnchantments();
                 return switch (futureValue) {
-                    case FutureSelectableGroup<ResourceLocation, Holder<Enchantment>, ?> v -> {
+                    case FutureSelectableGroup<Identifier, Holder<Enchantment>, ?> v -> {
                         var d = 0D;
                         var c = 0;
                         for (Holder<Enchantment> holder : enchantments.keySet()) {
@@ -104,7 +105,7 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
 
                         yield c == 0 ? 0 : d / c;
                     }
-                    case FutureSelectableValue<ResourceLocation, Holder<Enchantment>> enchantment -> {
+                    case FutureSelectableValue<Identifier, Holder<Enchantment>> enchantment -> {
                         yield (double) enchantments.getLevel(enchantment.getValue()) / enchantment.getValue().value().getMaxLevel();
                     }
                 };

@@ -11,7 +11,7 @@ import dex.autoswitch.engine.data.extensible.DataType;
 import dex.autoswitch.engine.types.selectable.ItemSelectableType;
 import dex.autoswitch.futures.FutureSelectable;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -35,7 +35,7 @@ public class EntityEquipmentData extends DataType<DataMap> {
                 }
 
                 var stack = entity.getItemBySlot(slot);
-                var desired = FutureSelectable.getOrCreate(ResourceLocation.tryParse(equipment.item()),
+                var desired = FutureSelectable.getOrCreate(Identifier.tryParse(equipment.item()),
                         ItemSelectableType.INSTANCE, false);
 
                 if (!desired.matches(context, stack)) {

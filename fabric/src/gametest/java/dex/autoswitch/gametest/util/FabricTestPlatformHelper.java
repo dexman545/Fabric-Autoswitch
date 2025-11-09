@@ -1,17 +1,18 @@
 package dex.autoswitch.gametest.util;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import com.google.auto.service.AutoService;
 import dex.autoswitch.platform.FabricPlatformHelper;
 import dex.autoswitch.platform.services.IPlatformHelper;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-
-import java.util.Objects;
-import java.util.Optional;
 
 @AutoService(IPlatformHelper.class)
 public class FabricTestPlatformHelper extends FabricPlatformHelper {
@@ -56,7 +57,7 @@ public class FabricTestPlatformHelper extends FabricPlatformHelper {
         if (maybeRegistry.isPresent()) return maybeRegistry;
 
         // Return the default registries
-        return (Optional<? extends Registry<T>>) BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().location());
+        return (Optional<? extends Registry<T>>) BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().identifier());
     }
 
     private static <U extends Registry<T>, T> Optional<Holder<T>> getRegistryEntry(U registry, TagKey<T> tagKey, T entry) {

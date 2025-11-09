@@ -4,14 +4,15 @@ import dex.autoswitch.engine.TargetType;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.platform.Services;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import org.jetbrains.annotations.Nullable;
 
 public class EntitySelectableType extends SelectableResource<EntityType<?>> {
     public static final EntitySelectableType INSTANCE = new EntitySelectableType();
@@ -21,13 +22,13 @@ public class EntitySelectableType extends SelectableResource<EntityType<?>> {
     }
 
     @Override
-    public Holder<EntityType<?>> lookup(ResourceLocation resourceLocation) {
-        return BuiltInRegistries.ENTITY_TYPE.get(resourceLocation).orElse(null);
+    public Holder<EntityType<?>> lookup(Identifier Identifier) {
+        return BuiltInRegistries.ENTITY_TYPE.get(Identifier).orElse(null);
     }
 
     @Override
-    public TagKey<EntityType<?>> lookupGroup(ResourceLocation resourceLocation) {
-        return TagKey.create(Registries.ENTITY_TYPE, resourceLocation);
+    public TagKey<EntityType<?>> lookupGroup(Identifier Identifier) {
+        return TagKey.create(Registries.ENTITY_TYPE, Identifier);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class EntitySelectableType extends SelectableResource<EntityType<?>> {
     }
 
     @Override
-    public double typeRating(SelectionContext context, FutureSelectable<ResourceLocation, Holder<EntityType<?>>> futureValue, Object selectable) {
+    public double typeRating(SelectionContext context, FutureSelectable<Identifier, Holder<EntityType<?>>> futureValue, Object selectable) {
         return 0;
     }
 }

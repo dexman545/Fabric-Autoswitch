@@ -20,14 +20,14 @@ import net.minecraft.client.gui.components.debug.DebugScreenDisplayer;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
 public class DebugText {
-    public static void register(BiConsumer<ResourceLocation, DebugScreenEntry> consumer) {
+    public static void register(BiConsumer<Identifier, DebugScreenEntry> consumer) {
         register(consumer, "enchantments", new EnchantmentHelp(false));
         register(consumer, "enchantment_tags", new EnchantmentHelp(true));
         register(consumer, "item_components", new ItemComponentHelp());
@@ -38,15 +38,15 @@ public class DebugText {
         register(consumer, "entity_tags", new EntityTagHelp());
     }
 
-    private static void register(BiConsumer<ResourceLocation, DebugScreenEntry> consumer, String id, DebugScreenEntry entry) {
-        consumer.accept(ResourceLocation.fromNamespaceAndPath("autoswitch", id), entry);
+    private static void register(BiConsumer<Identifier, DebugScreenEntry> consumer, String id, DebugScreenEntry entry) {
+        consumer.accept(Identifier.fromNamespaceAndPath("autoswitch", id), entry);
     }
 
     private record EnchantmentHelp(boolean showTags) implements DebugScreenEntry {
-        private static final ResourceLocation GROUP_ONE =
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "enchantment_help_one");
-        private static final ResourceLocation GROUP_TWO =
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "enchantment_help_two");
+        private static final Identifier GROUP_ONE =
+                Identifier.fromNamespaceAndPath("autoswitch", "enchantment_help_one");
+        private static final Identifier GROUP_TWO =
+                Identifier.fromNamespaceAndPath("autoswitch", "enchantment_help_two");
 
         @Override
         public void display(@NotNull DebugScreenDisplayer displayer,
@@ -73,8 +73,8 @@ public class DebugText {
     }
 
     private record ItemTagHelp() implements DebugScreenEntry {
-        private static final ResourceLocation GROUP_ONE =
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "item_tag_help_one");
+        private static final Identifier GROUP_ONE =
+                Identifier.fromNamespaceAndPath("autoswitch", "item_tag_help_one");
 
         @Override
         public void display(@NotNull DebugScreenDisplayer displayer,
@@ -91,8 +91,8 @@ public class DebugText {
     }
 
     private record EntityTagHelp() implements DebugScreenEntry {
-        private static final ResourceLocation GROUP_ONE =
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "entity_tag_help_one");
+        private static final Identifier GROUP_ONE =
+                Identifier.fromNamespaceAndPath("autoswitch", "entity_tag_help_one");
 
         @Override
         public void display(@NotNull DebugScreenDisplayer displayer,
@@ -110,8 +110,8 @@ public class DebugText {
     }
 
     private record ItemComponentHelp() implements DebugScreenEntry {
-        private static final ResourceLocation GROUP_ONE =
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "component_help_one");
+        private static final Identifier GROUP_ONE =
+                Identifier.fromNamespaceAndPath("autoswitch", "component_help_one");
 
         @Override
         public void display(@NotNull DebugScreenDisplayer displayer,
@@ -134,10 +134,10 @@ public class DebugText {
     }
 
     private record TargetHelp(Action action) implements DebugScreenEntry {
-        private static final ResourceLocation GROUP_ONE =
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "target_help_one");
-        private static final ResourceLocation GROUP_TWO =
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "target_help_two");
+        private static final Identifier GROUP_ONE =
+                Identifier.fromNamespaceAndPath("autoswitch", "target_help_one");
+        private static final Identifier GROUP_TWO =
+                Identifier.fromNamespaceAndPath("autoswitch", "target_help_two");
 
         @Override
         public void display(@NotNull DebugScreenDisplayer displayer,
@@ -210,8 +210,8 @@ public class DebugText {
     }
 
     private record ToolSelectorHelp() implements DebugScreenEntry {
-        private static final ResourceLocation GROUP_ONE =
-                ResourceLocation.fromNamespaceAndPath("autoswitch", "item_selector_help_one");
+        private static final Identifier GROUP_ONE =
+                Identifier.fromNamespaceAndPath("autoswitch", "item_selector_help_one");
         @Override
         public void display(@NotNull DebugScreenDisplayer displayer,
                             @Nullable Level level, @Nullable LevelChunk levelChunk, @Nullable LevelChunk levelChunk1) {

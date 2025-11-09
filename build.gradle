@@ -4,7 +4,7 @@ import me.modmuss50.mpp.ReleaseType
 
 plugins {
     // see https://fabricmc.net/develop/ for new versions
-    id 'fabric-loom' version '1.11-SNAPSHOT' apply false
+    id 'fabric-loom' version '1.13-SNAPSHOT' apply false
     // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
     id 'net.neoforged.moddev' version '2.0.113' apply false
     id 'com.gradleup.shadow'  version '9.1.0' apply false

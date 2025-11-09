@@ -4,14 +4,15 @@ import dex.autoswitch.engine.TargetType;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.platform.Services;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 public class BlockSelectableType extends SelectableResource<Block> {
     public static final BlockSelectableType INSTANCE = new BlockSelectableType();
@@ -21,13 +22,13 @@ public class BlockSelectableType extends SelectableResource<Block> {
     }
 
     @Override
-    public Holder<Block> lookup(ResourceLocation resourceLocation) {
-        return BuiltInRegistries.BLOCK.get(resourceLocation).orElse(null);
+    public Holder<Block> lookup(Identifier Identifier) {
+        return BuiltInRegistries.BLOCK.get(Identifier).orElse(null);
     }
 
     @Override
-    public TagKey<Block> lookupGroup(ResourceLocation resourceLocation) {
-        return TagKey.create(Registries.BLOCK, resourceLocation);
+    public TagKey<Block> lookupGroup(Identifier Identifier) {
+        return TagKey.create(Registries.BLOCK, Identifier);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class BlockSelectableType extends SelectableResource<Block> {
     }
 
     @Override
-    public double typeRating(SelectionContext context, FutureSelectable<ResourceLocation, Holder<Block>> futureValue, Object selectable) {
+    public double typeRating(SelectionContext context, FutureSelectable<Identifier, Holder<Block>> futureValue, Object selectable) {
         return 0;
     }
 }

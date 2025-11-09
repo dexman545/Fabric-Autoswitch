@@ -10,7 +10,7 @@ import dex.autoswitch.gametest.util.RegistryObject;
 
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.BeehiveBlock;
@@ -142,7 +142,7 @@ public class UnitGameTest extends AbstractTest {
 
         TestPlayer testPlayer;
         var player = Hotbars.milkPlayer(helper);
-        var bedStat = StatSelectableType.INSTANCE.lookup(Objects.requireNonNull(ResourceLocation.tryParse("custom:sleep_in_bed")));
+        var bedStat = StatSelectableType.INSTANCE.lookup(Objects.requireNonNull(Identifier.tryParse("custom:sleep_in_bed")));
 
         // Ideally we'd actually trigger the stat change, but that isn't trivial on the server
         select(Action.STAT_CHANGE, bedStat, player);

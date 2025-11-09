@@ -9,7 +9,7 @@ import dex.autoswitch.engine.data.extensible.DataType;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class ComponentData extends DataType<DataMap> {
@@ -33,7 +33,7 @@ public class ComponentData extends DataType<DataMap> {
             return false;
         }
 
-        var idRl = ResourceLocation.tryParse(id);
+        var idRl = Identifier.tryParse(id);
         if (idRl == null) {
             Constants.LOG.warn("Component id '{}' incorrectly formated", id);
             return false;
@@ -52,7 +52,7 @@ public class ComponentData extends DataType<DataMap> {
             var potions = dataComponentGetter.getTyped(DataComponents.POTION_CONTENTS);
             if (potions != null) {
                 if (map instanceof DataMap.Value(var pid)) {
-                    var prl = ResourceLocation.tryParse(pid);
+                    var prl = Identifier.tryParse(pid);
                     if (prl != null && potions.value().potion().isPresent()) {
                         return potions.value().potion().get().is(prl);
                     }

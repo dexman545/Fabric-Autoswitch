@@ -1,9 +1,14 @@
 package dex.autoswitch;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -11,11 +16,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * Contains all custom autoswitch tag definitions, for us in datagen for Fabric client tags or
@@ -72,11 +72,11 @@ public final class Tags {
     }
 
     private static <T> TagKey<T> tagKey(ResourceKey<? extends Registry<T>> registry, String id) {
-        return TagKey.create(registry, ResourceLocation.fromNamespaceAndPath("autoswitch", id));
+        return TagKey.create(registry, Identifier.fromNamespaceAndPath("autoswitch", id));
     }
 
     private static <T> TagKey<T> mcTag(ResourceKey<? extends Registry<T>> registry, String id) {
-        return TagKey.create(registry, ResourceLocation.fromNamespaceAndPath("minecraft", id));
+        return TagKey.create(registry, Identifier.fromNamespaceAndPath("minecraft", id));
     }
 
     public sealed interface Group<T> {
