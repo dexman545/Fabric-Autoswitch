@@ -1,3 +1,9 @@
+# 14.0.1
+- Fix incorrect mixin json
+
+# 14.0.0
+- Update for 1.21.11
+
 # 13.2.1
 - Remove shearing target defaults for mooshroom, bogged, and snow golems
 - Add sea lanterns to the silk touch default target
