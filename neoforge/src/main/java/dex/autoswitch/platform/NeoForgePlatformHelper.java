@@ -66,7 +66,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         if (maybeRegistry.isPresent()) return maybeRegistry;
 
         // Return the default registries
-        return (Optional<? extends Registry<T>>) BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().location());
+        return (Optional<? extends Registry<T>>) BuiltInRegistries.REGISTRY.getOptional(tagKey.registry().identifier());
     }
 
     private static <U extends Registry<T>, T> Optional<Holder<T>> getRegistryEntry(U registry, TagKey<T> tagKey, T entry) {
