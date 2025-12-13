@@ -1,5 +1,6 @@
 # 14.0.3
 - Improve handling of fallback tools in default config
+- Add mace as a preferred tool for destroying boats
 
 # 14.0.2
 - Fix incorrect version range
