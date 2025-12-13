@@ -1,3 +1,6 @@
+# 14.0.2
+- Fix incorrect version range
+
 # 14.0.1
 - Fix incorrect mixin json
 
