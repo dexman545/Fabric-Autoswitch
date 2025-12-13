@@ -1,3 +1,6 @@
+# 14.0.3
+- Improve handling of fallback tools in default config
+
 # 14.0.2
 - Fix incorrect version range
 
