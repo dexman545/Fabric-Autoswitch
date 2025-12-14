@@ -9,12 +9,13 @@ import java.util.Set;
 import java.util.function.DoubleSupplier;
 
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Represents a match result with an associated set of ratings distributed across multiple levels,
  * that can be combined to form a final rating or merged with other matches.
  */
-public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) {
+public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) implements Comparable<Match> {
     public Match(boolean matches) {
         this(matches, new HashMap<>());
     }
@@ -110,6 +111,21 @@ public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) 
                 addRating(entry.getKey(), entry.getValue());
             }
         }
+    }
+
+    @Override
+    public int compareTo(@NonNull Match match) {
+        if (matches != match.matches) return matches ? -1 : 1;
+
+        var maxTargetRatingLevel = Math.max(getMaxLevel(), match.getMaxLevel());
+        for (int i = 0; i <= maxTargetRatingLevel; i++) {
+            var r1 = getRating(i);
+            var r2 = match.getRating(i);
+            var diff = Double.compare(r1, r2);
+            if (diff != 0) return diff;
+        }
+
+        return 0;
     }
 
     @Override
