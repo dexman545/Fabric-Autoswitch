@@ -19,6 +19,58 @@ import dex.autoswitch.engine.data.extensible.PlayerInventory;
  * @param fallback The fallback tool selector to use in case no tools matched
  */
 public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configuration, FallbackSelector fallback) {
+    /**
+     * Unless specified otherwise, favors higher valued numbers and {@code true} over {@code false}.
+     * <p>
+     * Sorts the tools in the order of:
+     * <p><ol>
+     *     <li>Target Priority</li>
+     *     <li>Target Rating
+     *       <ol>
+     *         <li>level 0</li>
+     *         <li>....</li>
+     *         <li>level {@code maxTargetRatingLevel}</li>
+     *       </ol>
+     *     </li>
+     *     <li>Tool Priority</li>
+     *     <li>Tool Rating
+     *       <ol>
+     *         <li>level 0</li>
+     *         <li>....</li>
+     *         <li>level {@code maxToolRatingLevel}</li>
+     *       </ol>
+     *     </li>
+     *     <li>isSlotCurrentlySelected</li>
+     *     <li>smallest slot</li>
+     * </ol>
+     * <p>
+     * Prefers more specific entries over more general ones, so non-groups are preferred over groups,
+     * and those with data are prioritized over those without.
+     * <p>
+     * Type rating is a measure of the type within the given context, such as weapon DPS or mining level.
+     * <p>
+     * Data rating is the measure of the data within the given context, such as normalized enchantment level.
+     *
+     * <p>
+     * Ratings levels are generally a recursive sort of:
+     * <p><ol>
+     *     <li>isGroup</li>
+     *     <li>hasData</li>
+     *     <li>typeRating</li>
+     *     <li>dataRating</li>
+     * </ol>
+     *
+     * @see ExpressionTree#matches
+     * @see Match#compareTo(Match)
+     */
+    private static final Comparator<Candidate> TOOL_COMPARATOR =
+            Comparator.comparingInt(Candidate::targetPriority)
+                    .thenComparing(Candidate::targetMatch)
+                    .thenComparingInt(Candidate::toolPriority)
+                    .thenComparing(Candidate::toolMatch)
+                    .thenComparing(Candidate::isSelected, Boolean::compare)
+                    .thenComparing(Candidate::slot, Comparator.reverseOrder());
+
     public SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configuration, FallbackSelector fallback) {
         this.configuration = Collections.unmodifiableMap(configuration);
         this.fallback = fallback;
@@ -57,7 +109,7 @@ public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configur
      * @param context   the context that includes the action and target for which the tools and slots are being evaluated
      * @return the ideal slot to select, wrapped in an {@code OptionalInt}. If no suitable slot is found, returns an empty {@code OptionalInt}.
      *
-     * @see ToolOrder ToolOrder for the sort order
+     * @see #TOOL_COMPARATOR The comparator for the sort order
      */
     // Sort the slots in this order: targetPriority -> targetRatingN -> toolPriority -> toolRatingN -> slot(reversed)
     // Higher priority is weighted better in all cases, same with rating.
@@ -96,16 +148,16 @@ public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configur
         //noinspection ConstantConditions
         if (false) {
             // A version to print information for debugging
-            candidates.sort(new ToolOrder(inventory.currentSelectedSlot()).reversed());
+            candidates.sort(TOOL_COMPARATOR.reversed());
 
             for (var c : candidates) {
                 System.out.println(c);
             }
 
             best = candidates.isEmpty() ? Optional.empty() : Optional.of(candidates.getFirst());
-            assert best.equals(candidates.stream().max(new ToolOrder(inventory.currentSelectedSlot())));
+            assert best.equals(candidates.stream().max(TOOL_COMPARATOR));
         } else {
-            best = candidates.stream().max(new ToolOrder(inventory.currentSelectedSlot()));
+            best = candidates.stream().max(TOOL_COMPARATOR);
         }
 
         return best.map(candidate -> OptionalInt.of(candidate.slot)).orElseGet(OptionalInt::empty);
@@ -160,92 +212,10 @@ public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configur
      * - slot: The index of the slot in the player's inventory.
      * - isSelected: A flag indicating whether this slot is the currently selected one.
      *
-     * @see ToolOrder ToolOrder for the sort order
+     * @see #TOOL_COMPARATOR TOOL_ORDERER for the sort order
      */
     private record Candidate(Matcher tar, Matcher tool, int targetPriority, Match targetMatch,
                              int toolPriority, Match toolMatch,
                              int slot, boolean isSelected) {
-    }
-
-    /**
-     * Unless specified otherwise, favors higher valued numbers and {@code true} over {@code false}.
-     * <p>
-     * Sorts the tools in the order of:
-     * <p><ol>
-     *     <li>Target Priority</li>
-     *     <li>Target Rating
-     *       <ol>
-     *         <li>level 0</li>
-     *         <li>....</li>
-     *         <li>level {@code maxTargetRatingLevel}</li>
-     *       </ol>
-     *     </li>
-     *     <li>Tool Priority</li>
-     *     <li>Tool Rating
-     *       <ol>
-     *         <li>level 0</li>
-     *         <li>....</li>
-     *         <li>level {@code maxToolRatingLevel}</li>
-     *       </ol>
-     *     </li>
-     *     <li>isSlotCurrentlySelected</li>
-     *     <li>smallest slot</li>
-     * </ol>
-     * <p>
-     * Prefers more specific entries over more general ones, so non-groups are preferred over groups,
-     * and those with data are prioritized over those without.
-     * <p>
-     * Type rating is a measure of the type within the given context, such as weapon DPS or mining level.
-     * <p>
-     * Data rating is the measure of the data within the given context, such as normalized enchantment level.
-     *
-     * <p>
-     * Ratings levels are generally a recursive sort of:
-     * <p><ol>
-     *     <li>isGroup</li>
-     *     <li>hasData</li>
-     *     <li>typeRating</li>
-     *     <li>dataRating</li>
-     * </ol>
-     *
-     * @param currentSlot the currently selected slot to prefer
-     * @see ExpressionTree#matches
-     */
-    private record ToolOrder(int currentSlot) implements Comparator<Candidate> {
-        @Override
-        public int compare(Candidate c1, Candidate c2) {
-            // Target priority
-            int diff = Integer.compare(c1.targetPriority, c2.targetPriority);
-            if (diff != 0) return diff;
-
-            // Target rating levels
-            var maxTargetRatingLevel = Math.max(c1.targetMatch().getMaxLevel(), c2.targetMatch.getMaxLevel());
-            for (int i = 0; i <= maxTargetRatingLevel; i++) {
-                var r1 = c1.targetMatch.getRating(i);
-                var r2 = c2.targetMatch.getRating(i);
-                diff = Double.compare(r1, r2);
-                if (diff != 0) return diff;
-            }
-
-            // Tool priority
-            diff = Integer.compare(c1.toolPriority, c2.toolPriority);
-            if (diff != 0) return diff;
-
-            // Tool rating levels
-            var maxToolRatingLevel = Math.max(c1.toolMatch().getMaxLevel(), c2.toolMatch.getMaxLevel());
-            for (int i = 0; i <= maxToolRatingLevel; i++) {
-                var r1 = c1.toolMatch.getRating(i);
-                var r2 = c2.toolMatch.getRating(i);
-                diff = Double.compare(r1, r2);
-                if (diff != 0) return diff;
-            }
-
-            // Prefer the currently selected slot
-            diff = Boolean.compare(c1.isSelected, c2.isSelected);
-            if (diff != 0) return diff;
-
-            // Slot id ascending
-            return Integer.compare(c2.slot(), c1.slot());
-        }
     }
 }
