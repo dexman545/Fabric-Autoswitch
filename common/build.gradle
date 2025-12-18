@@ -1,17 +1,10 @@
 plugins {
     id 'multiloader-common'
-    id 'net.neoforged.moddev'
-}
-
-neoForge {
-    neoFormVersion = neo_form_version
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
+    id 'net.fabricmc.fabric-loom'
 }
 
 dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
     compileOnly 'org.spongepowered:mixin:0.8.5'
     // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
     compileOnly 'io.github.llamalad7:mixinextras-common:0.3.5'
