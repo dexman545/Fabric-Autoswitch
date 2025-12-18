@@ -86,7 +86,7 @@ public class DebugText {
 
             displayer.addToGroup(GROUP_ONE, "Held Item Tags:");
 
-            heldItem.getTags().forEach(tag -> displayer.addToGroup(GROUP_ONE, "#" + tag.location()));
+            heldItem.tags().forEach(tag -> displayer.addToGroup(GROUP_ONE, "#" + tag.location()));
         }
     }
 

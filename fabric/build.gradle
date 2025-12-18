@@ -2,18 +2,26 @@ import net.fabricmc.loom.task.prod.ClientProductionRunTask
 
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom'
+    id 'net.fabricmc.fabric-loom'
     id 'jvm-test-suite'
+}
+
+configurations {
+    shippingJar {
+        canBeResolved = false
+        canBeConsumed = true
+        outgoing.artifact(tasks.shadowJar)
+    }
+
+    mod {
+        canBeResolved = true
+    }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    mod(implementation("net.fabricmc.fabric-api:fabric-api:${fabric_version}"))
 
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation('com.google.auto.service:auto-service:1.1.1')
@@ -71,25 +79,15 @@ loom {
 }
 
 tasks.named('shadowJar') {
-    archiveClassifier = 'shadow'
+    archiveClassifier = ''
 }
 
-tasks.jar {
-    archiveClassifier = 'base'
-}
+// Disable as shadowJar takes over
+jar.enabled = false
 
-remapJar {
+tasks.assemble {
     dependsOn(shadowJar)
     mustRunAfter(shadowJar)
-    inputFile = file(shadowJar.archiveFile)
-}
-
-configurations {
-    shippingJar {
-        canBeResolved = false
-        canBeConsumed = true
-        outgoing.artifact(tasks.remapJar)
-    }
 }
 
 testing {
@@ -118,7 +116,7 @@ testing {
 }
 
 tasks.register("prodClient", ClientProductionRunTask) {
-    mods.from configurations.modImplementation
+    mods.from configurations.mod
     tracy {
         tracyCapture = file("$rootDir/tracy-client/tracy-capture.exe")
 
@@ -133,5 +131,5 @@ tasks.register("openTrace", Exec) {
 }
 
 artifacts {
-    shippingJar tasks.remapJar
+    shippingJar tasks.shadowJar
 }

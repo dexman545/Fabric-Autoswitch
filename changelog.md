@@ -1,3 +1,6 @@
+# 15.0.0
+- Update for 26.1 and unobfuscated Minecraft
+
 # 14.0.3
 - Improve handling of fallback tools in default config
 - Add mace as a preferred tool for destroying boats

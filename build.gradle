@@ -4,11 +4,11 @@ import me.modmuss50.mpp.ReleaseType
 
 plugins {
     // see https://fabricmc.net/develop/ for new versions
-    id 'fabric-loom' version '1.14-SNAPSHOT' apply false
+    id 'net.fabricmc.fabric-loom' version '1.14-SNAPSHOT' apply false
     // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
-    id 'net.neoforged.moddev' version '2.0.123' apply false
-    id 'com.gradleup.shadow'  version '9.1.0' apply false
-    id "me.modmuss50.mod-publish-plugin" version '1.0.0'
+    id 'net.neoforged.moddev' version '2.0.126' apply false
+    id 'com.gradleup.shadow'  version '9.3.0' apply false
+    id "me.modmuss50.mod-publish-plugin" version '1.1.0'
     id("io.github.dexman545.outlet") version "1.7.0-alpha.4"
 }
 
@@ -115,7 +115,7 @@ tasks.withType(PublishModTask).configureEach {
     def mcv = providers.gradleProperty("minecraft_version").get()
     onlyIf {
         def t = it as PublishModTask
-        def isSnapshot = (mcv.contains("w") || mcv.contains("p") || mcv.contains("r"))
+        def isSnapshot = (mcv.contains("s") || mcv.contains("p") || mcv.contains("r"))
         def isForForge = t.platform.modLoaders.get().contains("forge") || t.platform.modLoaders.get().contains("neoforge")
         def isCurseforge = it.name.contains("Curseforge")
         def isRelease = t.platform.type.get() == ReleaseType.STABLE
