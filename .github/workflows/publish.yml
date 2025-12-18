@@ -36,7 +36,7 @@ jobs:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Build with Gradle
-        run: ./gradlew publishMods
+        run: ./gradlew publishModsConditional
         env:
           KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
           KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}

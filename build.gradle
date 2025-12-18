@@ -124,6 +124,17 @@ tasks.withType(PublishModTask).configureEach {
     }
 }
 
+tasks.register("publishModsConditional").configure {
+    group = "publishing"
+    def mcv = providers.gradleProperty("minecraft_version").get()
+    if (!(mcv.contains("s") || mcv.contains("p") || mcv.contains("r"))) {
+        dependsOn 'publishCurseforgeNeoforge'
+        dependsOn'publishModrinthNeoforge'
+    }
+    dependsOn 'publishCurseforgeFabric'
+    dependsOn'publishModrinthFabric'
+}
+
 def getVersionType() {
     if ((version as String).contains('alpha')) {
         return ReleaseType.ALPHA
