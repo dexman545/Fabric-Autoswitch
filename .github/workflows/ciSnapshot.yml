@@ -25,7 +25,7 @@ jobs:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Update versions
-        run: ./gradlew updateVersions
+        run: ./gradlew updateVersions dependencies --write-locks
 
       # Update Neoforge resource cache if needed
       - uses: neoforged/actions-modding/minecraft-assets-cache/create@v1
