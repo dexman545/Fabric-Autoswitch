@@ -5,6 +5,9 @@ import me.modmuss50.mpp.ReleaseType
 buildscript {
     configurations.classpath {
         resolutionStrategy.activateDependencyLocking()
+        // Uncomment to change resolution strategy to force dynamic versions to be refreshed,
+        // or run with --refresh-dependencies
+        //resolutionStrategy.cacheChangingModulesFor(5, "minutes")
     }
 }
 
