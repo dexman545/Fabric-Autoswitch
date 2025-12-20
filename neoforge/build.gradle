@@ -6,10 +6,11 @@ plugins {
 
 neoForge {
     version = neoforge_version
-    parchment {
+    // Disabled as it breaks neo in unobfuscated versions
+    /*parchment {
         minecraftVersion = parchment_minecraft
         mappingsVersion = parchment_version
-    }
+    }*/
     runs {
         configureEach {
             systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
