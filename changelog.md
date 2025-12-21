@@ -1,3 +1,13 @@
+# 13.2.2
+- Improve handling of fallback tools in default config
+- Add mace as a preferred tool for destroying boats
+- Fix error when writing an ExpressionTree to the config file
+- Fix error when writing data to the config file
+- Add support for "exploded data" - that is, the outer `data {}` tag is now optional. If present, it will take precedence
+  over the implicitly defined `data`.
+- Improve maintainability of the ToolSorter
+- Remove unnecessary `OR` statements from the default config
+
 # 13.2.1
 - Remove shearing target defaults for mooshroom, bogged, and snow golems
 - Add sea lanterns to the silk touch default target
