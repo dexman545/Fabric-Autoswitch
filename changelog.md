@@ -1,11 +1,21 @@
+# 12.2.2
+- Improve handling of fallback tools in default config
+- Add mace as a preferred tool for destroying boats
+- Fix error when writing an ExpressionTree to the config file
+- Fix error when writing data to the config file
+- Add support for "exploded data" - that is, the outer `data {}` tag is now optional. If present, it will take precedence
+  over the implicitly defined `data`.
+- Improve maintainability of the ToolSorter
+- Remove unnecessary `OR` statements from the default config
+
 # 12.2.1
 - Remove shearing target defaults for mooshroom, bogged, and snow golems
 - Add sea lanterns to the silk touch default target
 - Add default config entry for things that prefer silk touch axes
 - Add default config entry for things that prefer silk touch hoes
 - Fix stat-change action not working in singleplayer
-    - Unfortunately, due to how statistics work they cannot function in multiplayer.
-        - If a suitable replacement is found, it will be added to get multiplayer working
+  - Unfortunately, due to how statistics work they cannot function in multiplayer.
+    - If a suitable replacement is found, it will be added to get multiplayer working
 - Simplify honey level target definition in default config
 - Fix matching target debug texts being merged
 - Fix `switch-actions` config not being obeyed
