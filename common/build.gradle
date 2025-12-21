@@ -1,6 +1,7 @@
 plugins {
     id 'multiloader-common'
     id 'net.fabricmc.fabric-loom'
+    id 'jvm-test-suite'
 }
 
 dependencies {
@@ -13,6 +14,35 @@ dependencies {
     testImplementation(project(":engine"))
     implementation('com.google.auto.service:auto-service:1.1.1')
     annotationProcessor('com.google.auto.service:auto-service:1.1.1')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "org.assertj:assertj-core:3.27.6"
+    testImplementation('com.google.auto.service:auto-service:1.1.1')
+    testAnnotationProcessor('com.google.auto.service:auto-service:1.1.1')
+}
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter()
+            targets {
+                all {
+                    testTask.configure {
+                        filter {
+                            includeTestsMatching '*Test'
+                            includeTestsMatching '*Tests'
+                            includeTestsMatching '*TestCase'
+                            excludeTestsMatching 'dex.autoswitch.mixin.*'
+                        }
+
+                        delete(project.layout.buildDirectory.dir("unitTests"))
+                        mkdir project.layout.buildDirectory.dir("unitTests")
+                        workingDir = project.layout.buildDirectory.dir("unitTests")
+                    }
+                }
+            }
+        }
+    }
 }
 
 configurations {
