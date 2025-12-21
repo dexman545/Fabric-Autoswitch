@@ -120,7 +120,7 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
 
         if (selector.data() != null && !selector.data().isEmpty()) {
             for (TypedData<?> typedData : selector.data()) {
-                node.node(DATA).node(typedData.type().id()).set(selector.data());
+                node.node(DATA).node(typedData.type().id()).set(typedData.data());
             }
         }
     }
