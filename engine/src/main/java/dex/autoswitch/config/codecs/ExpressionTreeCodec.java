@@ -1,18 +1,23 @@
 package dex.autoswitch.config.codecs;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Set;
+
 import dex.autoswitch.config.ConfigHandler;
-import dex.autoswitch.config.data.tree.*;
+import dex.autoswitch.config.data.tree.DisjunctiveUnion;
+import dex.autoswitch.config.data.tree.ExpressionTree;
+import dex.autoswitch.config.data.tree.IdSelector;
+import dex.autoswitch.config.data.tree.Intersection;
+import dex.autoswitch.config.data.tree.Invert;
+import dex.autoswitch.config.data.tree.Union;
 import io.leangen.geantyref.TypeToken;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
-
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.Set;
 
 public class ExpressionTreeCodec implements TypeSerializer<ExpressionTree> {
     public static final ExpressionTreeCodec INSTANCE = new ExpressionTreeCodec();
@@ -77,14 +82,14 @@ public class ExpressionTreeCodec implements TypeSerializer<ExpressionTree> {
         switch (obj) {
             case DisjunctiveUnion disjunctiveUnion -> {
                 node.node(TYPE).set(OpType.XOR);
-                node.node(CHILD).set(disjunctiveUnion.children());
+                node.node(CHILD).set(EXPRESSION_SET, disjunctiveUnion.children());
             }
             case IdSelector idSelector -> {
                 node.set(idSelector);
             }
             case Intersection intersection -> {
                 node.node(TYPE).set(OpType.OR);
-                node.node(CHILD).set(intersection.children());
+                node.node(CHILD).set(EXPRESSION_SET, intersection.children());
             }
             case Invert invert -> {
                 node.node(TYPE).set(OpType.NOT);
@@ -92,7 +97,7 @@ public class ExpressionTreeCodec implements TypeSerializer<ExpressionTree> {
             }
             case Union union -> {
                 node.node(TYPE).set(OpType.AND);
-                node.node(CHILD).set(union.children());
+                node.node(CHILD).set(EXPRESSION_SET, union.children());
             }
             case null -> node.raw(null);
         }
