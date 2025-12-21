@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurateException;
 
-public class ConfigTest {
+public class EngineConfigTest {
     @Test
     @Disabled
     public void more() throws ConfigurateException {
