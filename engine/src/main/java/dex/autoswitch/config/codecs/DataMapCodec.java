@@ -1,14 +1,19 @@
 package dex.autoswitch.config.codecs;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import dex.autoswitch.config.ConfigHandler;
 import dex.autoswitch.config.data.tree.DataMap;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
-
-import java.lang.reflect.Type;
-import java.util.*;
 
 public final class DataMapCodec implements TypeSerializer<DataMap> {
     public static final DataMapCodec INSTANCE = new DataMapCodec();
@@ -24,7 +29,7 @@ public final class DataMapCodec implements TypeSerializer<DataMap> {
                 if (entry.getKey() instanceof String key) {
                     entries.add(new DataMap.Pair(key, entry.getValue().get(DataMap.class)));
                 } else {
-                    System.out.println("Unknown key type in DataMap" + entry.getKey());
+                    ConfigHandler.LOGGER.warning("Unknown key type in DataMap: " + entry.getKey());
                 }
             }
 

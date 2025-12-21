@@ -1,5 +1,11 @@
 # 15.0.0
 - Update for 26.1 and unobfuscated Minecraft
+- Fix error when writing an ExpressionTree to the config file
+- Fix error when writing data to the config file
+- Add support for "exploded data" - that is, the outer `data {}` tag is now optional. If present, it will take precedence 
+over the implicitly defined `data`.
+- Improve maintainability of the ToolSorter
+- Remove unnecessary `OR` statements from the default config
 
 # 14.0.3
 - Improve handling of fallback tools in default config
