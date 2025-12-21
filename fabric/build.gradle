@@ -37,12 +37,14 @@ loom {
             client()
             setConfigName('Fabric Client')
             ideConfigGenerated(true)
+            ideConfigFolder = 'Fabric Runs'
             runDir('runs/client')
         }
         server {
             server()
             setConfigName('Fabric Server')
             ideConfigGenerated(true)
+            ideConfigFolder = 'Fabric Runs'
             runDir('runs/server')
         }
         clientGameTest {
@@ -53,6 +55,7 @@ loom {
             runDir('runs/gametest')
             source = sourceSets.gametest
             ideConfigGenerated(true)
+            ideConfigFolder = 'Fabric Runs'
         }
         serverGameTest {
             server()
@@ -62,6 +65,7 @@ loom {
             runDir('runs/gametest')
             source = sourceSets.gametest
             ideConfigGenerated(true)
+            ideConfigFolder = 'Fabric Runs'
         }
     }
     /*decompilers {
