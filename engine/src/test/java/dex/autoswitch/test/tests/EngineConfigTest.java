@@ -16,27 +16,10 @@ import dex.autoswitch.engine.Selector;
 import dex.autoswitch.engine.data.extensible.SelectableType;
 import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.harness.DummyTypes;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurateException;
 
 public class EngineConfigTest {
-    @Test
-    @Disabled
-    public void more() throws ConfigurateException {
-        var loader = ConfigHandler.createLoader(Path.of("meh.conf"));
-        var node = loader.load();
-
-        var config = node.get(AutoSwitchConfig.class);
-        //node.set(config);
-
-        loader.save(node);
-
-        //System.out.println(config.getConfiguration());
-
-        //System.out.println(config.attackAction);
-    }
-
     @Test
     void readConfigTypes() {
         var config = loadConfig("configTypes");
