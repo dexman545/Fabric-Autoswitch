@@ -51,6 +51,13 @@ public class ConfigHandler {
         return root.get(AutoSwitchConfig.class);
     }
 
+    public static AutoSwitchConfig readConfiguration(URL url) throws ConfigurateException {
+        var loader = createLoader(url);
+
+        var root = Transformations.updateNode(loader.load());
+        return root.get(AutoSwitchConfig.class);
+    }
+
     public static AutoSwitchConfigReference readDynamicConfiguration(Path path, URL ref) throws IOException {
         updateConfig(path);
         return new AutoSwitchConfigReference(path, ref);
