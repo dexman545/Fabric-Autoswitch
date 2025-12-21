@@ -3,6 +3,7 @@ package dex.autoswitch.config.codecs;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -120,7 +121,7 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
 
         if (selector.data() != null && !selector.data().isEmpty()) {
             for (TypedData<?> typedData : selector.data()) {
-                node.node(DATA).node(typedData.type().id()).set(typedData.data());
+                node.node(DATA).node(typedData.type().id().toLowerCase(Locale.ENGLISH)).set(typedData.data());
             }
         }
     }
