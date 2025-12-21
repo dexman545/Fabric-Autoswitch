@@ -6,7 +6,7 @@ plugins {
 
 neoForge {
     version = neoforge_version
-    // Disabled as it breaks neo in unobfuscated versions
+    // Disabled as it breaks neo in unobfuscated versions until MDG 2.0.133 or later
     /*parchment {
         minecraftVersion = parchment_minecraft
         mappingsVersion = parchment_version
@@ -15,6 +15,7 @@ neoForge {
         configureEach {
             systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
             ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
+            ideFolderName = "Neoforge"
         }
         client {
             client()
