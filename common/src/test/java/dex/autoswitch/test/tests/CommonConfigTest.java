@@ -28,8 +28,19 @@ public class CommonConfigTest {
         assertThat(newConfig).usingRecursiveComparison().isEqualTo(config);
     }
 
+    @Test
+    void testExplodedData() throws IOException, URISyntaxException {
+        var ref = loadConfig("explodedDataRef");
+        var exploded = loadConfig("explodedDataTest");
+        assertThat(exploded).usingRecursiveComparison().isEqualTo(ref);
+    }
+
     protected AutoSwitchConfig loadDefaultConfig() throws URISyntaxException, MalformedURLException {
         return getConfig(Objects.requireNonNull(Constants.class.getResource("/default.conf")).toURI().toURL());
+    }
+
+    protected AutoSwitchConfig loadConfig(String file) throws URISyntaxException, MalformedURLException {
+        return getConfig(Objects.requireNonNull(Constants.class.getResource("/configs/" + file + ".conf")).toURI().toURL());
     }
 
     private static AutoSwitchConfig getConfig(Path path) {
