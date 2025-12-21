@@ -27,6 +27,7 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
     private static final String ID = "id";
     private static final String TAG = "tag";
     private static final String DATA = "data";
+    private static final Set<String> KEYS = Set.of(TYPE, ID, TAG, DATA);
 
     private IdSelectorCodec() {
     }
@@ -81,7 +82,21 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
         }
 
         Set<TypedData<?>> data = new HashSet<>();
+
+        // If data {} exists and exploded data is present, read only from the explicitly marked data node
         if (dataNode.isMap()) {
+            if (node.isMap()) {
+                // If both data{} and exploded keys are present, warn the user.
+                for (Map.Entry<Object, ? extends ConfigurationNode> entry : node.childrenMap().entrySet()) {
+                    if (entry.getKey() instanceof String kName && !KEYS.contains(kName)) {
+                        ConfigHandler.LOGGER.warning(createLogMessage(node, """
+                                Both 'data' block and exploded data keys present; \
+                                'data' block will take precedence. Found exploded key:\s""" + kName));
+                        break;
+                    }
+                }
+            }
+
             var children = dataNode.childrenMap();
             for (Map.Entry<Object, ? extends ConfigurationNode> entry : children.entrySet()) {
                 if (entry.getKey() instanceof String key) {
@@ -89,10 +104,38 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
                         var dataType = SwitchRegistry.INSTANCE.getDataType(key);
                         data.add(new TypedData<>(dataType, entry.getValue().get(dataType.getSupportedData())));
                     } catch (IllegalArgumentException e) {
+                        // Unknown data type id inside data{}, skip
+                        ConfigHandler.LOGGER.warning(createLogMessage(node,
+                                "Unknown data key in 'data' block: " + key + " - skipping."));
+                    } catch (Exception e) {
                         throw new SerializationException(e);
                     }
                 } else {
                     throw new SerializationException("Unknown key type " + entry.getKey());
+                }
+            }
+        } else {
+            // Exploded data - data not in a data{} object
+            if (node.isMap()) {
+                var children = node.childrenMap();
+                for (Map.Entry<Object, ? extends ConfigurationNode> entry : children.entrySet()) {
+                    if (entry.getKey() instanceof String key) {
+                        if (KEYS.contains(key)) {
+                            continue; // Skip IdSelector-specific keys
+                        }
+                        try {
+                            var dataType = SwitchRegistry.INSTANCE.getDataType(key);
+                            data.add(new TypedData<>(dataType, entry.getValue().get(dataType.getSupportedData())));
+                        } catch (IllegalArgumentException e) {
+                            // Unknown data type id in exploded data, skip
+                            ConfigHandler.LOGGER.warning(createLogMessage(node,
+                                    "Unknown data key in exploded 'data': " + key + " - skipping."));
+                        } catch (Exception e) {
+                            throw new SerializationException(e);
+                        }
+                    } else {
+                        throw new SerializationException("Unknown key type " + entry.getKey());
+                    }
                 }
             }
         }
