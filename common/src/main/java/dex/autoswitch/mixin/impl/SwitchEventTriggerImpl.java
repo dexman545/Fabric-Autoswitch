@@ -1,7 +1,10 @@
 package dex.autoswitch.mixin.impl;
 
+import java.util.Map;
+
 import dex.autoswitch.Constants;
 import dex.autoswitch.engine.Action;
+import dex.autoswitch.engine.ContextKeys;
 import dex.autoswitch.engine.TargetType;
 import dex.autoswitch.engine.events.SwitchEvent;
 import dex.autoswitch.engine.state.SwitchContext;
@@ -62,7 +65,8 @@ public class SwitchEventTriggerImpl {
         }
 
         var context = new SwitchContext(new SwitchedPlayer(player), Constants.CONFIG,
-                Action.STAT_CHANGE, stat, Constants.SWITCH_STATE, Constants.SCHEDULER);
+                Action.STAT_CHANGE, stat, Constants.SWITCH_STATE, Constants.SCHEDULER,
+                Map.entry(ContextKeys.PLAYER, player));
         Constants.SCHEDULER.schedule(SwitchEvent.STAT_CHANGE, context, 0);
 
         // Run scheduler here as well as in the clock to ensure immediate-eval switches occur
@@ -108,7 +112,8 @@ public class SwitchEventTriggerImpl {
                 var entityHitResult = (EntityHitResult) crosshairTarget;
                 var entity = entityHitResult.getEntity();
                 var context = new SwitchContext(new SwitchedPlayer(player), Constants.CONFIG,
-                        desiredType.action, entity, Constants.SWITCH_STATE, Constants.SCHEDULER);
+                        desiredType.action, entity, Constants.SWITCH_STATE, Constants.SCHEDULER,
+                        Map.entry(ContextKeys.PLAYER, player));
                 Constants.SCHEDULER.schedule(event, context, 0);
             }
             case BLOCK -> {
@@ -121,7 +126,9 @@ public class SwitchEventTriggerImpl {
                 if (blockState.isAir())
                     break;
                 var context = new SwitchContext(new SwitchedPlayer(player), Constants.CONFIG,
-                        desiredType.action, blockState, Constants.SWITCH_STATE, Constants.SCHEDULER);
+                        desiredType.action, blockState, Constants.SWITCH_STATE, Constants.SCHEDULER,
+                        Map.entry(ContextKeys.BLOCK_POS, blockPos),
+                        Map.entry(ContextKeys.PLAYER, player));
                 Constants.SCHEDULER.schedule(event, context, 0);
             }
         }

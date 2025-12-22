@@ -13,6 +13,7 @@ import dex.autoswitch.engine.types.data.ComponentData;
 import dex.autoswitch.engine.types.data.EnchantmentData;
 import dex.autoswitch.engine.types.data.EnchantmentLevelData;
 import dex.autoswitch.engine.types.data.EntityEquipmentData;
+import dex.autoswitch.engine.types.data.PlayerData;
 import dex.autoswitch.engine.types.selectable.BlockSelectableType;
 import dex.autoswitch.engine.types.selectable.EnchantmentSelectableType;
 import dex.autoswitch.engine.types.selectable.EntitySelectableType;
@@ -57,7 +58,8 @@ public class MinecraftSwitchService implements SwitchRegistryService {
                 BlockStateData.INSTANCE,
                 EntityEquipmentData.INSTANCE,
                 ComponentData.INSTANCE,
-                EnchantmentLevelData.INSTANCE
+                EnchantmentLevelData.INSTANCE,
+                PlayerData.INSTANCE
         );
     }
 
