@@ -2,6 +2,7 @@ package dex.autoswitch.gametest.unit;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import dex.autoswitch.Constants;
@@ -9,6 +10,7 @@ import dex.autoswitch.api.impl.AutoSwitchApi;
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.config.ConfigHandler;
 import dex.autoswitch.engine.Action;
+import dex.autoswitch.engine.data.ContextKey;
 import dex.autoswitch.engine.data.extensible.PlayerInventory;
 import dex.autoswitch.engine.events.SwitchEvent;
 import dex.autoswitch.engine.state.SwitchContext;
@@ -58,7 +60,9 @@ public abstract class AbstractTest {
         TestPlayer testPlayer = new TestPlayer(new SwitchedPlayer(player));
         Constants.SCHEDULER.schedule(getEvent(action),
                 new SwitchContext(testPlayer, config, action,
-                        target, Constants.SWITCH_STATE, Constants.SCHEDULER), 0);
+                        target, Constants.SWITCH_STATE, Constants.SCHEDULER,
+                        Map.entry(ContextKey.get("player", Player.class), player)
+                ), 0);
         Constants.SCHEDULER.tick();
         return testPlayer;
     }
