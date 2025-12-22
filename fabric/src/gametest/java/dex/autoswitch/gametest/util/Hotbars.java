@@ -175,13 +175,16 @@ public class Hotbars {
                 helper, Items.DIAMOND_PICKAXE,
                 Enchant.of(Enchantments.EFFICIENCY, 1)
         ));
+        inv.add(6, RegistryObject.stack(
+                helper, Items.DIAMOND_AXE
+        ));
 
         return player;
     }
 
     /*public static Player createStandardPlayer(GameTestHelper helper) {
-        var player = helper.makeMockPlayer(GameType.SURVIVAL);
-        var inv = player.getInventory();
+        var switchedPlayer = helper.makeMockPlayer(GameType.SURVIVAL);
+        var inv = switchedPlayer.getInventory();
 
         inv.add(0, );
         inv.add(1, );
@@ -193,6 +196,6 @@ public class Hotbars {
         inv.add(7, );
         inv.add(8, );
 
-        return player;
+        return switchedPlayer;
     }*/
 }

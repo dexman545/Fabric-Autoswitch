@@ -11,7 +11,10 @@ import dex.autoswitch.gametest.util.RegistryObject;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -241,5 +244,63 @@ public class UnitGameTest extends AbstractTest {
         assertSlot(helper, player, 4);
 
         helper.succeed();
+    }
+
+    @GameTest
+    public void playerDataTest(GameTestHelper helper) {
+        setup(helper);
+
+        var config = loadConfig("playerDataTest");
+        var player = Hotbars.createLevelSensitive(helper);
+
+        var stone = RegistryObject.block(Blocks.STONE);
+        var obsidian = RegistryObject.block(Blocks.OBSIDIAN);
+        var deepslate = RegistryObject.block(Blocks.DEEPSLATE);
+        var cobblestone = RegistryObject.block(Blocks.COBBLESTONE);
+        var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
+
+        player.startFallFlying();
+
+        select(Action.ATTACK, stone, player, config);
+        assertSlot(helper, player, 1);
+
+        select(Action.ATTACK, cobblestone, player, config);
+        assertSlot(helper, player, 5);
+
+        select(Action.ATTACK, deepslate, player, player.blockPosition().above(15), config);
+        assertSlot(helper, player, 4);
+
+        select(Action.ATTACK, deepslate, player, player.blockPosition(), config);
+        assertNotSlot(helper, player, 4);
+
+        player.stopFallFlying();
+
+        player.getInventory().setSelectedSlot(0);
+        moveEntity(player, creeper, 11);
+        select(Action.ATTACK, creeper, player, config);
+        assertSlot(helper, player, 6);
+
+        player.getInventory().setSelectedSlot(0);
+        moveEntity(player, creeper, 10);
+        select(Action.ATTACK, creeper, player, config);
+        assertSlot(helper, player, 7);
+
+        select(Action.ATTACK, obsidian, player, config);
+        assertSlot(helper, player, 7);
+        player.setPose(Pose.CROUCHING);
+        select(Action.ATTACK, obsidian, player, config);
+        assertSlot(helper, player, 2);
+
+        player.setPose(Pose.STANDING);
+
+        select(Action.ATTACK, obsidian, player, config);
+        assertNotSlot(helper, player, 2);
+
+        helper.succeed();
+    }
+
+    private static void moveEntity(Player player, Entity entity, int distance) {
+        var pp = player.position();
+        entity.setPos(pp.x + distance, pp.y, pp.z);
     }
 }

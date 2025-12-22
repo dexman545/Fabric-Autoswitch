@@ -1,6 +1,7 @@
 package dex.autoswitch.debug.gui;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
@@ -8,6 +9,7 @@ import dex.autoswitch.Constants;
 import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.Matcher;
 import dex.autoswitch.engine.Selector;
+import dex.autoswitch.engine.data.ContextKey;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import it.unimi.dsi.fastutil.Pair;
@@ -18,9 +20,11 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.debug.DebugScreenDisplayer;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.BlockHitResult;
@@ -146,6 +150,8 @@ public class DebugText {
                 return;
             }
 
+            var player = Minecraft.getInstance().player;
+
             var selectors = Constants.CONFIG.getConfiguration().get(action);
             var context = switch (Objects.requireNonNull(Minecraft.getInstance().hitResult.getType())) {
                 case MISS -> null;
@@ -153,13 +159,18 @@ public class DebugText {
                     if (Minecraft.getInstance().hitResult instanceof BlockHitResult result) {
                         assert Minecraft.getInstance().level != null;
                         var block = Minecraft.getInstance().level.getBlockState(result.getBlockPos());
-                        yield new SelectionContext(action, block);
+                        yield new SelectionContext(action, block,
+                                Map.entry(ContextKey.get("player", Player.class), player),
+                                Map.entry(ContextKey.get("blockPos", BlockPos.class), result.getBlockPos())
+                        );
                     }
                     yield null;
                 }
                 case ENTITY -> {
                     if (Minecraft.getInstance().hitResult instanceof EntityHitResult result) {
-                        yield new SelectionContext(action, result.getEntity());
+                        yield new SelectionContext(action, result.getEntity(),
+                                Map.entry(ContextKey.get("player", Player.class), player)
+                        );
                     }
                     yield null;
                 }
@@ -220,7 +231,7 @@ public class DebugText {
             var player = Minecraft.getInstance().player;
             var heldItem = player.getMainHandItem();
 
-            var context = new SelectionContext(Action.INTERACT, heldItem);
+            var context = new SelectionContext(Action.INTERACT, heldItem, Map.entry(ContextKey.get("player", Player.class), player));
 
             var selectors = Constants.CONFIG.getConfiguration().values().stream()
                     .flatMap(s -> s.values().stream())
