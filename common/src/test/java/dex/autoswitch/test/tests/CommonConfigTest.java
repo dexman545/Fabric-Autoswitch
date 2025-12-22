@@ -1,6 +1,7 @@
 package dex.autoswitch.test.tests;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -13,6 +14,7 @@ import java.util.Objects;
 import dex.autoswitch.Constants;
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.config.ConfigHandler;
+import dex.autoswitch.config.data.tree.Intersection;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurateException;
@@ -27,7 +29,17 @@ public class CommonConfigTest {
         writeConfig(config, p);
         var newConfig = getConfig(p);
 
-        assertThat(newConfig).usingRecursiveComparison().isEqualTo(config);
+        assertThat(newConfig)
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isEqualTo(config);
+
+        // Remove some entries to ensure the recursive comparison works
+        assertTrue(config.interactAction.removeIf(t -> t.target instanceof Intersection));
+        assertThat(config)
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isNotEqualTo(newConfig);
     }
 
     @Test
@@ -35,7 +47,7 @@ public class CommonConfigTest {
     void testExplodedData() throws IOException, URISyntaxException {
         var ref = loadConfig("explodedDataRef");
         var exploded = loadConfig("explodedDataTest");
-        assertThat(exploded).usingRecursiveComparison().isEqualTo(ref);
+        assertThat(exploded).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(ref);
     }
 
     protected AutoSwitchConfig loadDefaultConfig() throws URISyntaxException, MalformedURLException {
