@@ -3,6 +3,7 @@ package dex.autoswitch.gametest.unit;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import dex.autoswitch.Constants;
@@ -10,7 +11,7 @@ import dex.autoswitch.api.impl.AutoSwitchApi;
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.config.ConfigHandler;
 import dex.autoswitch.engine.Action;
-import dex.autoswitch.engine.data.ContextKey;
+import dex.autoswitch.engine.ContextKeys;
 import dex.autoswitch.engine.data.extensible.PlayerInventory;
 import dex.autoswitch.engine.events.SwitchEvent;
 import dex.autoswitch.engine.state.SwitchContext;
@@ -20,6 +21,7 @@ import dex.autoswitch.platform.Services;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.spongepowered.configurate.ConfigurateException;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -57,11 +59,16 @@ public abstract class AbstractTest {
     }
 
     protected TestPlayer select(Action action, Object target, Player player, AutoSwitchConfig config) {
+        return select(action, target, player, null, config);
+    }
+
+    protected TestPlayer select(Action action, Object target, Player player, BlockPos pos, AutoSwitchConfig config) {
         TestPlayer testPlayer = new TestPlayer(new SwitchedPlayer(player));
         Constants.SCHEDULER.schedule(getEvent(action),
                 new SwitchContext(testPlayer, config, action,
                         target, Constants.SWITCH_STATE, Constants.SCHEDULER,
-                        Map.entry(ContextKey.get("player", Player.class), player)
+                        Map.entry(ContextKeys.PLAYER, player),
+                        Map.entry(ContextKeys.BLOCK_POS, pos == null ? BlockPos.ZERO : pos)
                 ), 0);
         Constants.SCHEDULER.tick();
         return testPlayer;
@@ -78,6 +85,12 @@ public abstract class AbstractTest {
         var inv = player.getInventory();
         helper.assertValueEqual(expectedSlot, inv.getSelectedSlot(),
                 Component.literal("correct slot"));
+    }
+
+    protected void assertNotSlot(GameTestHelper helper, Player player, int expectedSlot) {
+        var inv = player.getInventory();
+        helper.assertFalse(Objects.equals(expectedSlot, inv.getSelectedSlot()),
+                Component.literal("slot to be different from expected"));
     }
 
     private SwitchEvent getEvent(Action action) {
