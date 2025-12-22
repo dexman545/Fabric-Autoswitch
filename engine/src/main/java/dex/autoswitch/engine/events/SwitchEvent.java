@@ -73,7 +73,7 @@ public enum SwitchEvent {
             for (FeatureConfig.OffhandSelector selector : ctx.config().featureConfig.offhandSelectors) {
                 if (selector.type == ctx.target()) {
                     if (selector.tool != null) {
-                        var c = new SelectionContext(ctx.action(), ctx.target());
+                        var c = new SelectionContext(ctx.action(), ctx.target(), ctx.attachments());
                         var tool = ctx.player().getTool(ctx.player().currentSelectedSlot());
                         var m = selector.tool.matches(0, c, tool);
                         if (m.matches()) {
