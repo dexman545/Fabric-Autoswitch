@@ -104,6 +104,11 @@ public abstract class AbstractTest {
         assertSlot(helper, player, expectedSlot);
     }
 
+    protected void assertNotActionSlot(GameTestHelper helper, Action action, Object target, Player player, int expectedSlot, AutoSwitchConfig config) {
+        select(action, target, player, config);
+        assertNotSlot(helper, player, expectedSlot);
+    }
+
     protected void assertOffhand(GameTestHelper helper, TestPlayer player, boolean expected) {
         String msg = expected ? "Expected to offhand" : "Expected NOT to offhand";
         helper.assertTrue(player.hasOffhanded().booleanValue() == expected, Component.literal(msg));
