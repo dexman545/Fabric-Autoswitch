@@ -24,6 +24,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -91,6 +92,26 @@ public abstract class AbstractTest {
         var inv = player.getInventory();
         helper.assertFalse(Objects.equals(expectedSlot, inv.getSelectedSlot()),
                 Component.literal("slot to be different from expected"));
+    }
+
+    protected void assertActionSlot(GameTestHelper helper, Action action, Object target, Player player, int expectedSlot) {
+        select(action, target, player);
+        assertSlot(helper, player, expectedSlot);
+    }
+
+    protected void assertActionSlot(GameTestHelper helper, Action action, Object target, Player player, int expectedSlot, AutoSwitchConfig config) {
+        select(action, target, player, config);
+        assertSlot(helper, player, expectedSlot);
+    }
+
+    protected void assertOffhand(GameTestHelper helper, TestPlayer player, boolean expected) {
+        String msg = expected ? "Expected to offhand" : "Expected NOT to offhand";
+        helper.assertTrue(player.hasOffhanded().booleanValue() == expected, Component.literal(msg));
+    }
+
+    protected static void moveEntity(Player player, Entity entity, int distance) {
+        var pp = player.position();
+        entity.setPos(pp.x + distance, pp.y, pp.z);
     }
 
     private SwitchEvent getEvent(Action action) {
