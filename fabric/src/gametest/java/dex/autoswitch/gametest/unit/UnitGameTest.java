@@ -9,11 +9,8 @@ import dex.autoswitch.gametest.util.Hotbars;
 import dex.autoswitch.gametest.util.RegistryObject;
 
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -70,30 +67,32 @@ public class UnitGameTest extends AbstractTest {
     public void entityInteractionTest(GameTestHelper helper) {
         setup(helper);
 
-        TestPlayer testPlayer;
         var player = Hotbars.fightingPlayer(helper);
         var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
         var strider = RegistryObject.entity(helper, EntityType.STRIDER);
         var ironGolem = RegistryObject.entity(helper, EntityType.IRON_GOLEM);
 
-        testPlayer = select(Action.INTERACT, creeper, player);
+        // Standard interaction: Expect no offhand
+        TestPlayer testPlayer = select(Action.INTERACT, creeper, player);
         assertSlot(helper, player, 8);
-        helper.assertTrue(testPlayer.hasOffhanded().isFalse(), Component.literal("Expected to not offhand"));
+        assertOffhand(helper, testPlayer, false);
 
+        // Interaction where slot is already correct
         player.getInventory().setSelectedSlot(2);
         testPlayer = select(Action.INTERACT, strider, player);
         assertSlot(helper, player, 2);
-        helper.assertTrue(testPlayer.hasOffhanded().isFalse(), Component.literal("Expected to not offhand"));
+        assertOffhand(helper, testPlayer, false);
 
+        // Equip saddle and expect offhand behavior
         strider.equipItemIfPossible(helper.getLevel(), RegistryObject.stack(helper, Items.SADDLE));
         testPlayer = select(Action.INTERACT, strider, player);
         assertSlot(helper, player, 0);
         Constants.SCHEDULER.tick();
-        helper.assertTrue(testPlayer.hasOffhanded().isTrue(), Component.literal("Expected to offhand"));
+        assertOffhand(helper, testPlayer, true);
 
         testPlayer = select(Action.INTERACT, ironGolem, player);
         assertSlot(helper, player, 2);
-        helper.assertTrue(testPlayer.hasOffhanded().isFalse(), Component.literal("Expected to not offhand"));
+        assertOffhand(helper, testPlayer, false);
 
         helper.succeed();
     }
@@ -121,7 +120,6 @@ public class UnitGameTest extends AbstractTest {
     public void potionTest(GameTestHelper helper) {
         setup(helper);
 
-        TestPlayer testPlayer;
         var player = Hotbars.potionPlayer(helper);
         var fire = RegistryObject.block(Blocks.FIRE);
 
@@ -157,7 +155,6 @@ public class UnitGameTest extends AbstractTest {
     public void blockstateTest(GameTestHelper helper) {
         setup(helper);
 
-        TestPlayer testPlayer;
         var player = Hotbars.shearingPlayer(helper);
 
         var beehive = RegistryObject.block(Blocks.BEEHIVE);
@@ -172,27 +169,18 @@ public class UnitGameTest extends AbstractTest {
         select(Action.INTERACT, beehive, player);
         assertSlot(helper, player, 0);
 
-        select(Action.INTERACT, beehiveWithHoney1, player);
-        assertSlot(helper, player, 0);
+        // Test normal vs honey-filled beehive
+        assertActionSlot(helper, Action.INTERACT, beehive, player, 0);
+        assertActionSlot(helper, Action.INTERACT, beehiveWithHoney1, player, 0);
+        assertActionSlot(helper, Action.INTERACT, beehiveWithHoney2, player, 0);
+        assertActionSlot(helper, Action.INTERACT, beehiveWithHoney5, player, 3);
 
-        select(Action.INTERACT, beehiveWithHoney2, player);
-        assertSlot(helper, player, 0);
-
-        select(Action.INTERACT, beehiveWithHoney5, player);
-        assertSlot(helper, player, 3);
-
+        // Test normal vs honey-filled bee nest
         player.getInventory().setSelectedSlot(0);
-        select(Action.INTERACT, beeNest, player);
-        assertSlot(helper, player, 0);
-
-        select(Action.INTERACT, beeNestWithHoney1, player);
-        assertSlot(helper, player, 0);
-
-        select(Action.INTERACT, beeNestWithHoney2, player);
-        assertSlot(helper, player, 0);
-
-        select(Action.INTERACT, beeNestWithHoney5, player);
-        assertSlot(helper, player, 3);
+        assertActionSlot(helper, Action.INTERACT, beeNest, player, 0);
+        assertActionSlot(helper, Action.INTERACT, beeNestWithHoney1, player, 0);
+        assertActionSlot(helper, Action.INTERACT, beeNestWithHoney2, player, 0);
+        assertActionSlot(helper, Action.INTERACT, beeNestWithHoney5, player, 3);
 
         helper.succeed();
     }
@@ -201,17 +189,17 @@ public class UnitGameTest extends AbstractTest {
     public void skipDepletedItemsTest(GameTestHelper helper) {
         setup(helper);
 
-        TestPlayer testPlayer;
         var player = Hotbars.wornFighter(helper);
         var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
 
         select(Action.ATTACK, creeper, player);
         assertSlot(helper, player, 1);
 
-        // Set sword to be nearly broken
-        var sword1 = player.getInventory().getItem(1);
-        sword1.setDamageValue(sword1.getMaxDamage() - 1);
+        // Damage the sword to its last use
+        var sword = player.getInventory().getItem(1);
+        sword.setDamageValue(sword.getMaxDamage() - 1);
 
+        // Should now skip the depleted sword and pick the next best tool
         select(Action.ATTACK, creeper, player);
         assertSlot(helper, player, 2);
 
@@ -258,14 +246,12 @@ public class UnitGameTest extends AbstractTest {
         var cobblestone = RegistryObject.block(Blocks.COBBLESTONE);
         var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
 
+        // Flying tests
         player.startFallFlying();
+        assertActionSlot(helper, Action.ATTACK, stone, player, 1, config);
+        assertActionSlot(helper, Action.ATTACK, cobblestone, player, 5, config);
 
-        select(Action.ATTACK, stone, player, config);
-        assertSlot(helper, player, 1);
-
-        select(Action.ATTACK, cobblestone, player, config);
-        assertSlot(helper, player, 5);
-
+        // Distance tests
         select(Action.ATTACK, deepslate, player, player.blockPosition().above(15), config);
         assertSlot(helper, player, 4);
 
@@ -275,31 +261,24 @@ public class UnitGameTest extends AbstractTest {
         player.stopFallFlying();
 
         player.getInventory().setSelectedSlot(0);
+
+        // Entity distance tests
         moveEntity(player, creeper, 11);
-        select(Action.ATTACK, creeper, player, config);
-        assertSlot(helper, player, 6);
+        assertActionSlot(helper, Action.ATTACK, creeper, player, 6, config);
 
-        player.getInventory().setSelectedSlot(0);
         moveEntity(player, creeper, 10);
-        select(Action.ATTACK, creeper, player, config);
-        assertSlot(helper, player, 7);
+        assertActionSlot(helper, Action.ATTACK, creeper, player, 7, config);
 
-        select(Action.ATTACK, obsidian, player, config);
-        assertSlot(helper, player, 7);
+        // Crouching tests
+        assertActionSlot(helper, Action.ATTACK, obsidian, player, 7, config);
+
         player.setPose(Pose.CROUCHING);
-        select(Action.ATTACK, obsidian, player, config);
-        assertSlot(helper, player, 2);
+        assertActionSlot(helper, Action.ATTACK, obsidian, player, 2, config);
 
         player.setPose(Pose.STANDING);
-
         select(Action.ATTACK, obsidian, player, config);
         assertNotSlot(helper, player, 2);
 
         helper.succeed();
-    }
-
-    private static void moveEntity(Player player, Entity entity, int distance) {
-        var pp = player.position();
-        entity.setPos(pp.x + distance, pp.y, pp.z);
     }
 }
