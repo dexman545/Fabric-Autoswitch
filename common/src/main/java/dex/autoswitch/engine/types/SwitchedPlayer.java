@@ -71,7 +71,7 @@ public record SwitchedPlayer(Player player) implements PlayerInventory<ItemStack
 
         for (FeatureConfig.SwitchbackSelector selector : ctx.config().featureConfig.switchbackWaitsForAttackProgress) {
             if (selector.action == ctx.action()) {
-                var c = new SelectionContext(ctx.action(), ctx.target());
+                var c = new SelectionContext(ctx.action(), ctx.target(), ctx.attachments());
                 var m = selector.target.matches(0, c, ctx.target());
                 if (m.matches()) {
                     return true;

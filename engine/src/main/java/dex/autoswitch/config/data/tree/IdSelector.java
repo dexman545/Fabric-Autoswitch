@@ -58,7 +58,7 @@ public record IdSelector(FutureSelectable<?, ?> selectable, Set<TypedData<?>> da
 
             // Recontextualize the selection context for data evaluation,
             // passing the current selector as the target
-            var ctx = new SelectionContext(context.action(), this.selectable);
+            var ctx = new SelectionContext(context.action(), this.selectable, context.attachments());
 
             // Merge specific data ratings, returning false if any fail to match
             for (TypedData<?> typedData : data) {

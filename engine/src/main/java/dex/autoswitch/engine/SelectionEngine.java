@@ -100,6 +100,17 @@ public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configur
     }
 
     /**
+     * Finds the slot for the given action and target.
+     *
+     * @param inventory the player inventory to select from
+     * @param context   the context that includes the action and target for which the tools and slots are being evaluated
+     * @return the slot to select, empty if no slot was found
+     */
+    public OptionalInt findSlot(PlayerInventory<?> inventory, SelectionContext context) {
+        return findIdealSlot(inventory, configuration.get(context.action()), context);
+    }
+
+    /**
      * Identifies the ideal slot in a player's inventory based on the provided selectors and context.
      * The selection prioritizes target priority, target rating, tool priority, tool rating,
      * and whether the slot is currently selected (reversed slot order as a tie-breaker).
