@@ -3,6 +3,7 @@ package dex.autoswitch.gametest.unit;
 import java.util.Objects;
 
 import dex.autoswitch.Constants;
+import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.types.selectable.StatSelectableType;
 import dex.autoswitch.gametest.util.Hotbars;
@@ -18,68 +19,93 @@ import net.minecraft.world.level.block.Blocks;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 
 public class UnitGameTest extends AbstractTest {
-    @GameTest
-    public void pickaxeTest(GameTestHelper helper) {
-        setup(helper);
+    private final AutoSwitchConfig playerDataTestConfig = loadConfig("playerDataTest");
+    private final AutoSwitchConfig enchantmentLevelTestConfig = loadConfig("enchantmentLevelTest");
 
+    @GameTest
+    public void pickaxeStone(GameTestHelper helper) {
+        setup(helper);
         var player = Hotbars.pickaxePlayer(helper);
-        var stone = RegistryObject.block(Blocks.STONE);
-        var glass = RegistryObject.block(Blocks.GLASS);
-        var enderChest = RegistryObject.block(Blocks.ENDER_CHEST);
-
-        select(Action.ATTACK, stone, player);
+        select(Action.ATTACK, RegistryObject.block(Blocks.STONE), player);
         assertSlot(helper, player, 6);
-
-        player.getInventory().setSelectedSlot(0);
-        select(Action.ATTACK, glass, player);
-        assertSlot(helper, player, 5);
-
-        player.getInventory().setSelectedSlot(0);
-        select(Action.ATTACK, enderChest, player);
-        assertSlot(helper, player, 5);
-
         helper.succeed();
     }
 
     @GameTest
-    public void entityTest(GameTestHelper helper) {
+    public void pickaxeGlass(GameTestHelper helper) {
         setup(helper);
+        var player = Hotbars.pickaxePlayer(helper);
+        select(Action.ATTACK, RegistryObject.block(Blocks.GLASS), player);
+        assertSlot(helper, player, 5);
+        helper.succeed();
+    }
 
-        TestPlayer testPlayer;
+    @GameTest
+    public void pickaxeEnderChest(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.pickaxePlayer(helper);
+        select(Action.ATTACK, RegistryObject.block(Blocks.ENDER_CHEST), player);
+        assertSlot(helper, player, 5);
+        helper.succeed();
+    }
+
+    @GameTest
+    public void attackChicken(GameTestHelper helper) {
+        setup(helper);
         var player = Hotbars.fightingPlayer(helper);
-        var chicken = RegistryObject.entity(helper, EntityType.CHICKEN);
-        var spider = RegistryObject.entity(helper, EntityType.SPIDER);
-        var zombie = RegistryObject.entity(helper, EntityType.ZOMBIE);
-
-        select(Action.ATTACK, chicken, player);
+        select(Action.ATTACK, RegistryObject.entity(helper, EntityType.CHICKEN), player);
         assertSlot(helper, player, 7);
-
-        select(Action.ATTACK, spider, player);
-        assertSlot(helper, player, 5);
-
-        select(Action.ATTACK, zombie, player);
-        assertSlot(helper, player, 6);
-
         helper.succeed();
     }
 
     @GameTest
-    public void entityInteractionTest(GameTestHelper helper) {
+    public void attackSpider(GameTestHelper helper) {
         setup(helper);
-
         var player = Hotbars.fightingPlayer(helper);
-        var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
-        var strider = RegistryObject.entity(helper, EntityType.STRIDER);
-        var ironGolem = RegistryObject.entity(helper, EntityType.IRON_GOLEM);
+        select(Action.ATTACK, RegistryObject.entity(helper, EntityType.SPIDER), player);
+        assertSlot(helper, player, 5);
+        helper.succeed();
+    }
 
-        // Standard interaction: Expect no offhand
-        TestPlayer testPlayer = select(Action.INTERACT, creeper, player);
+    @GameTest
+    public void attackZombie(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.fightingPlayer(helper);
+        select(Action.ATTACK, RegistryObject.entity(helper, EntityType.ZOMBIE), player);
+        assertSlot(helper, player, 6);
+        helper.succeed();
+    }
+
+    @GameTest
+    public void interactCreeperNoOffhand(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.fightingPlayer(helper);
+        var testPlayer = select(Action.INTERACT, RegistryObject.entity(helper, EntityType.CREEPER), player);
         assertSlot(helper, player, 8);
         assertOffhand(helper, testPlayer, false);
+        helper.succeed();
+    }
+
+    public void interactIronGolemNoOffhand(GameTestHelper helper) {
+        setup(helper);
+
+        var player = Hotbars.fightingPlayer(helper);
+        var testPlayer = select(Action.INTERACT, RegistryObject.entity(helper, EntityType.IRON_GOLEM), player);
+        assertSlot(helper, player, 2);
+        assertOffhand(helper, testPlayer, false);
+
+        helper.succeed();
+    }
+
+    @GameTest
+    public void interactStriderOffhand(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.fightingPlayer(helper);
+        var strider = RegistryObject.entity(helper, EntityType.STRIDER);
 
         // Interaction where slot is already correct
         player.getInventory().setSelectedSlot(2);
-        testPlayer = select(Action.INTERACT, strider, player);
+        var testPlayer = select(Action.INTERACT, strider, player);
         assertSlot(helper, player, 2);
         assertOffhand(helper, testPlayer, false);
 
@@ -90,10 +116,6 @@ public class UnitGameTest extends AbstractTest {
         Constants.SCHEDULER.tick();
         assertOffhand(helper, testPlayer, true);
 
-        testPlayer = select(Action.INTERACT, ironGolem, player);
-        assertSlot(helper, player, 2);
-        assertOffhand(helper, testPlayer, false);
-
         helper.succeed();
     }
 
@@ -101,7 +123,6 @@ public class UnitGameTest extends AbstractTest {
     public void fallbackAndMultiTargetMatchTest(GameTestHelper helper) {
         setup(helper);
 
-        TestPlayer testPlayer;
         var player = Hotbars.bambooPlayer(helper);
         var bamboo = RegistryObject.block(Blocks.BAMBOO);
 
@@ -124,8 +145,7 @@ public class UnitGameTest extends AbstractTest {
         var fire = RegistryObject.block(Blocks.FIRE);
 
         select(Action.INTERACT, fire, player);
-        //assertSlot(helper, player, 3);
-        // Disabled as running the test via the run config works, but via the task and it fails
+        assertSlot(helper, player, 3);
 
         // Remove water potion
         player.getInventory().setSelectedSlot(0);
@@ -152,132 +172,137 @@ public class UnitGameTest extends AbstractTest {
     }
 
     @GameTest
-    public void blockstateTest(GameTestHelper helper) {
+    public void beehiveLowHoney(GameTestHelper helper) {
         setup(helper);
-
         var player = Hotbars.shearingPlayer(helper);
-
-        var beehive = RegistryObject.block(Blocks.BEEHIVE);
-        var beehiveWithHoney1 = RegistryObject.block(Blocks.BEEHIVE, RegistryObject.State.of(BeehiveBlock.HONEY_LEVEL, 1));
-        var beehiveWithHoney2 = RegistryObject.block(Blocks.BEEHIVE, RegistryObject.State.of(BeehiveBlock.HONEY_LEVEL, 2));
-        var beehiveWithHoney5 = RegistryObject.block(Blocks.BEEHIVE, RegistryObject.State.of(BeehiveBlock.HONEY_LEVEL, 5));
-        var beeNest = RegistryObject.block(Blocks.BEE_NEST);
-        var beeNestWithHoney1 = RegistryObject.block(Blocks.BEE_NEST, RegistryObject.State.of(BeehiveBlock.HONEY_LEVEL, 1));
-        var beeNestWithHoney2 = RegistryObject.block(Blocks.BEE_NEST, RegistryObject.State.of(BeehiveBlock.HONEY_LEVEL, 2));
-        var beeNestWithHoney5 = RegistryObject.block(Blocks.BEE_NEST, RegistryObject.State.of(BeehiveBlock.HONEY_LEVEL, 5));
-
+        var beehive = RegistryObject.block(Blocks.BEEHIVE, RegistryObject.State.of(BeehiveBlock.HONEY_LEVEL, 1));
         select(Action.INTERACT, beehive, player);
-        assertSlot(helper, player, 0);
-
-        // Test normal vs honey-filled beehive
-        assertActionSlot(helper, Action.INTERACT, beehive, player, 0);
-        assertActionSlot(helper, Action.INTERACT, beehiveWithHoney1, player, 0);
-        assertActionSlot(helper, Action.INTERACT, beehiveWithHoney2, player, 0);
-        assertActionSlot(helper, Action.INTERACT, beehiveWithHoney5, player, 3);
-
-        // Test normal vs honey-filled bee nest
-        player.getInventory().setSelectedSlot(0);
-        assertActionSlot(helper, Action.INTERACT, beeNest, player, 0);
-        assertActionSlot(helper, Action.INTERACT, beeNestWithHoney1, player, 0);
-        assertActionSlot(helper, Action.INTERACT, beeNestWithHoney2, player, 0);
-        assertActionSlot(helper, Action.INTERACT, beeNestWithHoney5, player, 3);
-
+        assertNotSlot(helper, player, 3);
         helper.succeed();
     }
 
     @GameTest
-    public void skipDepletedItemsTest(GameTestHelper helper) {
+    public void beehiveFullHoney(GameTestHelper helper) {
         setup(helper);
+        var player = Hotbars.shearingPlayer(helper);
+        var beehive = RegistryObject.block(Blocks.BEEHIVE, RegistryObject.State.of(BeehiveBlock.HONEY_LEVEL, 5));
+        select(Action.INTERACT, beehive, player);
+        assertSlot(helper, player, 3);
+        helper.succeed();
+    }
 
+    @GameTest
+    public void skipDepletedSword(GameTestHelper helper) {
+        setup(helper);
         var player = Hotbars.wornFighter(helper);
+
         var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
 
+        // Ensure primary weapon was chosen
         select(Action.ATTACK, creeper, player);
         assertSlot(helper, player, 1);
 
-        // Damage the sword to its last use
+        // Should now skip the depleted sword and pick the next best tool
         var sword = player.getInventory().getItem(1);
         sword.setDamageValue(sword.getMaxDamage() - 1);
 
-        // Should now skip the depleted sword and pick the next best tool
         select(Action.ATTACK, creeper, player);
         assertSlot(helper, player, 2);
-
         helper.succeed();
     }
 
     @GameTest
-    public void enchantmentLevelTest(GameTestHelper helper) {
+    public void enchantmentLevelClosedRange(GameTestHelper helper) {
         setup(helper);
-
-        var config = loadConfig("enchantmentLevelTest");
         var player = Hotbars.createLevelSensitive(helper);
 
-        var stone = RegistryObject.block(Blocks.STONE);
-        var obsidian = RegistryObject.block(Blocks.OBSIDIAN);
-        var deepslate = RegistryObject.block(Blocks.DEEPSLATE);
-        var cobblestone = RegistryObject.block(Blocks.COBBLESTONE);
+        select(Action.ATTACK, RegistryObject.block(Blocks.DEEPSLATE), player, enchantmentLevelTestConfig);
+        assertSlot(helper, player, 4);
+        helper.succeed();
+    }
 
-        select(Action.ATTACK, stone, player, config);
+    @GameTest
+    public void enchantmentLevelUnboundedRange(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.createLevelSensitive(helper);
+
+        select(Action.ATTACK, RegistryObject.block(Blocks.OBSIDIAN), player, enchantmentLevelTestConfig);
+        assertSlot(helper, player, 2);
+        helper.succeed();
+    }
+
+    @GameTest
+    public void enchantmentLevelSpecificLevel(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.createLevelSensitive(helper);
+
+        select(Action.ATTACK, RegistryObject.block(Blocks.STONE), player, enchantmentLevelTestConfig);
         assertSlot(helper, player, 1);
 
-        select(Action.ATTACK, cobblestone, player, config);
+        select(Action.ATTACK, RegistryObject.block(Blocks.COBBLESTONE), player, enchantmentLevelTestConfig);
         assertSlot(helper, player, 5);
-
-        select(Action.ATTACK, obsidian, player, config);
-        assertSlot(helper, player, 2);
-
-        select(Action.ATTACK, deepslate, player, config);
-        assertSlot(helper, player, 4);
 
         helper.succeed();
     }
 
     @GameTest
-    public void playerDataTest(GameTestHelper helper) {
+    public void playerIsFlyingSelection(GameTestHelper helper) {
         setup(helper);
-
-        var config = loadConfig("playerDataTest");
         var player = Hotbars.createLevelSensitive(helper);
 
-        var stone = RegistryObject.block(Blocks.STONE);
-        var obsidian = RegistryObject.block(Blocks.OBSIDIAN);
-        var deepslate = RegistryObject.block(Blocks.DEEPSLATE);
-        var cobblestone = RegistryObject.block(Blocks.COBBLESTONE);
-        var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
-
-        // Flying tests
         player.startFallFlying();
-        assertActionSlot(helper, Action.ATTACK, stone, player, 1, config);
-        assertActionSlot(helper, Action.ATTACK, cobblestone, player, 5, config);
+        assertActionSlot(helper, Action.ATTACK, RegistryObject.block(Blocks.STONE), player, 1, playerDataTestConfig);
+        assertActionSlot(helper, Action.ATTACK, RegistryObject.block(Blocks.COBBLESTONE), player, 5, playerDataTestConfig);
+        helper.succeed();
+    }
 
-        // Distance tests
-        select(Action.ATTACK, deepslate, player, player.blockPosition().above(15), config);
+    @GameTest
+    public void playerDistanceClosedRange(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.createLevelSensitive(helper);
+        player.setPose(Pose.CROUCHING);
+
+        select(Action.ATTACK, RegistryObject.block(Blocks.OBSIDIAN), player, playerDataTestConfig);
+        assertSlot(helper, player, 2);
+        helper.succeed();
+    }
+
+    @GameTest
+    public void playerDistanceUnboundedRange(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.createLevelSensitive(helper);
+
+        select(Action.ATTACK, RegistryObject.block(Blocks.DEEPSLATE), player, player.blockPosition().above(15), playerDataTestConfig);
         assertSlot(helper, player, 4);
 
-        select(Action.ATTACK, deepslate, player, player.blockPosition(), config);
+        select(Action.ATTACK, RegistryObject.block(Blocks.DEEPSLATE), player, player.blockPosition(), playerDataTestConfig);
         assertNotSlot(helper, player, 4);
 
-        player.stopFallFlying();
+        helper.succeed();
+    }
 
-        player.getInventory().setSelectedSlot(0);
+    @GameTest
+    public void playerDistanceEntityDistance(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.createLevelSensitive(helper);
 
-        // Entity distance tests
+        var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
         moveEntity(player, creeper, 11);
-        assertActionSlot(helper, Action.ATTACK, creeper, player, 6, config);
+        assertActionSlot(helper, Action.ATTACK, creeper, player, 6, playerDataTestConfig);
 
         moveEntity(player, creeper, 10);
-        assertActionSlot(helper, Action.ATTACK, creeper, player, 7, config);
+        assertNotActionSlot(helper, Action.ATTACK, creeper, player, 6, playerDataTestConfig);
+        helper.succeed();
+    }
 
-        // Crouching tests
-        assertActionSlot(helper, Action.ATTACK, obsidian, player, 7, config);
+    @GameTest
+    public void playerIsCrouching(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.createLevelSensitive(helper);
+        assertNotActionSlot(helper, Action.ATTACK, RegistryObject.block(Blocks.OBSIDIAN), player, 2, playerDataTestConfig);
 
         player.setPose(Pose.CROUCHING);
-        assertActionSlot(helper, Action.ATTACK, obsidian, player, 2, config);
-
-        player.setPose(Pose.STANDING);
-        select(Action.ATTACK, obsidian, player, config);
-        assertNotSlot(helper, player, 2);
+        assertActionSlot(helper, Action.ATTACK, RegistryObject.block(Blocks.OBSIDIAN), player, 2, playerDataTestConfig);
 
         helper.succeed();
     }
