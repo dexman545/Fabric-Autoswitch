@@ -12,6 +12,7 @@ import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
 import dex.autoswitch.futures.FutureSelectable;
+import io.leangen.geantyref.TypeToken;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +23,7 @@ public class EnchantmentLevelData extends DataType<DataMap> {
     private final Map<DataMap, Set<LevelCondition>> CONDITION_CACHE = new HashMap<>();
 
     private EnchantmentLevelData() {
-        super("level", DataMap.class);
+        super("level", new TypeToken<DataMap>() {});
     }
 
     @Override
