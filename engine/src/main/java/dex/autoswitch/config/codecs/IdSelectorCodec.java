@@ -176,26 +176,8 @@ public final class IdSelectorCodec implements TypeSerializer.Annotated<IdSelecto
             return getSelectorType(typeNode.getString());
         }
 
-        // Type not specified, try to guess from the configuration path
-        if (!source.virtual()) {
-            ConfigurationNode p = source;
-            while (p != null && !p.virtual()) {
-                switch (p.key()) {
-                    case String s -> {
-                        switch (s) {
-                            case "tools" -> {
-                                return getSelectorType("item");
-                            }
-                            case "enchantments" -> {
-                                return getSelectorType("enchantment");
-                            }
-                        }
-                    }
-                    case null, default -> {}
-                }
-
-                p = p.parent();
-            }
+        if (TypeAnnotationUtil.hasAnnotation(type, SelectableTypeMarker.class)) {
+            return getSelectorType(type.getAnnotation(SelectableTypeMarker.class).value());
         }
 
         throw new SerializationException("Required field " + TYPE + " was not present in node");

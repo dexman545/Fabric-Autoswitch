@@ -48,7 +48,11 @@ public class ExpressionTreeCodec implements TypeSerializer.Annotated<ExpressionT
             }
 
             var op = typeNode.get(OpType.class, OpType.AND);
-            var children = childrenNode.get(EXPRESSION_SET);
+
+            var childNodeType = TypeAnnotationUtil.copyTypeAnnotations(type, EXPRESSION_SET);
+
+            @SuppressWarnings("unchecked")
+            var children = (Set<ExpressionTree>) childrenNode.get(childNodeType);
             if (children == null) {
                 ConfigHandler.LOGGER.warning(createLogMessage(node, "Failed to read children"));
                 return null;
