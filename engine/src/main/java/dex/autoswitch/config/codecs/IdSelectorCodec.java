@@ -1,6 +1,6 @@
 package dex.autoswitch.config.codecs;
 
-import java.lang.reflect.Type;
+import java.lang.reflect.AnnotatedType;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
@@ -10,6 +10,7 @@ import java.util.Set;
 import dex.autoswitch.config.ConfigHandler;
 import dex.autoswitch.config.data.tree.IdSelector;
 import dex.autoswitch.config.data.tree.TypedData;
+import dex.autoswitch.config.util.TypeAnnotationUtil;
 import dex.autoswitch.engine.data.SwitchRegistry;
 import dex.autoswitch.engine.data.extensible.SelectableType;
 import dex.autoswitch.futures.FutureSelectable;
@@ -21,7 +22,7 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
+public final class IdSelectorCodec implements TypeSerializer.Annotated<IdSelector> {
     public static final IdSelectorCodec INSTANCE = new IdSelectorCodec();
     private static final String TYPE = "type";
     private static final String ID = "id";
@@ -33,7 +34,7 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
     }
 
     @Override
-    public IdSelector deserialize(@NotNull Type type, @NotNull ConfigurationNode node) throws SerializationException {
+    public IdSelector deserialize(@NotNull AnnotatedType type, @NotNull ConfigurationNode node) throws SerializationException {
         var idNode = node.node(ID);
         var tagNode = node.node(TAG);
         var dataNode = node.node(DATA);
@@ -45,7 +46,7 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
 
         SelectableType<Object, Object, Object> selType;
         try {
-            selType = getSelectorType(node);
+            selType = getSelectorType(type, node);
         } catch (SerializationException e) {
             ConfigHandler.LOGGER.warning(createLogMessage(node, "Failed to find type"));
             return null;
@@ -144,7 +145,7 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
     }
 
     @Override
-    public void serialize(@NotNull Type type, @Nullable IdSelector selector, @NotNull ConfigurationNode node) throws SerializationException {
+    public void serialize(@NotNull AnnotatedType type, @Nullable IdSelector selector, @NotNull ConfigurationNode node) throws SerializationException {
         if (selector == null) {
             node.raw(null);
             return;
@@ -169,7 +170,7 @@ public final class IdSelectorCodec implements TypeSerializer<IdSelector> {
         }
     }
 
-    private <K, V, G> SelectableType<K, V, G> getSelectorType(ConfigurationNode source) throws SerializationException {
+    private <K, V, G> SelectableType<K, V, G> getSelectorType(AnnotatedType type, ConfigurationNode source) throws SerializationException {
         var typeNode = source.node(TYPE);
         if (!typeNode.virtual()) {
             return getSelectorType(typeNode.getString());
