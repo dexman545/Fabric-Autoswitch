@@ -6,12 +6,13 @@ import java.util.Objects;
 import dex.autoswitch.config.data.tree.Data;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
+import io.leangen.geantyref.TypeToken;
 
 public abstract class DataType<T extends Data> {
     private final String id;
-    private final Class<T> supportedData;
+    private final TypeToken<T> supportedData;
 
-    protected DataType(String id, Class<T> supportedData) {
+    protected DataType(String id, TypeToken<T> supportedData) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(supportedData);
         this.supportedData = supportedData;
@@ -44,7 +45,7 @@ public abstract class DataType<T extends Data> {
         return id;
     }
 
-    public Class<T> getSupportedData() {
+    public TypeToken<T> getSupportedData() {
         return supportedData;
     }
 }
