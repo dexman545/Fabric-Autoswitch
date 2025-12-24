@@ -10,6 +10,7 @@ import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
 import dex.autoswitch.engine.types.selectable.ItemSelectableType;
 import dex.autoswitch.futures.FutureSelectable;
+import io.leangen.geantyref.TypeToken;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -19,7 +20,7 @@ public class EntityEquipmentData extends DataType<DataMap> {
     public static final EntityEquipmentData INSTANCE = new EntityEquipmentData();
 
     protected EntityEquipmentData() {
-        super("equipment", DataMap.class);
+        super("equipment", new TypeToken<DataMap>() {});
     }
 
     @Override

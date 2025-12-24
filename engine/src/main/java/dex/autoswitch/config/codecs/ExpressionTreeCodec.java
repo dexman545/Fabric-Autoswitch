@@ -1,6 +1,6 @@
 package dex.autoswitch.config.codecs;
 
-import java.lang.reflect.Type;
+import java.lang.reflect.AnnotatedType;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
@@ -12,14 +12,16 @@ import dex.autoswitch.config.data.tree.IdSelector;
 import dex.autoswitch.config.data.tree.Intersection;
 import dex.autoswitch.config.data.tree.Invert;
 import dex.autoswitch.config.data.tree.Union;
+import dex.autoswitch.config.util.TypeAnnotationUtil;
 import io.leangen.geantyref.TypeToken;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-public class ExpressionTreeCodec implements TypeSerializer<ExpressionTree> {
+public class ExpressionTreeCodec implements TypeSerializer.Annotated<ExpressionTree> {
     public static final ExpressionTreeCodec INSTANCE = new ExpressionTreeCodec();
     private static final String TYPE = "type";
     private static final String CHILD = "child";
@@ -30,7 +32,7 @@ public class ExpressionTreeCodec implements TypeSerializer<ExpressionTree> {
     }
 
     @Override
-    public ExpressionTree deserialize(@NotNull Type type, ConfigurationNode node) throws SerializationException {
+    public ExpressionTree deserialize(@NotNull AnnotatedType type, @NonNull ConfigurationNode node) throws SerializationException {
         if (node.hasChild(CHILD)) {
             var typeNode = node.node(TYPE);
             var childrenNode = node.node(CHILD);
@@ -78,7 +80,7 @@ public class ExpressionTreeCodec implements TypeSerializer<ExpressionTree> {
     }
 
     @Override
-    public void serialize(@NotNull Type type, @Nullable ExpressionTree obj, @NotNull ConfigurationNode node) throws SerializationException {
+    public void serialize(@NotNull AnnotatedType type, @Nullable ExpressionTree obj, @NotNull ConfigurationNode node) throws SerializationException {
         switch (obj) {
             case DisjunctiveUnion disjunctiveUnion -> {
                 node.node(TYPE).set(OpType.XOR);

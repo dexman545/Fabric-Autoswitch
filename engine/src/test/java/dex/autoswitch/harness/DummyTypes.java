@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import dex.autoswitch.config.codecs.SelectableTypeMarker;
 import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.config.data.tree.ExpressionTree;
 import dex.autoswitch.engine.TargetType;
@@ -13,6 +14,7 @@ import dex.autoswitch.engine.data.extensible.DataType;
 import dex.autoswitch.engine.data.extensible.SelectableType;
 import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.futures.FutureSelectableValue;
+import io.leangen.geantyref.TypeToken;
 import org.jetbrains.annotations.Nullable;
 
 public class DummyTypes {
@@ -252,14 +254,14 @@ public class DummyTypes {
         }
     };
 
-    public static final DataType<ExpressionTree> ENCHANTMENTS = new DataType<>("enchantments", ExpressionTree.class) {
+    public static final DataType<ExpressionTree> ENCHANTMENTS = new DataType<>("enchantments", new TypeToken<@SelectableTypeMarker("enchantment") ExpressionTree>() {}) {
         @Override
         public Match matches(int baseLevel, SelectionContext context, Object selectable, ExpressionTree data) {
             return data.matches(baseLevel, context, selectable);
         }
     };
 
-    public static final DataType<DataMap> COMPONENTS = new DataType<>("components", DataMap.class) {
+    public static final DataType<DataMap> COMPONENTS = new DataType<>("components", TypeToken.get(DataMap.class)) {
         @Override
         public Match matches(int baseLevel, SelectionContext context, Object selectable, DataMap data) {
             return new Match(false);

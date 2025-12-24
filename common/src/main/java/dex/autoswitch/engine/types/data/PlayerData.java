@@ -14,6 +14,7 @@ import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
+import io.leangen.geantyref.TypeToken;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +35,7 @@ public class PlayerData extends DataType<DataMap> {
     );
 
     private PlayerData() {
-        super("player", DataMap.class);
+        super("player", new TypeToken<DataMap>() {});
     }
 
     @Override

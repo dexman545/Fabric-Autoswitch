@@ -7,6 +7,7 @@ import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
+import io.leangen.geantyref.TypeToken;
 
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -14,7 +15,7 @@ public class BlockStateData extends DataType<DataMap> {
     public static final BlockStateData INSTANCE = new BlockStateData();
 
     private BlockStateData() {
-        super("blockstates", DataMap.class);
+        super("blockstates", new TypeToken<DataMap>() {});
     }
 
     @Override

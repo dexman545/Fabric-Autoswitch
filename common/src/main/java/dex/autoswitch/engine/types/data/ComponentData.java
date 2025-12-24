@@ -5,6 +5,7 @@ import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
+import io.leangen.geantyref.TypeToken;
 
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponents;
@@ -16,7 +17,7 @@ public class ComponentData extends DataType<DataMap> {
     public static final ComponentData INSTANCE = new ComponentData();
 
     private ComponentData() {
-        super("components", DataMap.class);
+        super("components", new TypeToken<DataMap>() {});
     }
 
     @Override
