@@ -47,6 +47,14 @@ public class CommonConfigTest {
         assertThat(exploded).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(ref);
     }
 
+    @Test
+    // Tests if implicitly defined types for IdSelector work
+    void elidedTypeSpecification() throws IOException, URISyntaxException {
+        var ref = loadConfig("elidedTypeSpecificationRef");
+        var elided = loadConfig("elidedTypeSpecification");
+        assertThat(elided).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(ref);
+    }
+
     protected AutoSwitchConfig loadDefaultConfig() throws URISyntaxException, MalformedURLException {
         return getConfig(Objects.requireNonNull(Constants.class.getResource("/default.conf")).toURI().toURL());
     }
