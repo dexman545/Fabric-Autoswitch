@@ -1,12 +1,13 @@
 package dex.autoswitch.config;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import dex.autoswitch.config.codecs.SelectableTypeMarker;
 import dex.autoswitch.config.data.FallbackSelector;
 import dex.autoswitch.config.data.tree.ExpressionTree;
 import dex.autoswitch.config.subentries.FeatureConfig;
@@ -149,14 +150,14 @@ public class AutoSwitchConfig {
 
         public ExpressionTree target;
 
-        public ExpressionTree[] tools = new ExpressionTree[0];
+        public List<@SelectableTypeMarker("item") ExpressionTree> tools = List.of();
 
         @Override
         public String toString() {
             return "TargetEntry{" +
                     "priority=" + priority +
                     ", target=" + target +
-                    ", tools=" + Arrays.toString(tools) +
+                    ", tools=" + tools +
                     '}';
         }
     }
