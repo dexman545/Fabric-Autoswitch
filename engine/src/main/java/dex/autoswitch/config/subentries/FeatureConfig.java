@@ -3,6 +3,7 @@ package dex.autoswitch.config.subentries;
 import java.util.HashSet;
 import java.util.Set;
 
+import dex.autoswitch.config.codecs.SelectableTypeMarker;
 import dex.autoswitch.config.data.tree.ExpressionTree;
 import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.TargetType;
@@ -110,7 +111,7 @@ public class FeatureConfig {
     public static class OffhandSelector {
         public int priority = 10;
         public TargetType type;
-        public ExpressionTree tool;
+        public @SelectableTypeMarker("item") ExpressionTree tool;
 
         @Override
         public String toString() {
