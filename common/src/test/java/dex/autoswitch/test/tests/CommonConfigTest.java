@@ -10,11 +10,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Set;
 
 import dex.autoswitch.Constants;
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.config.ConfigHandler;
+import dex.autoswitch.config.data.tree.ExpressionTree;
+import dex.autoswitch.config.data.tree.IdSelector;
 import dex.autoswitch.config.data.tree.Intersection;
+import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurateException;
@@ -56,6 +60,20 @@ public class CommonConfigTest {
         var ref = loadConfig("elidedTypeSpecificationRef");
         var elided = loadConfig("elidedTypeSpecification");
         assertThat(elided).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(ref);
+
+        assertThat(ref.featureConfig.offhandSelectors)
+                .areExactly(1, new Condition<>(sel -> {
+                    if (sel.tool instanceof Intersection(Set<ExpressionTree> children)) {
+                        for (ExpressionTree child : children) {
+                            if (child instanceof IdSelector idSelector) {
+                                if ("BLOCK".equals(idSelector.selectable().getSelectorType().id())) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                }, "with overridden type of `BLOCK`"));
     }
 
     protected AutoSwitchConfig loadDefaultConfig() throws URISyntaxException, MalformedURLException {
