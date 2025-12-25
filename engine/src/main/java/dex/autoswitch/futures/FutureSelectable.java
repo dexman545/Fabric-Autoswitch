@@ -1,14 +1,16 @@
 package dex.autoswitch.futures;
 
-import dex.autoswitch.engine.data.SelectionContext;
-import dex.autoswitch.engine.data.extensible.SelectableType;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import dex.autoswitch.engine.data.SelectionContext;
+import dex.autoswitch.engine.data.extensible.SelectableType;
+
 /**
  * Represents an Object that may not yet be instantiated, or a group of Objects.
+ * @param <KEY> The type of {@code key} used to look up these Objects.
+ * @param <TYPE> The type of the Object that may be selectable
  */
 public sealed abstract class FutureSelectable<KEY, TYPE> permits FutureSelectableValue, FutureSelectableGroup {
     protected static final Map<Key<?>, FutureSelectable<?, ?>> INSTANCES = new HashMap<>();

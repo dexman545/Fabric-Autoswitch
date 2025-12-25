@@ -16,8 +16,15 @@ import dex.autoswitch.engine.events.Scheduler;
  * A heavy context object used during the event execution phase of a switch.
  * <p>
  * Unlike {@link SelectionContext}, which is optimized for the selection engine, {@link SwitchContext}
- * carries the full state required to perform side effects, such as interacting with the {@link Scheduler}, 
+ * carries the full state required to perform side effects, such as interacting with the {@link Scheduler},
  * modifying {@link SwitchState}, or manipulating the {@link PlayerInventory}.
+ * @param player The inventory of the player to consider for selection
+ * @param config The current configuration
+ * @param action The current {@link Action} being performed
+ * @param target The current target of the {@code action}
+ * @param switchState The current {@link SwitchState}, which carries information such as the previous selected slot
+ * @param scheduler The {@link Scheduler} to schedule switch actions
+ * @param attachments Extra context provided for this switch
  */
 public record SwitchContext(PlayerInventory<?> player, AutoSwitchConfig config,
                             Action action, Object target,
