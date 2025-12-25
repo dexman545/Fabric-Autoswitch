@@ -12,6 +12,7 @@ import dex.autoswitch.engine.Selector;
 import dex.autoswitch.engine.data.ContextKey;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
+import dex.autoswitch.platform.Services;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectReferencePair;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +64,7 @@ public class DebugText {
             if (heldItem.isEnchanted()) {
                 displayer.addToGroup(showTags ? GROUP_TWO : GROUP_ONE, "Held Item Enchantments:");
 
-                var enchantments = heldItem.getEnchantments();
+                var enchantments = Services.PLATFORM.getItemEnchantments(heldItem);
                 for (var enchantment : enchantments.keySet()) {
                     if (showTags) {
                         enchantment.tags().forEach(tag ->

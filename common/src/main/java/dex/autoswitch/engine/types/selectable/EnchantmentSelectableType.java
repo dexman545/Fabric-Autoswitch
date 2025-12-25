@@ -45,7 +45,7 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     public boolean matches(SelectionContext context, Holder<Enchantment> v, Object selectable) {
         if (selectable instanceof ItemStack stack) {
             if (stack.isEnchanted()) {
-                for (Holder<Enchantment> holder : stack.getEnchantments().keySet()) {
+                for (Holder<Enchantment> holder : Services.PLATFORM.getItemEnchantments(stack).keySet()) {
                     //noinspection deprecation
                     if (holder.is(v)) {
                         return true;
@@ -65,7 +65,7 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     public boolean matchesGroup(SelectionContext context, TagKey<Enchantment> enchantmentTagKey, Object selectable) {
         if (selectable instanceof ItemStack stack) {
             if (stack.isEnchanted()) {
-                for (Holder<Enchantment> holder : stack.getEnchantments().keySet()) {
+                for (Holder<Enchantment> holder : Services.PLATFORM.getItemEnchantments(stack).keySet()) {
                     if (Services.PLATFORM.isInTag(enchantmentTagKey, holder.value())) {
                         return true;
                     }
@@ -90,7 +90,7 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     public double typeRating(SelectionContext context, FutureSelectable<Identifier, Holder<Enchantment>> futureValue, Object selectable) {
         if (selectable instanceof ItemStack stack) {
             if (stack.isEnchanted()) {
-                var enchantments = stack.getEnchantments();
+                var enchantments = Services.PLATFORM.getItemEnchantments(stack);
                 return switch (futureValue) {
                     case FutureSelectableGroup<Identifier, Holder<Enchantment>, ?> v -> {
                         var d = 0D;
