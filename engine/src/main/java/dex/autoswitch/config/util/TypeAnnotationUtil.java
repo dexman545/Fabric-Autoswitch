@@ -44,6 +44,7 @@ public final class TypeAnnotationUtil {
      * @param destination target token to apply annotations to
      * @return new TypeToken with annotations from source applied to destination's type structure
      */
+    @SuppressWarnings("unchecked")
     public static <T> TypeToken<T> copyTypeAnnotations(TypeToken<?> source, TypeToken<T> destination) {
         Objects.requireNonNull(source, "source");
         Objects.requireNonNull(destination, "destination");
