@@ -12,6 +12,7 @@ import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
 import dex.autoswitch.futures.FutureSelectable;
+import dex.autoswitch.platform.Services;
 import io.leangen.geantyref.TypeToken;
 
 import net.minecraft.core.Holder;
@@ -30,7 +31,7 @@ public class EnchantmentLevelData extends DataType<DataMap> {
     public Match matches(int baseLevel, SelectionContext context, Object selectable, DataMap data) {
         if (context.target() instanceof FutureSelectable<?, ?> enchantmentSelector) {
             if (selectable instanceof ItemStack stack) {
-                var enchantmentData = stack.getEnchantments();
+                var enchantmentData = Services.PLATFORM.getItemEnchantments(stack);
                 var enchantments = enchantmentData.keySet();
                 for (Holder<Enchantment> enchantment : enchantments) {
                     if (enchantmentSelector.matches(null, enchantment.value())) {

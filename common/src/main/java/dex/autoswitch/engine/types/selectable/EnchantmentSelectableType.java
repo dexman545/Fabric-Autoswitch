@@ -6,6 +6,8 @@ import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.futures.FutureSelectableGroup;
 import dex.autoswitch.futures.FutureSelectableValue;
 import dex.autoswitch.platform.Services;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -13,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import org.jetbrains.annotations.Nullable;
 
 public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     public static final EnchantmentSelectableType INSTANCE = new EnchantmentSelectableType();
@@ -44,7 +45,7 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     public boolean matches(SelectionContext context, Holder<Enchantment> v, Object selectable) {
         if (selectable instanceof ItemStack stack) {
             if (stack.isEnchanted()) {
-                for (Holder<Enchantment> holder : stack.getEnchantments().keySet()) {
+                for (Holder<Enchantment> holder : Services.PLATFORM.getItemEnchantments(stack).keySet()) {
                     //noinspection deprecation
                     if (holder.is(v)) {
                         return true;
@@ -64,7 +65,7 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     public boolean matchesGroup(SelectionContext context, TagKey<Enchantment> enchantmentTagKey, Object selectable) {
         if (selectable instanceof ItemStack stack) {
             if (stack.isEnchanted()) {
-                for (Holder<Enchantment> holder : stack.getEnchantments().keySet()) {
+                for (Holder<Enchantment> holder : Services.PLATFORM.getItemEnchantments(stack).keySet()) {
                     if (Services.PLATFORM.isInTag(enchantmentTagKey, holder.value())) {
                         return true;
                     }
@@ -89,7 +90,7 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     public double typeRating(SelectionContext context, FutureSelectable<ResourceLocation, Holder<Enchantment>> futureValue, Object selectable) {
         if (selectable instanceof ItemStack stack) {
             if (stack.isEnchanted()) {
-                var enchantments = stack.getEnchantments();
+                var enchantments = Services.PLATFORM.getItemEnchantments(stack);
                 return switch (futureValue) {
                     case FutureSelectableGroup<ResourceLocation, Holder<Enchantment>, ?> v -> {
                         var d = 0D;

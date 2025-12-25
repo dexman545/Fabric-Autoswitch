@@ -1,20 +1,25 @@
 package dex.autoswitch.platform;
 
+import java.nio.file.Path;
+import java.util.Objects;
+import java.util.Optional;
+
 import com.google.auto.service.AutoService;
 import dex.autoswitch.platform.services.IPlatformHelper;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.common.CommonHooks;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.loading.FMLPaths;
-
-import java.nio.file.Path;
-import java.util.Objects;
-import java.util.Optional;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 @AutoService(IPlatformHelper.class)
 public class NeoForgePlatformHelper implements IPlatformHelper {
@@ -54,6 +59,16 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
         }
 
         return false;
+    }
+
+    @Override
+    public ItemEnchantments getItemEnchantments(ItemStack stack) {
+        var lookup = CommonHooks.resolveLookup(Registries.ENCHANTMENT);
+        if (lookup != null) {
+            return stack.getAllEnchantments(lookup);
+        }
+
+        return stack.getTagEnchantments();
     }
 
     @SuppressWarnings("unchecked")
