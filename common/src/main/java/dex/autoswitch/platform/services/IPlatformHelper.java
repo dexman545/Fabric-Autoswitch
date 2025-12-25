@@ -8,6 +8,8 @@ import dex.autoswitch.Tags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public interface IPlatformHelper {
 
@@ -103,5 +105,15 @@ public interface IPlatformHelper {
      */
     default String getEnvironmentName() {
         return isDevelopmentEnvironment() ? "development" : "production";
+    }
+
+    /**
+     * Wrapper to get enchantments as Neo replaces the method.
+     *
+     * @param stack the stack to pull enchantments from
+     * @return the enchantments on the stack
+     */
+    default ItemEnchantments getItemEnchantments(ItemStack stack) {
+        return stack.getEnchantments();
     }
 }
