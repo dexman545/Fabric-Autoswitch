@@ -12,8 +12,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 /**
- * Represents a match result with an associated set of ratings distributed across multiple levels,
+ * Represents a match result with an associated set of ratings distributed across multiple levels
  * that can be combined to form a final rating or merged with other matches.
+ * @param matches {@code true} if this match was successful, {@code false} otherwise.
+ * @param ratings The map of level-based rating suppliers. Used to compare different successful matches. Each level can
+ *                be a set of ratings that will be lazily added together to produce the rating for the given level.
  */
 public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) implements Comparable<Match> {
     public Match(boolean matches) {

@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Operation: {@code NOT}
+ * @param child the child node the operation will be run on
  */
 public record Invert(ExpressionTree child) implements ExpressionTree {
     public Invert {

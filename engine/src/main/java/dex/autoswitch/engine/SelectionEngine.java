@@ -16,6 +16,9 @@ import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.PlayerInventory;
 
 /**
+ * This engine handles the primary processing and ordering of selections. It generates a set of candidates based on the
+ * {@link SelectionContext} and tries to find the best slot of a {@link PlayerInventory} to be selected.
+ * @param configuration The mapping of {@link Action}s and target {@link Selector}s to the desired set of tool {@link Selector}s
  * @param fallback The fallback tool selector to use in case no tools matched
  */
 public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configuration, FallbackSelector fallback) {
