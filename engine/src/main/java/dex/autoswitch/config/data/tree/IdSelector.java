@@ -5,6 +5,7 @@ import java.util.Set;
 
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
+import dex.autoswitch.engine.data.extensible.SwitchRegistryService;
 import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.futures.FutureSelectableGroup;
 import dex.autoswitch.futures.FutureSelectableValue;
@@ -12,6 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * The basic selector. Favors more specific (not a group, more required data) over more general selectors
+ * @param selectable The object to be matched against, e.g. a block or entity.
+ *                   Given by {@link SwitchRegistryService#selectableTypes()}
+ * @param data       The extra data requirments to match the {@code selectable}.
+ *                   Given by {@link SwitchRegistryService#dataTypes()}
  */
 public record IdSelector(FutureSelectable<?, ?> selectable, Set<TypedData<?>> data) implements ExpressionTree {
     public IdSelector {

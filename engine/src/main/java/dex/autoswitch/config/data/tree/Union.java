@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Operation: {@code AND}
+ * @param children the child nodes the operation will be run on
  */
 public record Union(Set<ExpressionTree> children) implements ExpressionTree {
     public Union {
