@@ -212,16 +212,15 @@ public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configur
      * - Tool priority: Determines the importance of the tool match.
      * - Match ratings for both the target and tool, which indicate suitability for selection.
      * - Slot index, with the currently selected slot having priority.
-     * <p>
-     * Fields:
-     * - tar: The matcher for the target, determines compatibility with the target context.
-     * - tool: The matcher for the tool, evaluates compatibility with the tool selectors.
-     * - targetPriority: The priority value for the target match.
-     * - targetMatch: The result of the matching process for the target.
-     * - toolPriority: The priority value for the tool match.
-     * - toolMatch: The result of the matching process for the tool.
-     * - slot: The index of the slot in the player's inventory.
-     * - isSelected: A flag indicating whether this slot is the currently selected one.
+     *
+     * @param tar            The matcher for the target, determines compatibility with the target context.
+     * @param tool           The matcher for the tool, evaluates compatibility with the tool selectors.
+     * @param targetPriority The priority value for the target match.
+     * @param targetMatch    The result of the matching process for the target.
+     * @param toolPriority   The priority value for the tool match.
+     * @param toolMatch      The result of the matching process for the tool.
+     * @param slot           The index of the slot in the player's inventory.
+     * @param isSelected     A flag indicating whether this slot is the currently selected one.
      *
      * @see #TOOL_COMPARATOR TOOL_ORDERER for the sort order
      */
