@@ -74,6 +74,10 @@ loom {
     }*/
 }
 
+runGameTest {
+    outputs.file project.layout.buildDirectory.file("junit.xml")
+}
+
 tasks.named('shadowJar') {
     archiveClassifier = 'shadow'
 }
