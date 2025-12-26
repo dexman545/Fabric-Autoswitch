@@ -22,13 +22,13 @@ public class EntitySelectableType extends SelectableResource<EntityType<?>> {
     }
 
     @Override
-    public Holder<EntityType<?>> lookup(Identifier Identifier) {
-        return BuiltInRegistries.ENTITY_TYPE.get(Identifier).orElse(null);
+    public Holder<EntityType<?>> lookup(Identifier identifier) {
+        return BuiltInRegistries.ENTITY_TYPE.get(identifier).orElse(null);
     }
 
     @Override
-    public TagKey<EntityType<?>> lookupGroup(Identifier Identifier) {
-        return TagKey.create(Registries.ENTITY_TYPE, Identifier);
+    public TagKey<EntityType<?>> lookupGroup(Identifier identifier) {
+        return TagKey.create(Registries.ENTITY_TYPE, identifier);
     }
 
     @Override

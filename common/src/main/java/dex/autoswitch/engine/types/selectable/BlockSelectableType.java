@@ -22,13 +22,13 @@ public class BlockSelectableType extends SelectableResource<Block> {
     }
 
     @Override
-    public Holder<Block> lookup(Identifier Identifier) {
-        return BuiltInRegistries.BLOCK.get(Identifier).orElse(null);
+    public Holder<Block> lookup(Identifier identifier) {
+        return BuiltInRegistries.BLOCK.get(identifier).orElse(null);
     }
 
     @Override
-    public TagKey<Block> lookupGroup(Identifier Identifier) {
-        return TagKey.create(Registries.BLOCK, Identifier);
+    public TagKey<Block> lookupGroup(Identifier identifier) {
+        return TagKey.create(Registries.BLOCK, identifier);
     }
 
     @Override

@@ -27,9 +27,9 @@ public class StatSelectableType extends SelectableType<Identifier, Stat<?>, Void
      * See Command parsing for reference {@link ObjectiveCriteria#byName(String)}
      */
     @Override
-    public Stat<?> lookup(Identifier Identifier) {
-        var statType = Identifier.bySeparator(Identifier.getNamespace(), '.');
-        var statName = Identifier.bySeparator(Identifier.getPath(), '.');
+    public Stat<?> lookup(Identifier identifier) {
+        var statType = Identifier.bySeparator(identifier.getNamespace(), '.');
+        var statName = Identifier.bySeparator(identifier.getPath(), '.');
 
         var stat = BuiltInRegistries.STAT_TYPE
                 .getOptional(statType)
@@ -37,12 +37,12 @@ public class StatSelectableType extends SelectableType<Identifier, Stat<?>, Void
         return stat.orElse(null);
     }
 
-    private static <T> Optional<Stat<?>> getStat(StatType<T> statType, Identifier Identifier) {
-        return statType.getRegistry().getOptional(Identifier).map(statType::get);
+    private static <T> Optional<Stat<?>> getStat(StatType<T> statType, Identifier identifier) {
+        return statType.getRegistry().getOptional(identifier).map(statType::get);
     }
 
     @Override
-    public Void lookupGroup(Identifier Identifier) {
+    public Void lookupGroup(Identifier identifier) {
         return null;
     }
 
@@ -75,8 +75,8 @@ public class StatSelectableType extends SelectableType<Identifier, Stat<?>, Void
     }
 
     @Override
-    public String serializeKey(Identifier Identifier) {
-        return Identifier.toString();
+    public String serializeKey(Identifier identifier) {
+        return identifier.toString();
     }
 
     @Override

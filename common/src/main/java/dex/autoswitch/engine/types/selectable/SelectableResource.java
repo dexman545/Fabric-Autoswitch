@@ -12,8 +12,8 @@ public abstract class SelectableResource<VAL> extends SelectableType<Identifier,
     }
 
     @Override
-    public String serializeKey(Identifier Identifier) {
-        return Identifier.toString();
+    public String serializeKey(Identifier identifier) {
+        return identifier.toString();
     }
 
     @Override
