@@ -3,7 +3,7 @@ import me.modmuss50.mpp.PublishModTask
 import me.modmuss50.mpp.ReleaseType
 
 buildscript {
-    configurations.all {
+    configurations.configureEach {
         //resolutionStrategy.activateDependencyLocking()
         // Uncomment to change resolution strategy to force dynamic versions to be refreshed,
         // or run with --refresh-dependencies
