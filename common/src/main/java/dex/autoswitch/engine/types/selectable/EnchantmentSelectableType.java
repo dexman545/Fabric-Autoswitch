@@ -24,10 +24,10 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     }
 
     @Override
-    public Holder<Enchantment> lookup(Identifier Identifier) {
+    public Holder<Enchantment> lookup(Identifier identifier) {
         var maybeReg = Services.PLATFORM.getRegistryAccess().lookup(Registries.ENCHANTMENT);
         if (maybeReg.isPresent()) {
-            var entry = maybeReg.get().get(ResourceKey.create(Registries.ENCHANTMENT, Identifier));
+            var entry = maybeReg.get().get(ResourceKey.create(Registries.ENCHANTMENT, identifier));
             if (entry.isPresent()) {
                 return entry.get();
             }
@@ -37,8 +37,8 @@ public class EnchantmentSelectableType extends SelectableResource<Enchantment> {
     }
 
     @Override
-    public TagKey<Enchantment> lookupGroup(Identifier Identifier) {
-        return TagKey.create(Registries.ENCHANTMENT, Identifier);
+    public TagKey<Enchantment> lookupGroup(Identifier identifier) {
+        return TagKey.create(Registries.ENCHANTMENT, identifier);
     }
 
     @Override

@@ -37,13 +37,13 @@ public class ItemSelectableType extends SelectableResource<Item> {
     }
 
     @Override
-    public Holder<Item> lookup(Identifier Identifier) {
-        return BuiltInRegistries.ITEM.get(Identifier).orElse(null);
+    public Holder<Item> lookup(Identifier identifier) {
+        return BuiltInRegistries.ITEM.get(identifier).orElse(null);
     }
 
     @Override
-    public TagKey<Item> lookupGroup(Identifier Identifier) {
-        return TagKey.create(Registries.ITEM, Identifier);
+    public TagKey<Item> lookupGroup(Identifier identifier) {
+        return TagKey.create(Registries.ITEM, identifier);
     }
 
     @Override
