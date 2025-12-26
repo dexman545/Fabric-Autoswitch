@@ -9,7 +9,7 @@ over the implicitly defined `data`.
 - Allow eliding `type=<enchantment|item>` in `tools` list, offhand selectors, and `enchantments` definitions
 - Fix usage of neoforge-replaced way of getting item enchantments
 - Add `Player` data type, mostly to support things like the mace
-  - Usable whereever an `IdSelector` can be used
+  - Usable in any `IdSelector` (anywhere you can have a `data` entry)
   - Supports the same sort of value comparison as Enchantment Levels
   - Example
     ```hocon
