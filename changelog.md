@@ -36,7 +36,7 @@ over the implicitly defined `data`.
     | isOnGround   | If the player is on the ground             | Boolean |
     | isSprinting  | If the player is sprinting                 | Boolean |
     | distance     | The distance between the player and target | Number  |
-    | fallDistance | The distane the player has fallen          | Number  |
+    | fallDistance | The distance the player has fallen         | Number  |
 
 # 14.0.3
 - Improve handling of fallback tools in default config
