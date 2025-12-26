@@ -6,6 +6,30 @@
 over the implicitly defined `data`.
 - Improve maintainability of the ToolSorter
 - Remove unnecessary `OR` statements from the default config
+- Add `Player` data type, mostly to support things like the mace
+  - Usable whereever an `IdSelector` can be used
+  - Supports the same sort of value comparison as Enchantment Levels
+  - Example:
+  - ```hocon
+    target {
+      type=BLOCK
+      id="obsidian"
+      data {
+        player {
+          isCrouching = true
+          distance {
+            GREATER = 2
+          }
+        }
+      }
+    }
+    ```
+  - | Type        | isFlying                | isCrouching                | isPassenger                       | isOnGround                     | isSprinting                | distance                                   | fallDistance                      |
+    |-------------|-------------------------|----------------------------|-----------------------------------|--------------------------------|----------------------------|--------------------------------------------|-----------------------------------|
+    | Description | If the player is flying | If the player is crouching | If the player is riding something | If the player is on the ground | If the player is sprinting | The distance between the player and target | The distane the player has fallen |
+
+- Allow eliding `type=<enchantment|item>` in `tools` list, offhand selectors, and `enchantments` definitions
+- Fix usage of neoforge-replaced way of getting item enchantments
 
 # 14.0.3
 - Improve handling of fallback tools in default config
