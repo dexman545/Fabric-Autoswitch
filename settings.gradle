@@ -40,8 +40,17 @@ pluginManagement {
     }
 }
 
+buildscript {
+    dependencyLocking {
+        lockMode = LockMode.STRICT
+        lockAllConfigurations()
+        lockFile.set file("locks/settings-buildscript-gradle.lockfile")
+    }
+}
+
+
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.+'
 }
 
 // This should match the folder name of the project, or else IDEA may complain (see https://youtrack.jetbrains.com/issue/IDEA-317606)

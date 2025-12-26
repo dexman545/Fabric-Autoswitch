@@ -3,11 +3,16 @@ import me.modmuss50.mpp.PublishModTask
 import me.modmuss50.mpp.ReleaseType
 
 buildscript {
-    configurations.classpath {
-        resolutionStrategy.activateDependencyLocking()
+    configurations.all {
+        //resolutionStrategy.activateDependencyLocking()
         // Uncomment to change resolution strategy to force dynamic versions to be refreshed,
         // or run with --refresh-dependencies
         //resolutionStrategy.cacheDynamicVersionsFor(5, "minutes")
+    }
+    dependencyLocking {
+        lockMode = LockMode.STRICT
+        lockAllConfigurations()
+        lockFile.set file("locks/buildscript-gradle.lockfile")
     }
 }
 
