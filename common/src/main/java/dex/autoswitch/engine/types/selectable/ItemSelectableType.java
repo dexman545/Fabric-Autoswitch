@@ -1,5 +1,7 @@
 package dex.autoswitch.engine.types.selectable;
 
+import java.util.function.Predicate;
+
 import dex.autoswitch.Constants;
 import dex.autoswitch.api.impl.AutoSwitchApi;
 import dex.autoswitch.engine.Action;
@@ -7,11 +9,14 @@ import dex.autoswitch.engine.TargetType;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.platform.Services;
+import org.apache.commons.lang3.mutable.MutableDouble;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -23,10 +28,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.block.state.BlockState;
-import org.apache.commons.lang3.mutable.MutableDouble;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Predicate;
 
 public class ItemSelectableType extends SelectableResource<Item> {
     public static final ItemSelectableType INSTANCE = new ItemSelectableType();
@@ -36,13 +37,13 @@ public class ItemSelectableType extends SelectableResource<Item> {
     }
 
     @Override
-    public Holder<Item> lookup(ResourceLocation resourceLocation) {
-        return BuiltInRegistries.ITEM.get(resourceLocation).orElse(null);
+    public Holder<Item> lookup(Identifier identifier) {
+        return BuiltInRegistries.ITEM.get(identifier).orElse(null);
     }
 
     @Override
-    public TagKey<Item> lookupGroup(ResourceLocation resourceLocation) {
-        return TagKey.create(Registries.ITEM, resourceLocation);
+    public TagKey<Item> lookupGroup(Identifier identifier) {
+        return TagKey.create(Registries.ITEM, identifier);
     }
 
     @Override
@@ -145,7 +146,7 @@ public class ItemSelectableType extends SelectableResource<Item> {
      * See {@link Player#createAttributes()} for default attribute values
      */
     @Override
-    public double typeRating(SelectionContext context, FutureSelectable<ResourceLocation, Holder<Item>> futureValue, Object selectable) {
+    public double typeRating(SelectionContext context, FutureSelectable<Identifier, Holder<Item>> futureValue, Object selectable) {
         if (context.action() != Action.ATTACK) {
             if (selectable instanceof ItemStack stack) {
                 if (stack.isDamageableItem()) {
