@@ -6,11 +6,13 @@
 over the implicitly defined `data`.
 - Improve maintainability of the ToolSorter
 - Remove unnecessary `OR` statements from the default config
+- Allow eliding `type=<enchantment|item>` in `tools` list, offhand selectors, and `enchantments` definitions
+- Fix usage of neoforge-replaced way of getting item enchantments
 - Add `Player` data type, mostly to support things like the mace
   - Usable whereever an `IdSelector` can be used
   - Supports the same sort of value comparison as Enchantment Levels
-  - Example:
-  - ```hocon
+  - Example
+    ```hocon
     target {
       type=BLOCK
       id="obsidian"
@@ -24,12 +26,17 @@ over the implicitly defined `data`.
       }
     }
     ```
-  - | Type        | isFlying                | isCrouching                | isPassenger                       | isOnGround                     | isSprinting                | distance                                   | fallDistance                      |
-    |-------------|-------------------------|----------------------------|-----------------------------------|--------------------------------|----------------------------|--------------------------------------------|-----------------------------------|
-    | Description | If the player is flying | If the player is crouching | If the player is riding something | If the player is on the ground | If the player is sprinting | The distance between the player and target | The distane the player has fallen |
+  - Currently Available Entries
 
-- Allow eliding `type=<enchantment|item>` in `tools` list, offhand selectors, and `enchantments` definitions
-- Fix usage of neoforge-replaced way of getting item enchantments
+    | Type         | Description                                | Type    |
+    |--------------|--------------------------------------------|---------|
+    | isFlying     | If the player is flying                    | Boolean |
+    | isCrouching  | If the player is crouching                 | Boolean |
+    | isPassenger  | If the player is riding something          | Boolean |
+    | isOnGround   | If the player is on the ground             | Boolean |
+    | isSprinting  | If the player is sprinting                 | Boolean |
+    | distance     | The distance between the player and target | Number  |
+    | fallDistance | The distane the player has fallen          | Number  |
 
 # 14.0.3
 - Improve handling of fallback tools in default config
