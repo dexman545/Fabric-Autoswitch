@@ -1,28 +1,29 @@
 package dex.autoswitch.engine.types.selectable;
 
 import dex.autoswitch.engine.data.extensible.SelectableType;
+
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 
-public abstract class SelectableResource<VAL> extends SelectableType<ResourceLocation, Holder<VAL>, TagKey<VAL>> {
+public abstract class SelectableResource<VAL> extends SelectableType<Identifier, Holder<VAL>, TagKey<VAL>> {
     protected SelectableResource(String id) {
         super(id);
     }
 
     @Override
-    public String serializeKey(ResourceLocation resourceLocation) {
-        return resourceLocation.toString();
+    public String serializeKey(Identifier identifier) {
+        return identifier.toString();
     }
 
     @Override
-    public ResourceLocation deserializeKey(String key) {
-        var id = ResourceLocation.tryParse(key);
+    public Identifier deserializeKey(String key) {
+        var id = Identifier.tryParse(key);
 
         if (id != null) {
             return id;
         }
 
-        throw new NullPointerException("Invalid ResourceLocation: " + key);
+        throw new NullPointerException("Invalid Identifier: " + key);
     }
 }
