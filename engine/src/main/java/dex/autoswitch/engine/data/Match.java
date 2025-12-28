@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.function.DoubleSupplier;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NonNull;
 
 /**
@@ -18,7 +19,7 @@ import org.jspecify.annotations.NonNull;
  * @param ratings The map of level-based rating suppliers. Used to compare different successful matches. Each level can
  *                be a set of ratings that will be lazily added together to produce the rating for the given level.
  */
-public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) implements Comparable<Match> {
+public record Match(boolean matches, Map<@Range(from = 0, to = Integer.MAX_VALUE) Integer, Set<DoubleSupplier>> ratings) implements Comparable<Match> {
     public Match(boolean matches) {
         this(matches, new HashMap<>());
     }
@@ -39,7 +40,7 @@ public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) 
      * @param rating a {@link DoubleSupplier} providing the rating value. If not already memoized,
      *               it will be wrapped in a {@link MemoizedDoubleSupplier}.
      */
-    public void addRating(int level, DoubleSupplier rating) {
+    public void addRating(@Range(from = 0, to = Integer.MAX_VALUE) int level, DoubleSupplier rating) {
         if (!(rating instanceof MemoizedDoubleSupplier)) {
             rating = new MemoizedDoubleSupplier(rating);
         }
@@ -62,7 +63,7 @@ public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) 
      * @param level  the level at which the ratings should be added
      * @param rating a set of {@link DoubleSupplier} instances providing rating values
      */
-    public void addRating(int level, Set<DoubleSupplier> rating) {
+    public void addRating(@Range(from = 0, to = Integer.MAX_VALUE) int level, Set<DoubleSupplier> rating) {
         ratings.merge(level, rating,
                 (a, b) -> {
                     a.addAll(b);
@@ -77,7 +78,7 @@ public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) 
      * @param level the level for which the cumulative rating should be calculated
      * @return the sum of the ratings at the specified level, or {@code 0} if no ratings exist
      */
-    public double getRating(int level) {
+    public double getRating(@Range(from = 0, to = Integer.MAX_VALUE) int level) {
         var rating = ratings.get(level);
         if (rating != null && !rating.isEmpty()) {
             return rating.stream().mapToDouble(DoubleSupplier::getAsDouble).sum();// / rating.size();
@@ -93,7 +94,7 @@ public record Match(boolean matches, Map<Integer, Set<DoubleSupplier>> ratings) 
      *
      * @return the highest key (level) in the ratings map, or {@code 0} if the map is empty
      */
-    public int getMaxLevel() {
+    public @Range(from = 0, to = Integer.MAX_VALUE) int getMaxLevel() {
         return ratings.keySet().stream().max(Comparator.naturalOrder()).orElse(0);
     }
 
