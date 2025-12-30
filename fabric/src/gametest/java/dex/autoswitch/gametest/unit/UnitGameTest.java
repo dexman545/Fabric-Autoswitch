@@ -86,6 +86,7 @@ public class UnitGameTest extends AbstractTest {
         helper.succeed();
     }
 
+    @GameTest
     public void interactIronGolemNoOffhand(GameTestHelper helper) {
         setup(helper);
 
@@ -160,7 +161,6 @@ public class UnitGameTest extends AbstractTest {
     public void statChangeTest(GameTestHelper helper) {
         setup(helper);
 
-        TestPlayer testPlayer;
         var player = Hotbars.milkPlayer(helper);
         var bedStat = StatSelectableType.INSTANCE.lookup(Objects.requireNonNull(Identifier.tryParse("custom:sleep_in_bed")));
 
