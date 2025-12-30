@@ -306,4 +306,26 @@ public class UnitGameTest extends AbstractTest {
 
         helper.succeed();
     }
+
+    @GameTest
+    public void oresTargetTest(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.pickaxePlayer(helper);
+        select(Action.ATTACK, RegistryObject.block(Blocks.DIAMOND_ORE), player);
+        assertSlot(helper, player, 4);
+
+        player.setPose(Pose.CROUCHING);
+        select(Action.ATTACK, RegistryObject.block(Blocks.DIAMOND_ORE), player);
+        assertSlot(helper, player, 5);
+
+        player.getInventory().removeItem(5, 1);
+        select(Action.ATTACK, RegistryObject.block(Blocks.DIAMOND_ORE), player);
+        assertSlot(helper, player, 6);
+
+        player.getInventory().removeItem(6, 1);
+        select(Action.ATTACK, RegistryObject.block(Blocks.DIAMOND_ORE), player);
+        assertSlot(helper, player, 4);
+
+        helper.succeed();
+    }
 }
