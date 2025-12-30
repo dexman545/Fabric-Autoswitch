@@ -1,13 +1,16 @@
 # 15.0.0
 - Update for 26.1 and unobfuscated Minecraft
-- Fix error when writing an ExpressionTree to the config file
-- Fix error when writing data to the config file
+- Fix an error when writing an ExpressionTree to the config file
+- Fix an error when writing data to the config file
 - Add support for "exploded data" - that is, the outer `data {}` tag is now optional. If present, it will take precedence 
 over the implicitly defined `data`.
-- Improve maintainability of the ToolSorter
+- Improve the maintainability of the ToolSorter
 - Remove unnecessary `OR` statements from the default config
 - Allow eliding `type=<enchantment|item>` in `tools` list, offhand selectors, and `enchantments` definitions
 - Fix usage of neoforge-replaced way of getting item enchantments
+- Add a default target for ores
+  - By default, prefers pickaxes with fortune over those with silk touch, unless the player is crouching,
+    in which case the opposite occurs with silk touch being preferred.
 - Add `Player` data type, mostly to support things like the mace
   - Usable in any `IdSelector` (anywhere you can have a `data` entry)
   - Supports the same sort of value comparison as Enchantment Levels
