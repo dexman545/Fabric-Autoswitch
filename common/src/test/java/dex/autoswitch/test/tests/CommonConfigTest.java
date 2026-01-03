@@ -52,7 +52,6 @@ public class CommonConfigTest {
     }
 
     @Test
-    @Disabled("Broken due to classloading on these old versions")
     // Tests if implicitly defined types for IdSelector work
     void elidedTypeSpecification() throws IOException, URISyntaxException {
         var ref = loadConfig("elidedTypeSpecificationRef");
