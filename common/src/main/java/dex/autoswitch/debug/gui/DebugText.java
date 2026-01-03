@@ -11,6 +11,7 @@ import dex.autoswitch.engine.Selector;
 import dex.autoswitch.engine.data.ContextKey;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
+import dex.autoswitch.mixin.mixins.DebugScreenEntriesAccessor;
 import dex.autoswitch.platform.Services;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectReferencePair;
