@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Operation: {@code OR}
+ *
  * @param children the child nodes the operation will be run on
  */
 public record Intersection(Set<ExpressionTree> children) implements ExpressionTree {

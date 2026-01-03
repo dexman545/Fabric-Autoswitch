@@ -189,9 +189,9 @@ public enum SwitchEvent {
      * @param ctx execution context containing player access, current target/action, configuration,
      *            scheduler, and the mutable {@link SwitchState}
      * @return {@code true} if the event completed successfully (even if no switch occurred), {@code false} when an
-     *         event explicitly aborts its action (e.g., {@link #SWITCHBACK} when disallowed).
-     *         A value of {@code true} indicates the event was handled successfully,
-     *         and should be removed from the scheduler.
+     * event explicitly aborts its action (e.g., {@link #SWITCHBACK} when disallowed).
+     * A value of {@code true} indicates the event was handled successfully,
+     * and should be removed from the scheduler.
      */
     public abstract boolean perform(SwitchContext ctx);
 

@@ -1,12 +1,12 @@
 package dex.autoswitch.engine.data.extensible;
 
+import java.util.Locale;
+import java.util.Objects;
+
 import dex.autoswitch.engine.TargetType;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.futures.FutureSelectable;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Locale;
-import java.util.Objects;
 
 /**
  * Define lookup and match methods for selections, e.g. Block or Item.
@@ -67,7 +67,7 @@ public abstract class SelectableType<KEY, VALUE, GROUP> {
     public abstract @Nullable TargetType targetType();
 
     /**
-     * @return {@code true} if the given object can be handled by this type.
+     * @return {@code true} if this type can handle the given object.
      */
     public abstract boolean isOf(Object o);
 
@@ -75,9 +75,9 @@ public abstract class SelectableType<KEY, VALUE, GROUP> {
      * The rating for this type in the given context.
      *
      * @param context     the context of this match, e.g. the target block for tool matching
-     * @param futureValue the value to the ratings are for
+     * @param futureValue the value to create the ratings for
      * @param selectable  the object to generate the ratings for
-     * @return the rating for the given input, should be normalized to the range of [0, 1]
+     * @return the rating for the given input normalized to the range of {@code [0, 1]}
      */
     public abstract double typeRating(SelectionContext context, FutureSelectable<KEY, VALUE> futureValue, Object selectable);
 

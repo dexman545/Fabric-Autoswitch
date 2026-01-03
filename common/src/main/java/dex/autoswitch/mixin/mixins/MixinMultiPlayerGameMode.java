@@ -1,10 +1,6 @@
 package dex.autoswitch.mixin.mixins;
 
 import dex.autoswitch.mixin.impl.SwitchEventTriggerImpl;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.MultiPlayerGameMode;
-import net.minecraft.util.profiling.Profiler;
-import net.minecraft.world.phys.HitResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,6 +8,11 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.world.phys.HitResult;
 
 @SuppressWarnings("JavadocReference")
 @Mixin(MultiPlayerGameMode.class)

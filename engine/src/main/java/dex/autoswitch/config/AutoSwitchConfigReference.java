@@ -1,5 +1,12 @@
 package dex.autoswitch.config;
 
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -8,13 +15,6 @@ import org.spongepowered.configurate.reactive.Subscriber;
 import org.spongepowered.configurate.reference.ConfigurationReference;
 import org.spongepowered.configurate.reference.ValueReference;
 import org.spongepowered.configurate.reference.WatchServiceListener;
-
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 // See https://github.com/SpongePowered/Configurate/wiki/Transformations-and-Visitors for an updating config
 public class AutoSwitchConfigReference {

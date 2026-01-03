@@ -3,6 +3,7 @@ package dex.autoswitch.harness;
 import com.google.auto.service.AutoService;
 import dex.autoswitch.platform.NeoForgePlatformHelper;
 import dex.autoswitch.platform.services.IPlatformHelper;
+
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
 

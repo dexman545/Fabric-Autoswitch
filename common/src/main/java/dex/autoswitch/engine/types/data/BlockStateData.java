@@ -15,6 +15,7 @@ public class BlockStateData extends DataType<DataMap> {
     public static final BlockStateData INSTANCE = new BlockStateData();
 
     private BlockStateData() {
+        //noinspection Convert2Diamond
         super("blockstates", new TypeToken<DataMap>() {});
     }
 

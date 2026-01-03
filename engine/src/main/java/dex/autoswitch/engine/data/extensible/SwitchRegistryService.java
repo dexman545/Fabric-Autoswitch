@@ -1,8 +1,8 @@
 package dex.autoswitch.engine.data.extensible;
 
-import dex.autoswitch.engine.Matcher;
-
 import java.util.Set;
+
+import dex.autoswitch.engine.Matcher;
 
 public interface SwitchRegistryService {
     Set<SelectableType<?, ?, ?>> selectableTypes();
