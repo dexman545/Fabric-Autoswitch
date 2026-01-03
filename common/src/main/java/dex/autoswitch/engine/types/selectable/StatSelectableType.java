@@ -9,12 +9,12 @@ import dex.autoswitch.futures.FutureSelectable;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.StatType;
 import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 
-public class StatSelectableType extends SelectableType<Identifier, Stat<?>, Void> {
+public class StatSelectableType extends SelectableType<ResourceLocation, Stat<?>, Void> {
     public static final StatSelectableType INSTANCE = new StatSelectableType();
 
     protected StatSelectableType() {
@@ -27,9 +27,9 @@ public class StatSelectableType extends SelectableType<Identifier, Stat<?>, Void
      * See Command parsing for reference {@link ObjectiveCriteria#byName(String)}
      */
     @Override
-    public Stat<?> lookup(Identifier identifier) {
-        var statType = Identifier.bySeparator(identifier.getNamespace(), '.');
-        var statName = Identifier.bySeparator(identifier.getPath(), '.');
+    public Stat<?> lookup(ResourceLocation identifier) {
+        var statType = ResourceLocation.bySeparator(identifier.getNamespace(), '.');
+        var statName = ResourceLocation.bySeparator(identifier.getPath(), '.');
 
         var stat = BuiltInRegistries.STAT_TYPE
                 .getOptional(statType)
@@ -37,12 +37,12 @@ public class StatSelectableType extends SelectableType<Identifier, Stat<?>, Void
         return stat.orElse(null);
     }
 
-    private static <T> Optional<Stat<?>> getStat(StatType<T> statType, Identifier identifier) {
+    private static <T> Optional<Stat<?>> getStat(StatType<T> statType, ResourceLocation identifier) {
         return statType.getRegistry().getOptional(identifier).map(statType::get);
     }
 
     @Override
-    public Void lookupGroup(Identifier identifier) {
+    public Void lookupGroup(ResourceLocation identifier) {
         return null;
     }
 
@@ -70,18 +70,18 @@ public class StatSelectableType extends SelectableType<Identifier, Stat<?>, Void
     }
 
     @Override
-    public double typeRating(SelectionContext context, FutureSelectable<Identifier, Stat<?>> futureValue, Object selectable) {
+    public double typeRating(SelectionContext context, FutureSelectable<ResourceLocation, Stat<?>> futureValue, Object selectable) {
         return 0;
     }
 
     @Override
-    public String serializeKey(Identifier identifier) {
+    public String serializeKey(ResourceLocation identifier) {
         return identifier.toString();
     }
 
     @Override
-    public Identifier deserializeKey(String key) {
-        var id = Identifier.tryParse(key);
+    public ResourceLocation deserializeKey(String key) {
+        var id = ResourceLocation.tryParse(key);
 
         if (id != null) {
             return id;

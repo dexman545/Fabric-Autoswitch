@@ -16,7 +16,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -37,12 +37,12 @@ public class ItemSelectableType extends SelectableResource<Item> {
     }
 
     @Override
-    public Holder<Item> lookup(Identifier identifier) {
+    public Holder<Item> lookup(ResourceLocation identifier) {
         return BuiltInRegistries.ITEM.get(identifier).orElse(null);
     }
 
     @Override
-    public TagKey<Item> lookupGroup(Identifier identifier) {
+    public TagKey<Item> lookupGroup(ResourceLocation identifier) {
         return TagKey.create(Registries.ITEM, identifier);
     }
 
@@ -146,7 +146,7 @@ public class ItemSelectableType extends SelectableResource<Item> {
      * See {@link Player#createAttributes()} for default attribute values
      */
     @Override
-    public double typeRating(SelectionContext context, FutureSelectable<Identifier, Holder<Item>> futureValue, Object selectable) {
+    public double typeRating(SelectionContext context, FutureSelectable<ResourceLocation, Holder<Item>> futureValue, Object selectable) {
         if (context.action() != Action.ATTACK) {
             if (selectable instanceof ItemStack stack) {
                 if (stack.isDamageableItem()) {
