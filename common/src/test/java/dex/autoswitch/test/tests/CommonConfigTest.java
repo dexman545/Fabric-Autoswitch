@@ -19,13 +19,11 @@ import dex.autoswitch.config.data.tree.ExpressionTree;
 import dex.autoswitch.config.data.tree.IdSelector;
 import dex.autoswitch.config.data.tree.Intersection;
 import org.assertj.core.api.Condition;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.configurate.ConfigurateException;
 
 public class CommonConfigTest {
     @Test
-    @Disabled("Broken due to classloading on these old versions")
     void roundTripTest() throws IOException, URISyntaxException {
         var config = loadDefaultConfig();
         var p = Path.of("configs", "roundTrip.conf");
@@ -47,7 +45,6 @@ public class CommonConfigTest {
     }
 
     @Test
-    @Disabled("Broken due to classloading on these old versions")
     void testExplodedData() throws IOException, URISyntaxException {
         var ref = loadConfig("explodedDataRef");
         var exploded = loadConfig("explodedDataTest");
@@ -55,7 +52,6 @@ public class CommonConfigTest {
     }
 
     @Test
-    @Disabled("Broken due to classloading on these old versions")
     // Tests if implicitly defined types for IdSelector work
     void elidedTypeSpecification() throws IOException, URISyntaxException {
         var ref = loadConfig("elidedTypeSpecificationRef");

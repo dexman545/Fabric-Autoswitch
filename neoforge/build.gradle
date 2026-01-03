@@ -6,7 +6,7 @@ plugins {
 
 neoForge {
     version = neoforge_version
-    // Disabled as it breaks neo in unobfuscated versions
+    // Disabled as it breaks neo in unobfuscated versions until MDG 2.0.133 or later
     /*parchment {
         minecraftVersion = parchment_minecraft
         mappingsVersion = parchment_version

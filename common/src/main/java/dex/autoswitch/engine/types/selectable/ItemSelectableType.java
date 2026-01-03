@@ -142,7 +142,7 @@ public class ItemSelectableType extends SelectableResource<Item> {
 
     /**
      * For {@link Entity} damage, see {@link Mob#doHurtTarget(ServerLevel, Entity)} and {@link Player#attack(Entity)}
-     * See {@link ItemAttributeModifiers#compute(double, EquipmentSlot)} for attribute calculation
+     * See {@link ItemAttributeModifiers#compute(Holder, double, EquipmentSlot)} for attribute calculation
      * See {@link Player#createAttributes()} for default attribute values
      */
     @Override
