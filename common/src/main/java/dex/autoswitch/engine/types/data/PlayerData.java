@@ -108,7 +108,11 @@ public class PlayerData extends DataType<DataMap> {
 
     private static double getDistanceFromPlayer(Player player, SelectionContext context, Object selectable) {
         return switch (selectable) {
-            case BlockState _, Block _ when context.get(BLOCK_POS) != null -> {
+            case BlockState $ when context.get(BLOCK_POS) != null -> {
+                var blockPos = context.get(BLOCK_POS);
+                yield Math.sqrt(player.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+            }
+            case Block $ when context.get(BLOCK_POS) != null -> {
                 var blockPos = context.get(BLOCK_POS);
                 yield Math.sqrt(player.distanceToSqr(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
             }
