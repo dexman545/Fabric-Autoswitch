@@ -2,12 +2,13 @@ package dex.autoswitch.mixin.mixins;
 
 import dex.autoswitch.futures.FutureSelectable;
 import dex.autoswitch.mixin.impl.ConnectionHandler;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.protocol.game.ClientboundLoginPacket;
 
 /**
  * @see ClientPacketListener

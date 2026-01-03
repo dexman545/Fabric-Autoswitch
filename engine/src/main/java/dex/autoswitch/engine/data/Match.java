@@ -15,11 +15,13 @@ import org.jspecify.annotations.NonNull;
 /**
  * Represents a match result with an associated set of ratings distributed across multiple levels
  * that can be combined to form a final rating or merged with other matches.
+ *
  * @param matches {@code true} if this match was successful, {@code false} otherwise.
  * @param ratings The map of level-based rating suppliers. Used to compare different successful matches. Each level can
  *                be a set of ratings that will be lazily added together to produce the rating for the given level.
  */
-public record Match(boolean matches, Map<@Range(from = 0, to = Integer.MAX_VALUE) Integer, Set<DoubleSupplier>> ratings) implements Comparable<Match> {
+public record Match(boolean matches,
+                    Map<@Range(from = 0, to = Integer.MAX_VALUE) Integer, Set<DoubleSupplier>> ratings) implements Comparable<Match> {
     public Match(boolean matches) {
         this(matches, new HashMap<>());
     }
@@ -36,7 +38,7 @@ public record Match(boolean matches, Map<@Range(from = 0, to = Integer.MAX_VALUE
      * If ratings exist for the specified level, the supplied rating is added to the existing set.
      * Otherwise, a new set is created for the level, and the rating is added to it.
      *
-     * @param level the level at which the rating should be added.
+     * @param level  the level at which the rating should be added.
      * @param rating a {@link DoubleSupplier} providing the rating value. If not already memoized,
      *               it will be wrapped in a {@link MemoizedDoubleSupplier}.
      */

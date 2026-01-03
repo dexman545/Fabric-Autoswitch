@@ -15,8 +15,9 @@ import dex.autoswitch.engine.SelectionEngine;
  * This context is passed through the {@link SelectionEngine} to all {@link Matcher}s.
  * It carries the primary {@link Action} and target, as well as a map of type-safe {@link #attachments()}
  * for carrying arbitrary data like positions, entities, or players without coupling the engine to those types.
- * @param action The action currently being performed
- * @param target The current target of the {@code action}
+ *
+ * @param action      The action currently being performed
+ * @param target      The current target of the {@code action}
  * @param attachments Extra data to provide further context in which the selection is occurring
  */
 public record SelectionContext(Action action, Object target, Map<ContextKey<?>, Object> attachments) {
@@ -26,7 +27,7 @@ public record SelectionContext(Action action, Object target, Map<ContextKey<?>, 
      * @param action            the primary {@link Action} being performed
      * @param target            the target object associated with the selection context
      * @param attachmentEntries the variable-length array of key-value pairs, each represented as a
-     *                           {@link Map.Entry}, to be attached to the context
+     *                          {@link Map.Entry}, to be attached to the context
      */
     @SafeVarargs
     public SelectionContext(Action action, Object target, Map.Entry<ContextKey<?>, Object>... attachmentEntries) {

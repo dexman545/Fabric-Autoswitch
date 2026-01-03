@@ -9,7 +9,8 @@ import dex.autoswitch.engine.data.extensible.SelectableType;
 
 /**
  * Represents an Object that may not yet be instantiated, or a group of Objects.
- * @param <KEY> The type of {@code key} used to look up these Objects.
+ *
+ * @param <KEY>  The type of {@code key} used to look up these Objects.
  * @param <TYPE> The type of the Object that may be selectable
  */
 public sealed abstract class FutureSelectable<KEY, TYPE> permits FutureSelectableValue, FutureSelectableGroup {

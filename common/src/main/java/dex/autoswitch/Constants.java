@@ -1,5 +1,10 @@
 package dex.autoswitch;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.util.Objects;
+
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.config.ConfigHandler;
 import dex.autoswitch.engine.events.Scheduler;
@@ -7,11 +12,6 @@ import dex.autoswitch.engine.state.SwitchState;
 import dex.autoswitch.platform.Services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.util.Objects;
 
 public class Constants {
     public static final String MOD_ID = "autoswitch";

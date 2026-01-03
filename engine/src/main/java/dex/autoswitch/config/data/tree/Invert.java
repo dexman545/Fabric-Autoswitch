@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Operation: {@code NOT}
+ *
  * @param child the child node the operation will be run on
  */
 public record Invert(ExpressionTree child) implements ExpressionTree {
@@ -18,7 +19,7 @@ public record Invert(ExpressionTree child) implements ExpressionTree {
     /**
      * Evaluates whether the given {@code selectable} does NOT match the conditions defined by this expression tree.
      * The result of this method inverts the matching outcome of the child expression while retaining its ratings.
-     <p>
+     * <p>
      * {@inheritDoc}
      */
     @Override

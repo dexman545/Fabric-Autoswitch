@@ -1,5 +1,8 @@
 package dex.autoswitch.test.tests;
 
+import java.util.List;
+import java.util.function.Function;
+
 import dex.autoswitch.Constants;
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.engine.Action;
@@ -8,6 +11,9 @@ import dex.autoswitch.harness.DummyInventory;
 import dex.autoswitch.harness.NeoForgeTestPlatformHelper;
 import dex.autoswitch.platform.Services;
 import dex.autoswitch.test.util.AbstractSelectionTest;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -15,11 +21,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.BeehiveBlock;
 import net.minecraft.world.level.block.Blocks;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.function.Function;
 
 public class DefaultSelectionTest extends AbstractSelectionTest {
     private final AutoSwitchConfig autoSwitchConfig = Constants.CONFIG;
@@ -163,7 +164,7 @@ public class DefaultSelectionTest extends AbstractSelectionTest {
         engine.select(hotbar, Action.ATTACK, glass);
         assertSelectedSlot(5, hotbar);
     }
-    
+
     @Test
     @Disabled
     void timingTest(MinecraftServer server) {
@@ -210,7 +211,7 @@ public class DefaultSelectionTest extends AbstractSelectionTest {
             System.out.println(s);
             System.out.println("max " + max);
             System.out.println("min " + min);
-            System.out.println("avg " + avg/runs);
+            System.out.println("avg " + avg / runs);
         }
     }
 
