@@ -75,7 +75,7 @@ public class SwitchEventTriggerImpl {
 
     /**
      * Process type of action made and desired switch action.
-     * <p>Tick scheduler clock to ensure immediate-mode actions are taken on time.</p>
+     * <p>Tick the scheduler clock to ensure immediate-mode actions are taken on time.</p>
      *
      * @param desiredType     type of action to process for switching.
      * @param crosshairTarget target that the player is looking at.

@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * The basic selector. Favors more specific (not a group, more required data) over more general selectors
+ *
  * @param selectable The object to be matched against, e.g. a block or entity.
  *                   Given by {@link SwitchRegistryService#selectableTypes()}
  * @param data       The extra data requirments to match the {@code selectable}.
@@ -37,11 +38,11 @@ public record IdSelector(FutureSelectable<?, ?> selectable, Set<TypedData<?>> da
      *     <li>typeRating</li>
      *     <li>dataRating</li>
      * </ol>
-     *
+     * <p>
      * In general, the higher the rating level, the more specific the selector is, followed by the type and data ratings.
      *
-     * @param baseLevel the initial rating level used as a starting point for assigning ratings.
-     * @param context the selection context containing details about the action and target to evaluate.
+     * @param baseLevel       the initial rating level used as a starting point for assigning ratings.
+     * @param context         the selection context containing details about the action and target to evaluate.
      * @param inputSelectable the object that will be tested against the selector to determine a match.
      * @return a {@link Match} object indicating whether a match was found and containing associated ratings.
      */

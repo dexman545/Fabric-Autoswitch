@@ -182,9 +182,6 @@ public class ItemSelectableType extends SelectableResource<Item> {
             }
 
             if (context.target() instanceof Entity entity) {
-                /*var ds = new DamageSource(DamageTypes.PLAYER_ATTACK);
-                EnchantmentHelper.filterCompatibleEnchantments();*/
-
                 var damage = new MutableDouble(1);
                 var speed = new MutableDouble(4);
                 stack.forEachModifier(EquipmentSlot.MAINHAND, (attributeHolder, attributeModifier) -> {

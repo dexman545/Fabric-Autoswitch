@@ -1,9 +1,9 @@
 package dex.autoswitch.test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import dex.autoswitch.Constants;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class LoadingTest {
     @Test

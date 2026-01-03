@@ -18,8 +18,9 @@ import dex.autoswitch.engine.data.extensible.PlayerInventory;
 /**
  * This engine handles the primary processing and ordering of selections. It generates a set of candidates based on the
  * {@link SelectionContext} and tries to find the best slot of a {@link PlayerInventory} to be selected.
+ *
  * @param configuration The mapping of {@link Action}s and target {@link Selector}s to the desired set of tool {@link Selector}s
- * @param fallback The fallback tool selector to use in case no tools matched
+ * @param fallback      The fallback tool selector to use in case no tools matched
  */
 public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configuration, FallbackSelector fallback) {
     /**
@@ -122,7 +123,6 @@ public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configur
      * @param selectors a mapping of target selectors and their associated tool selectors
      * @param context   the context that includes the action and target for which the tools and slots are being evaluated
      * @return the ideal slot to select, wrapped in an {@code OptionalInt}. If no suitable slot is found, returns an empty {@code OptionalInt}.
-     *
      * @see #TOOL_COMPARATOR The comparator for the sort order
      */
     // Sort the slots in this order: targetPriority -> targetRatingN -> toolPriority -> toolRatingN -> slot(reversed)
@@ -224,7 +224,6 @@ public record SelectionEngine(Map<Action, Map<Selector, Set<Selector>>> configur
      * @param toolMatch      The result of the matching process for the tool.
      * @param slot           The index of the slot in the player's inventory.
      * @param isSelected     A flag indicating whether this slot is the currently selected one.
-     *
      * @see #TOOL_COMPARATOR TOOL_ORDERER for the sort order
      */
     private record Candidate(Matcher tar, Matcher tool, int targetPriority, Match targetMatch,

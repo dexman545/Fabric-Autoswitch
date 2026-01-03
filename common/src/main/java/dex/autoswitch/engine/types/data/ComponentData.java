@@ -17,6 +17,7 @@ public class ComponentData extends DataType<DataMap> {
     public static final ComponentData INSTANCE = new ComponentData();
 
     private ComponentData() {
+        //noinspection Convert2Diamond
         super("components", new TypeToken<DataMap>() {});
     }
 

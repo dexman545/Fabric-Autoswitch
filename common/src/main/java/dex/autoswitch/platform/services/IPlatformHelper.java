@@ -44,8 +44,8 @@ public interface IPlatformHelper {
      * This is the actual implementation of {@link #isInTag(TagKey, Object)} for checking if an object is in a tag.
      *
      * @param tagKey tag to check for
-     * @param t object to check for
-     * @param <T> object type
+     * @param t      object to check for
+     * @param <T>    object type
      * @return if the given tag contains the given object
      */
     <T> boolean isInTagGeneral(TagKey<T> tagKey, T t);
@@ -70,13 +70,12 @@ public interface IPlatformHelper {
     /**
      * Checks if the given object is in the given tag, handling custom tags from {@link Tags}.
      *
+     * @param tagKey tag to check for
+     * @param t      object to check for
+     * @param <T>    object type
+     * @return if the given tag contains the given object
      * @see Tags
      * @see #isInTagGeneral(TagKey, Object)
-     *
-     * @param tagKey tag to check for
-     * @param t object to check for
-     * @param <T> object type
-     * @return if the given tag contains the given object
      */
     default <T> boolean isInTag(TagKey<T> tagKey, T t) {
         return switch (Tags.getTag(tagKey)) {

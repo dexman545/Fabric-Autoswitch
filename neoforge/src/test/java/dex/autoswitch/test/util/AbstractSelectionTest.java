@@ -1,9 +1,22 @@
 package dex.autoswitch.test.util;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.config.ConfigHandler;
 import dex.autoswitch.engine.SelectionEngine;
 import dex.autoswitch.engine.data.extensible.PlayerInventory;
+import net.neoforged.testframework.junit.EphemeralTestServerProvider;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.opentest4j.MultipleFailuresError;
+import org.spongepowered.configurate.ConfigurateException;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -20,37 +33,14 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.testframework.junit.EphemeralTestServerProvider;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.opentest4j.MultipleFailuresError;
-import org.spongepowered.configurate.ConfigurateException;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(EphemeralTestServerProvider.class)
 public abstract class AbstractSelectionTest {
     protected SelectionEngine engine;
 
-    public abstract SelectionEngine getEngine();
-
     @BeforeEach
     void setup() {
         engine = getEngine();
-    }
-
-    protected AutoSwitchConfig loadConfig(String file) {
-        try {
-            var p = Path.of("resources", "test", "configs", file + ".conf");
-            var realPath = Path.of(System.getProperty("user.dir")).getParent().resolve(p);
-            assertTrue(Files.exists(realPath), () -> realPath.toAbsolutePath().toString());
-            return ConfigHandler.readConfiguration(realPath);
-        } catch (ConfigurateException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     protected static void assertSelectedSlot(int expectedSlot, PlayerInventory<ItemStack> inventory) {
@@ -120,18 +110,6 @@ public abstract class AbstractSelectionTest {
         return type.create(serverLevel, EntitySpawnReason.NATURAL);
     }
 
-    protected record Enchant(ResourceKey<Enchantment> key, int level) {
-        public static Enchant of(ResourceKey<Enchantment> key, int level) {
-            return new Enchant(key, level);
-        }
-    }
-
-    protected record State<T extends Comparable<T>, V extends T>(Property<T> property, V value) {
-        public static <T extends Comparable<T>, V extends T> State<T, V> of(Property<T> property, V value) {
-            return new State<>(property, value);
-        }
-    }
-
     private static String stackString(ItemStack stack) {
         var sb = new StringBuilder("{");
 
@@ -144,5 +122,30 @@ public abstract class AbstractSelectionTest {
         sb.append(ens);
 
         return sb.append("}").toString();
+    }
+
+    public abstract SelectionEngine getEngine();
+
+    protected AutoSwitchConfig loadConfig(String file) {
+        try {
+            var p = Path.of("resources", "test", "configs", file + ".conf");
+            var realPath = Path.of(System.getProperty("user.dir")).getParent().resolve(p);
+            assertTrue(Files.exists(realPath), () -> realPath.toAbsolutePath().toString());
+            return ConfigHandler.readConfiguration(realPath);
+        } catch (ConfigurateException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected record Enchant(ResourceKey<Enchantment> key, int level) {
+        public static Enchant of(ResourceKey<Enchantment> key, int level) {
+            return new Enchant(key, level);
+        }
+    }
+
+    protected record State<T extends Comparable<T>, V extends T>(Property<T> property, V value) {
+        public static <T extends Comparable<T>, V extends T> State<T, V> of(Property<T> property, V value) {
+            return new State<>(property, value);
+        }
     }
 }

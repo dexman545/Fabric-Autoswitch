@@ -22,7 +22,7 @@ plugins {
     id 'net.fabricmc.fabric-loom' version '1.14.+' apply false
     // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
     id 'net.neoforged.moddev' version '2.0.+' apply false
-    id 'com.gradleup.shadow'  version '9.3.+' apply false
+    id 'com.gradleup.shadow' version '9.3.+' apply false
     id "me.modmuss50.mod-publish-plugin" version '1.+'
     id("io.github.dexman545.outlet") version "1.7.0-alpha.4"
 }
@@ -46,18 +46,18 @@ dependencies {
 outlet {
     mcVersionRange = fab_mc_version_range
     propertiesData = [
-            'minecraft_version' : outlet.latestMc(),
-            'fabric_version': outlet.fapiVersion(),
-            'fabric_loader_version' : outlet.loaderVersion(),
-            'neo_form_version' : outlet.neoformVersion(),
-            'neoforge_version' : outlet.neoforgeVersion(outlet.latestMc(), true) ?: project.neoforge_version,
-            'parchment_minecraft' : outlet.parchmentVersion(outlet.latestMc())?.v1 ?: project.parchment_minecraft,
-            'parchment_version' : outlet.parchmentVersion(outlet.latestMc())?.v2 ?: project.parchment_version,
-            'java_version' : outlet.javaLanguageCompatibility().toString(),
+            'minecraft_version'    : outlet.latestMc(),
+            'fabric_version'       : outlet.fapiVersion(),
+            'fabric_loader_version': outlet.loaderVersion(),
+            'neo_form_version'     : outlet.neoformVersion(),
+            'neoforge_version'     : outlet.neoforgeVersion(outlet.latestMc(), true) ?: project.neoforge_version,
+            'parchment_minecraft'  : outlet.parchmentVersion(outlet.latestMc())?.v1 ?: project.parchment_minecraft,
+            'parchment_version'    : outlet.parchmentVersion(outlet.latestMc())?.v2 ?: project.parchment_version,
+            'java_version'         : outlet.javaLanguageCompatibility().toString(),
     ]
 }
 
-tasks.register("updateVersions",  TaskPropertiesUpdate) {
+tasks.register("updateVersions", TaskPropertiesUpdate) {
 }
 
 publishMods {
@@ -144,10 +144,10 @@ tasks.register("publishModsConditional").configure {
     def mcv = providers.gradleProperty("minecraft_version").get()
     if (!(mcv.contains("s") || mcv.contains("p") || mcv.contains("r"))) {
         dependsOn 'publishCurseforgeNeoforge'
-        dependsOn'publishModrinthNeoforge'
+        dependsOn 'publishModrinthNeoforge'
     }
     dependsOn 'publishCurseforgeFabric'
-    dependsOn'publishModrinthFabric'
+    dependsOn 'publishModrinthFabric'
 }
 
 def getVersionType() {

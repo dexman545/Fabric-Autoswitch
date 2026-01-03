@@ -224,6 +224,7 @@ public class DebugText {
     private record ToolSelectorHelp() implements DebugScreenEntry {
         private static final Identifier GROUP_ONE =
                 Identifier.fromNamespaceAndPath("autoswitch", "item_selector_help_one");
+
         @Override
         public void display(@NotNull DebugScreenDisplayer displayer,
                             @Nullable Level level, @Nullable LevelChunk levelChunk, @Nullable LevelChunk levelChunk1) {

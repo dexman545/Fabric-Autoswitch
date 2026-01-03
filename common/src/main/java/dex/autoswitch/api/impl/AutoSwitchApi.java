@@ -18,11 +18,11 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * For Fabric:
- *           Each API entry is added to {@code ObjectShare} with the given id and a {@link Collection} of entries.
- *           Add new entries to the collection as needed.
+ * Each API entry is added to {@code ObjectShare} with the given id and a {@link Collection} of entries.
+ * Add new entries to the collection as needed.
  * <p>
  * For NeoForge:
- *          Each API entry is processed via InterModComms.
+ * Each API entry is processed via InterModComms.
  */
 @ApiStatus.Internal
 public final class AutoSwitchApi {

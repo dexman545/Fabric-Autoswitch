@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Operation: {@code XOR}
+ *
  * @param children the child nodes the operation will be run on
  */
 public record DisjunctiveUnion(Set<ExpressionTree> children) implements ExpressionTree {

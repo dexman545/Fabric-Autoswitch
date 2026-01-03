@@ -39,7 +39,7 @@ public final class Transformations {
      * occurred</p>
      *
      * @param node the node to transform
-     * @param <N> node type
+     * @param <N>  node type
      * @return provided node, after transformation
      */
     public static <N extends ConfigurationNode> N updateNode(final N node) throws ConfigurateException {

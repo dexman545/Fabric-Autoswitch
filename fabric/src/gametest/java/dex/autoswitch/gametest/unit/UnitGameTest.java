@@ -105,7 +105,7 @@ public class UnitGameTest extends AbstractTest {
         var player = Hotbars.fightingPlayer(helper);
         var strider = RegistryObject.entity(helper, EntityType.STRIDER);
 
-        // Interaction where slot is already correct
+        // Interaction where the slot is already correct
         player.getInventory().setSelectedSlot(2);
         var testPlayer = select(Action.INTERACT, strider, player);
         assertSlot(helper, player, 2);
@@ -165,7 +165,7 @@ public class UnitGameTest extends AbstractTest {
         var player = Hotbars.milkPlayer(helper);
         var bedStat = StatSelectableType.INSTANCE.lookup(Objects.requireNonNull(Identifier.tryParse("custom:sleep_in_bed")));
 
-        // Ideally we'd actually trigger the stat change, but that isn't trivial on the server
+        // Ideally, we'd actually trigger the stat change, but that isn't trivial on the server
         select(Action.STAT_CHANGE, bedStat, player);
         assertSlot(helper, player, 3);
 
@@ -199,7 +199,7 @@ public class UnitGameTest extends AbstractTest {
 
         var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
 
-        // Ensure primary weapon was chosen
+        // Ensure the primary weapon was chosen
         select(Action.ATTACK, creeper, player);
         assertSlot(helper, player, 1);
 

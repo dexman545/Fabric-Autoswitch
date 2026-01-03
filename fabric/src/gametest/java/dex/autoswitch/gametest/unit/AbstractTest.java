@@ -45,6 +45,11 @@ public abstract class AbstractTest {
         }
     }
 
+    protected static void moveEntity(Player player, Entity entity, int distance) {
+        var pp = player.position();
+        entity.setPos(pp.x + distance, pp.y, pp.z);
+    }
+
     protected AutoSwitchConfig loadConfig(String file) {
         try {
             var p = AbstractTest.class.getResource("/configs/" + file + ".conf");
@@ -112,11 +117,6 @@ public abstract class AbstractTest {
     protected void assertOffhand(GameTestHelper helper, TestPlayer player, boolean expected) {
         String msg = expected ? "Expected to offhand" : "Expected NOT to offhand";
         helper.assertTrue(player.hasOffhanded().booleanValue() == expected, Component.literal(msg));
-    }
-
-    protected static void moveEntity(Player player, Entity entity, int distance) {
-        var pp = player.position();
-        entity.setPos(pp.x + distance, pp.y, pp.z);
     }
 
     private SwitchEvent getEvent(Action action) {
