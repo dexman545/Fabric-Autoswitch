@@ -8,7 +8,7 @@ import dex.autoswitch.engine.state.SwitchContext;
 /**
  * A type-safe key for accessing values within a {@link SelectionContext} or {@link SwitchContext}.
  * <p>
- * Keys are interned by their {@link #id()}. This ensures that multiple components can access the same 
+ * Keys are interned by their {@link #id()}. This ensures that multiple components can access the same
  * context data by using the same string ID, while maintaining type safety through the {@link #type()} class.
  *
  * @param <T>  the type of value associated with this key

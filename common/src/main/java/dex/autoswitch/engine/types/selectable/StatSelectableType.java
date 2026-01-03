@@ -22,7 +22,7 @@ public class StatSelectableType extends SelectableType<Identifier, Stat<?>, Void
     }
 
     /**
-     * Stat's have a <a href="https://minecraft.wiki/w/Statistics">weird format</a>.
+     * Stats have a <a href="https://minecraft.wiki/w/Statistics">weird format</a>.
      * <p>
      * See Command parsing for reference {@link ObjectiveCriteria#byName(String)}
      */

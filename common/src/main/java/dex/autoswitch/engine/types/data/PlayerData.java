@@ -35,6 +35,7 @@ public class PlayerData extends DataType<DataMap> {
     );
 
     private PlayerData() {
+        //noinspection Convert2Diamond
         super("player", new TypeToken<DataMap>() {});
     }
 

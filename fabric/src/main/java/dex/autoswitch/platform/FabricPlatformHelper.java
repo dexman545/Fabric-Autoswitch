@@ -1,12 +1,14 @@
 package dex.autoswitch.platform;
 
+import java.nio.file.Path;
+
 import com.google.auto.service.AutoService;
 import dex.autoswitch.platform.services.IPlatformHelper;
-import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
-import net.fabricmc.loader.api.FabricLoader;
+
 import net.minecraft.tags.TagKey;
 
-import java.nio.file.Path;
+import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
+import net.fabricmc.loader.api.FabricLoader;
 
 @AutoService(IPlatformHelper.class)
 public class FabricPlatformHelper implements IPlatformHelper {

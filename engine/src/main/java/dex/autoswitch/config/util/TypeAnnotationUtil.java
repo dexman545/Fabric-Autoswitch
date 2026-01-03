@@ -40,7 +40,7 @@ public final class TypeAnnotationUtil {
      *   <li>Otherwise annotations are applied to the top-level type.</li>
      * </ul>
      *
-     * @param source source token with type-use annotations to copy from
+     * @param source      source token with type-use annotations to copy from
      * @param destination target token to apply annotations to
      * @return new TypeToken with annotations from source applied to destination's type structure
      */
@@ -72,8 +72,8 @@ public final class TypeAnnotationUtil {
      *   <li>Otherwise annotations are applied to the top-level type.</li>
      * </ul>
      *
-     * @param source annotated source type to copy from
-     * @param token target token
+     * @param source the annotated source type to copy from
+     * @param token  target token
      * @return annotated representation of {@code token}
      */
     public static AnnotatedType copyTypeAnnotations(AnnotatedType source, TypeToken<?> token) {

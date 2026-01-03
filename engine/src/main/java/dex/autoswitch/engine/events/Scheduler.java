@@ -1,10 +1,10 @@
 package dex.autoswitch.engine.events;
 
-import dex.autoswitch.engine.state.SwitchContext;
-
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import dex.autoswitch.engine.state.SwitchContext;
 
 public class Scheduler {
     private static final int QUEUE_SIZE_WARNING_THRESHOLD = 64;

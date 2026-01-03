@@ -1,13 +1,13 @@
 package dex.autoswitch.harness;
 
+import java.util.Set;
+
 import com.google.auto.service.AutoService;
 import dex.autoswitch.engine.Matcher;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.extensible.DataType;
 import dex.autoswitch.engine.data.extensible.SelectableType;
 import dex.autoswitch.engine.data.extensible.SwitchRegistryService;
-
-import java.util.Set;
 
 @AutoService(SwitchRegistryService.class)
 public class TestSwitchRegistry implements SwitchRegistryService {

@@ -1,5 +1,10 @@
 package dex.autoswitch.test.tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Set;
+
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.config.data.tree.IdSelector;
 import dex.autoswitch.engine.Action;
@@ -10,11 +15,6 @@ import dex.autoswitch.harness.DummyInventory;
 import dex.autoswitch.harness.DummyTypes;
 import dex.autoswitch.test.util.AbstractSelectionTest;
 import org.junit.jupiter.api.Test;
-
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DataTest extends AbstractSelectionTest {
     private final AutoSwitchConfig autoSwitchConfig = loadConfig("configTypes");

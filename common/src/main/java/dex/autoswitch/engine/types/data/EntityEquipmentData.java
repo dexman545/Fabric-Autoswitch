@@ -20,6 +20,7 @@ public class EntityEquipmentData extends DataType<DataMap> {
     public static final EntityEquipmentData INSTANCE = new EntityEquipmentData();
 
     protected EntityEquipmentData() {
+        //noinspection Convert2Diamond
         super("equipment", new TypeToken<DataMap>() {});
     }
 

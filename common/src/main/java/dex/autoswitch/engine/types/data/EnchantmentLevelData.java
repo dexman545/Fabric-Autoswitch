@@ -24,6 +24,7 @@ public class EnchantmentLevelData extends DataType<DataMap> {
     private final Map<DataMap, Set<LevelCondition>> CONDITION_CACHE = new HashMap<>();
 
     private EnchantmentLevelData() {
+        //noinspection Convert2Diamond
         super("level", new TypeToken<DataMap>() {});
     }
 

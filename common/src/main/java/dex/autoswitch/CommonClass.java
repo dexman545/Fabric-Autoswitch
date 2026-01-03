@@ -21,7 +21,7 @@ public class CommonClass {
     }
 
     /**
-     * Update toggle and send message to player if necessary
+     * Update toggle and send a message to the player if necessary
      *
      * @param player      client's player
      * @param toggle      toggle to update on keybinding press
