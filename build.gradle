@@ -2,13 +2,28 @@ import dex.plugins.TaskPropertiesUpdate
 import me.modmuss50.mpp.PublishModTask
 import me.modmuss50.mpp.ReleaseType
 
+buildscript {
+    configurations.configureEach {
+        //resolutionStrategy.activateDependencyLocking()
+        // Uncomment to change resolution strategy to force dynamic versions to be refreshed,
+        // or run with --refresh-dependencies
+        //resolutionStrategy.cacheDynamicVersionsFor(5, "minutes")
+    }
+    dependencyLocking {
+        lockMode = LockMode.STRICT
+        lockAllConfigurations()
+        lockFile.set file("locks/buildscript-gradle.lockfile")
+    }
+}
+
+// To update plugin version, run Update run config or task `dependencies --write-locks`
 plugins {
     // see https://fabricmc.net/develop/ for new versions
-    id 'fabric-loom' version '1.14-SNAPSHOT' apply false
+    id 'net.fabricmc.fabric-loom' version '1.14.+' apply false
     // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
-    id 'net.neoforged.moddev' version '2.0.137' apply false
-    id 'com.gradleup.shadow'  version '9.1.0' apply false
-    id "me.modmuss50.mod-publish-plugin" version '1.0.0'
+    id 'net.neoforged.moddev' version '2.0.+' apply false
+    id 'com.gradleup.shadow' version '9.3.+' apply false
+    id "me.modmuss50.mod-publish-plugin" version '1.+'
     id("io.github.dexman545.outlet") version "1.7.0-alpha.4"
 }
 
