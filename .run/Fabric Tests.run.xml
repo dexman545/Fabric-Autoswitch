@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value=":fabric:test" />
+          <option value=":fabric:check" />
         </list>
       </option>
       <option name="vmOptions" />

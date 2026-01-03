@@ -22,6 +22,8 @@
     <RunAsTest>false</RunAsTest>
     <GradleProfilingDisabled>false</GradleProfilingDisabled>
     <GradleCoverageDisabled>false</GradleCoverageDisabled>
-    <method v="2" />
+    <method v="2">
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="wrapper --gradle-version latest" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
+    </method>
   </configuration>
 </component>

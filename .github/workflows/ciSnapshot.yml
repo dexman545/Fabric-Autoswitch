@@ -10,10 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 24
+      - name: Set up JDK 25
         uses: actions/setup-java@v4
         with:
-          java-version: 24
+          java-version: 25
           distribution: 'zulu'
 
       - name: Make gradlew executable
@@ -25,7 +25,7 @@ jobs:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
 
       - name: Update versions
-        run: ./gradlew updateVersions
+        run: ./gradlew updateVersions dependencies --write-locks
 
       # Update Neoforge resource cache if needed
       - uses: neoforged/actions-modding/minecraft-assets-cache/create@v1
