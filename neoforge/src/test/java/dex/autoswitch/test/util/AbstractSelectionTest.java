@@ -1,7 +1,5 @@
 package dex.autoswitch.test.util;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
@@ -14,7 +12,7 @@ import dex.autoswitch.engine.data.extensible.PlayerInventory;
 import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.opentest4j.MultipleFailuresError;
+import org.opentest4j.AssertionFailedError;
 import org.spongepowered.configurate.ConfigurateException;
 
 import net.minecraft.core.component.DataComponents;
@@ -44,41 +42,37 @@ public abstract class AbstractSelectionTest {
     }
 
     protected static void assertSelectedSlot(int expectedSlot, PlayerInventory<ItemStack> inventory) {
-        try {
-            assertTrue(expectedSlot < inventory.slotCount(), "Slot out of bounds!");
-            assertAll("Selected Tool Test",
-                    () -> assertEquals(expectedSlot, inventory.currentSelectedSlot()),
-                    () -> assertEquals(inventory.getTool(expectedSlot), inventory.getTool(inventory.currentSelectedSlot()), () -> {
-                        var sb = new StringBuilder("Expected slot %s but got %s!"
-                                .formatted(expectedSlot, inventory.currentSelectedSlot()));
-
-                        sb.append("\n\tExpected: ").append(stackString(inventory.getTool(expectedSlot))).append("\n");
-                        sb.append("\tSelected: ").append(stackString(inventory.getTool(inventory.currentSelectedSlot())))
-                                .append("\n");
-
-                        sb.append("\tInventory:");
-
-                        if (true && inventory.slotCount() > 10) {
-                            sb.append("(HIDDEN DUE TO SIZE)");
-                        } else {
-                            sb.append("\n");
-                            for (int slot = 0; slot < inventory.slotCount(); slot++) {
-                                sb.append('\t').append('\t').append(stackString(inventory.getTool(slot)));
-                                if (expectedSlot == slot) {
-                                    sb.append("\t<<<<<< EXPECTED");
-                                }
-                                if (inventory.currentSelectedSlot() == slot) {
-                                    sb.append("\t<<<<<< SELECTED");
-                                }
-                                sb.append('\n');
-                            }
-                        }
-
-                        return sb.toString();
-                    }));
-        } catch (MultipleFailuresError e) {
-            throw e;
+        int actualSlot = inventory.currentSelectedSlot();
+        if (expectedSlot == actualSlot) {
+            return;
         }
+
+        var sb = new StringBuilder("Expected slot %s but got %s!"
+                .formatted(expectedSlot, actualSlot));
+
+        sb.append("\n\tExpected: ").append(stackString(inventory.getTool(expectedSlot))).append("\n");
+        sb.append("\n\tSelected: ").append(stackString(inventory.getTool(actualSlot)))
+                .append("\n");
+
+        sb.append("\tInventory:");
+
+        if (inventory.slotCount() > 10) {
+            sb.append(" (HIDDEN DUE TO SIZE)");
+        } else {
+            sb.append("\n");
+            for (int slot = 0; slot < inventory.slotCount(); slot++) {
+                sb.append('\t').append('\t').append(stackString(inventory.getTool(slot)));
+                if (expectedSlot == slot) {
+                    sb.append("\t<<<<<< EXPECTED");
+                }
+                if (actualSlot == slot) {
+                    sb.append("\t<<<<<< SELECTED");
+                }
+                sb.append('\n');
+            }
+        }
+
+        throw new AssertionFailedError(sb.toString(), expectedSlot, actualSlot);
     }
 
     protected static ItemStack stack(MinecraftServer server, Item item, Enchant... enchantments) {
