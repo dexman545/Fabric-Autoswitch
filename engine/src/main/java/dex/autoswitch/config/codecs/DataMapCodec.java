@@ -56,8 +56,16 @@ public final class DataMapCodec implements TypeSerializer<DataMap> {
             return;
         }
 
+        serialize(dataMap, node);
+    }
+
+    private void serialize(@NotNull DataMap dataMap, @NotNull ConfigurationNode node) throws SerializationException {
         switch (dataMap) {
-            case DataMap.Map(var entries) -> node.set(entries);
+            case DataMap.Map(var entries) -> {
+                for (DataMap entry : entries) {
+                    serialize(entry, node);
+                }
+            }
             case DataMap.Pair(var key, var val) -> node.node(key).set(val);
             case DataMap.Value(var val) -> node.set(String.class, val);
         }
