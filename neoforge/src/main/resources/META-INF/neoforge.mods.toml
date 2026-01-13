@@ -6,7 +6,7 @@ version = "${version}"
 displayName = "${mod_name}"
 #see https://docs.neoforged.net/docs/misc/updatechecker/
 #see https://docs.modrinth.com/api/operations/forgeupdates/
-updateJSONURL="https://api.modrinth.com/updates/autoswitch/forge_updates.json"
+updateJSONURL="https://api.modrinth.com/updates/autoswitch/forge_updates.json?neoforge=only"
 displayURL="https://modrinth.com/mod/autoswitch"
 logoFile="${mod_id}.png"
 credits="${credits}"
