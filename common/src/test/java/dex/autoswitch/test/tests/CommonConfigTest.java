@@ -45,6 +45,34 @@ public class CommonConfigTest {
     }
 
     @Test
+    void roundTripPlayerDataTest() throws IOException, URISyntaxException {
+        var config = loadConfig("roundTripPlayerDataTest");
+        var p = Path.of("configs", "roundTripPlayerData.conf");
+        Files.deleteIfExists(p);
+        writeConfig(config, p);
+        var newConfig = getConfig(p);
+
+        assertThat(newConfig)
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isEqualTo(config);
+    }
+
+    @Test
+    void roundTripEnchantmentLevelTest() throws IOException, URISyntaxException {
+        var config = loadConfig("roundTripEnchantmentLevelTest");
+        var p = Path.of("configs", "roundTripEnchantmentLevelTest.conf");
+        Files.deleteIfExists(p);
+        writeConfig(config, p);
+        var newConfig = getConfig(p);
+
+        assertThat(newConfig)
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isEqualTo(config);
+    }
+
+    @Test
     void testExplodedData() throws IOException, URISyntaxException {
         var ref = loadConfig("explodedDataRef");
         var exploded = loadConfig("explodedDataTest");
