@@ -8,6 +8,7 @@ import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.types.selectable.StatSelectableType;
 import dex.autoswitch.gametest.util.Hotbars;
 import dex.autoswitch.gametest.util.RegistryObject;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
@@ -22,6 +23,13 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 public class UnitGameTest extends AbstractTest {
     private final AutoSwitchConfig playerDataTestConfig = loadConfig("playerDataTest");
     private final AutoSwitchConfig enchantmentLevelTestConfig = loadConfig("enchantmentLevelTest");
+
+    @GameTest
+    public void auditMixins(GameTestHelper helper) {
+        MixinEnvironment.getCurrentEnvironment().audit();
+
+        helper.succeed();
+    }
 
     @GameTest
     public void pickaxeStone(GameTestHelper helper) {
