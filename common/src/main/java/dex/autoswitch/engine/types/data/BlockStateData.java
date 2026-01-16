@@ -1,9 +1,8 @@
 package dex.autoswitch.engine.types.data;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
-import dex.autoswitch.config.data.tree.DataMap;
+import dex.autoswitch.config.data.tree.SingleValuedDataMap;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
@@ -11,28 +10,26 @@ import io.leangen.geantyref.TypeToken;
 
 import net.minecraft.world.level.block.state.BlockState;
 
-public class BlockStateData extends DataType<DataMap> {
+public class BlockStateData extends DataType<SingleValuedDataMap<String, String>> {
     public static final BlockStateData INSTANCE = new BlockStateData();
 
     private BlockStateData() {
         //noinspection Convert2Diamond
-        super("blockstates", new TypeToken<DataMap>() {});
+        super("blockstates", new TypeToken<SingleValuedDataMap<String, String>>() {});
     }
 
     @Override
-    public Match matches(int baseLevel, SelectionContext context, Object selectable, DataMap data) {
+    public Match matches(int baseLevel, SelectionContext context, Object selectable, SingleValuedDataMap<String, String> data) {
         if (selectable instanceof BlockState blockState) {
-            var requiredState = process(data);
-
             var stateDefinition = blockState.getBlock().getStateDefinition();
-            for (StateProperty stateProperty : requiredState) {
-                var property = stateDefinition.getProperty(stateProperty.key);
+            for (Map.Entry<String, String> stateProperty : data.map().entrySet()) {
+                var property = stateDefinition.getProperty(stateProperty.getKey());
 
                 if (property == null) {
                     return new Match(false);
                 }
 
-                var expectedValue = property.getValue(stateProperty.val);
+                var expectedValue = property.getValue(stateProperty.getValue());
                 if (expectedValue.isEmpty()) {
                     return new Match(false);
                 }
@@ -47,26 +44,4 @@ public class BlockStateData extends DataType<DataMap> {
 
         return new Match(false);
     }
-
-    private Set<StateProperty> process(DataMap dataMap) {
-        var properties = new HashSet<StateProperty>();
-        switch (dataMap) {
-            case DataMap.Map map -> {
-                for (DataMap entry : map.entries()) {
-                    properties.addAll(process(entry));
-                }
-            }
-            case DataMap.Pair(var key, DataMap.Value mv) -> {
-                properties.add(new StateProperty(key, mv.value()));
-            }
-            case DataMap.Value value -> {
-            }
-            case DataMap.Pair pair -> {
-            }
-        }
-
-        return properties;
-    }
-
-    private record StateProperty(String key, String val) {}
 }
