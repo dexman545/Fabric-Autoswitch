@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import dex.autoswitch.config.ConfigHandler;
+import dex.autoswitch.config.data.tree.Data;
 import dex.autoswitch.config.data.tree.IdSelector;
 import dex.autoswitch.config.data.tree.TypedData;
 import dex.autoswitch.config.util.TypeAnnotationUtil;
@@ -165,9 +166,13 @@ public final class IdSelectorCodec implements TypeSerializer.Annotated<IdSelecto
 
         if (selector.data() != null && !selector.data().isEmpty()) {
             for (TypedData<?> typedData : selector.data()) {
-                node.node(DATA).node(typedData.type().id().toLowerCase(Locale.ENGLISH)).set(typedData.data());
+                setDataNode(typedData, node);
             }
         }
+    }
+
+    private <V extends Data> void setDataNode(TypedData<V> typedData, ConfigurationNode node) throws SerializationException {
+        node.node(DATA).node(typedData.type().id().toLowerCase(Locale.ENGLISH)).set(typedData.type().getSupportedData(), typedData.data());
     }
 
     private <K, V, G> SelectableType<K, V, G> getSelectorType(AnnotatedType type, ConfigurationNode source) throws SerializationException {
