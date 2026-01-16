@@ -7,11 +7,14 @@ import dex.autoswitch.config.data.tree.Data;
 import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.config.data.tree.DisjunctiveUnion;
 import dex.autoswitch.config.data.tree.ExpressionTree;
+import dex.autoswitch.config.data.tree.ExtensibleData;
 import dex.autoswitch.config.data.tree.IdSelector;
 import dex.autoswitch.config.data.tree.Intersection;
 import dex.autoswitch.config.data.tree.Invert;
+import dex.autoswitch.config.data.tree.SingleValuedDataMap;
 import dex.autoswitch.config.data.tree.TypedData;
 import dex.autoswitch.config.data.tree.Union;
+import dex.autoswitch.config.data.tree.ValueCondition;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.futures.FutureSelectableGroup;
@@ -90,6 +93,9 @@ public interface Matcher {
                     .map(entry -> prettyPrint(entry, level))
                     .collect(Collectors.joining("\n" + " ".repeat(level)));
             case ExpressionTree tree -> prettyPrint((Matcher) tree, level);
+            case SingleValuedDataMap<?, ?> singleValuedDataMap -> singleValuedDataMap.prettyPrint(level);
+            case ValueCondition<?> valueCondition -> valueCondition.prettyPrint(level);
+            case ExtensibleData extensibleData -> extensibleData.prettyPrint(level);
             //noinspection UnnecessaryDefault
             default -> data.toString();
         };

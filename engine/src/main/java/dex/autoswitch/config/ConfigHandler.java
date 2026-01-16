@@ -8,10 +8,13 @@ import java.util.logging.Logger;
 import dex.autoswitch.config.codecs.DataMapCodec;
 import dex.autoswitch.config.codecs.ExpressionTreeCodec;
 import dex.autoswitch.config.codecs.IdSelectorCodec;
+import dex.autoswitch.config.codecs.ValueConditionCodec;
 import dex.autoswitch.config.data.tree.DataMap;
 import dex.autoswitch.config.data.tree.ExpressionTree;
 import dex.autoswitch.config.data.tree.IdSelector;
+import dex.autoswitch.config.data.tree.ValueCondition;
 import dex.autoswitch.config.transformations.Transformations;
+import io.leangen.geantyref.TypeToken;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
@@ -27,6 +30,8 @@ public class ConfigHandler {
                     build.register(IdSelector.class, IdSelectorCodec.INSTANCE);
                     build.register(ExpressionTree.class, ExpressionTreeCodec.INSTANCE);
                     build.register(DataMap.class, DataMapCodec.INSTANCE);
+                    //noinspection unchecked
+                    build.register(new TypeToken<ValueCondition<?>>() {}, ValueConditionCodec.INSTANCE);
                 }))
                 .build();
     }
@@ -40,6 +45,8 @@ public class ConfigHandler {
                     build.register(IdSelector.class, IdSelectorCodec.INSTANCE);
                     build.register(ExpressionTree.class, ExpressionTreeCodec.INSTANCE);
                     build.register(DataMap.class, DataMapCodec.INSTANCE);
+                    //noinspection unchecked
+                    build.register(new TypeToken<ValueCondition<?>>() {}, ValueConditionCodec.INSTANCE);
                 }))
                 .build();
     }
