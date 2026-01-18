@@ -23,10 +23,32 @@ import net.fabricmc.fabric.api.gametest.v1.GameTest;
 public class UnitGameTest extends AbstractTest {
     private final AutoSwitchConfig playerDataTestConfig = loadConfig("playerDataTest");
     private final AutoSwitchConfig enchantmentLevelTestConfig = loadConfig("enchantmentLevelTest");
+    private final AutoSwitchConfig playerHavingTestConfig = loadConfig("playerHavingTest");
 
     @GameTest
     public void auditMixins(GameTestHelper helper) {
         MixinEnvironment.getCurrentEnvironment().audit();
+
+        helper.succeed();
+    }
+
+    @GameTest
+    public void playerHasItem(GameTestHelper helper) {
+        setup(helper);
+        var player = Hotbars.createInventroyHavingPlayer(helper);
+
+        select(Action.ATTACK, RegistryObject.block(Blocks.OAK_LOG), player, playerHavingTestConfig);
+        assertSlot(helper, player, 1);
+
+        player.getInventory().setSelectedSlot(0);
+
+        select(Action.ATTACK, RegistryObject.block(Blocks.BIRCH_LOG), player, playerHavingTestConfig);
+        assertSlot(helper, player, 1);
+
+        player.getInventory().setSelectedSlot(0);
+
+        select(Action.ATTACK, RegistryObject.block(Blocks.SPRUCE_LOG), player, playerHavingTestConfig);
+        assertSlot(helper, player, 0);
 
         helper.succeed();
     }
