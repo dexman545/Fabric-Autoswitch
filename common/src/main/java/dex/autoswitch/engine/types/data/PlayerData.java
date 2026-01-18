@@ -7,8 +7,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import dex.autoswitch.config.codecs.SelectableTypeMarker;
+import dex.autoswitch.config.data.tree.ExpressionTree;
 import dex.autoswitch.config.data.tree.ExtensibleData;
 import dex.autoswitch.config.data.tree.ValueCondition;
+import dex.autoswitch.engine.Matcher;
 import dex.autoswitch.engine.data.Match;
 import dex.autoswitch.engine.data.SelectionContext;
 import dex.autoswitch.engine.data.extensible.DataType;
@@ -18,6 +21,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -78,8 +82,29 @@ public class PlayerData extends DataType<PlayerData.State> {
         return player.onGround();
     }
 
+    private static boolean hasItem(Player player, ExpressionTree tree, SelectionContext context) {
+        var inventory = player.getInventory();
+        return inventory.hasAnyMatching(stack -> tree.matches(0, context, stack).matches());
+    }
+
+    private static boolean hasHotbarItem(Player player, ExpressionTree tree, SelectionContext context) {
+        var inventory = player.getInventory();
+        for (int i = 0; i < Inventory.getSelectionSize(); i++) {
+            if (tree.matches(0, context, inventory.getItem(i)).matches()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @ConfigSerializable
     public record State( // Need to use @Setting to avoid camelCase becoming kebab-case in config
+            @Setting("hasItem")
+            @SelectableTypeMarker("item")
+            @Nullable ExpressionTree hasItem,
+            @Setting("hasHotbarItem")
+            @SelectableTypeMarker("item")
+            @Nullable ExpressionTree hasHotbarItem,
             @Setting("isFlying")
             @Nullable ValueCondition<Boolean> isFlying,
             @Setting("isCrouching")
@@ -104,7 +129,9 @@ public class PlayerData extends DataType<PlayerData.State> {
                             isOnGround != null ? "isOnGround: " + isOnGround : null,
                             isSprinting != null ? "isSprinting: " + isSprinting : null,
                             fallDistance != null ? "fallDistance: " + fallDistance : null,
-                            distance != null ? "distance: " + distance : null
+                            distance != null ? "distance: " + distance : null,
+                            hasItem != null ? "hasItem: \n" + Matcher.prettyPrint(hasItem, level) : null,
+                            hasHotbarItem != null ? "hasHotbarItem: \n" + Matcher.prettyPrint(hasHotbarItem, level) : null
                     )
                     .filter(Objects::nonNull)
                     .collect(Collectors.joining("\n" + indent));
@@ -143,6 +170,18 @@ public class PlayerData extends DataType<PlayerData.State> {
 
             if (fallDistance != null) {
                 if (!fallDistance.matches(PlayerData.getFallDistance(player, context, selectable))) {
+                    return false;
+                }
+            }
+
+            if (hasItem != null) {
+                if (!PlayerData.hasItem(player, hasItem, context)) {
+                    return false;
+                }
+            }
+
+            if (hasHotbarItem != null) {
+                if (!PlayerData.hasHotbarItem(player, hasHotbarItem, context)) {
                     return false;
                 }
             }

@@ -3,6 +3,7 @@ package dex.autoswitch.gametest.util;
 import dex.autoswitch.gametest.util.RegistryObject.Enchant;
 
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -180,6 +181,22 @@ public class Hotbars {
         ));
 
         return player;
+    }
+
+    public static Player createInventroyHavingPlayer(GameTestHelper helper) {
+        var switchedPlayer = helper.makeMockPlayer(GameType.SURVIVAL);
+        var inv = switchedPlayer.getInventory();
+
+        inv.add(1, RegistryObject.stack(
+                helper, Items.DIAMOND_AXE,
+                Enchant.of(Enchantments.EFFICIENCY, 1)
+        ));
+        inv.add(Inventory.getSelectionSize() + 1, RegistryObject.stack(
+                helper, Items.DIAMOND_AXE,
+                Enchant.of(Enchantments.EFFICIENCY, 3)
+        ));
+
+        return switchedPlayer;
     }
 
     /*public static Player createStandardPlayer(GameTestHelper helper) {
