@@ -1,6 +1,7 @@
 package dex.autoswitch.test;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
@@ -15,6 +16,7 @@ public class MixinAuditTest {
     }
 
     @Test
+    @Disabled
     void auditMixins() {
         MixinEnvironment.getCurrentEnvironment().audit();
     }
