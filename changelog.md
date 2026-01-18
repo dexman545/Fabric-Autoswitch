@@ -44,7 +44,7 @@ over the implicitly defined `data`.
     | isSprinting   | If the player is sprinting                       | Boolean        |
     | distance      | The distance between the player and target       | Number         |
     | fallDistance  | The distance the player has fallen               | Number         |
-  | | hasItem       | If the player has the given item                 | ExpressionTree |
+    | hasItem       | If the player has the given item                 | ExpressionTree |
     | hasHotbarItem | If the player has the given item on their hotbar | ExpressionTree |
 
 # 14.0.3
