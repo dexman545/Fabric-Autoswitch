@@ -11,6 +11,10 @@ over the implicitly defined `data`.
 - Add a default target for ores
   - By default, prefers pickaxes with fortune over those with silk touch, unless the player is crouching,
     in which case the opposite occurs with silk touch being preferred.
+- Ported Fabric API's "Client Tags" module to Neoforge
+  - Now conventional tags (eg `c:ores`) will work when connecting to a vanilla server from a Neoforge client
+- Fix more complicated `data` structures not being written correctly
+- Fix Neoforge update url
 - Add `Player` data type, mostly to support things like the mace
   - Usable in any `IdSelector` (anywhere you can have a `data` entry)
   - Supports the same sort of value comparison as Enchantment Levels
@@ -31,15 +35,17 @@ over the implicitly defined `data`.
     ```
   - Currently Available Entries
 
-    | Type         | Description                                | Type    |
-    |--------------|--------------------------------------------|---------|
-    | isFlying     | If the player is flying                    | Boolean |
-    | isCrouching  | If the player is crouching                 | Boolean |
-    | isPassenger  | If the player is riding something          | Boolean |
-    | isOnGround   | If the player is on the ground             | Boolean |
-    | isSprinting  | If the player is sprinting                 | Boolean |
-    | distance     | The distance between the player and target | Number  |
-    | fallDistance | The distance the player has fallen         | Number  |
+    | Type          | Description                                      | Type           |
+    |---------------|--------------------------------------------------|----------------|
+    | isFlying      | If the player is flying                          | Boolean        |
+    | isCrouching   | If the player is crouching                       | Boolean        |
+    | isPassenger   | If the player is riding something                | Boolean        |
+    | isOnGround    | If the player is on the ground                   | Boolean        |
+    | isSprinting   | If the player is sprinting                       | Boolean        |
+    | distance      | The distance between the player and target       | Number         |
+    | fallDistance  | The distance the player has fallen               | Number         |
+  | | hasItem       | If the player has the given item                 | ExpressionTree |
+    | hasHotbarItem | If the player has the given item on their hotbar | ExpressionTree |
 
 # 14.0.3
 - Improve handling of fallback tools in default config
