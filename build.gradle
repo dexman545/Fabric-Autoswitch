@@ -2,6 +2,8 @@ import dex.plugins.TaskPropertiesUpdate
 import me.modmuss50.mpp.PublishModTask
 import me.modmuss50.mpp.ReleaseType
 
+import java.util.stream.Collectors
+
 buildscript {
     configurations.configureEach {
         //resolutionStrategy.activateDependencyLocking()
@@ -76,6 +78,15 @@ publishMods {
     }
 
     def mrOptions = modrinthOptions {
+        // Limit changelog to just this version as Modrinth has a nicer display of it
+        changelog = providers.fileContents(layout.projectDirectory.file("changelog.md")).getAsText()
+                    .map {
+                        return it.lines()
+                                .sequential()
+                                .skip(1)
+                                .takeWhile { !it.startsWith("# ") }
+                                .collect(Collectors.joining("\n"))
+                    }
         accessToken = providers.environmentVariable("MODRINTH")
         projectId = "uSdcnlts"
         for (final def v in outlet.mcVersions()) {
