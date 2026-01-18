@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -132,13 +133,13 @@ public class ClientTagsLoader {
 
         try {
             for (IModFileInfo modFile : ModList.get().getModFiles()) {
-                var jarContents = modFile.getFile().getContents();
-                if (jarContents.containsFile(path)) {
-                    try {
-                        out.add(jarContents.readFile(path));
-                    } catch (IOException e) {
-                        LOGGER.error("Error reading tag file: {}", path, e);
+                try {
+                    var resource = modFile.getFile().findResource(path);
+                    if (Files.exists(resource)) {
+                        out.add(Files.readAllBytes(resource));
                     }
+                } catch (IOException e) {
+                    LOGGER.error("Error reading tag file: {}", path, e);
                 }
             }
         } catch (Exception e) {
