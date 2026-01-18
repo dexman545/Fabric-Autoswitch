@@ -1,5 +1,8 @@
 package dex.autoswitch.test.tests;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.function.Function;
 
@@ -7,6 +10,7 @@ import dex.autoswitch.Constants;
 import dex.autoswitch.config.AutoSwitchConfig;
 import dex.autoswitch.engine.Action;
 import dex.autoswitch.engine.SelectionEngine;
+import dex.autoswitch.fapi.client.api.ClientTags;
 import dex.autoswitch.harness.DummyInventory;
 import dex.autoswitch.harness.NeoForgeTestPlatformHelper;
 import dex.autoswitch.platform.Services;
@@ -14,7 +18,10 @@ import dex.autoswitch.test.util.AbstractSelectionTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -335,5 +342,21 @@ public class DefaultSelectionTest extends AbstractSelectionTest {
 
         engine.select(hotbar, Action.INTERACT, golem);
         assertSelectedSlot(18, hotbar);
+    }
+
+    @Test
+    void testLoadingClientTags(MinecraftServer server) {
+        if (Services.PLATFORM instanceof NeoForgeTestPlatformHelper neoForgeTestPlatformHelper) {
+            neoForgeTestPlatformHelper.setServer(server);
+        }
+
+        var ore = block(Blocks.DIAMOND_ORE);
+        var oresTag = TagKey.create(Registries.BLOCK,
+                Identifier.fromNamespaceAndPath("c", "ores"));
+        var badTag = TagKey.create(Registries.BLOCK,
+                Identifier.fromNamespaceAndPath("c", "ores2"));
+
+        assertTrue(ClientTags.isInLocal(oresTag, ore.typeHolder().getKey()));
+        assertFalse(ClientTags.isInLocal(badTag, ore.typeHolder().getKey()));
     }
 }
