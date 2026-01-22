@@ -66,7 +66,7 @@ public class Autoswitch {
         InterModComms.sendTo(Constants.MOD_ID, AutoSwitchApi.INSTANCE.DEPLETED.id().getPath(),
                 () -> (Predicate<ItemStack>) stack -> {
                     if (stack.isDamageableItem()) {
-                        return stack.nextDamageWillBreak();
+                        return stack.getDamageValue >= stack.getMaxDamage();
                     }
 
                     return false;

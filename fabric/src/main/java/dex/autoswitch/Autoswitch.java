@@ -81,7 +81,7 @@ public class Autoswitch implements ClientModInitializer {
                 ((Collection<Predicate<ItemStack>>)collection).add(stack -> {
 
                     if (stack.isDamageableItem()) {
-                        return stack.nextDamageWillBreak();
+                        return stack.getDamageValue() >= stack.getMaxDamage();
                     }
 
                     return false;
