@@ -21,7 +21,7 @@ buildscript {
 // To update plugin version, run Update run config or task `dependencies --write-locks`
 plugins {
     // see https://fabricmc.net/develop/ for new versions
-    id 'net.fabricmc.fabric-loom' version '1.14.+' apply false
+    id 'net.fabricmc.fabric-loom' version '1.15.+' apply false
     // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
     id 'net.neoforged.moddev' version '2.0.+' apply false
     id 'com.gradleup.shadow' version '9.3.+' apply false
