@@ -15,6 +15,7 @@ over the implicitly defined `data`.
   - Now conventional tags (eg `c:ores`) will work when connecting to a vanilla server from a Neoforge client
 - Fix more complicated `data` structures not being written correctly
 - Fix Neoforge update url
+- Separate `preserve-damaged-items` out from `skip-depleted-items` to allow these behaviors to be controlled independently
 - Add `Player` data type, mostly to support things like the mace
   - Usable in any `IdSelector` (anywhere you can have a `data` entry)
   - Supports the same sort of value comparison as Enchantment Levels
