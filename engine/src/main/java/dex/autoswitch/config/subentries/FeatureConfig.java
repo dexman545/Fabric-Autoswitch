@@ -92,6 +92,11 @@ public class FeatureConfig {
             """)
     public boolean skipDepletedItems = true;
 
+    @Comment("""
+            If true, skip tools that are about to break.\
+            """)
+    public boolean preserveDamagedTools = true;
+
     public enum DisplayControl {
         DEFAULT(true), CHAT(true),
         OFF(false);

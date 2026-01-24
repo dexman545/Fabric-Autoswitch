@@ -63,14 +63,6 @@ public class Autoswitch {
 
                     return false;
                 });
-        InterModComms.sendTo(Constants.MOD_ID, AutoSwitchApi.INSTANCE.DEPLETED.id().getPath(),
-                () -> (Predicate<ItemStack>) stack -> {
-                    if (stack.isDamageableItem()) {
-                        return stack.nextDamageWillBreak();
-                    }
-
-                    return false;
-                });
         // Test of IMC
         /*InterModComms.sendTo(Constants.MOD_ID, AutoSwitchApi.INSTANCE.DEPLETED.id().getPath(),
                 () -> (Predicate<ItemStack>) stack -> stack.getDamageValue() != 0);*/

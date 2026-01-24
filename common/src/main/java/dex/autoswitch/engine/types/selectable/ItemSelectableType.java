@@ -58,6 +58,12 @@ public class ItemSelectableType extends SelectableResource<Item> {
                 }
             }
 
+            if (Constants.CONFIG.featureConfig.preserveDamagedTools) {
+                if (stack.isDamageableItem() && stack.nextDamageWillBreak()) {
+                    return false;
+                }
+            }
+
             if (ref.equals(stack.getItem())) {
                 // Check for mining level
                 if (context.target() instanceof BlockState state) {
@@ -90,6 +96,12 @@ public class ItemSelectableType extends SelectableResource<Item> {
                     if (stackPredicate.test(stack)) {
                         return false;
                     }
+                }
+            }
+
+            if (Constants.CONFIG.featureConfig.preserveDamagedTools) {
+                if (stack.isDamageableItem() && stack.nextDamageWillBreak()) {
+                    return false;
                 }
             }
 

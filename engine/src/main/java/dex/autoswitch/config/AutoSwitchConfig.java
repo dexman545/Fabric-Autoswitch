@@ -41,7 +41,7 @@ public class AutoSwitchConfig {
 
     @SuppressWarnings("unused")
     @Comment("Config version to support migration")
-    public int configVersion = 1;
+    public int configVersion = 3;
 
     private transient Map<Action, Map<Selector, Set<Selector>>> configuration = null;
     private transient SelectionEngine engine;
