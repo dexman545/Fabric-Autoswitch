@@ -39,7 +39,11 @@ public class CommonClass {
             var msg = Component.translatable(keyChooser ? tlKeyTruthy : tlKeyFalsy);
 
             // Display msg above hotbar, set false to display in text chat
-            player.displayClientMessage(msg, Constants.CONFIG.featureConfig.toggleMessageControl == FeatureConfig.DisplayControl.DEFAULT);
+            if (Constants.CONFIG.featureConfig.toggleMessageControl == FeatureConfig.DisplayControl.DEFAULT) {
+                player.sendOverlayMessage(msg);
+            } else {
+                player.sendSystemMessage(msg);
+            }
         }
 
         return !toggle;
