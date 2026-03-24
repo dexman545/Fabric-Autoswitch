@@ -73,7 +73,9 @@ publishMods {
         accessToken = providers.environmentVariable("CURSE")
         projectId = "347405"
         for (final def v in outlet.curseforgeMcVersions()) {
-            minecraftVersions.add(v)
+            if (!v.contains("Snapshot")) {
+                minecraftVersions.add(v)
+            }
         }
     }
 
