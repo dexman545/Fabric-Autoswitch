@@ -1,6 +1,7 @@
 name: Mod Publishing
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - '*'
