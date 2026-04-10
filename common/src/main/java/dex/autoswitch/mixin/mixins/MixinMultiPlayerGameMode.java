@@ -43,9 +43,15 @@ public abstract class MixinMultiPlayerGameMode {
     private void autoswitch$triggerSwitchOnSlotSync(CallbackInfo ci) {
         var profiler = Profiler.get();
         profiler.push("autoswitch:switchTrigger");
-        assert this.minecraft.player != null;
-        assert this.minecraft.hitResult != null;
-        if (this.minecraft.hitResult.equals(this.autoswitch$prevTarget)) return;
+        if (this.minecraft.hitResult == null || this.minecraft.player == null) {
+            this.autoswitch$prevTarget = null;
+            profiler.pop();
+            return;
+        }
+        if (this.minecraft.hitResult.equals(this.autoswitch$prevTarget)) {
+            profiler.pop();
+            return;
+        }
         if (this.minecraft.options.keyAttack.isDown()) {
             SwitchEventTriggerImpl.attack(0, this.minecraft.player, this.minecraft.hitResult);
             this.autoswitch$prevTarget = this.minecraft.hitResult;
