@@ -1,3 +1,6 @@
+# 15.0.1
+- Fix crash on joining world
+
 # 15.0.0
 - Update for 26.1 and unobfuscated Minecraft
 - Fix an error when writing an ExpressionTree to the config file
