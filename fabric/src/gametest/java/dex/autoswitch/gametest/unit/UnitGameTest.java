@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.BeehiveBlock;
@@ -84,7 +84,7 @@ public class UnitGameTest extends AbstractTest {
     public void attackChicken(GameTestHelper helper) {
         setup(helper);
         var player = Hotbars.fightingPlayer(helper);
-        select(Action.ATTACK, RegistryObject.entity(helper, EntityType.CHICKEN), player);
+        select(Action.ATTACK, RegistryObject.entity(helper, EntityTypes.CHICKEN), player);
         assertSlot(helper, player, 7);
         helper.succeed();
     }
@@ -93,7 +93,7 @@ public class UnitGameTest extends AbstractTest {
     public void attackSpider(GameTestHelper helper) {
         setup(helper);
         var player = Hotbars.fightingPlayer(helper);
-        select(Action.ATTACK, RegistryObject.entity(helper, EntityType.SPIDER), player);
+        select(Action.ATTACK, RegistryObject.entity(helper, EntityTypes.SPIDER), player);
         assertSlot(helper, player, 5);
         helper.succeed();
     }
@@ -102,7 +102,7 @@ public class UnitGameTest extends AbstractTest {
     public void attackZombie(GameTestHelper helper) {
         setup(helper);
         var player = Hotbars.fightingPlayer(helper);
-        select(Action.ATTACK, RegistryObject.entity(helper, EntityType.ZOMBIE), player);
+        select(Action.ATTACK, RegistryObject.entity(helper, EntityTypes.ZOMBIE), player);
         assertSlot(helper, player, 6);
         helper.succeed();
     }
@@ -111,7 +111,7 @@ public class UnitGameTest extends AbstractTest {
     public void interactCreeperNoOffhand(GameTestHelper helper) {
         setup(helper);
         var player = Hotbars.fightingPlayer(helper);
-        var testPlayer = select(Action.INTERACT, RegistryObject.entity(helper, EntityType.CREEPER), player);
+        var testPlayer = select(Action.INTERACT, RegistryObject.entity(helper, EntityTypes.CREEPER), player);
         assertSlot(helper, player, 8);
         assertOffhand(helper, testPlayer, false);
         helper.succeed();
@@ -122,7 +122,7 @@ public class UnitGameTest extends AbstractTest {
         setup(helper);
 
         var player = Hotbars.fightingPlayer(helper);
-        var testPlayer = select(Action.INTERACT, RegistryObject.entity(helper, EntityType.IRON_GOLEM), player);
+        var testPlayer = select(Action.INTERACT, RegistryObject.entity(helper, EntityTypes.IRON_GOLEM), player);
         assertSlot(helper, player, 2);
         assertOffhand(helper, testPlayer, false);
 
@@ -133,7 +133,7 @@ public class UnitGameTest extends AbstractTest {
     public void interactStriderOffhand(GameTestHelper helper) {
         setup(helper);
         var player = Hotbars.fightingPlayer(helper);
-        var strider = RegistryObject.entity(helper, EntityType.STRIDER);
+        var strider = RegistryObject.entity(helper, EntityTypes.STRIDER);
 
         // Interaction where the slot is already correct
         player.getInventory().setSelectedSlot(2);
@@ -227,7 +227,7 @@ public class UnitGameTest extends AbstractTest {
         setup(helper);
         var player = Hotbars.wornFighter(helper);
 
-        var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
+        var creeper = RegistryObject.entity(helper, EntityTypes.CREEPER);
 
         // Ensure the primary weapon was chosen
         select(Action.ATTACK, creeper, player);
@@ -317,7 +317,7 @@ public class UnitGameTest extends AbstractTest {
         setup(helper);
         var player = Hotbars.createLevelSensitive(helper);
 
-        var creeper = RegistryObject.entity(helper, EntityType.CREEPER);
+        var creeper = RegistryObject.entity(helper, EntityTypes.CREEPER);
         moveEntity(player, creeper, 11);
         assertActionSlot(helper, Action.ATTACK, creeper, player, 6, playerDataTestConfig);
 
