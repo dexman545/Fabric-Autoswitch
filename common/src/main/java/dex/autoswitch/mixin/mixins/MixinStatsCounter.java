@@ -31,7 +31,7 @@ public class MixinStatsCounter {
         // Stats are only updated on the server, which is fine for singleplayer,
         // but when in multiplayer they are updated when the stat screen is opened,
         // which should not trigger a switch.
-        if (Minecraft.getInstance().isSingleplayer() &&
+        if (!Minecraft.getInstance().isMultiplayerServer() &&
                 Constants.CONFIG.featureConfig.switchAllowed.contains(TargetType.EVENTS) &&
                 Constants.CONFIG.featureConfig.switchActions.contains(Action.STAT_CHANGE) &&
                 // Filters out unimportant events

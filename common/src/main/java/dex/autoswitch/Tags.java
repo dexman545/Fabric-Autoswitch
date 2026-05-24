@@ -53,7 +53,11 @@ public final class Tags {
                 Set.of(
                         mcTag(Registries.BLOCK, "mineable/shears"),
                         BlockTags.WOOL,
-                        BlockTags.LEAVES
+                        BlockTags.LEAVES,
+                        // Added in 26.2 snapshots
+                        BlockTags.SHEARS_EXTREME_BREAKING_SPEED,
+                        BlockTags.SHEARS_MAJOR_BREAKING_SPEED,
+                        BlockTags.SHEARS_MINOR_BREAKING_SPEED
                 )
         ));
         /*tagMap.put(tagKey(Registries.BLOCK, ""), new Group.CustomTag<>(
