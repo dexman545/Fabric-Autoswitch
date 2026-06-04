@@ -15,14 +15,18 @@ java {
 
 repositories {
     mavenCentral()
-    /*maven {
-        name = "Maven for PR #2639" // https://github.com/neoforged/NeoForge/pull/2639
-        url = uri("https://prmaven.neoforged.net/NeoForge/pr2639")
-        content {
-            includeModule("net.neoforged", "neoforge")
-            includeModule("net.neoforged", "testframework")
+    // NeoForge PR builds are not stable, so only add the repository if we're actually building one of them
+    // Don't add the repository if we're building a stable version
+    if (neoforge_version.matches(".*(?:alpha|beta).+\\.\\d{8}\\.\\d{6}\$")) {
+        maven {
+            name = "Maven for PR Neo PR Builds"  // https://github.com/neoforged/NeoForge/pull/3198
+            url = uri("https://prmaven.neoforged.net/NeoForge/pr${neoforge_pr_build_pr}")
+            content {
+                includeModule("net.neoforged", "neoforge")
+                includeModule("net.neoforged", "testframework")
+            }
         }
-    }*/
+    }
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {

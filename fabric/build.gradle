@@ -40,36 +40,40 @@ loom {
     runs {
         client {
             client()
-            setConfigName('Fabric Client')
-            ideConfigGenerated(true)
+            displayName = 'Fabric Client'
+            generateRunConfig = true
             ideConfigFolder = 'Fabric Runs'
-            runDir('runs/client')
+            runDirectory = project.layout.projectDirectory.dir("runs/client")
         }
         server {
             server()
-            setConfigName('Fabric Server')
-            ideConfigGenerated(true)
+            displayName = 'Fabric Server'
+            generateRunConfig = true
             ideConfigFolder = 'Fabric Runs'
-            runDir('runs/server')
+            runDirectory = project.layout.projectDirectory.dir("runs/server")
         }
         clientGameTest {
             client()
-            name "Fabric Client Test"
-            vmArg "-Dfabric-api.gametest"
-            vmArg "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.file('junit.xml').get().asFile.path}"
-            runDir('runs/gametest')
+            displayName = 'Fabric Client Test'
+            jvmArguments = [
+                    "-Dfabric-api.gametest",
+                    "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.file('junit.xml').get().asFile.path}"
+            ]
+            runDirectory = project.layout.projectDirectory.dir("runs/gametest")
             source = sourceSets.gametest
-            ideConfigGenerated(true)
+            generateRunConfig = true
             ideConfigFolder = 'Fabric Runs'
         }
         serverGameTest {
             server()
-            name "Fabric Server Test"
-            vmArg "-Dfabric-api.gametest"
-            vmArg "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.file('junit.xml').get().asFile.path}"
-            runDir('runs/gametest')
+            displayName = "Fabric Server Test"
+            jvmArguments = [
+                    "-Dfabric-api.gametest",
+                    "-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.file('junit.xml').get().asFile.path}"
+            ]
+            runDirectory = project.layout.projectDirectory.dir("runs/gametest")
             source = sourceSets.gametest
-            ideConfigGenerated(true)
+            generateRunConfig = true
             ideConfigFolder = 'Fabric Runs'
         }
     }

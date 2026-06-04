@@ -22,7 +22,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -323,7 +323,7 @@ public class DefaultSelectionTest extends AbstractSelectionTest {
 
         var hotbar = NORMAL_HOTBAR.apply(server);
 
-        var creeper = entity(server.overworld(), EntityType.CREEPER);
+        var creeper = entity(server.overworld(), EntityTypes.CREEPER);
 
         engine.select(hotbar, Action.INTERACT, creeper);
         assertSelectedSlot(17, hotbar);
@@ -338,7 +338,7 @@ public class DefaultSelectionTest extends AbstractSelectionTest {
 
         var hotbar = NORMAL_HOTBAR.apply(server);
 
-        var golem = entity(server.overworld(), EntityType.IRON_GOLEM);
+        var golem = entity(server.overworld(), EntityTypes.IRON_GOLEM);
 
         engine.select(hotbar, Action.INTERACT, golem);
         assertSelectedSlot(18, hotbar);
