@@ -22,9 +22,11 @@ on:
   push:
     tags:
       - '*'
+      - '!no-publish/**'
 
 jobs:
   publish:
+    if: ${{ !startsWith(github.ref_name, 'no-publish/') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
