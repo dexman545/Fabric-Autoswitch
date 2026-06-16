@@ -57,10 +57,10 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew publishModsConditional
-          -Ppublish_curseforge=${{ inputs.publish_curseforge != '' && inputs.publish_curseforge || 'true' }}
-          -Ppublish_modrinth=${{ inputs.publish_modrinth != '' && inputs.publish_modrinth || 'true' }}
-          -Ppublish_fabric=${{ inputs.publish_fabric != '' && inputs.publish_fabric || 'true' }}
-          -Ppublish_neoforge=${{ inputs.publish_neoforge != '' && inputs.publish_neoforge || 'true' }}
+          -Ppublish_curseforge=${{ inputs.publish_curseforge != '' && inputs.publish_curseforge }}
+          -Ppublish_modrinth=${{ inputs.publish_modrinth != '' && inputs.publish_modrinth }}
+          -Ppublish_fabric=${{ inputs.publish_fabric != '' && inputs.publish_fabric }}
+          -Ppublish_neoforge=${{ inputs.publish_neoforge != '' && inputs.publish_neoforge }}
         env:
           KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
           KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
