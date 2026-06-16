@@ -1,3 +1,6 @@
+# 16.0.0
+- Update for 26.2
+
 # 15.0.1
 - Fix crash on joining world
 
