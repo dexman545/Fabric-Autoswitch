@@ -155,12 +155,25 @@ tasks.withType(PublishModTask).configureEach {
 tasks.register("publishModsConditional").configure {
     group = "publishing"
     def mcv = providers.gradleProperty("minecraft_version").get()
-    if (!(mcv.contains("s") || mcv.contains("p") || mcv.contains("r"))) {
+
+    def isSnapshot = mcv.contains("s") || mcv.contains("p") || mcv.contains("r")
+    def pubCurseforge = providers.gradleProperty("publish_curseforge").map { it.toBoolean() }.getOrElse(true)
+    def pubModrinth = providers.gradleProperty("publish_modrinth").map { it.toBoolean() }.getOrElse(true)
+    def pubFabric = providers.gradleProperty("publish_fabric").map { it.toBoolean() }.getOrElse(true)
+    def pubNeoforge = providers.gradleProperty("publish_neoforge").map { it.toBoolean() }.getOrElse(true)
+
+    if (pubCurseforge && pubFabric) {
+        dependsOn 'publishCurseforgeFabric'
+    }
+    if (pubCurseforge && pubNeoforge && !isSnapshot) {
         dependsOn 'publishCurseforgeNeoforge'
+    }
+    if (pubModrinth && pubFabric) {
+        dependsOn 'publishModrinthFabric'
+    }
+    if (pubModrinth && pubNeoforge && !isSnapshot) {
         dependsOn 'publishModrinthNeoforge'
     }
-    dependsOn 'publishCurseforgeFabric'
-    dependsOn 'publishModrinthFabric'
 }
 
 def getVersionType() {

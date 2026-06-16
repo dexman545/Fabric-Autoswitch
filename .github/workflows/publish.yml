@@ -2,6 +2,23 @@ name: Mod Publishing
 
 on:
   workflow_dispatch:
+    inputs:
+      publish_curseforge:
+        description: 'Publish to CurseForge'
+        type: boolean
+        default: true
+      publish_modrinth:
+        description: 'Publish to Modrinth'
+        type: boolean
+        default: true
+      publish_fabric:
+        description: 'Publish Fabric version'
+        type: boolean
+        default: true
+      publish_neoforge:
+        description: 'Publish NeoForge version'
+        type: boolean
+        default: true
   push:
     tags:
       - '*'
@@ -38,6 +55,10 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew publishModsConditional
+          -Ppublish_curseforge=${{ inputs.publish_curseforge != '' && inputs.publish_curseforge || 'true' }}
+          -Ppublish_modrinth=${{ inputs.publish_modrinth != '' && inputs.publish_modrinth || 'true' }}
+          -Ppublish_fabric=${{ inputs.publish_fabric != '' && inputs.publish_fabric || 'true' }}
+          -Ppublish_neoforge=${{ inputs.publish_neoforge != '' && inputs.publish_neoforge || 'true' }}
         env:
           KEY_STORE_PASS: ${{ secrets.KEY_STORE_PASS }}
           KEY_STORE_ALIAS: ${{ secrets.KEY_STORE_ALIAS }}
