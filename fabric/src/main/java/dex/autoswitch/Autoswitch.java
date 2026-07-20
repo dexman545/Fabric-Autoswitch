@@ -19,7 +19,7 @@ import net.fabricmc.loader.api.ObjectShare;
 public class Autoswitch implements ClientModInitializer {
     private final KeyMapping autoswitchToggleKeybinding = KeyMappingHelper.registerKeyMapping(
             new KeyMapping("key.autoswitch.toggle",
-                    InputConstants.Type.KEYSYM, InputConstants.KEY_R,
+                    InputConstants.Type.KEYBOARD, InputConstants.KEY_R,
                     KeyMapping.Category.register(Identifier.parse("autoswitch:autoswitch"))));
 
     @Override
