@@ -47,7 +47,7 @@ public record SwitchedPlayer(Player player) implements PlayerInventory<ItemStack
             return false;
         }
 
-        return (!gm.isDestroying() && !player.isUsingItem()) && (!waitForAttackProgress(ctx) || player.getAttackStrengthScale(-20f) == 1.0f) && !player.swinging;
+        return (!gm.isDestroying() && !player.isUsingItem()) && (!waitForAttackProgress(ctx) || player.getAttackStrengthScale(-20f) == 1.0f) && !player.isSwinging();
     }
 
     @Override

@@ -157,7 +157,7 @@ public abstract class AbstractTest {
         @Override
         public boolean canSwitchBack(SwitchContext ctx) {
             // Can't check attack strength here as it never seems to be non-0
-            return (!player.player().isUsingItem()) && !player.player().swinging;
+            return (!player.player().isUsingItem()) && !player.player().isSwinging();
         }
 
         @Override

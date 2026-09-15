@@ -68,6 +68,16 @@ public final class Tags {
         tagMap.put(tagKey(Registries.ENTITY_TYPE, "any"), new Group.CustomPredicate<EntityType<?>>($ -> true));
         tagMap.put(tagKey(Registries.ENCHANTMENT, "any"), new Group.CustomPredicate<Enchantment>($ -> true));
         tagMap.put(tagKey(Registries.ITEM, "any"), new Group.CustomPredicate<Item>($ -> true));
+        /*tagMap.put(tagKey(Registries.ITEM, "any"), new Group.CustomPredicate<Item>(item -> {
+            //todo operate on stack
+            //todo register as autoswitch.block_transformer:<transformerId>?
+            var transformers = item.components().get(DataComponents.BLOCK_TRANSFORMER);
+            if (transformers != null) {
+                transformers.value().transforms().forEach(blockTransformData -> {
+                    //todo see BlockTransformer
+                });
+            }
+        }));*/
     }
 
     public static <T> Group<T> getTag(TagKey<T> tagKey) {

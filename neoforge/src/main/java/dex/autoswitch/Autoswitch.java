@@ -31,7 +31,7 @@ public class Autoswitch {
     public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.parse("autoswitch:autoswitch"));
     public static final Lazy<KeyMapping> SWITCH_TOGGLE = Lazy.of(() ->
             new KeyMapping("key.autoswitch.toggle",
-                    InputConstants.Type.KEYSYM, InputConstants.KEY_R,
+                    InputConstants.Type.KEYBOARD, InputConstants.KEY_R,
                     CATEGORY));
 
     // Use net.neoforged.neoforge.event.TagsUpdatedEvent to reset cache
