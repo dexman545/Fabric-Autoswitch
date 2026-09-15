@@ -17,7 +17,7 @@ repositories {
     mavenCentral()
     // NeoForge PR builds are not stable, so only add the repository if we're actually building one of them
     // Don't add the repository if we're building a stable version
-    if (neoforge_version.matches(".*(?:alpha|beta).+\\.\\d{8}\\.\\d{6}\$")) {
+    if (neoforge_version.matches(".*-pr.+-port-.*\$")) {
         maven {
             name = "Maven for PR Neo PR Builds"  // https://github.com/neoforged/NeoForge/pull/3198
             url = uri("https://prmaven.neoforged.net/NeoForge/pr${neoforge_pr_build_pr}")
