@@ -2,5 +2,21 @@
   "key.autoswitch.toggle": "AutoSwitch Toggle Key",
   "msg.autoswitch.toggle_false": "AutoSwitch: Disabled",
   "msg.autoswitch.toggle_true": "AutoSwitch: Enabled",
-  "key.category.autoswitch.autoswitch": "AutoSwitch"
+  "key.category.autoswitch.autoswitch": "AutoSwitch",
+
+  "autoswitch.config.title": "AutoSwitch Configuration",
+  "autoswitch.config.disable-on-startup": "Disable on startup",
+  "autoswitch.config.disable-when-crouched": "Disable when crouched",
+  "autoswitch.config.switch-in-creative": "Switch in creative mode",
+  "autoswitch.config.switch-in-mp": "Switch in multiplayer",
+  "autoswitch.config.prefer-minimum-viable-tool": "Prefer minimum viable tool",
+  "autoswitch.config.skip-depleted-items": "Skip depleted items",
+  "autoswitch.config.preserve-damaged-tools": "Preserve damaged tools",
+  "autoswitch.config.toggle-message": "Toggle message",
+  "autoswitch.config.toggle-message.default": "Toggle message: Hotbar",
+  "autoswitch.config.toggle-message.chat": "Toggle message: Chat",
+  "autoswitch.config.toggle-message.off": "Toggle message: Off",
+  "autoswitch.config.switchback-delay": "Switchback delay (ticks)",
+  "autoswitch.config.prevent-block-switch-after-entity-attack": "Block-switch delay after entity attack (ticks)",
+  "autoswitch.config.save": "Save"
 }
