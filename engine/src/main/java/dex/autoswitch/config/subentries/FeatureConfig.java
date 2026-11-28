@@ -45,7 +45,7 @@ public class FeatureConfig {
     @Comment("""
             Disable switching on startup.\
             """)
-    public boolean disableOnStartup = true;
+    public boolean disableOnStartup = false;
 
     @Comment("""
             Don't switch tools in creative mode.\
